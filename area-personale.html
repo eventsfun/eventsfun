@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<!-- EventsFun | Area personale | v1.0 -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventsFun — Area Personale</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#C9A96E;--gold-dark:#8a6e3e;--bg:#0A0A0A;--bg2:#111;--bg3:#161616;
+  --border:rgba(255,255,255,0.08);--text:#F0EDE8;--muted:rgba(240,237,232,0.5);--dim:rgba(240,237,232,0.3);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* NAV */
+nav{display:flex;align-items:center;justify-content:space-between;padding:14px 32px;background:rgba(10,10,10,0.97);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;backdrop-filter:blur(16px)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-tag{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.tag-base{background:rgba(255,255,255,0.07);color:var(--muted);border:1px solid var(--border)}
+.tag-pro{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
+.tag-agenzia{background:rgba(110,201,130,0.1);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
+.nav-logout{font-size:12px;color:var(--dim);cursor:pointer;text-decoration:none;transition:color .2s}
+.nav-logout:hover{color:var(--text)}
+
+/* DEMO SWITCHER */
+.demo-bar{background:#1a1200;border-bottom:1px solid rgba(201,169,110,0.2);padding:10px 32px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.demo-bar span{font-size:11px;color:rgba(201,169,110,0.6);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.demo-btn{padding:5px 14px;border-radius:6px;border:1px solid rgba(201,169,110,0.2);background:transparent;color:rgba(201,169,110,0.6);font-size:11px;font-family:inherit;cursor:pointer;transition:all .2s;font-weight:500}
+.demo-btn:hover,.demo-btn.on{background:rgba(201,169,110,0.12);color:var(--gold);border-color:rgba(201,169,110,0.4)}
+
+/* MAIN */
+.main{max-width:900px;margin:0 auto;padding:48px 24px 80px}
+
+/* STATO: TOKEN NON VALIDO */
+.state{display:none}.state.on{display:block}
+.error-box{text-align:center;padding:80px 20px}
+.error-icon{font-size:48px;margin-bottom:20px}
+.error-box h2{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;margin-bottom:10px;color:var(--text)}
+.error-box p{font-size:14px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 28px}
+.btn-gold{display:inline-block;padding:13px 28px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:opacity .2s}
+.btn-gold:hover{opacity:.87}
+.btn-outline{display:inline-block;padding:12px 26px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--muted);font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;font-family:inherit;transition:all .2s}
+.btn-outline:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+
+/* HEADER AREA */
+.area-header{margin-bottom:40px}
+.welcome{font-size:13px;color:var(--muted);margin-bottom:6px}
+.area-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
+.area-sub{font-size:13px;color:var(--muted)}
+
+/* CARD BASE */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
+.card-gold{border-color:rgba(201,169,110,0.25);background:linear-gradient(135deg,rgba(201,169,110,0.05),rgba(201,169,110,0.02))}
+.card-green{border-color:rgba(110,201,130,0.2);background:rgba(110,201,130,0.03)}
+.card-accent{position:absolute;top:0;left:0;right:0;height:2px}
+.card h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px}
+.card-sub{font-size:12px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+
+/* STATUS BADGE */
+.status-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px}
+.badge-waiting{background:rgba(255,200,80,0.1);color:#FFD050;border:1px solid rgba(255,200,80,0.25)}
+.badge-active{background:rgba(110,201,130,0.1);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
+.badge-expired{background:rgba(200,80,80,0.1);color:#e08080;border:1px solid rgba(200,80,80,0.25)}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* COUNTDOWN */
+.countdown-ring{position:relative;width:120px;height:120px;margin:0 auto 20px}
+.countdown-ring svg{transform:rotate(-90deg)}
+.countdown-ring .track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8}
+.countdown-ring .progress{fill:none;stroke:var(--gold);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
+.countdown-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.countdown-days{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;color:var(--gold);line-height:1}
+.countdown-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+/* PROGRESS BAR */
+.progress-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-bottom:8px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold));transition:width .5s ease}
+.progress-fill.green{background:linear-gradient(90deg,#3a8a50,#7ED99A)}
+
+/* DOWNLOAD LIST */
+.dl-list{display:flex;flex-direction:column;gap:10px}
+.dl-item{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:10px;transition:border-color .2s}
+.dl-item:hover{border-color:rgba(255,255,255,0.14)}
+.dl-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.dl-info{flex:1}
+.dl-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.dl-desc{font-size:11px;color:var(--muted)}
+.dl-btn{padding:7px 14px;border-radius:7px;border:1px solid rgba(201,169,110,0.3);background:transparent;color:var(--gold);font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s}
+.dl-btn:hover{background:rgba(201,169,110,0.08)}
+.dl-btn.locked{border-color:var(--border);color:var(--dim);cursor:not-allowed}
+
+/* GRID 2 COL */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+
+/* INFO ROW */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.info-row:last-child{border-bottom:none}
+.info-label{font-size:12px;color:var(--muted)}
+.info-val{font-size:12px;font-weight:600;color:var(--text)}
+
+/* ACTIVATION BOX */
+.activation-box{text-align:center;padding:32px}
+.act-icon{font-size:44px;margin-bottom:16px}
+.act-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:8px}
+.act-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:380px;margin:0 auto 28px}
+.act-warning{font-size:11px;color:rgba(255,200,80,0.7);background:rgba(255,200,80,0.06);border:1px solid rgba(255,200,80,0.15);border-radius:8px;padding:10px 16px;margin-bottom:24px;line-height:1.6}
+
+/* AGENZIA */
+.agency-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.agency-stat{background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:10px;padding:16px}
+.agency-stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.agency-stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
+
+/* SUPPORT */
+.support-box{background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin-top:32px}
+.support-icon{font-size:24px;flex-shrink:0}
+.support-text h4{font-size:14px;font-weight:600;margin-bottom:4px}
+.support-text p{font-size:12px;color:var(--muted);line-height:1.6}
+.support-link{font-size:12px;color:var(--gold);text-decoration:none;margin-top:4px;display:inline-block}
+
+@media(max-width:600px){
+  nav{padding:12px 16px}
+  .main{padding:32px 16px 60px}
+  .grid2{grid-template-columns:1fr}
+  .agency-stats{grid-template-columns:1fr 1fr}
+  .demo-bar{padding:10px 16px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="eventsfun-sito.html" class="nav-logo">Events<span>Fun</span></a>
+  <div class="nav-right">
+    <span class="nav-tag" id="navTag"></span>
+    <a class="nav-logout" id="navLogout" href="#">Esci</a>
+  </div>
+</nav>
+
+<!-- BARRA DEMO -->
+<div class="demo-bar">
+  <span>Demo stati:</span>
+  <button class="demo-btn" onclick="setState('invalid')">Token non valido</button>
+  <button class="demo-btn on" onclick="setState('base')">Evento Base</button>
+  <button class="demo-btn" onclick="setState('pro-inactive')">Evento Pro — da attivare</button>
+  <button class="demo-btn" onclick="setState('pro-active')">Evento Pro — attivo</button>
+  <button class="demo-btn" onclick="setState('pro-expired')">Evento Pro — scaduto</button>
+  <button class="demo-btn" onclick="setState('agenzia')">Agenzia</button>
+</div>
+
+<div class="main">
+
+  <!-- STATO: TOKEN NON VALIDO -->
+  <div class="state" id="state-invalid">
+    <div class="error-box">
+      <div class="error-icon">🔒</div>
+      <h2>Link non valido o scaduto</h2>
+      <p>Il link che hai usato non è più valido. Se hai acquistato un piano, controlla la tua email per il link aggiornato oppure contattaci.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <a class="btn-gold" href="#">Controlla email</a>
+        <a class="btn-outline" href="mailto:info@eventsfun.com">Contattaci</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATO: EVENTO BASE -->
+  <div class="state on" id="state-base">
+    <div class="area-header">
+      <div class="welcome">Benvenuto, Mario</div>
+      <h1 class="area-title">Area Personale</h1>
+      <p class="area-sub">Piano <strong style="color:var(--text)">Evento Base</strong> · Acquistato il 20 Mag 2026</p>
+    </div>
+
+    <div class="card card-gold">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--gold-dark),var(--gold))"></div>
+      <h3>Il tuo pacchetto è pronto</h3>
+      <p class="card-sub">Scarica i file qui sotto e segui le istruzioni per pubblicare la tua pagina evento. In caso di difficoltà siamo qui.</p>
+      <div class="dl-list">
+        <div class="dl-item">
+          <div class="dl-icon" style="background:rgba(201,169,110,0.1)">📦</div>
+          <div class="dl-info">
+            <div class="dl-name">eventsfun-base.zip</div>
+            <div class="dl-desc">Pagina evento + modulo iscrizioni · HTML pronto all'uso</div>
+          </div>
+          <button class="dl-btn" onclick="fakeDownload(this,'eventsfun-base.zip')">↓ Scarica</button>
+        </div>
+        <div class="dl-item">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.05)">📖</div>
+          <div class="dl-info">
+            <div class="dl-name">Guida all'installazione</div>
+            <div class="dl-desc">Come pubblicare la pagina e configurare il QR · PDF</div>
+          </div>
+          <button class="dl-btn" onclick="fakeDownload(this,'guida-base.pdf')">↓ Scarica</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Dettagli ordine</h3>
+      <div style="margin-top:12px">
+        <div class="info-row"><span class="info-label">Piano</span><span class="info-val">Evento Base</span></div>
+        <div class="info-row"><span class="info-label">Importo pagato</span><span class="info-val">€29,00</span></div>
+        <div class="info-row"><span class="info-label">Data acquisto</span><span class="info-val">20 Maggio 2026</span></div>
+        <div class="info-row"><span class="info-label">Numero ordine</span><span class="info-val">#EF-2026-00142</span></div>
+      </div>
+    </div>
+
+    <div style="background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px">Hai bisogno di più funzionalità?</div>
+        <div style="font-size:12px;color:var(--muted)">Passa a Evento Pro per sponsor, campi personalizzati e iscritti illimitati.</div>
+      </div>
+      <a class="btn-gold" href="eventsfun-sito.html#prezzi">Upgrade a Pro →</a>
+    </div>
+
+    <div class="support-box">
+      <div class="support-icon">💬</div>
+      <div class="support-text">
+        <h4>Hai bisogno di aiuto?</h4>
+        <p>Siamo disponibili per supporto tecnico e configurazione.</p>
+        <a class="support-link" href="mailto:support@eventsfun.com">support@eventsfun.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATO: PRO — DA ATTIVARE -->
+  <div class="state" id="state-pro-inactive">
+    <div class="area-header">
+      <div class="welcome">Benvenuto, Mario</div>
+      <h1 class="area-title">Area Personale</h1>
+      <p class="area-sub">Piano <strong style="color:var(--gold)">Evento Pro</strong> · Acquistato il 20 Mag 2026</p>
+    </div>
+
+    <div class="card card-gold">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--gold-dark),var(--gold))"></div>
+      <div class="status-row">
+        <span class="status-badge badge-waiting"><span class="badge-dot"></span>In attesa di attivazione</span>
+      </div>
+      <div class="activation-box">
+        <div class="act-icon">🚀</div>
+        <div class="act-title">Attiva il tuo Evento Pro</div>
+        <div class="act-desc">Quando sei pronto a pubblicare il tuo evento, clicca il pulsante qui sotto. Da quel momento partono i tuoi <strong style="color:var(--text)">90 giorni</strong> di utilizzo.</div>
+        <div class="act-warning">
+          ⚠️ Attenzione — attiva solo quando sei pronto a pubblicare.<br>Il countdown parte nel momento in cui clicchi e non può essere messo in pausa.
+        </div>
+        <button class="btn-gold" style="font-size:14px;padding:15px 36px" onclick="setState('pro-active')">
+          Attiva ora — inizia i 90 giorni
+        </button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>I tuoi file — disponibili dopo l'attivazione</h3>
+      <p class="card-sub">I file saranno sbloccati non appena attiverai il piano.</p>
+      <div class="dl-list">
+        <div class="dl-item" style="opacity:.45">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.04)">📦</div>
+          <div class="dl-info"><div class="dl-name">eventsfun-pro.zip</div><div class="dl-desc">Pagina evento completa + dashboard iscritti · HTML</div></div>
+          <button class="dl-btn locked" disabled>🔒 Bloccato</button>
+        </div>
+        <div class="dl-item" style="opacity:.45">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.04)">📖</div>
+          <div class="dl-info"><div class="dl-name">Guida Pro completa</div><div class="dl-desc">Setup sponsor, campi personalizzati, QR · PDF</div></div>
+          <button class="dl-btn locked" disabled>🔒 Bloccato</button>
+        </div>
+        <div class="dl-item" style="opacity:.45">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.04)">🎨</div>
+          <div class="dl-info"><div class="dl-name">Template personalizzazione</div><div class="dl-desc">Colori, font, logo — guida alla personalizzazione</div></div>
+          <button class="dl-btn locked" disabled>🔒 Bloccato</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-box">
+      <div class="support-icon">💬</div>
+      <div class="support-text">
+        <h4>Hai bisogno di aiuto?</h4>
+        <p>Prima di attivare, contattaci se hai domande.</p>
+        <a class="support-link" href="mailto:support@eventsfun.com">support@eventsfun.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATO: PRO — ATTIVO -->
+  <div class="state" id="state-pro-active">
+    <div class="area-header">
+      <div class="welcome">Benvenuto, Mario</div>
+      <h1 class="area-title">Area Personale</h1>
+      <p class="area-sub">Piano <strong style="color:var(--gold)">Evento Pro</strong> · Attivato il 21 Mag 2026</p>
+    </div>
+
+    <div class="grid2">
+      <!-- Countdown -->
+      <div class="card card-gold" style="text-align:center">
+        <div class="card-accent" style="background:linear-gradient(90deg,var(--gold-dark),var(--gold))"></div>
+        <div class="status-row" style="justify-content:center">
+          <span class="status-badge badge-active"><span class="badge-dot"></span>Attivo</span>
+        </div>
+        <div class="countdown-ring">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle class="track" cx="60" cy="60" r="50"/>
+            <circle class="progress" cx="60" cy="60" r="50"
+              stroke-dasharray="314"
+              stroke-dashoffset="10"
+              id="progressCircle"/>
+          </svg>
+          <div class="countdown-center">
+            <div class="countdown-days" id="daysLeft">89</div>
+            <div class="countdown-label">giorni rimasti</div>
+          </div>
+        </div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Scade il <strong style="color:var(--text)" id="expiryDate">18 Ago 2026</strong></div>
+        <div style="margin-top:16px">
+          <div class="progress-bar"><div class="progress-fill" style="width:99%"></div></div>
+          <div style="font-size:10px;color:var(--dim);display:flex;justify-content:space-between"><span>Giorno 1</span><span>Giorno 90</span></div>
+        </div>
+      </div>
+      <!-- Info evento -->
+      <div class="card">
+        <h3>Il tuo evento</h3>
+        <div style="margin-top:12px">
+          <div class="info-row"><span class="info-label">Piano</span><span class="info-val">Evento Pro</span></div>
+          <div class="info-row"><span class="info-label">Importo pagato</span><span class="info-val">€79,00</span></div>
+          <div class="info-row"><span class="info-label">Data attivazione</span><span class="info-val">21 Mag 2026</span></div>
+          <div class="info-row"><span class="info-label">Scadenza</span><span class="info-val" style="color:var(--gold)">18 Ago 2026</span></div>
+          <div class="info-row"><span class="info-label">Ordine</span><span class="info-val">#EF-2026-00143</span></div>
+        </div>
+        <button onclick="if(confirm('Sei sicuro di voler chiudere l\'evento? Questa azione non può essere annullata.')) setState('pro-expired')"
+          style="margin-top:16px;width:100%;padding:10px;border-radius:8px;border:1px solid rgba(200,80,80,0.25);background:transparent;color:rgba(200,80,80,0.6);font-size:12px;font-family:inherit;cursor:pointer">
+          Chiudi evento anticipatamente
+        </button>
+      </div>
+    </div>
+
+    <div class="card card-gold">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--gold-dark),var(--gold))"></div>
+      <h3>Scarica i tuoi file</h3>
+      <p class="card-sub">Tutti i file del tuo pacchetto Pro sono disponibili. Puoi riscaricali quando vuoi durante il periodo attivo.</p>
+      <div class="dl-list">
+        <div class="dl-item">
+          <div class="dl-icon" style="background:rgba(201,169,110,0.1)">📦</div>
+          <div class="dl-info"><div class="dl-name">eventsfun-pro.zip</div><div class="dl-desc">Pagina evento completa + dashboard iscritti · HTML</div></div>
+          <button class="dl-btn" onclick="fakeDownload(this,'eventsfun-pro.zip')">↓ Scarica</button>
+        </div>
+        <div class="dl-item">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.05)">📖</div>
+          <div class="dl-info"><div class="dl-name">Guida Pro completa</div><div class="dl-desc">Setup sponsor, campi personalizzati, QR · PDF</div></div>
+          <button class="dl-btn" onclick="fakeDownload(this,'guida-pro.pdf')">↓ Scarica</button>
+        </div>
+        <div class="dl-item">
+          <div class="dl-icon" style="background:rgba(255,255,255,0.05)">🎨</div>
+          <div class="dl-info"><div class="dl-name">Template personalizzazione</div><div class="dl-desc">Colori, font, logo — guida alla personalizzazione</div></div>
+          <button class="dl-btn" onclick="fakeDownload(this,'template-personalizzazione.pdf')">↓ Scarica</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:4px">Organizzi eventi regolarmente?</div>
+        <div style="font-size:12px;color:var(--muted)">Con il piano Agenzia hai eventi illimitati a €69/mese.</div>
+      </div>
+      <a class="btn-gold" href="eventsfun-sito.html#prezzi">Passa ad Agenzia →</a>
+    </div>
+
+    <div class="support-box">
+      <div class="support-icon">💬</div>
+      <div class="support-text">
+        <h4>Supporto tecnico</h4>
+        <p>Hai problemi con la configurazione o la pubblicazione?</p>
+        <a class="support-link" href="mailto:support@eventsfun.com">support@eventsfun.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATO: PRO — SCADUTO -->
+  <div class="state" id="state-pro-expired">
+    <div class="area-header">
+      <div class="welcome">Ciao, Mario</div>
+      <h1 class="area-title">Area Personale</h1>
+      <p class="area-sub">Piano <strong style="color:var(--text)">Evento Pro</strong> · Scaduto</p>
+    </div>
+
+    <div class="card" style="border-color:rgba(200,80,80,0.2)">
+      <div class="card-accent" style="background:linear-gradient(90deg,#803030,#c05050)"></div>
+      <div class="status-row">
+        <span class="status-badge badge-expired">✕ Evento concluso</span>
+      </div>
+      <div style="text-align:center;padding:20px 0">
+        <div style="font-size:40px;margin-bottom:14px">📅</div>
+        <h3 style="font-size:18px;margin-bottom:8px">Il periodo di 90 giorni è terminato</h3>
+        <p style="font-size:13px;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 24px">La tua pagina evento è ora offline. I dati degli iscritti rimangono disponibili per il download ancora per <strong style="color:var(--text)">30 giorni</strong>.</p>
+        <div class="dl-list" style="text-align:left;max-width:480px;margin:0 auto 24px">
+          <div class="dl-item">
+            <div class="dl-icon" style="background:rgba(200,80,80,0.08)">📋</div>
+            <div class="dl-info"><div class="dl-name">Lista iscritti — export finale</div><div class="dl-desc">Disponibile fino al 17 Set 2026 · CSV</div></div>
+            <button class="dl-btn" onclick="fakeDownload(this,'iscritti-export.csv')">↓ Scarica</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+          <button class="btn-gold" onclick="setState('pro-inactive')">Acquista un nuovo Evento Pro</button>
+          <a class="btn-outline" href="eventsfun-sito.html#prezzi">Scopri il piano Agenzia</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="support-box">
+      <div class="support-icon">💬</div>
+      <div class="support-text">
+        <h4>Vuoi prolungare o riattivare?</h4>
+        <p>Contattaci per opzioni di rinnovo o per un preventivo personalizzato.</p>
+        <a class="support-link" href="mailto:support@eventsfun.com">support@eventsfun.com →</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATO: AGENZIA -->
+  <div class="state" id="state-agenzia">
+    <div class="area-header">
+      <div class="welcome">Benvenuto, Agenzia XY</div>
+      <h1 class="area-title">Area Personale</h1>
+      <p class="area-sub">Piano <strong style="color:#7ED99A">Agenzia</strong> · Attivo · Prossimo rinnovo 21 Giu 2026</p>
+    </div>
+
+    <div class="card card-green">
+      <div class="card-accent" style="background:linear-gradient(90deg,#3a8a50,#7ED99A)"></div>
+      <div class="status-row">
+        <span class="status-badge badge-active"><span class="badge-dot"></span>Abbonamento attivo</span>
+        <span style="font-size:12px;color:var(--muted)">Rinnovo automatico il 21 Giu 2026</span>
+      </div>
+      <div class="agency-stats">
+        <div class="agency-stat"><div class="agency-stat-label">Eventi attivi</div><div class="agency-stat-val">3</div></div>
+        <div class="agency-stat"><div class="agency-stat-label">Iscrizioni totali</div><div class="agency-stat-val">247</div></div>
+        <div class="agency-stat"><div class="agency-stat-label">Account dashboard</div><div class="agency-stat-val">2/3</div></div>
+      </div>
+      <a class="btn-gold" href="eventsfun-prototipo.html" style="display:inline-block">Apri Dashboard →</a>
+    </div>
+
+    <div class="card">
+      <h3>Abbonamento</h3>
+      <div style="margin-top:12px">
+        <div class="info-row"><span class="info-label">Piano</span><span class="info-val">Agenzia — Mensile</span></div>
+        <div class="info-row"><span class="info-label">Importo mensile</span><span class="info-val">€69,00</span></div>
+        <div class="info-row"><span class="info-label">Attivato il</span><span class="info-val">21 Mag 2026</span></div>
+        <div class="info-row"><span class="info-label">Prossimo rinnovo</span><span class="info-val" style="color:#7ED99A">21 Giu 2026</span></div>
+        <div class="info-row"><span class="info-label">Metodo di pagamento</span><span class="info-val">Visa •••• 4242</span></div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap">
+        <button class="btn-outline" style="font-size:12px" onclick="alert('Funzione disponibile nella versione produzione')">Cambia piano</button>
+        <button class="btn-outline" style="font-size:12px;border-color:rgba(200,80,80,0.2);color:rgba(200,80,80,0.6)" onclick="alert('Funzione disponibile nella versione produzione')">Disdici abbonamento</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Account dashboard</h3>
+      <p class="card-sub">Puoi aggiungere fino a 3 account con accesso alla dashboard.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(201,169,110,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--gold)">M</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">Mario Rossi</div><div style="font-size:11px;color:var(--muted)">mario@agenziaxv.it · Admin</div></div>
+          <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:rgba(110,201,130,0.1);color:#7ED99A;border:1px solid rgba(110,201,130,0.2)">Tu</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;padding:12px;background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(110,150,201,0.15);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#6E8EC9">G</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:600">Giulia Verdi</div><div style="font-size:11px;color:var(--muted)">giulia@agenziaxv.it · Operatore</div></div>
+          <button style="font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid rgba(200,80,80,0.2);background:transparent;color:rgba(200,80,80,0.5);cursor:pointer;font-family:inherit">Rimuovi</button>
+        </div>
+        <button style="padding:11px;border-radius:8px;border:1px dashed rgba(255,255,255,0.14);background:transparent;color:var(--muted);font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.3)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.14)';this.style.color='var(--muted)'">
+          + Aggiungi account (1 rimasto)
+        </button>
+      </div>
+    </div>
+
+    <div class="support-box">
+      <div class="support-icon">⭐</div>
+      <div class="support-text">
+        <h4>Supporto prioritario</h4>
+        <p>Come cliente Agenzia hai accesso al supporto prioritario con risposta entro 4 ore.</p>
+        <a class="support-link" href="mailto:priority@eventsfun.com">priority@eventsfun.com →</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+var STATES = {
+  'invalid':     {tag:'',         tagClass:'tag-base',     logout:false},
+  'base':        {tag:'Evento Base', tagClass:'tag-base',  logout:true},
+  'pro-inactive':{tag:'Evento Pro',  tagClass:'tag-pro',   logout:true},
+  'pro-active':  {tag:'Evento Pro',  tagClass:'tag-pro',   logout:true},
+  'pro-expired': {tag:'Pro — Scaduto',tagClass:'tag-base', logout:true},
+  'agenzia':     {tag:'Agenzia',     tagClass:'tag-agenzia',logout:true}
+};
+
+function setState(name){
+  // hide all states
+  document.querySelectorAll('.state').forEach(function(el){ el.classList.remove('on'); });
+  var target = document.getElementById('state-'+name);
+  if(target) target.classList.add('on');
+
+  // update demo buttons
+  document.querySelectorAll('.demo-btn').forEach(function(btn){ btn.classList.remove('on'); });
+  var active = document.querySelector('.demo-btn[onclick*="\''+name+'\'"]');
+  if(active) active.classList.add('on');
+
+  // update nav
+  var cfg = STATES[name];
+  var navTag = document.getElementById('navTag');
+  navTag.textContent = cfg.tag;
+  navTag.className = 'nav-tag ' + cfg.tagClass;
+  navTag.style.display = cfg.tag ? 'inline' : 'none';
+  document.getElementById('navLogout').style.display = cfg.logout ? 'inline' : 'none';
+
+  // update countdown ring for pro-active
+  if(name === 'pro-active'){
+    var days = 89;
+    var pct = days / 90;
+    var circumference = 2 * Math.PI * 50;
+    var offset = circumference * (1 - pct);
+    var circle = document.getElementById('progressCircle');
+    if(circle){
+      circle.setAttribute('stroke-dasharray', circumference.toFixed(1));
+      circle.setAttribute('stroke-dashoffset', offset.toFixed(1));
+    }
+  }
+
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function fakeDownload(btn, filename){
+  var orig = btn.textContent;
+  btn.textContent = '⏳ Download...';
+  btn.disabled = true;
+  setTimeout(function(){
+    btn.textContent = '✓ Scaricato';
+    btn.style.color = '#7ED99A';
+    btn.style.borderColor = 'rgba(110,201,130,0.3)';
+    setTimeout(function(){
+      btn.textContent = orig;
+      btn.style.color = '';
+      btn.style.borderColor = '';
+      btn.disabled = false;
+    }, 2500);
+  }, 1200);
+}
+
+// init
+setState('base');
+</script>
+
+<!-- VERSION BADGE -->
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.0</div>
+</body>
+</html>
