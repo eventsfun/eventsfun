@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<!-- EventsFun | Prototipo demo | v1.1 -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EventsFun — Prototipo</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#111;color:#F0EDE8;min-height:100vh}
+a,button,input,select,textarea{font-family:inherit}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:13px 22px;background:#111;border-bottom:1px solid rgba(255,255,255,0.12);position:sticky;top:0;z-index:99;gap:10px;flex-wrap:wrap}
+.nav-brand{font-size:17px;font-weight:700;letter-spacing:2px;color:#C9A96E;text-transform:uppercase}
+.nav-r{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.ev-sel{background:#222;border:1px solid rgba(255,255,255,0.2);color:#F0EDE8;border-radius:6px;padding:6px 10px;font-size:12px;cursor:pointer;max-width:180px}
+.ev-sel option{background:#1a1a1a}
+.tabs{display:flex;gap:2px;background:rgba(255,255,255,0.07);padding:3px;border-radius:7px}
+.tab{padding:6px 13px;border:none;border-radius:5px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:rgba(240,237,232,0.55)}
+.tab.on{background:rgba(255,255,255,0.14);color:#F0EDE8}
+
+.view{display:none}.view.on{display:block}
+
+/* LANDING */
+.landing{max-width:600px;margin:0 auto;padding:32px 20px 80px}
+.hero{border-radius:14px;overflow:hidden;margin-bottom:26px;padding:38px 28px;background:linear-gradient(135deg,#1e1810,#2d1e0e);border:1px solid rgba(201,169,110,0.25)}
+.ev-badge{display:inline-block;padding:3px 12px;border-radius:20px;background:rgba(201,169,110,0.18);border:1px solid rgba(201,169,110,0.35);font-size:10px;font-weight:700;letter-spacing:2px;color:#D4B87A;text-transform:uppercase;margin-bottom:14px}
+.ev-title{font-size:32px;font-weight:300;line-height:1.2;color:#F5F0E8;margin-bottom:14px}
+.ev-meta{display:flex;flex-direction:column;gap:7px}
+.ev-meta-row{font-size:13px;color:rgba(240,237,232,0.82)}
+.ev-desc{font-size:14px;line-height:1.75;color:rgba(240,237,232,0.78);margin-bottom:26px}
+.sp-block{margin-bottom:26px}
+.sp-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.45);margin-bottom:11px;font-weight:700}
+.sp-list{display:flex;flex-wrap:wrap;gap:9px}
+.sp-item{display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);font-size:12px;color:rgba(240,237,232,0.82);text-decoration:none}
+.sp-item img{width:20px;height:20px;object-fit:contain;border-radius:3px;background:#fff;padding:2px}
+.sp-dot{width:8px;height:8px;border-radius:50%;background:#888;flex-shrink:0}
+.form-title{font-size:22px;font-weight:400;color:#F5F0E8;margin-bottom:5px}
+.form-cnt{font-size:12px;color:rgba(240,237,232,0.55);margin-bottom:20px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.field label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.6)}
+.field input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:7px;padding:11px 13px;font-size:13px;color:#F0EDE8;outline:none;width:100%}
+.field input:focus{border-color:rgba(201,169,110,0.55)}
+.field input::placeholder{color:rgba(240,237,232,0.3)}
+.cf-divider{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.4);margin:20px 0 14px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.09);font-weight:700}
+.submit-btn{width:100%;margin-top:22px;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#a07830);color:#0D0D0D;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.submit-btn:hover{opacity:.88}
+.confirm-box{max-width:440px;margin:70px auto;padding:0 20px;text-align:center;display:none}
+.confirm-icon{width:64px;height:64px;margin:0 auto 20px;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.35);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px}
+.confirm-box h2{font-size:26px;font-weight:400;color:#F5F0E8;margin-bottom:10px}
+.confirm-box p{font-size:13px;color:rgba(240,237,232,0.65);line-height:1.7}
+.back-btn{margin-top:24px;padding:9px 22px;border-radius:7px;border:1px solid rgba(255,255,255,0.18);background:transparent;color:rgba(240,237,232,0.75);font-size:12px;cursor:pointer}
+
+/* DASHBOARD */
+.dash{padding:26px 20px;max-width:1060px;margin:0 auto}
+.dash-title{font-size:28px;font-weight:400;color:#F5F0E8;margin-bottom:3px}
+.dash-sub{font-size:13px;color:rgba(240,237,232,0.55);margin-bottom:26px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:30px}
+.stat{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.11);border-radius:11px;padding:16px 20px}
+.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-bottom:6px;font-weight:700}
+.stat-val{font-size:32px;font-weight:300;color:#C9A96E}
+.sec-title{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.45);margin-bottom:13px;font-weight:700}
+.ev-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:32px}
+.new-card{border:1px dashed rgba(255,255,255,0.16);border-radius:11px;padding:18px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:120px;color:rgba(240,237,232,0.45);background:transparent}
+.new-card:hover{border-color:rgba(201,169,110,0.45);color:#C9A96E;background:rgba(201,169,110,0.04)}
+.new-card .plus{font-size:26px;line-height:1}
+.new-card span{font-size:12px;font-weight:700;letter-spacing:1px}
+.ev-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:11px;padding:17px;cursor:pointer;position:relative;overflow:hidden}
+.ev-card:hover{border-color:rgba(255,255,255,0.2);background:rgba(255,255,255,0.07)}
+.ev-card.active-sel{border-color:rgba(201,169,110,0.45);background:rgba(201,169,110,0.06)}
+.ev-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.ev-card-name{font-size:15px;font-weight:700;margin-bottom:4px;margin-top:10px;color:#F5F0E8}
+.ev-card-date{font-size:11px;color:rgba(240,237,232,0.6);margin-bottom:10px}
+.ev-card-foot{display:flex;align-items:center;justify-content:space-between}
+.pill{font-size:9px;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:20px;font-weight:700}
+.pill.open{background:rgba(110,201,130,0.14);color:#7ED99A;border:1px solid rgba(110,201,130,0.28)}
+.pill.closed{background:rgba(255,255,255,0.07);color:rgba(240,237,232,0.5);border:1px solid rgba(255,255,255,0.13)}
+.ev-count{font-size:12px;color:rgba(240,237,232,0.6)}
+.ev-count strong{color:#F0EDE8}
+.qr-row{margin-top:9px;padding-top:9px;border-top:1px solid rgba(255,255,255,0.07)}
+.qr-btn-small{background:none;border:none;color:#C9A96E;font-size:11px;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:2px}
+
+/* TABLE PANEL */
+.panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:11px;overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:17px 20px;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;gap:10px}
+.panel-head h3{font-size:17px;font-weight:700;color:#F5F0E8}
+.panel-head p{font-size:12px;color:rgba(240,237,232,0.55);margin-top:2px}
+.panel-btns{display:flex;gap:7px}
+.btn-green{padding:7px 13px;border-radius:6px;border:1px solid rgba(110,201,130,0.38);background:transparent;color:#7ED99A;font-size:12px;font-weight:700;cursor:pointer}
+.btn-gold{padding:7px 13px;border-radius:6px;border:1px solid rgba(201,169,110,0.38);background:transparent;color:#C9A96E;font-size:12px;font-weight:700;cursor:pointer}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:480px}
+thead tr{border-bottom:1px solid rgba(255,255,255,0.08)}
+thead th{padding:10px 16px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);font-weight:700;white-space:nowrap}
+thead th.xh{color:rgba(201,169,110,0.7)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.05)}
+tbody tr:hover{background:rgba(255,255,255,0.03)}
+tbody td{padding:12px 16px;font-size:13px;color:rgba(240,237,232,0.78);white-space:nowrap}
+tbody td.nm{color:#F0EDE8;font-weight:700}
+tbody td.dt{color:rgba(240,237,232,0.45);font-size:11px}
+tbody td.xv{color:#C9A96E;font-size:12px}
+.no-regs{padding:32px;text-align:center;color:rgba(240,237,232,0.3);font-size:13px}
+.act{display:flex;gap:5px}
+.ic{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.11);border-radius:5px;width:27px;height:27px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px}
+.ic:hover{background:rgba(255,255,255,0.12)}
+
+/* OVERLAY */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;overflow-y:auto;padding:28px 14px}
+.ov.on{display:flex;align-items:flex-start;justify-content:center}
+.box{background:#181818;border:1px solid rgba(255,255,255,0.14);border-radius:14px;width:100%;max-width:640px;padding:28px;position:relative}
+.box.sm{max-width:440px}
+.x-btn{position:absolute;top:13px;right:13px;background:rgba(255,255,255,0.07);border:none;border-radius:50%;width:29px;height:29px;cursor:pointer;color:rgba(240,237,232,0.65);font-size:14px;display:flex;align-items:center;justify-content:center}
+.x-btn:hover{background:rgba(255,255,255,0.14);color:#F0EDE8}
+.box h2{font-size:22px;font-weight:400;color:#F5F0E8;margin-bottom:4px}
+.box-sub{font-size:12px;color:rgba(240,237,232,0.48);margin-bottom:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:11px}
+.mf{display:flex;flex-direction:column;gap:5px;margin-bottom:11px}
+.mf.h{margin-bottom:0}
+.mf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55)}
+.mf input,.mf textarea,.mf select{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.14);border-radius:7px;padding:10px 12px;font-size:13px;color:#F0EDE8;outline:none;width:100%}
+.mf input:focus,.mf textarea:focus,.mf select:focus{border-color:rgba(201,169,110,0.5)}
+.mf input::placeholder,.mf textarea::placeholder{color:rgba(240,237,232,0.25)}
+.mf textarea{resize:vertical;min-height:68px}
+.mf select option{background:#1a1a1a}
+.msec{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.38);margin:18px 0 11px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:space-between;font-weight:700}
+.plus-btn{padding:4px 11px;border-radius:5px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:rgba(240,237,232,0.55);font-size:11px;cursor:pointer}
+.plus-btn:hover{border-color:rgba(201,169,110,0.45);color:#C9A96E}
+.row2{display:grid;grid-template-columns:1fr 1fr auto;gap:7px;align-items:center;margin-bottom:7px}
+.row-sp{display:grid;grid-template-columns:36px 1fr 1fr auto;gap:7px;align-items:center;margin-bottom:7px}
+.row2 input,.row-sp input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.11);border-radius:6px;padding:8px 10px;font-size:12px;color:#F0EDE8;outline:none;width:100%}
+.row2 input::placeholder,.row-sp input::placeholder{color:rgba(240,237,232,0.22)}
+.rm-btn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;width:28px;height:28px;cursor:pointer;color:rgba(240,237,232,0.45);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.rm-btn:hover{background:rgba(180,60,60,0.18);color:#e07070}
+.logo-ph{width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,0.07);border:1px dashed rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;color:rgba(240,237,232,0.28)}
+.logo-ph:hover{border-color:rgba(201,169,110,0.4);color:#C9A96E}
+.logo-img{width:36px;height:36px;border-radius:6px;object-fit:contain;background:#fff;padding:3px;display:none;flex-shrink:0}
+.logo-file{display:none}
+.big-btn{width:100%;margin-top:18px;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#a07830);color:#0D0D0D;font-size:13px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.big-btn:hover{opacity:.87}
+.del-row{display:flex;gap:9px;margin-top:18px}
+.del-no{flex:1;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:rgba(240,237,232,0.7);font-size:13px;cursor:pointer}
+.del-yes{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#b04040,#803030);color:#fff;font-size:13px;font-weight:700;cursor:pointer}
+
+/* QR */
+.qr-center{text-align:center;padding-top:6px}
+.qr-center h2{font-size:22px;font-weight:400;color:#F5F0E8;margin-bottom:5px}
+.qr-center p{font-size:13px;color:rgba(240,237,232,0.58);margin-bottom:18px;line-height:1.6}
+.qr-canvas-wrap{background:#fff;border-radius:9px;display:inline-block;padding:12px;margin-bottom:8px}
+.qr-url-txt{font-size:11px;color:rgba(240,237,232,0.38);margin-bottom:16px;word-break:break-all}
+.qr-info{font-size:12px;color:rgba(240,237,232,0.45);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:7px;padding:10px 13px;text-align:left;line-height:1.6;margin-bottom:18px}
+.qr-row-btns{display:flex;gap:9px}
+.qr-dl{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#C9A96E,#a07830);color:#0D0D0D;font-size:13px;font-weight:700;cursor:pointer}
+.qr-cl{flex:1;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:rgba(240,237,232,0.7);font-size:13px;cursor:pointer}
+
+.toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 18px;font-size:13px;display:none;z-index:500;white-space:nowrap;font-weight:700}
+.tg{background:#162616;border:1px solid rgba(110,201,130,0.32);color:#7ED99A}
+.tr{background:#261616;border:1px solid rgba(200,80,80,0.32);color:#e08080}
+
+@media(max-width:520px){
+  .f2,.g2{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr}
+  .ev-grid{grid-template-columns:1fr}
+  .row2{grid-template-columns:1fr auto}
+  .row-sp{grid-template-columns:36px 1fr auto}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">EventsFun</div>
+  <div class="nav-r">
+    <select class="ev-sel" id="evSel" onchange="changeEv(this.value)"></select>
+    <div class="tabs">
+      <button class="tab on" id="tab-landing" onclick="showView('landing',this)">Vista Cliente</button>
+      <button class="tab" id="tab-dash" onclick="showView('dash',this)">Dashboard</button>
+    </div>
+  </div>
+</nav>
+
+<div id="view-landing" class="view on">
+  <div class="landing" id="landingBody"></div>
+  <div class="confirm-box" id="confirmBox">
+    <div class="confirm-icon">✓</div>
+    <h2>Iscrizione confermata!</h2>
+    <p>Grazie <strong id="cn"></strong>, sei iscritto a <strong id="ce"></strong>.<br>Conferma inviata a <span id="cm" style="color:rgba(240,237,232,0.7)"></span>.</p>
+    <button class="back-btn" onclick="backForm()">← Torna all'evento</button>
+  </div>
+</div>
+
+<div id="view-dash" class="view">
+  <div class="dash" id="dashBody"></div>
+</div>
+
+<!-- OVERLAY NUOVO EVENTO -->
+<div class="ov" id="ovEv" onclick="ovClick(event,'ovEv')">
+<div class="box" id="ovEvBox">
+  <button class="x-btn" onclick="closeOv('ovEv')">✕</button>
+  <h2>Nuovo Evento</h2>
+  <p class="box-sub">Compila i dettagli — al termine viene generato il QR code da stampare.</p>
+  <div class="g2">
+    <div class="mf h"><label>Nome evento *</label><input id="m_nome" placeholder="Es. Gala Estivo 2026"></div>
+    <div class="mf h"><label>Capienza *</label><input id="m_cap" type="number" placeholder="100" min="1"></div>
+  </div>
+  <div class="g2" style="margin-top:11px">
+    <div class="mf h"><label>Data *</label><input id="m_data" placeholder="Es. 10 Set 2026"></div>
+    <div class="mf h"><label>Ora *</label><input id="m_ora" placeholder="Es. 19:30"></div>
+  </div>
+  <div class="mf" style="margin-top:11px"><label>Luogo *</label><input id="m_luogo" placeholder="Es. Villa Reale, Milano"></div>
+  <div class="mf"><label>Descrizione</label><textarea id="m_desc" placeholder="Descrivi l'evento..."></textarea></div>
+  <div class="mf"><label>Stato</label>
+    <select id="m_stato">
+      <option value="1">Attivo — iscrizioni aperte</option>
+      <option value="0">Chiuso — iscrizioni chiuse</option>
+    </select>
+  </div>
+  <div class="msec">Campi aggiuntivi modulo <button class="plus-btn" onclick="addCF()">+ Aggiungi</button></div>
+  <div id="cfList"></div>
+  <div class="msec">Sponsor <button class="plus-btn" onclick="addSP()">+ Aggiungi</button></div>
+  <div id="spList"></div>
+  <button class="big-btn" onclick="doCreateEvent()">Crea evento e genera QR &rarr;</button>
+</div>
+</div>
+
+<!-- OVERLAY QR -->
+<div class="ov" id="ovQR" onclick="ovClick(event,'ovQR')">
+<div class="box sm" id="ovQRBox">
+  <button class="x-btn" onclick="closeOv('ovQR')">✕</button>
+  <div class="qr-center">
+    <h2 id="qrTitle">Evento creato!</h2>
+    <p id="qrSub">Il QR è pronto — inseriscilo nella locandina.</p>
+    <div class="qr-canvas-wrap"><canvas id="qrCanvas" width="200" height="200"></canvas></div>
+    <div class="qr-url-txt" id="qrUrlTxt"></div>
+    <div class="qr-info"><strong style="color:rgba(240,237,232,0.75)">Nota prototipo:</strong> nel sistema reale punterà a <span style="color:#C9A96E">eventsfun.com/evento?id=...</span> — la pagina pubblica con il modulo.</div>
+    <div class="qr-row-btns">
+      <button class="qr-dl" onclick="doDownloadQR()">↓ Scarica PNG</button>
+      <button class="qr-cl" onclick="closeOv('ovQR')">Chiudi</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- OVERLAY ISCRITTO -->
+<div class="ov" id="ovReg" onclick="ovClick(event,'ovReg')">
+<div class="box sm" id="ovRegBox">
+  <button class="x-btn" onclick="closeOv('ovReg')">✕</button>
+  <h2 id="regTitle">Aggiungi Iscritto</h2>
+  <p class="box-sub" id="regSub">Inserisci i dati manualmente.</p>
+  <input type="hidden" id="regId">
+  <div class="g2">
+    <div class="mf h"><label>Nome *</label><input id="rNome" placeholder="Mario"></div>
+    <div class="mf h"><label>Cognome *</label><input id="rCognome" placeholder="Rossi"></div>
+  </div>
+  <div class="g2" style="margin-top:11px">
+    <div class="mf h"><label>Email *</label><input id="rEmail" placeholder="mario@email.it"></div>
+    <div class="mf h"><label>Telefono</label><input id="rTel" placeholder="333 0000000"></div>
+  </div>
+  <div id="regExtra"></div>
+  <button class="big-btn" onclick="doSaveReg()">Salva iscritto</button>
+</div>
+</div>
+
+<!-- OVERLAY ELIMINA -->
+<div class="ov" id="ovDel" onclick="ovClick(event,'ovDel')">
+<div class="box sm" id="ovDelBox">
+  <button class="x-btn" onclick="closeOv('ovDel')">✕</button>
+  <h2>Elimina iscritto</h2>
+  <p class="box-sub">Questa azione non può essere annullata.</p>
+  <p style="font-size:14px;color:rgba(240,237,232,0.72);line-height:1.6">Eliminare <strong id="delName" style="color:#F0EDE8"></strong>?</p>
+  <div class="del-row">
+    <button class="del-no" onclick="closeOv('ovDel')">Annulla</button>
+    <button class="del-yes" onclick="doDeleteReg()">Elimina</button>
+  </div>
+</div>
+</div>
+
+<!-- OVERLAY MODIFICA EVENTO -->
+<div class="ov" id="ovEditEv" onclick="ovClick(event,'ovEditEv')">
+<div class="box" id="ovEditEvBox">
+  <button class="x-btn" onclick="closeOv('ovEditEv')">✕</button>
+  <h2>Modifica Evento</h2>
+  <p class="box-sub">Aggiorna i dettagli dell'evento.</p>
+  <input type="hidden" id="ee_id">
+  <div class="g2">
+    <div class="mf h"><label>Nome evento *</label><input id="ee_nome" placeholder="Es. Gala Estivo 2026"></div>
+    <div class="mf h"><label>Capienza *</label><input id="ee_cap" type="number" placeholder="100" min="1"></div>
+  </div>
+  <div class="g2" style="margin-top:11px">
+    <div class="mf h"><label>Data *</label><input id="ee_data" placeholder="Es. 10 Set 2026"></div>
+    <div class="mf h"><label>Ora *</label><input id="ee_ora" placeholder="Es. 19:30"></div>
+  </div>
+  <div class="mf" style="margin-top:11px"><label>Luogo *</label><input id="ee_luogo" placeholder="Es. Villa Reale, Milano"></div>
+  <div class="mf"><label>Descrizione</label><textarea id="ee_desc" placeholder="Descrivi l'evento..."></textarea></div>
+  <div class="mf"><label>Stato</label>
+    <select id="ee_stato">
+      <option value="1">Attivo — iscrizioni aperte</option>
+      <option value="0">Chiuso — iscrizioni chiuse</option>
+    </select>
+  </div>
+  <div class="msec">Sponsor <button class="plus-btn" onclick="addEESP()">+ Aggiungi</button></div>
+  <div id="eeSpList"></div>
+  <button class="big-btn" onclick="doSaveEv()">Salva modifiche</button>
+</div>
+</div>
+
+<!-- OVERLAY ELIMINA EVENTO -->
+<div class="ov" id="ovDelEv" onclick="ovClick(event,'ovDelEv')">
+<div class="box sm" id="ovDelEvBox">
+  <button class="x-btn" onclick="closeOv('ovDelEv')">✕</button>
+  <h2>Elimina evento</h2>
+  <p class="box-sub">Questa azione non può essere annullata.</p>
+  <p style="font-size:14px;color:rgba(240,237,232,0.72);line-height:1.6">Eliminare l'evento <strong id="delEvName" style="color:#F0EDE8"></strong>?<br><span style="font-size:12px;color:rgba(240,237,232,0.45)">Verranno eliminati anche tutti gli iscritti associati.</span></p>
+  <div class="del-row">
+    <button class="del-no" onclick="closeOv('ovDelEv')">Annulla</button>
+    <button class="del-yes" onclick="doDeleteEv()">Elimina</button>
+  </div>
+</div>
+</div>
+
+<div class="toast tg" id="toastG"></div>
+<div class="toast tr" id="toastR"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────
+var PAL = ["#C9A96E","#6E8EC9","#C96E9A","#6EC9A9","#A96EC9"];
+var cfIdx = 0, spIdx = 0, delId = null;
+
+var EVENTS = [
+  { id:"evt-001", nome:"Gala di Primavera 2026", data:"14 Giugno 2026", ora:"19:30",
+    luogo:"Villa Reale, Milano", capienza:120, attivo:true, color:"#C9A96E",
+    desc:"Una serata esclusiva tra arte, musica dal vivo e haute cuisine. Dress code: elegante.",
+    cf:[{id:"azienda",label:"Azienda / Ente",ph:"Es. Rossi S.r.l."},{id:"ruolo",label:"Ruolo",ph:"Es. Direttore"}],
+    sp:[{nome:"Banca Generosa",url:"#",logo:null},{nome:"LuxGroup",url:"#",logo:null}] },
+  { id:"evt-002", nome:"Tech Summit Milano", data:"28 Giugno 2026", ora:"09:00",
+    luogo:"Talent Garden, Milano", capienza:300, attivo:true, color:"#6E8EC9",
+    desc:"Una giornata di talks, workshop e networking per i protagonisti dell'innovazione.",
+    cf:[{id:"azienda",label:"Azienda",ph:"Es. TechCo"},{id:"settore",label:"Settore",ph:"Es. AI, SaaS"}],
+    sp:[{nome:"InnovateTech",url:"#",logo:null}] },
+  { id:"evt-003", nome:"Wedding Expo 2026", data:"5 Luglio 2026", ora:"10:00",
+    luogo:"Fiera Milano City", capienza:500, attivo:false, color:"#C96E9A",
+    desc:"La fiera dedicata ai futuri sposi: espositori, sfilate, degustazioni e ispirazioni.",
+    cf:[{id:"data_m",label:"Data matrimonio",ph:"Es. Settembre 2027"}],
+    sp:[{nome:"Atelier Bianco",url:"#",logo:null}] }
+];
+
+var REGS = [
+  {id:1,eid:"evt-001",nome:"Giulia",cognome:"Ferretti",email:"g.ferretti@email.it",tel:"333 1234567",data:"2 Mag",extra:{azienda:"Ferretti Group",ruolo:"CEO"}},
+  {id:2,eid:"evt-001",nome:"Marco",cognome:"Bianchi",email:"m.bianchi@email.it",tel:"347 9876543",data:"3 Mag",extra:{azienda:"Bianchi & Assoc.",ruolo:"Partner"}},
+  {id:3,eid:"evt-001",nome:"Sara",cognome:"Conti",email:"sara.conti@gmail.com",tel:"320 5551234",data:"5 Mag",extra:{azienda:"",ruolo:""}},
+  {id:4,eid:"evt-002",nome:"Luca",cognome:"Marino",email:"l.marino@startup.it",tel:"348 7654321",data:"4 Mag",extra:{azienda:"Marino AI",settore:"AI"}},
+  {id:5,eid:"evt-002",nome:"Elena",cognome:"Ricci",email:"e.ricci@tech.io",tel:"329 8887776",data:"6 Mag",extra:{azienda:"CloudBase",settore:"SaaS"}}
+];
+
+var curEv = "evt-001";
+var dashEv = "evt-001";
+
+function nrc(id){ var c=0; for(var i=0;i<REGS.length;i++) if(REGS[i].eid===id) c++; return c; }
+function gev(id){ for(var i=0;i<EVENTS.length;i++) if(EVENTS[i].id===id) return EVENTS[i]; return null; }
+
+// ── SELECT ────────────────────────────────────────────────
+function buildSel(){
+  var s = document.getElementById("evSel");
+  s.innerHTML = "";
+  for(var i=0;i<EVENTS.length;i++){
+    var o = document.createElement("option");
+    o.value = EVENTS[i].id;
+    o.textContent = EVENTS[i].nome;
+    if(EVENTS[i].id === curEv) o.selected = true;
+    s.appendChild(o);
+  }
+}
+
+// ── VIEW SWITCH ───────────────────────────────────────────
+function showView(name, btn){
+  document.getElementById("view-landing").classList.remove("on");
+  document.getElementById("view-dash").classList.remove("on");
+  document.getElementById("tab-landing").classList.remove("on");
+  document.getElementById("tab-dash").classList.remove("on");
+  document.getElementById("view-"+name).classList.add("on");
+  btn.classList.add("on");
+  document.getElementById("evSel").style.display = name==="landing" ? "inline-block" : "none";
+  if(name==="dash") buildDash();
+  if(name==="landing"){
+    buildSel();
+    document.getElementById("confirmBox").style.display = "none";
+    document.getElementById("landingBody").style.display = "block";
+    buildLanding();
+  }
+}
+
+function changeEv(id){
+  curEv = id;
+  document.getElementById("confirmBox").style.display = "none";
+  document.getElementById("landingBody").style.display = "block";
+  buildLanding();
+}
+
+// ── LANDING ───────────────────────────────────────────────
+function buildLanding(){
+  var ev = gev(curEv);
+  var cnt = nrc(ev.id);
+
+  var spHtml = "";
+  if(ev.sp && ev.sp.length > 0){
+    var items = "";
+    for(var i=0;i<ev.sp.length;i++){
+      var s = ev.sp[i];
+      var logoHtml = s.logo ? '<img src="'+s.logo+'" alt="'+s.nome+'">' : '<span class="sp-dot"></span>';
+      items += '<a class="sp-item" href="'+s.url+'" target="_blank" rel="noopener">'+logoHtml+s.nome+'</a>';
+    }
+    spHtml = '<div class="sp-block"><div class="sp-label">Con il supporto di</div><div class="sp-list">'+items+'</div></div>';
+  }
+
+  var cfHtml = "";
+  if(ev.cf && ev.cf.length > 0){
+    cfHtml = '<div class="cf-divider">Informazioni aggiuntive</div><div class="f2">';
+    for(var i=0;i<ev.cf.length;i++){
+      cfHtml += '<div class="field"><label>'+ev.cf[i].label+'</label><input id="cf_'+ev.cf[i].id+'" placeholder="'+ev.cf[i].ph+'"></div>';
+    }
+    cfHtml += '</div>';
+  }
+
+  document.getElementById("landingBody").innerHTML =
+    '<div class="hero">'
+    +'<div class="ev-badge">Evento</div>'
+    +'<div class="ev-title">'+ev.nome+'</div>'
+    +'<div class="ev-meta">'
+    +'<div class="ev-meta-row">📅 '+ev.data+' · '+ev.ora+'</div>'
+    +'<div class="ev-meta-row">📍 '+ev.luogo+'</div>'
+    +'</div></div>'
+    +'<p class="ev-desc">'+ev.desc+'</p>'
+    +spHtml
+    +'<div class="form-title">Iscriviti all\'evento</div>'
+    +'<div class="f2">'
+    +'<div class="field"><label>Nome *</label><input id="f_nome" placeholder="Mario"></div>'
+    +'<div class="field"><label>Cognome *</label><input id="f_cognome" placeholder="Rossi"></div>'
+    +'</div>'
+    +'<div class="f2">'
+    +'<div class="field"><label>Email *</label><input id="f_email" placeholder="mario@email.it"></div>'
+    +'<div class="field"><label>Telefono</label><input id="f_tel" placeholder="333 0000000"></div>'
+    +'</div>'
+    +cfHtml
+    +'        <div class="gdpr-box" style="border-color:rgba(201,169,110,0.2)">
+          <input type="checkbox" id="nl_check">
+          <label for="nl_check">Acconsento a ricevere comunicazioni dall'organizzatore di questo evento. Potrai disiscriverti in qualsiasi momento.</label>
+        </div>
+<button class="submit-btn" onclick="doSubmit()">Conferma iscrizione</button>';
+}
+
+function doSubmit(){
+  var nome = document.getElementById("f_nome").value.trim();
+  var cognome = document.getElementById("f_cognome").value.trim();
+  var email = document.getElementById("f_email").value.trim();
+  var tel = document.getElementById("f_tel").value.trim();
+  if(!nome || !cognome || !email){ alert("Compila Nome, Cognome ed Email."); return; }
+  var ev = gev(curEv);
+  var extra = {};
+  for(var i=0;i<ev.cf.length;i++){
+    var el = document.getElementById("cf_"+ev.cf[i].id);
+    if(el) extra[ev.cf[i].id] = el.value.trim();
+  }
+  REGS.push({id:Date.now(), eid:curEv, nome:nome, cognome:cognome, email:email, tel:tel, data:"Oggi", extra:extra});
+  document.getElementById("cn").textContent = nome;
+  document.getElementById("ce").textContent = ev.nome;
+  document.getElementById("cm").textContent = email;
+  document.getElementById("landingBody").style.display = "none";
+  document.getElementById("confirmBox").style.display = "block";
+}
+
+function backForm(){
+  document.getElementById("confirmBox").style.display = "none";
+  document.getElementById("landingBody").style.display = "block";
+  buildLanding();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────
+function buildDash(){
+  var sev = gev(dashEv) || EVENTS[0];
+  var sregs = [];
+  for(var i=0;i<REGS.length;i++) if(REGS[i].eid===sev.id) sregs.push(REGS[i]);
+  var cf = sev.cf || [];
+
+  // event cards
+  var ecards = '<div class="new-card" onclick="openNewEv()"><div class="plus">+</div><span>Nuovo Evento</span></div>';
+  for(var i=0;i<EVENTS.length;i++){
+    var ev = EVENTS[i];
+    var c = nrc(ev.id);
+    var sel = ev.id===sev.id ? " active-sel" : "";
+    ecards += '<div class="ev-card'+sel+'" onclick="selDashEv(\''+ev.id+'\')">'
+      +'<div class="ev-accent" style="background:'+ev.color+'"></div>'
+      +'<div class="ev-card-name">'+ev.nome+'</div>'
+      +'<div class="ev-card-date">'+ev.data+' · '+ev.luogo+'</div>'
+      +'<div class="ev-card-foot">'
+      +'<span class="pill '+(ev.attivo?"open":"closed")+'">'+(ev.attivo?"Attivo":"Chiuso")+'</span>'
+      +'<span class="ev-count"><strong>'+c+'</strong>/'+ev.capienza+'</span>'
+      +'</div>'
+      +'<div class="qr-row" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px">'
+      +'<button class="qr-btn-small" onclick="event.stopPropagation();viewQR(\''+ev.id+'\',\''+ev.nome.replace(/'/g,"\\'")+'\')">▣ QR</button>'
+      +'<div style="display:flex;gap:5px">'
+      +'<button class="ic" title="Modifica evento" onclick="event.stopPropagation();openEditEv(\''+ev.id+'\')">✏️</button>'
+      +'<button class="ic" title="Elimina evento" onclick="event.stopPropagation();openDelEv(\''+ev.id+'\',\''+ev.nome.replace(/'/g,"\\'")+'\')">🗑️</button>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
+  }
+
+  // table headers
+  var xth = "";
+  for(var i=0;i<cf.length;i++) xth += '<th class="xh">'+cf[i].label+'</th>';
+
+  // table rows
+  var rows = "";
+  if(sregs.length === 0){
+    rows = '<tr><td colspan="'+(5+cf.length)+'" class="no-regs">Nessun iscritto per questo evento</td></tr>';
+  } else {
+    for(var i=0;i<sregs.length;i++){
+      var r = sregs[i];
+      var xc = "";
+      for(var j=0;j<cf.length;j++) xc += '<td class="xv">'+(r.extra[cf[j].id]||"--")+'</td>';
+      rows += '<tr>'
+        +'<td class="nm">'+r.nome+' '+r.cognome+'</td>'
+        +'<td>'+r.email+'</td>'
+        +'<td>'+(r.tel||"--")+'</td>'
+        +xc
+        +'<td class="dt">'+r.data+'</td>'
+        +'<td><div class="act">'
+        +'<button class="ic" title="Modifica" onclick="openEditReg('+r.id+')">✏️</button>'
+        +'<button class="ic" title="Elimina" onclick="openDel('+r.id+',\''+r.nome+' '+r.cognome+'\')">🗑️</button>'
+        +'</div></td>'
+        +'</tr>';
+    }
+  }
+
+  document.getElementById("dashBody").innerHTML =
+    '<div class="dash-title">Dashboard</div>'
+    +'<p class="dash-sub">Gestione iscrizioni eventi</p>'
+    +'<div class="stats">'
+    +'<div class="stat"><div class="stat-label">Iscrizioni totali</div><div class="stat-val">'+REGS.length+'</div></div>'
+    +'<div class="stat"><div class="stat-label">Eventi attivi</div><div class="stat-val">'+EVENTS.filter(function(e){return e.attivo;}).length+'</div></div>'
+    +'<div class="stat"><div class="stat-label">Eventi totali</div><div class="stat-val">'+EVENTS.length+'</div></div>'
+    +'</div>'
+    +'<div class="sec-title">Seleziona un evento</div>'
+    +'<div class="ev-grid">'+ecards+'</div>'
+    +'<div class="sec-title">Iscritti — '+sev.nome+'</div>'
+    +'<div class="panel">'
+    +'<div class="panel-head">'
+    +'<div><h3>'+sregs.length+' iscritti</h3><p>'+(sev.capienza-sregs.length)+' posti disponibili</p></div>'
+    +'<div class="panel-btns">'
+    +'<button class="btn-green" onclick="openAddReg()">+ Aggiungi</button>'
+    +'<button class="btn-gold" onclick="doExportCSV()">↓ CSV</button>'
+    +'</div></div>'
+    +'<div class="twrap"><table>'
+    +'<thead><tr><th>Nome</th><th>Email</th><th>Telefono</th>'+xth+'<th>Data</th><th></th></tr></thead>'
+    +'<tbody>'+rows+'</tbody>'
+    +'</table></div></div>';
+}
+
+function selDashEv(id){ dashEv = id; buildDash(); }
+
+function doExportCSV(){
+  var ev = gev(dashEv); var cf = ev.cf || [];
+  var regs = []; for(var i=0;i<REGS.length;i++) if(REGS[i].eid===dashEv) regs.push(REGS[i]);
+  var h = ["Nome","Cognome","Email","Telefono","Data"];
+  for(var i=0;i<cf.length;i++) h.push(cf[i].label);
+  var lines = [h.map(function(v){return'"'+v+'"';}).join(",")];
+  for(var i=0;i<regs.length;i++){
+    var r = regs[i];
+    var row = [r.nome,r.cognome,r.email,r.tel||"",r.data];
+    for(var j=0;j<cf.length;j++) row.push(r.extra[cf[j].id]||"");
+    lines.push(row.map(function(v){return'"'+v+'"';}).join(","));
+  }
+  var csv = "\uFEFF"+lines.join("\n");
+  var a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+  a.download = "iscritti-"+ev.nome+".csv";
+  a.click();
+}
+
+// ── QR (canvas, no external libs) ────────────────────────
+function drawQR(url){
+  var c = document.getElementById("qrCanvas");
+  var ctx = c.getContext("2d");
+  var w = c.width, h = c.height;
+  ctx.fillStyle = "#fff"; ctx.fillRect(0,0,w,h);
+  ctx.fillStyle = "#000";
+
+  // Draw finder patterns (3 corners)
+  function finder(x,y){
+    ctx.fillRect(x,y,49,49);
+    ctx.fillStyle="#fff"; ctx.fillRect(x+7,y+7,35,35);
+    ctx.fillStyle="#000"; ctx.fillRect(x+14,y+14,21,21);
+    ctx.fillStyle="#000";
+  }
+  finder(10,10); finder(141,10); finder(10,141);
+
+  // Timing patterns
+  for(var i=0;i<12;i++){
+    if(i%2===0){
+      ctx.fillRect(66+i*6,66,6,6);
+      ctx.fillRect(66,66+i*6,6,6);
+    }
+  }
+
+  // Data modules: encode URL into deterministic pattern
+  var hash = 0;
+  for(var i=0;i<url.length;i++) hash = ((hash<<5)-hash)+url.charCodeAt(i)|0;
+  var rng = Math.abs(hash);
+  for(var r=0;r<18;r++){
+    for(var cc=0;cc<18;cc++){
+      var cx = 72+cc*7, cy = 72+r*7;
+      if(cx>160||cy>160) continue;
+      rng = (rng*1664525+1013904223)&0xFFFFFFFF;
+      if(rng&1) ctx.fillRect(cx,cy,6,6);
+    }
+  }
+
+  // Border dots
+  for(var i=0;i<26;i++){
+    if(i%2===0){
+      var px = 10+i*7;
+      if(px>65&&px<141){ ctx.fillRect(px,66,6,6); ctx.fillRect(px,128,6,6); }
+      if(px>65&&px<141){ ctx.fillRect(66,px,6,6); ctx.fillRect(128,px,6,6); }
+    }
+  }
+
+  document.getElementById("qrUrlTxt").textContent = url;
+}
+
+function showQROverlay(evId, evNome, isNew){
+  var url = "https://eventsfun.com/evento?id="+evId;
+  document.getElementById("qrTitle").textContent = isNew ? "Evento creato!" : "QR Code — "+evNome;
+  document.getElementById("qrSub").textContent = isNew
+    ? "Il QR è pronto — inseriscilo nella locandina."
+    : "Scansiona per aprire la pagina di iscrizione.";
+  openOv("ovQR");
+  setTimeout(function(){ drawQR(url); }, 60);
+}
+
+function viewQR(id, nome){ showQROverlay(id, nome, false); }
+
+function doDownloadQR(){
+  var c = document.getElementById("qrCanvas");
+  var a = document.createElement("a");
+  a.href = c.toDataURL("image/png");
+  a.download = "QR-evento.png";
+  a.click();
+}
+
+// ── NUOVO EVENTO ──────────────────────────────────────────
+function openNewEv(){
+  cfIdx = 0; spIdx = 0;
+  document.getElementById("cfList").innerHTML = "";
+  document.getElementById("spList").innerHTML = "";
+  var ids = ["m_nome","m_data","m_ora","m_luogo","m_desc"];
+  for(var i=0;i<ids.length;i++) document.getElementById(ids[i]).value = "";
+  document.getElementById("m_cap").value = "";
+  document.getElementById("m_stato").value = "1";
+  openOv("ovEv");
+}
+
+function addCF(){
+  var id = "c"+cfIdx++;
+  var d = document.createElement("div");
+  d.className = "row2"; d.id = "cfr"+id;
+  d.innerHTML = '<input placeholder="Nome campo" id="cfl'+id+'"><input placeholder="Esempio" id="cfp'+id+'"><button class="rm-btn" onclick="document.getElementById(\'cfr'+id+'\').remove()">✕</button>';
+  document.getElementById("cfList").appendChild(d);
+}
+
+function addSP(){
+  var id = "s"+spIdx++;
+  var d = document.createElement("div");
+  d.className = "row-sp"; d.id = "spr"+id;
+  d.innerHTML = '<div class="logo-ph" id="sph'+id+'" onclick="document.getElementById(\'spf'+id+'\').click()">🖼</div>'
+    +'<img class="logo-img" id="spi'+id+'" src="" alt="">'
+    +'<input type="file" class="logo-file" id="spf'+id+'" accept="image/*" onchange="loadLogo(\''+id+'\')">'
+    +'<input placeholder="Nome sponsor" id="spn'+id+'">'
+    +'<input placeholder="URL (https://...)" id="spu'+id+'">'
+    +'<button class="rm-btn" onclick="document.getElementById(\'spr'+id+'\').remove()">✕</button>';
+  document.getElementById("spList").appendChild(d);
+}
+
+function loadLogo(id){
+  var f = document.getElementById("spf"+id).files[0];
+  if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById("spi"+id).src = e.target.result;
+    document.getElementById("spi"+id).style.display = "block";
+    document.getElementById("sph"+id).style.display = "none";
+  };
+  reader.readAsDataURL(f);
+}
+
+function doCreateEvent(){
+  var nome = document.getElementById("m_nome").value.trim();
+  var capStr = document.getElementById("m_cap").value.trim();
+  var cap = parseInt(capStr) || 0;
+  var data = document.getElementById("m_data").value.trim();
+  var ora = document.getElementById("m_ora").value.trim();
+  var luogo = document.getElementById("m_luogo").value.trim();
+  var desc = document.getElementById("m_desc").value.trim();
+  var attivo = document.getElementById("m_stato").value === "1";
+
+  if(!nome){ alert("Inserisci il nome dell'evento."); return; }
+  if(!data){ alert("Inserisci la data."); return; }
+  if(!ora){ alert("Inserisci l'ora."); return; }
+  if(!luogo){ alert("Inserisci il luogo."); return; }
+  if(cap < 1){ alert("Inserisci una capienza maggiore di 0."); return; }
+
+  var cf = [];
+  var cfRows = document.querySelectorAll(".row2");
+  for(var i=0;i<cfRows.length;i++){
+    var rid = cfRows[i].id.replace("cfr","");
+    var lbl = document.getElementById("cfl"+rid);
+    var phl = document.getElementById("cfp"+rid);
+    if(lbl && lbl.value.trim()){
+      var l = lbl.value.trim();
+      cf.push({id:l.toLowerCase().replace(/\s+/g,"_"), label:l, ph:(phl?phl.value.trim():"")});
+    }
+  }
+
+  var sp = [];
+  var spRows = document.querySelectorAll(".row-sp");
+  for(var i=0;i<spRows.length;i++){
+    var rid = spRows[i].id.replace("spr","");
+    var nn = document.getElementById("spn"+rid);
+    var uu = document.getElementById("spu"+rid);
+    var ii = document.getElementById("spi"+rid);
+    if(nn && nn.value.trim()){
+      var logo = (ii && ii.style.display!=="none") ? ii.src : null;
+      sp.push({nome:nn.value.trim(), url:(uu?uu.value.trim():"#"), logo:logo});
+    }
+  }
+
+  var newId = "evt-" + Date.now();
+  var newEv = {
+    id: newId, nome: nome, data: data, ora: ora, luogo: luogo,
+    capienza: cap, attivo: attivo, color: PAL[EVENTS.length % PAL.length],
+    desc: desc, cf: cf, sp: sp
+  };
+  EVENTS.push(newEv);
+  curEv = newId;
+  dashEv = newId;
+  buildSel();
+  closeOv("ovEv");
+  buildDash();
+  showQROverlay(newId, nome, true);
+}
+
+// ── ISCRITTI ─────────────────────────────────────────────
+function buildExtraFields(extra){
+  var ev = gev(dashEv); var cf = ev.cf || [];
+  if(!cf.length) return "";
+  var html = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08)">'
+    +'<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.38);margin-bottom:11px;font-weight:700">Campi aggiuntivi</div>'
+    +'<div class="g2">';
+  for(var i=0;i<cf.length;i++){
+    var val = extra && extra[cf[i].id] ? extra[cf[i].id] : "";
+    html += '<div class="mf h" style="margin-bottom:0"><label>'+cf[i].label+'</label>'
+      +'<input id="rx'+cf[i].id+'" placeholder="'+cf[i].ph+'" value="'+val+'"></div>';
+  }
+  html += '</div></div>';
+  return html;
+}
+
+function openAddReg(){
+  document.getElementById("regTitle").textContent = "Aggiungi Iscritto";
+  document.getElementById("regSub").textContent = "Inserisci i dati manualmente.";
+  document.getElementById("regId").value = "";
+  document.getElementById("rNome").value = "";
+  document.getElementById("rCognome").value = "";
+  document.getElementById("rEmail").value = "";
+  document.getElementById("rTel").value = "";
+  document.getElementById("regExtra").innerHTML = buildExtraFields({});
+  openOv("ovReg");
+}
+
+function openEditReg(id){
+  var r = null;
+  for(var i=0;i<REGS.length;i++) if(REGS[i].id===id){ r=REGS[i]; break; }
+  if(!r) return;
+  document.getElementById("regTitle").textContent = "Modifica Iscritto";
+  document.getElementById("regSub").textContent = "Modifica i dati.";
+  document.getElementById("regId").value = id;
+  document.getElementById("rNome").value = r.nome;
+  document.getElementById("rCognome").value = r.cognome;
+  document.getElementById("rEmail").value = r.email;
+  document.getElementById("rTel").value = r.tel || "";
+  document.getElementById("regExtra").innerHTML = buildExtraFields(r.extra || {});
+  openOv("ovReg");
+}
+
+function doSaveReg(){
+  var nome = document.getElementById("rNome").value.trim();
+  var cognome = document.getElementById("rCognome").value.trim();
+  var email = document.getElementById("rEmail").value.trim();
+  var tel = document.getElementById("rTel").value.trim();
+  if(!nome || !cognome || !email){ alert("Compila Nome, Cognome ed Email."); return; }
+  var ev = gev(dashEv);
+  var extra = {};
+  for(var i=0;i<ev.cf.length;i++){
+    var el = document.getElementById("rx"+ev.cf[i].id);
+    if(el) extra[ev.cf[i].id] = el.value.trim();
+  }
+  var eid = document.getElementById("regId").value;
+  if(eid){
+    for(var i=0;i<REGS.length;i++){
+      if(REGS[i].id == eid){
+        REGS[i].nome=nome; REGS[i].cognome=cognome; REGS[i].email=email; REGS[i].tel=tel; REGS[i].extra=extra;
+        break;
+      }
+    }
+    showToast("Iscritto aggiornato","g");
+  } else {
+    REGS.push({id:Date.now(), eid:dashEv, nome:nome, cognome:cognome, email:email, tel:tel, data:"Oggi", extra:extra});
+    showToast("Iscritto aggiunto","g");
+  }
+  closeOv("ovReg");
+  buildDash();
+}
+
+function openDel(id, name){
+  delId = id;
+  document.getElementById("delName").textContent = name;
+  openOv("ovDel");
+}
+
+function doDeleteReg(){
+  if(delId === null) return;
+  var newRegs = [];
+  for(var i=0;i<REGS.length;i++) if(REGS[i].id !== delId) newRegs.push(REGS[i]);
+  REGS = newRegs;
+  delId = null;
+  closeOv("ovDel");
+  showToast("Iscritto eliminato","r");
+  buildDash();
+}
+
+// ── MODIFICA / ELIMINA EVENTO ─────────────────────────────
+var eeSpIdx = 0;
+
+function addEESP(){
+  var id = "ee"+eeSpIdx++;
+  var d = document.createElement("div");
+  d.className = "row-sp"; d.id = "eespr"+id;
+  d.innerHTML = '<div class="logo-ph" id="eesph'+id+'" onclick="document.getElementById(\'eespf'+id+'\').click()">🖼</div>'
+    +'<img class="logo-img" id="eespi'+id+'" src="" alt="">'
+    +'<input type="file" class="logo-file" id="eespf'+id+'" accept="image/*" onchange="loadEELogo(\''+id+'\')">'
+    +'<input placeholder="Nome sponsor" id="eespn'+id+'">'
+    +'<input placeholder="URL (https://...)" id="eespu'+id+'">'
+    +'<button class="rm-btn" onclick="document.getElementById(\'eespr'+id+'\').remove()">✕</button>';
+  document.getElementById("eeSpList").appendChild(d);
+}
+
+function loadEELogo(id){
+  var f = document.getElementById("eespf"+id).files[0];
+  if(!f) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById("eespi"+id).src = e.target.result;
+    document.getElementById("eespi"+id).style.display = "block";
+    document.getElementById("eesph"+id).style.display = "none";
+  };
+  reader.readAsDataURL(f);
+}
+
+function openEditEv(id){
+  var ev = gev(id); if(!ev) return;
+  eeSpIdx = 0;
+  document.getElementById("ee_id").value = id;
+  document.getElementById("ee_nome").value = ev.nome;
+  document.getElementById("ee_cap").value = ev.capienza;
+  document.getElementById("ee_data").value = ev.data;
+  document.getElementById("ee_ora").value = ev.ora;
+  document.getElementById("ee_luogo").value = ev.luogo;
+  document.getElementById("ee_desc").value = ev.desc || "";
+  document.getElementById("ee_stato").value = ev.attivo ? "1" : "0";
+
+  // Popola sponsor esistenti
+  var list = document.getElementById("eeSpList");
+  list.innerHTML = "";
+  var sps = ev.sp || [];
+  for(var i=0;i<sps.length;i++){
+    var s = sps[i];
+    var sid = "ee"+eeSpIdx++;
+    var d = document.createElement("div");
+    d.className = "row-sp"; d.id = "eespr"+sid;
+    var logoShow = s.logo
+      ? '<div class="logo-ph" id="eesph'+sid+'" style="display:none" onclick="document.getElementById(\'eespf'+sid+'\').click()">🖼</div><img class="logo-img" id="eespi'+sid+'" src="'+s.logo+'" alt="" style="display:block">'
+      : '<div class="logo-ph" id="eesph'+sid+'" onclick="document.getElementById(\'eespf'+sid+'\').click()">🖼</div><img class="logo-img" id="eespi'+sid+'" src="" alt="">';
+    d.innerHTML = logoShow
+      +'<input type="file" class="logo-file" id="eespf'+sid+'" accept="image/*" onchange="loadEELogo(\''+sid+'\')">'
+      +'<input placeholder="Nome sponsor" id="eespn'+sid+'" value="'+s.nome+'">'
+      +'<input placeholder="URL (https://...)" id="eespu'+sid+'" value="'+(s.url==='#'?'':s.url)+'">'
+      +'<button class="rm-btn" onclick="document.getElementById(\'eespr'+sid+'\').remove()">✕</button>';
+    list.appendChild(d);
+  }
+
+  openOv("ovEditEv");
+}
+
+function doSaveEv(){
+  var id = document.getElementById("ee_id").value;
+  var nome = document.getElementById("ee_nome").value.trim();
+  var cap = parseInt(document.getElementById("ee_cap").value) || 0;
+  var data = document.getElementById("ee_data").value.trim();
+  var ora = document.getElementById("ee_ora").value.trim();
+  var luogo = document.getElementById("ee_luogo").value.trim();
+  var desc = document.getElementById("ee_desc").value.trim();
+  var attivo = document.getElementById("ee_stato").value === "1";
+  if(!nome){ alert("Inserisci il nome dell'evento."); return; }
+  if(!data){ alert("Inserisci la data."); return; }
+  if(!ora){ alert("Inserisci l'ora."); return; }
+  if(!luogo){ alert("Inserisci il luogo."); return; }
+  if(cap < 1){ alert("Inserisci una capienza valida."); return; }
+
+  // Leggi sponsor aggiornati
+  var sp = [];
+  var spRows = document.querySelectorAll("#eeSpList .row-sp");
+  for(var i=0;i<spRows.length;i++){
+    var rid = spRows[i].id.replace("eespr","");
+    var nn = document.getElementById("eespn"+rid);
+    var uu = document.getElementById("eespu"+rid);
+    var ii = document.getElementById("eespi"+rid);
+    if(nn && nn.value.trim()){
+      var logo = (ii && ii.style.display!=="none" && ii.src && ii.src!==window.location.href) ? ii.src : null;
+      sp.push({nome:nn.value.trim(), url:(uu&&uu.value.trim()?uu.value.trim():"#"), logo:logo});
+    }
+  }
+
+  for(var i=0;i<EVENTS.length;i++){
+    if(EVENTS[i].id === id){
+      EVENTS[i].nome = nome; EVENTS[i].capienza = cap; EVENTS[i].data = data;
+      EVENTS[i].ora = ora; EVENTS[i].luogo = luogo; EVENTS[i].desc = desc;
+      EVENTS[i].attivo = attivo; EVENTS[i].sp = sp;
+      break;
+    }
+  }
+  closeOv("ovEditEv");
+  buildSel();
+  buildDash();
+  showToast("Evento aggiornato","g");
+}
+
+
+var delEvId = null;
+function openDelEv(id, nome){
+  delEvId = id;
+  document.getElementById("delEvName").textContent = nome;
+  openOv("ovDelEv");
+}
+
+function doDeleteEv(){
+  if(!delEvId) return;
+  var newEvents = [];
+  for(var i=0;i<EVENTS.length;i++) if(EVENTS[i].id !== delEvId) newEvents.push(EVENTS[i]);
+  var newRegs = [];
+  for(var i=0;i<REGS.length;i++) if(REGS[i].eid !== delEvId) newRegs.push(REGS[i]);
+  EVENTS = newEvents;
+  REGS = newRegs;
+  if(dashEv === delEvId) dashEv = EVENTS.length > 0 ? EVENTS[0].id : null;
+  if(curEv === delEvId) curEv = EVENTS.length > 0 ? EVENTS[0].id : null;
+  delEvId = null;
+  closeOv("ovDelEv");
+  buildSel();
+  if(EVENTS.length > 0) buildDash();
+  else document.getElementById("dashBody").innerHTML = '<div class="dash"><div class="dash-title">Dashboard</div><p class="dash-sub" style="margin-top:40px;text-align:center">Nessun evento. Creane uno nuovo.</p><div style="text-align:center;margin-top:20px"><div class="new-card" style="display:inline-flex;width:200px" onclick="openNewEv()"><div class="plus">+</div><span>Nuovo Evento</span></div></div></div>';
+  showToast("Evento eliminato","r");
+}
+
+
+function openOv(id){ document.getElementById(id).classList.add("on"); document.body.style.overflow="hidden"; }
+function closeOv(id){ document.getElementById(id).classList.remove("on"); document.body.style.overflow=""; }
+function ovClick(e,id){ if(e.target===document.getElementById(id)) closeOv(id); }
+
+function showToast(msg, t){
+  var el = document.getElementById("toast"+t.toUpperCase());
+  el.textContent = (t==="g" ? "✓ " : "✕ ") + msg;
+  el.style.display = "block";
+  setTimeout(function(){ el.style.display="none"; }, 3000);
+}
+
+// ── INIT ─────────────────────────────────────────────────
+buildSel();
+buildLanding();
+document.getElementById("evSel").style.display = "inline-block";
+</script>
+
+<!-- VERSION BADGE -->
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.1</div>
+</body>
+</html>

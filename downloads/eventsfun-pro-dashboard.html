@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<!-- EventsFun | Pacchetto Pro — Dashboard | v1.0 -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Pro — EventsFun</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   EVENTSFUN — EVENTO PRO — DASHBOARD
+   Funzionalità aggiuntive rispetto a Base:
+   - Sponsor con logo e URL
+   - Campi personalizzati modulo
+   - Iscritti illimitati
+   - Export CSV con campi extra
+   - Gestione iscritti (modifica/elimina/aggiungi)
+   - Countdown 90 giorni
+   ═══════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0A0A0A;color:#F5F0E8;min-height:100vh}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);gap:10px;flex-wrap:wrap}
+.nav-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#F5F0E8;letter-spacing:-.3px}
+.nav-logo span{color:#C9A96E}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.pill-gold{background:rgba(201,169,110,0.12);color:#C9A96E;border:1px solid rgba(201,169,110,0.25)}
+.nav-logout{font-size:12px;color:rgba(240,237,232,0.45);cursor:pointer;background:none;border:none;font-family:inherit;transition:color .2s}
+.nav-logout:hover{color:#F5F0E8}
+.view{display:none}.view.on{display:block}
+
+/* LOGIN */
+.login-wrap{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px;width:100%;max-width:380px;text-align:center}
+.login-icon{font-size:36px;margin-bottom:16px}
+.login-box h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.login-box p{font-size:13px;color:rgba(240,237,232,0.6);margin-bottom:28px;line-height:1.6}
+.lf{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;text-align:left}
+.lf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55)}
+.lf input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);border-radius:8px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0E8;outline:none;width:100%}
+.lf input:focus{border-color:rgba(201,169,110,0.5)}
+.lf input::placeholder{color:rgba(240,237,232,0.3)}
+.login-err{font-size:12px;color:#e08080;margin-bottom:10px;display:none}
+.btn-gold{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-gold:hover{opacity:.87}
+
+/* SETUP */
+.setup-wrap{max-width:700px;margin:0 auto;padding:48px 20px 80px}
+.setup-header{margin-bottom:32px}
+.setup-header h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;letter-spacing:-.5px}
+.setup-header p{font-size:13px;color:rgba(240,237,232,0.65);line-height:1.6}
+.setup-step{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:26px;margin-bottom:13px}
+.step-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-bottom:16px}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.mf{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.mf:last-child{margin-bottom:0}
+.mf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.6)}
+.mf input,.mf textarea,.mf select{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0E8;outline:none;transition:border-color .2s;width:100%}
+.mf input:focus,.mf textarea:focus,.mf select:focus{border-color:rgba(201,169,110,0.5)}
+.mf input::placeholder,.mf textarea::placeholder{color:rgba(240,237,232,0.3)}
+.mf textarea{resize:vertical;min-height:72px}
+.mf select option{background:#1a1a1a}
+.sec-hdr{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.45);margin-top:20px;margin-bottom:12px;padding-top:18px;border-top:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.add-row-btn{font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:rgba(240,237,232,0.6);font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s}
+.add-row-btn:hover{border-color:rgba(201,169,110,0.4);color:#C9A96E}
+.sp-row{display:grid;grid-template-columns:38px 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.row-inp{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 11px;font-family:'DM Sans',sans-serif;font-size:12px;color:#F5F0E8;outline:none;width:100%}
+.row-inp:focus{border-color:rgba(201,169,110,0.45)}
+.row-inp::placeholder{color:rgba(240,237,232,0.28)}
+.logo-ph{width:38px;height:38px;border-radius:6px;border:1px dashed rgba(255,255,255,0.18);background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;color:rgba(240,237,232,0.35);transition:all .2s}
+.logo-ph:hover{border-color:rgba(201,169,110,0.4);color:#C9A96E}
+.logo-img{width:38px;height:38px;border-radius:6px;object-fit:contain;background:#fff;padding:3px;display:none;flex-shrink:0}
+.logo-file{display:none}
+.rm-btn{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:rgba(240,237,232,0.45);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.rm-btn:hover{background:rgba(200,80,80,0.15);border-color:rgba(200,80,80,0.35);color:#e06060}
+.req-toggle{width:28px;height:28px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);cursor:pointer;color:rgba(240,237,232,0.45);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;transition:all .2s;title:attr(title)}
+.req-toggle.on{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.35);color:#C9A96E}
+.setup-save{width:100%;margin-top:8px;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.setup-save:hover{opacity:.87}
+
+/* DASHBOARD */
+.dash{max-width:1020px;margin:0 auto;padding:36px 20px 80px}
+.dash-header{margin-bottom:28px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.dash-header-left h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.dash-header-left p{font-size:13px;color:rgba(240,237,232,0.6)}
+.dash-header-btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn-sm{padding:7px 14px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(240,237,232,0.7);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;font-weight:500;transition:all .2s}
+.btn-sm:hover{border-color:rgba(255,255,255,0.25);color:#F5F0E8}
+.btn-sm-gold{border-color:rgba(201,169,110,0.35);color:#C9A96E}
+.btn-sm-gold:hover{background:rgba(201,169,110,0.08)}
+.btn-sm-green{border-color:rgba(110,201,130,0.35);color:#7ED99A}
+.btn-sm-green:hover{background:rgba(110,201,130,0.08)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 20px}
+.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-bottom:6px;font-weight:700}
+.stat-val{font-family:'Syne',sans-serif;font-size:28px;font-weight:300;color:#C9A96E}
+
+/* Countdown */
+.countdown-bar{background:#111;border:1px solid rgba(201,169,110,0.2);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.cd-left{display:flex;align-items:center;gap:16px}
+.cd-ring{position:relative;width:52px;height:52px;flex-shrink:0}
+.cd-ring svg{transform:rotate(-90deg)}
+.cd-ring .tr{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:5}
+.cd-ring .pr{fill:none;stroke:#C9A96E;stroke-width:5;stroke-linecap:round;transition:stroke-dashoffset 1s}
+.cd-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:#C9A96E}
+.cd-info h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:3px}
+.cd-info p{font-size:12px;color:rgba(240,237,232,0.55)}
+.progress-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin-top:8px;width:200px}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#8a6e3e,#C9A96E)}
+
+/* Status bar */
+.status-bar{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.sinfo h3{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:3px}
+.sinfo p{font-size:12px;color:rgba(240,237,232,0.55)}
+.pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;display:inline-block}
+.pill-green{background:rgba(110,201,130,0.12);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
+.pill-red{background:rgba(200,80,80,0.12);color:#e08080;border:1px solid rgba(200,80,80,0.25)}
+
+/* Table panel */
+.panel{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;gap:10px}
+.panel-head h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.panel-head p{font-size:12px;color:rgba(240,237,232,0.55);margin-top:2px}
+.panel-head-btns{display:flex;gap:8px;flex-wrap:wrap}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:560px}
+thead tr{border-bottom:1px solid rgba(255,255,255,0.08)}
+thead th{padding:10px 16px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);font-weight:700;white-space:nowrap}
+thead th.xh{color:rgba(201,169,110,0.7)}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.03)}
+tbody td{padding:11px 16px;font-size:12px;color:rgba(240,237,232,0.8);white-space:nowrap}
+tbody td.nm{color:#F5F0E8;font-weight:600}
+tbody td.dt{color:rgba(240,237,232,0.45);font-size:11px}
+tbody td.xv{color:#C9A96E;font-size:12px}
+.act-cell{display:flex;gap:5px}
+.ic{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:5px;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+.ic:hover{background:rgba(255,255,255,0.1)}
+.no-regs{padding:36px;text-align:center;color:rgba(240,237,232,0.35);font-size:13px}
+
+/* Overlay e modal */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;overflow-y:auto;padding:28px 16px;backdrop-filter:blur(6px)}
+.ov.on{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:#161616;border:1px solid rgba(255,255,255,0.12);border-radius:14px;width:100%;max-width:700px;padding:28px;position:relative}
+.modal.sm{max-width:440px}
+.mcls{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.07);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:rgba(240,237,232,0.6);font-size:13px;display:flex;align-items:center;justify-content:center}
+.mcls:hover{background:rgba(255,255,255,0.14);color:#F5F0E8}
+.modal h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:22px}
+.del-btns{display:flex;gap:10px;margin-top:20px}
+.del-no{flex:1;padding:12px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);background:transparent;color:rgba(240,237,232,0.7);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.del-yes{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#b04040,#803030);color:#fff;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:nowrap}
+.toast-g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:#7ED99A}
+.toast-r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:#e08080}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:1fr 1fr}
+  .setup-wrap,.dash{padding:24px 14px 60px}
+  .fg2{grid-template-columns:1fr}
+  .sp-row{grid-template-columns:38px 1fr auto}
+  .cf-row{grid-template-columns:1fr 1fr auto auto}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Events<span>Fun</span> <span style="font-size:11px;font-weight:400;color:rgba(240,237,232,0.4);margin-left:4px">Pro</span></div>
+  <div class="nav-r">
+    <span class="nav-pill pill-gold" id="navEvName">Dashboard Pro</span>
+    <button class="nav-logout" id="navLogout" onclick="logout()" style="display:none">Esci</button>
+  </div>
+</nav>
+
+<!-- LOGIN -->
+<div class="view on" id="view-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-icon">🔐</div>
+      <h2>Accesso Dashboard Pro</h2>
+      <p>Inserisci la password impostata durante la configurazione del tuo evento.</p>
+      <div class="lf"><label>Password</label><input type="password" id="loginPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+      <p class="login-err" id="loginErr">Password non corretta.</p>
+      <button class="btn-gold" onclick="doLogin()">Accedi</button>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07)">
+        <p style="font-size:12px;color:rgba(240,237,232,0.4)">Prima volta? <button onclick="goSetup()" style="background:none;border:none;color:#C9A96E;font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline">Configura il tuo evento</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SETUP -->
+<div class="view" id="view-setup">
+  <div class="setup-wrap">
+    <div class="setup-header">
+      <h1>Configura il tuo evento Pro</h1>
+      <p>Compila tutti i dettagli. Potrai modificarli in qualsiasi momento dalla dashboard.</p>
+    </div>
+
+    <!-- Dati base -->
+    <div class="setup-step">
+      <div class="step-title">📋 Dati evento</div>
+      <div class="fg2">
+        <div class="mf"><label>Nome evento *</label><input id="s_nome" placeholder="Es. Gala di Primavera 2026"></div>
+        <div class="mf"><label>Capienza (lascia vuoto per illimitata)</label><input id="s_cap" type="number" placeholder="es. 300" min="1"></div>
+      </div>
+      <div class="fg2">
+        <div class="mf"><label>Data *</label><input id="s_data" placeholder="Es. 14 Giugno 2026"></div>
+        <div class="mf"><label>Ora *</label><input id="s_ora" placeholder="Es. 19:30"></div>
+      </div>
+      <div class="mf"><label>Luogo *</label><input id="s_luogo" placeholder="Es. Villa Reale, Milano"></div>
+      <div class="mf"><label>Descrizione</label><textarea id="s_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
+    </div>
+
+    <!-- Sponsor -->
+    <div class="setup-step">
+      <div class="step-title">🤝 Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(240,237,232,0.35)">(opzionale)</span></div>
+      <p style="font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:14px;line-height:1.6">I logo degli sponsor appariranno sulla pagina pubblica con link al loro sito.</p>
+      <div id="spList"></div>
+      <button class="add-row-btn" onclick="addSP()">+ Aggiungi sponsor</button>
+    </div>
+
+    <!-- Campi personalizzati -->
+    <div class="setup-step">
+      <div class="step-title">📝 Campi aggiuntivi modulo <span style="font-weight:400;text-transform:none;letter-spacing:0;color:rgba(240,237,232,0.35)">(opzionale)</span></div>
+      <p style="font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:14px;line-height:1.6">Aggiungi domande extra al modulo di iscrizione (es. Azienda, Ruolo, Taglia t-shirt...). Il tasto <strong style="color:#C9A96E">*</strong> rende il campo obbligatorio.</p>
+      <div id="cfList"></div>
+      <button class="add-row-btn" onclick="addCF()">+ Aggiungi campo</button>
+    </div>
+
+    <!-- Password e stato -->
+    <div class="setup-step">
+      <div class="step-title">🔐 Accesso e stato</div>
+      <div class="fg2">
+        <div class="mf"><label>Password dashboard *</label><input id="s_pwd" type="password" placeholder="Almeno 6 caratteri"></div>
+        <div class="mf"><label>Conferma password *</label><input id="s_pwd2" type="password" placeholder="Ripeti la password"></div>
+      </div>
+      <div class="mf"><label>Stato iscrizioni</label>
+        <select id="s_attivo"><option value="1">Aperto — le iscrizioni sono attive</option><option value="0">Chiuso — le iscrizioni sono disabilitate</option></select>
+      </div>
+    </div>
+
+    <button class="setup-save" onclick="saveSetup()">Salva configurazione e vai alla dashboard →</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view" id="view-dash">
+  <div class="dash">
+
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <h1 id="dash-title">Dashboard</h1>
+        <p id="dash-sub">Evento Pro</p>
+      </div>
+      <div class="dash-header-btns">
+        <button class="btn-sm btn-sm-green" onclick="openAddReg()">+ Aggiungi iscritto</button>
+        <button class="btn-sm btn-sm-gold" onclick="goSettings()">⚙️ Impostazioni</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">0</div></div>
+      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">∞</div></div>
+      <div class="stat"><div class="stat-label">Giorni rimasti</div><div class="stat-val" id="s-giorni">90</div></div>
+      <div class="stat"><div class="stat-label">Stato</div><div class="stat-val" id="s-stato" style="font-size:14px;padding-top:6px">—</div></div>
+    </div>
+
+    <!-- Countdown 90 giorni -->
+    <div class="countdown-bar" id="countdownBar">
+      <div class="cd-left">
+        <div class="cd-ring">
+          <svg width="52" height="52" viewBox="0 0 52 52">
+            <circle class="tr" cx="26" cy="26" r="22"/>
+            <circle class="pr" cx="26" cy="26" r="22" stroke-dasharray="138" id="cdCircle" stroke-dashoffset="0"/>
+          </svg>
+          <div class="cd-center" id="cdNum">90</div>
+        </div>
+        <div class="cd-info">
+          <h4 id="cd-title">Giorni rimasti</h4>
+          <p id="cd-sub">Scade il <span id="cd-exp">—</span></p>
+          <div class="progress-bar"><div class="progress-fill" id="cdBar" style="width:100%"></div></div>
+        </div>
+      </div>
+      <div>
+        <button class="btn-sm" id="activateBtn" onclick="activateEvent()" style="display:none">🚀 Attiva i 90 giorni</button>
+        <button class="btn-sm" id="closeBtn" onclick="closeEvent()" style="display:none">Chiudi evento anticipatamente</button>
+      </div>
+    </div>
+
+    <!-- Stato iscrizioni -->
+    <div class="status-bar">
+      <div class="sinfo">
+        <h3 id="status-nome">—</h3>
+        <p id="status-det">—</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span id="status-pill"></span>
+        <button class="btn-sm" onclick="toggleStatus()">Cambia stato</button>
+      </div>
+    </div>
+
+    <!-- Tabella iscritti -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3 id="panel-title">Iscritti</h3>
+          <p id="panel-sub">—</p>
+        </div>
+        <div class="panel-head-btns">
+          <button class="btn-sm btn-sm-gold" onclick="exportCSV()">↓ Esporta CSV</button>
+        </div>
+      </div>
+      <div class="twrap">
+        <table>
+          <thead id="tableHead"></thead>
+          <tbody id="regTable"><tr><td class="no-regs">Nessun iscritto ancora</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Link -->
+    <div style="background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 22px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-bottom:10px">Link pagina pubblica</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <code style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:9px 13px;font-size:12px;color:rgba(240,237,232,0.75);word-break:break-all">https://[tuo-utente].github.io/[tuo-repo]/</code>
+        <button class="btn-sm" onclick="window.open('landing.html','_blank')">Apri landing →</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: SETTINGS (stesso concetto del setup ma in modal) -->
+<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
+    <h2>Impostazioni evento</h2>
+    <p class="modal-sub">Modifica i dati. La landing si aggiorna subito.</p>
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Nome evento</label><input id="e_nome"></div>
+      <div class="mf"><label>Capienza</label><input id="e_cap" type="number" min="1" placeholder="Lascia vuoto per illimitata"></div>
+    </div>
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Data</label><input id="e_data"></div>
+      <div class="mf"><label>Ora</label><input id="e_ora"></div>
+    </div>
+    <div class="mf" style="margin-bottom:12px"><label>Luogo</label><input id="e_luogo"></div>
+    <div class="mf" style="margin-bottom:20px"><label>Descrizione</label><textarea id="e_desc"></textarea></div>
+    <div class="fg2">
+      <div class="mf"><label>Nuova password (opzionale)</label><input id="e_pwd" type="password" placeholder="Lascia vuoto per non cambiare"></div>
+      <div class="mf"><label>Conferma</label><input id="e_pwd2" type="password"></div>
+    </div>
+    <button class="btn-gold" style="margin-top:18px" onclick="saveSettings()">Salva</button>
+  </div>
+</div>
+
+<!-- MODAL: AGGIUNGI/MODIFICA ISCRITTO -->
+<div class="ov" id="ovReg" onclick="if(event.target===this)closeOv('ovReg')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovReg')">✕</button>
+    <h2 id="regModalTitle">Aggiungi Iscritto</h2>
+    <p class="modal-sub" id="regModalSub">Inserisci i dati manualmente.</p>
+    <input type="hidden" id="reg_edit_id">
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Nome *</label><input id="r_nome" placeholder="Mario"></div>
+      <div class="mf"><label>Cognome *</label><input id="r_cognome" placeholder="Rossi"></div>
+    </div>
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Email *</label><input id="r_email" placeholder="mario@email.it"></div>
+      <div class="mf"><label>Telefono</label><input id="r_tel" placeholder="333 0000000"></div>
+    </div>
+    <div id="regExtraFields"></div>
+    <button class="btn-gold" style="margin-top:18px" onclick="saveReg()">Salva iscritto</button>
+  </div>
+</div>
+
+<!-- MODAL: ELIMINA -->
+<div class="ov" id="ovDel" onclick="if(event.target===this)closeOv('ovDel')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovDel')">✕</button>
+    <h2>Elimina iscritto</h2>
+    <p class="modal-sub">Questa azione non può essere annullata.</p>
+    <p style="font-size:14px;color:rgba(240,237,232,0.75);line-height:1.6">Eliminare <strong id="delName" style="color:#F5F0E8"></strong>?</p>
+    <div class="del-btns">
+      <button class="del-no" onclick="closeOv('ovDel')">Annulla</button>
+      <button class="del-yes" onclick="confirmDelete()">Elimina</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast toast-g" id="toastG"></div>
+<div class="toast toast-r" id="toastR"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   STORAGE
+   TODO SUPABASE: sostituire localStorage con
+   chiamate API Supabase
+   ═══════════════════════════════════════════════ */
+var LS_KEY   = 'ef_pro_config';
+var LS_REGS  = 'ef_pro_regs';
+var SESSION  = 'ef_pro_session';
+var spIdx=0, cfIdx=0, delPending=null;
+
+function loadConfig(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||null; }catch(e){ return null; } }
+function saveConfig(c){ localStorage.setItem(LS_KEY,JSON.stringify(c)); }
+function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS))||[]; }catch(e){ return []; } }
+function saveRegs(r){ localStorage.setItem(LS_REGS,JSON.stringify(r)); }
+function isLoggedIn(){ return sessionStorage.getItem(SESSION)==='1'; }
+function logout(){ sessionStorage.removeItem(SESSION); showView('login'); }
+
+/* AUTH */
+function doLogin(){
+  var cfg=loadConfig(); if(!cfg){ goSetup(); return; }
+  var pwd=document.getElementById('loginPwd').value;
+  if(pwd===cfg.password){ sessionStorage.setItem(SESSION,'1'); showView('dash'); renderDash(); }
+  else { document.getElementById('loginErr').style.display='block'; document.getElementById('loginPwd').value=''; }
+}
+
+function goSetup(){
+  spIdx=0; cfIdx=0;
+  document.getElementById('spList').innerHTML='';
+  document.getElementById('cfList').innerHTML='';
+  var cfg=loadConfig();
+  if(cfg){
+    document.getElementById('s_nome').value  = cfg.nome||'';
+    document.getElementById('s_cap').value   = cfg.capienza||'';
+    document.getElementById('s_data').value  = cfg.data||'';
+    document.getElementById('s_ora').value   = cfg.ora||'';
+    document.getElementById('s_luogo').value = cfg.luogo||'';
+    document.getElementById('s_desc').value  = cfg.desc||'';
+    document.getElementById('s_attivo').value= cfg.attivo?'1':'0';
+    // Ri-popola sponsor
+    (cfg.sponsors||[]).forEach(function(s){ addSP(s); });
+    // Ri-popola campi
+    (cfg.custom_fields||[]).forEach(function(f){ addCF(f); });
+  }
+  showView('setup');
+}
+
+/* SETUP ROWS */
+function addSP(data){
+  var id='sp'+spIdx++;
+  var d=document.createElement('div'); d.className='sp-row'; d.id='spr'+id;
+  d.innerHTML='<div class="logo-ph" id="sph'+id+'" onclick="document.getElementById(\'spf'+id+'\').click()" title="Carica logo">🖼</div>'
+    +'<img class="logo-img" id="spi'+id+'" src="" alt="">'
+    +'<input type="file" class="logo-file" id="spf'+id+'" accept="image/*" onchange="loadLogo(\''+id+'\')">'
+    +'<input class="row-inp" placeholder="Nome sponsor" id="spn'+id+'" value="'+(data&&data.nome?data.nome:'')+'">'
+    +'<input class="row-inp" placeholder="URL sito" id="spu'+id+'" value="'+(data&&data.url&&data.url!=='#'?data.url:'')+'">'
+    +'<button class="rm-btn" onclick="document.getElementById(\'spr'+id+'\').remove()">✕</button>';
+  document.getElementById('spList').appendChild(d);
+  if(data&&data.logo){
+    var img=document.getElementById('spi'+id);
+    img.src=data.logo; img.style.display='block';
+    document.getElementById('sph'+id).style.display='none';
+  }
+}
+
+function addCF(data){
+  var id='cf'+cfIdx++;
+  var required=data&&data.required;
+  var d=document.createElement('div'); d.className='cf-row'; d.id='cfr'+id;
+  d.innerHTML='<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl'+id+'" value="'+(data&&data.label?data.label:'')+'">'
+    +'<input class="row-inp" placeholder="Esempio (es. Rossi S.r.l.)" id="cfp'+id+'" value="'+(data&&data.placeholder?data.placeholder:'')+'">'
+    +'<button class="req-toggle '+(required?'on':'')+'" id="cfr_'+id+'" title="Campo obbligatorio?" onclick="toggleReq(this)">*</button>'
+    +'<button class="rm-btn" onclick="document.getElementById(\'cfr'+id+'\').remove()">✕</button>';
+  document.getElementById('cfList').appendChild(d);
+}
+
+function toggleReq(btn){ btn.classList.toggle('on'); }
+
+function loadLogo(id){
+  var f=document.getElementById('spf'+id).files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(e){ var img=document.getElementById('spi'+id); img.src=e.target.result; img.style.display='block'; document.getElementById('sph'+id).style.display='none'; };
+  r.readAsDataURL(f);
+}
+
+/* SAVE SETUP */
+function saveSetup(){
+  var nome=document.getElementById('s_nome').value.trim();
+  var data=document.getElementById('s_data').value.trim();
+  var ora=document.getElementById('s_ora').value.trim();
+  var luogo=document.getElementById('s_luogo').value.trim();
+  var pwd=document.getElementById('s_pwd').value;
+  var pwd2=document.getElementById('s_pwd2').value;
+  if(!nome||!data||!ora||!luogo){ alert('Compila Nome evento, Data, Ora e Luogo.'); return; }
+  if(!pwd){ alert('Imposta una password per la dashboard.'); return; }
+  if(pwd!==pwd2){ alert('Le password non coincidono.'); return; }
+  if(pwd.length<6){ alert('Password troppo corta (min. 6 caratteri).'); return; }
+
+  var sponsors=[];
+  document.querySelectorAll('.sp-row').forEach(function(row){
+    var s=row.id.replace('spr','');
+    var n=document.getElementById('spn'+s)?.value.trim();
+    var u=document.getElementById('spu'+s)?.value.trim();
+    var img=document.getElementById('spi'+s);
+    var logo=(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null;
+    if(n) sponsors.push({nome:n,url:u||'#',logo:logo});
+  });
+
+  var cfs=[];
+  document.querySelectorAll('.cf-row').forEach(function(row){
+    var s=row.id.replace('cfr','');
+    var lbl=document.getElementById('cfl'+s)?.value.trim();
+    var ph=document.getElementById('cfp'+s)?.value.trim();
+    var req=document.getElementById('cfr_'+s)?.classList.contains('on');
+    if(lbl) cfs.push({id:lbl.toLowerCase().replace(/\s+/g,'_'),label:lbl,placeholder:ph||'',required:!!req});
+  });
+
+  var cfg={
+    configured:true, nome:nome,
+    capienza:parseInt(document.getElementById('s_cap').value)||null,
+    data:data, ora:ora, luogo:luogo,
+    desc:document.getElementById('s_desc').value.trim(),
+    attivo:document.getElementById('s_attivo').value==='1',
+    password:pwd, sponsors:sponsors, custom_fields:cfs,
+    activated:false, activation_date:null, expiry_date:null
+  };
+  saveConfig(cfg);
+  sessionStorage.setItem(SESSION,'1');
+  showView('dash');
+  renderDash();
+  showToast('Evento configurato!','g');
+}
+
+/* DASHBOARD */
+function renderDash(){
+  var cfg=loadConfig(); var regs=getRegs(); if(!cfg) return;
+  document.getElementById('navEvName').textContent=cfg.nome;
+  document.getElementById('navLogout').style.display='inline';
+  document.getElementById('dash-title').textContent=cfg.nome;
+  document.getElementById('dash-sub').textContent=cfg.data+' · '+cfg.luogo;
+
+  // Stats
+  document.getElementById('s-regs').textContent=regs.length;
+  document.getElementById('s-posti').textContent=cfg.capienza?Math.max(0,cfg.capienza-regs.length):'∞';
+
+  // Countdown
+  renderCountdown(cfg);
+
+  // Stato
+  document.getElementById('status-nome').textContent=cfg.nome;
+  document.getElementById('status-det').textContent=cfg.data+' · '+cfg.ora+' · '+cfg.luogo;
+  var pill=document.getElementById('status-pill');
+  if(cfg.attivo){ pill.innerHTML='<span class="pill pill-green">Iscrizioni aperte</span>'; }
+  else { pill.innerHTML='<span class="pill pill-red">Iscrizioni chiuse</span>'; }
+
+  // Table
+  var cf=cfg.custom_fields||[];
+  var thead=document.getElementById('tableHead');
+  thead.innerHTML='<tr><th>Nome</th><th>Email</th><th>Telefono</th>'+cf.map(function(f){ return '<th class="xh">'+f.label+'</th>'; }).join('')+'<th>Data</th><th></th></tr>';
+
+  var tbody=document.getElementById('regTable');
+  var pTitle=document.getElementById('panel-title');
+  var pSub=document.getElementById('panel-sub');
+  pTitle.textContent=regs.length+' iscritti';
+  pSub.textContent=cfg.capienza?(cfg.capienza-regs.length)+' posti ancora disponibili':'Iscritti illimitati';
+
+  if(!regs.length){
+    tbody.innerHTML='<tr><td colspan="'+(4+cf.length)+'" class="no-regs">Nessun iscritto ancora</td></tr>';
+  } else {
+    tbody.innerHTML=regs.map(function(r){
+      var xc=cf.map(function(f){ return '<td class="xv">'+(r.extra&&r.extra[f.id]?r.extra[f.id]:'—')+'</td>'; }).join('');
+      return '<tr>'
+        +'<td class="nm">'+r.nome+' '+r.cognome+'</td>'
+        +'<td>'+r.email+'</td>'
+        +'<td>'+(r.telefono||'—')+'</td>'
+        +xc
+        +'<td class="dt">'+r.data+'</td>'
+        +'<td><div class="act-cell">'
+        +'<button class="ic" title="Modifica" onclick="openEditReg('+r.id+')">✏️</button>'
+        +'<button class="ic" title="Elimina" onclick="openDel('+r.id+',\''+r.nome+' '+r.cognome+'\')">🗑️</button>'
+        +'</div></td>'
+        +'</tr>';
+    }).join('');
+  }
+  document.getElementById('s-stato').innerHTML=cfg.attivo?'<span class="pill pill-green">Aperto</span>':'<span class="pill pill-red">Chiuso</span>';
+}
+
+function renderCountdown(cfg){
+  var giorni='N/A';
+  var pct=1;
+  document.getElementById('activateBtn').style.display='none';
+  document.getElementById('closeBtn').style.display='none';
+
+  if(!cfg.activated){
+    giorni='—';
+    document.getElementById('cd-title').textContent='Evento non ancora attivato';
+    document.getElementById('cd-sub').innerHTML='Attiva per avviare il countdown di 90 giorni';
+    document.getElementById('cdNum').textContent='90';
+    document.getElementById('activateBtn').style.display='inline';
+    pct=1;
+  } else {
+    var exp=new Date(cfg.expiry_date);
+    var now=new Date();
+    var diff=Math.ceil((exp-now)/(1000*60*60*24));
+    giorni=Math.max(0,diff);
+    pct=giorni/90;
+    document.getElementById('cd-title').textContent='Giorni rimasti';
+    document.getElementById('cd-sub').innerHTML='Scade il <span id="cd-exp">'+exp.toLocaleDateString('it-IT')+'</span>';
+    document.getElementById('cdNum').textContent=giorni;
+    document.getElementById('closeBtn').style.display='inline';
+  }
+
+  document.getElementById('s-giorni').textContent=giorni;
+  var c=2*Math.PI*22;
+  document.getElementById('cdCircle').setAttribute('stroke-dasharray',c.toFixed(1));
+  document.getElementById('cdCircle').setAttribute('stroke-dashoffset',(c*(1-pct)).toFixed(1));
+  document.getElementById('cdBar').style.width=(pct*100)+'%';
+}
+
+function activateEvent(){
+  if(!confirm('Sei sicuro? Una volta attivato, il countdown di 90 giorni inizia e non può essere messo in pausa.')) return;
+  var cfg=loadConfig();
+  var now=new Date();
+  var exp=new Date(now); exp.setDate(exp.getDate()+90);
+  cfg.activated=true;
+  cfg.activation_date=now.toISOString();
+  cfg.expiry_date=exp.toISOString();
+  saveConfig(cfg);
+  renderDash();
+  showToast('Evento attivato! 90 giorni iniziati.','g');
+}
+
+function closeEvent(){
+  if(!confirm('Chiudere l\'evento anticipatamente? La pagina pubblica andrà offline.')) return;
+  var cfg=loadConfig();
+  cfg.attivo=false;
+  cfg.expiry_date=new Date().toISOString();
+  saveConfig(cfg);
+  renderDash();
+  showToast('Evento chiuso','r');
+}
+
+function toggleStatus(){
+  var cfg=loadConfig(); cfg.attivo=!cfg.attivo; saveConfig(cfg);
+  renderDash();
+  showToast(cfg.attivo?'Iscrizioni aperte':'Iscrizioni chiuse', cfg.attivo?'g':'r');
+}
+
+function exportCSV(){
+  var regs=getRegs(); var cfg=loadConfig(); var cf=cfg.custom_fields||[];
+  if(!regs.length){ alert('Nessun iscritto da esportare.'); return; }
+  var h=['Nome','Cognome','Email','Telefono','Data',...cf.map(function(f){ return f.label; })];
+  var rows=regs.map(function(r){
+    return [r.nome,r.cognome,r.email,r.telefono||'',r.data,...cf.map(function(f){ return (r.extra&&r.extra[f.id])||''; })];
+  });
+  var csv=[h,...rows].map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'}));
+  a.download='iscritti-'+cfg.nome+'.csv'; a.click();
+}
+
+/* GESTIONE ISCRITTI */
+function buildExtraFields(extra){
+  var cfg=loadConfig(); var cf=cfg.custom_fields||[];
+  if(!cf.length) return '';
+  return '<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,0.08)">'
+    +'<div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.4);margin-bottom:12px;font-weight:700">Campi aggiuntivi</div>'
+    +'<div class="fg2">'+cf.map(function(f){
+      var val=(extra&&extra[f.id])?extra[f.id]:'';
+      return '<div class="mf"><label>'+f.label+(f.required?' *':'')+'</label>'
+        +'<input id="rx'+f.id+'" placeholder="'+(f.placeholder||'')+'" value="'+val+'"></div>';
+    }).join('')+'</div></div>';
+}
+
+function openAddReg(){
+  document.getElementById('regModalTitle').textContent='Aggiungi Iscritto';
+  document.getElementById('regModalSub').textContent='Inserisci i dati manualmente.';
+  document.getElementById('reg_edit_id').value='';
+  ['r_nome','r_cognome','r_email','r_tel'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('regExtraFields').innerHTML=buildExtraFields({});
+  openOv('ovReg');
+}
+
+function openEditReg(id){
+  var regs=getRegs(); var r=regs.find(function(x){ return x.id===id; }); if(!r) return;
+  document.getElementById('regModalTitle').textContent='Modifica Iscritto';
+  document.getElementById('regModalSub').textContent='Modifica i dati.';
+  document.getElementById('reg_edit_id').value=id;
+  document.getElementById('r_nome').value=r.nome;
+  document.getElementById('r_cognome').value=r.cognome;
+  document.getElementById('r_email').value=r.email;
+  document.getElementById('r_tel').value=r.telefono||'';
+  document.getElementById('regExtraFields').innerHTML=buildExtraFields(r.extra||{});
+  openOv('ovReg');
+}
+
+function saveReg(){
+  var nome=document.getElementById('r_nome').value.trim();
+  var cognome=document.getElementById('r_cognome').value.trim();
+  var email=document.getElementById('r_email').value.trim();
+  var tel=document.getElementById('r_tel').value.trim();
+  if(!nome||!cognome||!email){ alert('Compila Nome, Cognome ed Email.'); return; }
+  var cfg=loadConfig(); var cf=cfg.custom_fields||[];
+  var extra={};
+  cf.forEach(function(f){ var el=document.getElementById('rx'+f.id); if(el) extra[f.id]=el.value.trim(); });
+  var regs=getRegs();
+  var eid=document.getElementById('reg_edit_id').value;
+  if(eid){
+    var i=regs.findIndex(function(r){ return r.id==eid; });
+    if(i>=0){ regs[i]={...regs[i],nome:nome,cognome:cognome,email:email,telefono:tel,extra:extra}; }
+    showToast('Iscritto aggiornato','g');
+  } else {
+    regs.push({id:Date.now(),nome:nome,cognome:cognome,email:email,telefono:tel,
+      extra:extra,data:new Date().toLocaleDateString('it-IT'),
+      ora:new Date().toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})});
+    showToast('Iscritto aggiunto','g');
+  }
+  saveRegs(regs); closeOv('ovReg'); renderDash();
+}
+
+function openDel(id,name){ delPending=id; document.getElementById('delName').textContent=name; openOv('ovDel'); }
+function confirmDelete(){
+  if(!delPending) return;
+  var regs=getRegs().filter(function(r){ return r.id!==delPending; });
+  saveRegs(regs); delPending=null; closeOv('ovDel'); showToast('Iscritto eliminato','r'); renderDash();
+}
+
+/* SETTINGS */
+function goSettings(){
+  var cfg=loadConfig();
+  document.getElementById('e_nome').value=cfg.nome||'';
+  document.getElementById('e_cap').value=cfg.capienza||'';
+  document.getElementById('e_data').value=cfg.data||'';
+  document.getElementById('e_ora').value=cfg.ora||'';
+  document.getElementById('e_luogo').value=cfg.luogo||'';
+  document.getElementById('e_desc').value=cfg.desc||'';
+  document.getElementById('e_pwd').value='';
+  document.getElementById('e_pwd2').value='';
+  openOv('ovSettings');
+}
+
+function saveSettings(){
+  var cfg=loadConfig();
+  var nome=document.getElementById('e_nome').value.trim(); if(!nome){ alert('Nome obbligatorio.'); return; }
+  cfg.nome=nome; cfg.capienza=parseInt(document.getElementById('e_cap').value)||null;
+  cfg.data=document.getElementById('e_data').value.trim();
+  cfg.ora=document.getElementById('e_ora').value.trim();
+  cfg.luogo=document.getElementById('e_luogo').value.trim();
+  cfg.desc=document.getElementById('e_desc').value.trim();
+  var pwd=document.getElementById('e_pwd').value;
+  if(pwd){ if(pwd!==document.getElementById('e_pwd2').value){ alert('Le password non coincidono.'); return; } cfg.password=pwd; }
+  saveConfig(cfg); closeOv('ovSettings'); renderDash(); showToast('Impostazioni salvate','g');
+}
+
+/* UTILS */
+function showView(name){ document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); }); document.getElementById('view-'+name).classList.add('on'); }
+function openOv(id){ document.getElementById(id).classList.add('on'); document.body.style.overflow='hidden'; }
+function closeOv(id){ document.getElementById(id).classList.remove('on'); document.body.style.overflow=''; }
+function showToast(msg,t){ var el=document.getElementById('toast'+t.toUpperCase()); el.textContent=(t==='g'?'✓ ':'✕ ')+msg; el.style.display='block'; setTimeout(function(){ el.style.display='none'; },3000); }
+
+/* INIT */
+(function(){
+  var cfg=loadConfig();
+  if(!cfg||!cfg.configured){ showView('login'); return; }
+  if(isLoggedIn()){ showView('dash'); renderDash(); }
+  else { showView('login'); }
+})();
+</script>
+
+<!-- VERSION BADGE -->
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.0</div>
+</body>
+</html>

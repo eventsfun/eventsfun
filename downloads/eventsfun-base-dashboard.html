@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<!-- EventsFun | Pacchetto Base — Dashboard | v1.1 -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — EventsFun Base</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   EVENTSFUN — EVENTO BASE — DASHBOARD PRIVATA
+   ═══════════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:#0A0A0A;color:#F5F0E8;min-height:100vh}
+
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);gap:10px;flex-wrap:wrap}
+.nav-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:#F5F0E8;letter-spacing:-.3px}
+.nav-logo span{color:#C9A96E}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-pill{font-size:10px;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.1);color:rgba(240,237,232,0.6);font-weight:700;letter-spacing:.5px}
+.nav-logout{font-size:12px;color:rgba(240,237,232,0.45);cursor:pointer;background:none;border:none;font-family:inherit;transition:color .2s}
+.nav-logout:hover{color:#F5F0E8}
+
+/* VIEWS */
+.view{display:none}.view.on{display:block}
+
+/* ═══ LOGIN ═══ */
+.login-wrap{min-height:calc(100vh - 60px);display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:40px;width:100%;max-width:380px;text-align:center}
+.login-icon{font-size:36px;margin-bottom:16px}
+.login-box h2{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;margin-bottom:6px}
+.login-box p{font-size:13px;color:rgba(240,237,232,0.6);margin-bottom:28px;line-height:1.6}
+.login-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;text-align:left}
+.login-field label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55)}
+.login-field input{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.13);border-radius:8px;padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0E8;outline:none;width:100%}
+.login-field input:focus{border-color:rgba(201,169,110,0.5)}
+.login-field input::placeholder{color:rgba(240,237,232,0.3)}
+.login-err{font-size:12px;color:#e08080;margin-bottom:10px;display:none}
+.btn-gold{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-gold:hover{opacity:.87}
+
+/* ═══ SETUP WIZARD ═══ */
+.setup-wrap{max-width:680px;margin:0 auto;padding:48px 20px 80px}
+.setup-header{margin-bottom:36px}
+.setup-header h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;margin-bottom:6px;letter-spacing:-.5px}
+.setup-header p{font-size:13px;color:rgba(240,237,232,0.65);line-height:1.6}
+.setup-step{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:28px;margin-bottom:14px}
+.setup-step-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-bottom:18px}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:13px}
+.mf{display:flex;flex-direction:column;gap:6px}
+.mf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.6)}
+.mf input,.mf textarea,.mf select{background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:11px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:#F5F0E8;outline:none;transition:border-color .2s;width:100%}
+.mf input:focus,.mf textarea:focus,.mf select:focus{border-color:rgba(201,169,110,0.5)}
+.mf input::placeholder,.mf textarea::placeholder{color:rgba(240,237,232,0.3)}
+.mf textarea{resize:vertical;min-height:80px}
+.mf select option{background:#1a1a1a}
+.setup-save{width:100%;margin-top:6px;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.setup-save:hover{opacity:.87}
+
+/* ═══ DASHBOARD ═══ */
+.dash{max-width:960px;margin:0 auto;padding:36px 20px 80px}
+.dash-header{margin-bottom:32px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.dash-header-left h1{font-family:'Syne',sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.dash-header-left p{font-size:13px;color:rgba(240,237,232,0.6)}
+.btn-settings{padding:8px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(240,237,232,0.65);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
+.btn-settings:hover{border-color:rgba(255,255,255,0.25);color:#F5F0E8}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:28px}
+.stat{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 20px}
+.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.55);margin-bottom:7px;font-weight:700}
+.stat-val{font-family:'Syne',sans-serif;font-size:30px;font-weight:300;color:#C9A96E}
+
+/* Status */
+.status-bar{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.status-info h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:3px}
+.status-info p{font-size:12px;color:rgba(240,237,232,0.55)}
+.status-btns{display:flex;gap:8px;flex-wrap:wrap}
+.pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.pill-green{background:rgba(110,201,130,0.12);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
+.pill-red{background:rgba(200,80,80,0.12);color:#e08080;border:1px solid rgba(200,80,80,0.25)}
+.pill-orange{background:rgba(255,200,80,0.12);color:#FFD050;border:1px solid rgba(255,200,80,0.25)}
+.btn-sm{padding:7px 14px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(240,237,232,0.7);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;font-weight:500;transition:all .2s}
+.btn-sm:hover{border-color:rgba(255,255,255,0.25);color:#F5F0E8}
+.btn-sm-gold{border-color:rgba(201,169,110,0.35);color:#C9A96E}
+.btn-sm-gold:hover{background:rgba(201,169,110,0.08)}
+.btn-sm-red{border-color:rgba(200,80,80,0.25);color:#e08080}
+.btn-sm-red:hover{background:rgba(200,80,80,0.08)}
+
+/* Table */
+.panel{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;overflow:hidden}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid rgba(255,255,255,0.08);flex-wrap:wrap;gap:10px}
+.panel-head h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700}
+.panel-head p{font-size:12px;color:rgba(240,237,232,0.55);margin-top:2px}
+.btn-csv{padding:7px 14px;border-radius:7px;border:1px solid rgba(201,169,110,0.35);background:transparent;color:#C9A96E;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.btn-csv:hover{background:rgba(201,169,110,0.08)}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:480px}
+thead tr{border-bottom:1px solid rgba(255,255,255,0.08)}
+thead th{padding:11px 18px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);font-weight:700;white-space:nowrap}
+tbody tr{border-bottom:1px solid rgba(255,255,255,0.05);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,0.03)}
+tbody td{padding:12px 18px;font-size:13px;color:rgba(240,237,232,0.8);white-space:nowrap}
+tbody td.nm{color:#F5F0E8;font-weight:600}
+tbody td.dt{color:rgba(240,237,232,0.45);font-size:11px}
+.no-regs{padding:40px;text-align:center;color:rgba(240,237,232,0.35);font-size:13px}
+
+/* Modal overlay */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;overflow-y:auto;padding:28px 16px;backdrop-filter:blur(6px)}
+.ov.on{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:#161616;border:1px solid rgba(255,255,255,0.12);border-radius:14px;width:100%;max-width:440px;padding:28px;position:relative}
+.mcls{position:absolute;top:14px;right:14px;background:rgba(255,255,255,0.07);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:rgba(240,237,232,0.6);font-size:13px;display:flex;align-items:center;justify-content:center}
+.mcls:hover{background:rgba(255,255,255,0.14);color:#F5F0E8}
+.modal h2{font-family:'Syne',sans-serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:22px}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:nowrap}
+.toast-g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:#7ED99A}
+.toast-r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:#e08080}
+
+@media(max-width:560px){
+  .stats{grid-template-columns:1fr 1fr}
+  .form2{grid-template-columns:1fr}
+  .dash{padding:24px 14px 60px}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-logo">Events<span>Fun</span> <span style="font-size:11px;font-weight:400;color:rgba(240,237,232,0.4);margin-left:4px">Base</span></div>
+  <div class="nav-r">
+    <span class="nav-pill" id="navEvName">Dashboard</span>
+    <button class="nav-logout" id="navLogout" onclick="logout()" style="display:none">Esci</button>
+  </div>
+</nav>
+
+<!-- VIEW: LOGIN -->
+<div class="view on" id="view-login">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-icon">🔐</div>
+      <h2>Accesso Dashboard</h2>
+      <p>Inserisci la password che hai impostato durante la configurazione del tuo evento.</p>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="loginPwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <p class="login-err" id="loginErr">Password non corretta.</p>
+      <button class="btn-gold" onclick="doLogin()">Accedi</button>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.07)">
+        <p style="font-size:12px;color:rgba(240,237,232,0.4)">Prima volta? <button onclick="goSetup()" style="background:none;border:none;color:#C9A96E;font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline">Configura il tuo evento</button></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- VIEW: SETUP -->
+<div class="view" id="view-setup">
+  <div class="setup-wrap">
+    <div class="setup-header">
+      <h1>Configura il tuo evento</h1>
+      <p>Compila i dettagli una sola volta. La landing page pubblica si aggiornerà automaticamente.</p>
+    </div>
+
+    <!-- Step 1: Dati evento -->
+    <div class="setup-step">
+      <div class="setup-step-title">📋 Dati evento</div>
+      <div class="form2">
+        <div class="mf"><label>Nome evento *</label><input id="s_nome" placeholder="Es. Sagra del Paese 2026"></div>
+        <div class="mf"><label>Capienza massima</label><input id="s_cap" type="number" placeholder="100" min="1"></div>
+      </div>
+      <div class="form2">
+        <div class="mf"><label>Data *</label><input id="s_data" placeholder="Es. 15 Agosto 2026"></div>
+        <div class="mf"><label>Ora *</label><input id="s_ora" placeholder="Es. 18:00"></div>
+      </div>
+      <div class="mf" style="margin-bottom:13px"><label>Luogo *</label><input id="s_luogo" placeholder="Es. Piazza Centrale, Roma"></div>
+      <div class="mf"><label>Descrizione</label><textarea id="s_desc" placeholder="Descrivi brevemente il tuo evento..."></textarea></div>
+    </div>
+
+    <!-- Step 2: Accesso dashboard -->
+    <div class="setup-step">
+      <div class="setup-step-title">🔐 Password dashboard</div>
+      <div class="form2">
+        <div class="mf"><label>Password *</label><input id="s_pwd" type="password" placeholder="Scegli una password sicura"></div>
+        <div class="mf"><label>Conferma password *</label><input id="s_pwd2" type="password" placeholder="Ripeti la password"></div>
+      </div>
+      <p style="font-size:11px;color:rgba(240,237,232,0.45);margin-top:6px">Questa password protegge l'accesso alla tua dashboard. Conservala in un posto sicuro.</p>
+    </div>
+
+    <!-- Step 3: Stato -->
+    <div class="setup-step">
+      <div class="setup-step-title">⚙️ Stato iscrizioni</div>
+      <div class="mf">
+        <label>Stato iniziale</label>
+        <select id="s_attivo">
+          <option value="1">Aperto — le iscrizioni sono attive</option>
+          <option value="0">Chiuso — le iscrizioni sono disabilitate</option>
+        </select>
+      </div>
+    </div>
+
+    <button class="setup-save" onclick="saveSetup()">Salva configurazione e accedi alla dashboard →</button>
+  </div>
+</div>
+
+<!-- VIEW: DASHBOARD -->
+<div class="view" id="view-dash">
+  <div class="dash">
+
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <h1 id="dash-title">Dashboard</h1>
+        <p id="dash-sub">Gestione iscrizioni</p>
+      </div>
+      <button class="btn-settings" onclick="goSettings()">⚙️ Impostazioni evento</button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="stat-regs">0</div></div>
+      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="stat-posti">—</div></div>
+      <div class="stat"><div class="stat-label">Stato</div><div class="stat-val" id="stat-stato" style="font-size:16px;padding-top:8px">—</div></div>
+    </div>
+
+    <!-- Stato evento -->
+    <div class="status-bar">
+      <div class="status-info">
+        <h3 id="status-nome">—</h3>
+        <p id="status-dettagli">—</p>
+      </div>
+      <div class="status-btns">
+        <button class="btn-sm btn-sm-gold" onclick="toggleStatus()">Cambia stato</button>
+        <button class="btn-sm btn-sm-red" onclick="resetAllData()" title="Elimina tutti i dati">Reset dati</button>
+      </div>
+    </div>
+
+    <!-- Tabella iscritti -->
+    <div class="panel">
+      <div class="panel-head">
+        <div>
+          <h3 id="panel-title">Iscritti</h3>
+          <p id="panel-sub">Nessun iscritto ancora</p>
+        </div>
+        <button class="btn-csv" onclick="exportCSV()">↓ Esporta CSV</button>
+      </div>
+      <div class="twrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Telefono</th>
+              <th>Data</th>
+              <th>Ora</th>
+            </tr>
+          </thead>
+          <tbody id="regTable">
+            <tr><td colspan="5" class="no-regs">Nessun iscritto ancora</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Link evento -->
+    <div style="margin-top:20px;background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 22px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-bottom:10px">Link pagina pubblica</div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <code style="flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:9px 13px;font-size:12px;color:rgba(240,237,232,0.75);word-break:break-all">https://[tuo-utente].github.io/[tuo-repo]/</code>
+        <button class="btn-sm" onclick="window.open('landing.html','_blank')">Apri landing →</button>
+      </div>
+      <p style="font-size:11px;color:rgba(240,237,232,0.4);margin-top:8px">Questo è l'URL da condividere via QR, social, newsletter ecc. Sostituisci con il tuo URL GitHub Pages dopo la pubblicazione.</p>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL: IMPOSTAZIONI -->
+<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
+    <h2>Impostazioni evento</h2>
+    <p class="modal-sub">Modifica i dati del tuo evento. La landing si aggiorna subito.</p>
+    <div class="form2" style="margin-bottom:12px">
+      <div class="mf"><label>Nome evento</label><input id="e_nome"></div>
+      <div class="mf"><label>Capienza</label><input id="e_cap" type="number" min="1"></div>
+    </div>
+    <div class="form2" style="margin-bottom:12px">
+      <div class="mf"><label>Data</label><input id="e_data"></div>
+      <div class="mf"><label>Ora</label><input id="e_ora"></div>
+    </div>
+    <div class="mf" style="margin-bottom:12px"><label>Luogo</label><input id="e_luogo"></div>
+    <div class="mf" style="margin-bottom:20px"><label>Descrizione</label><textarea id="e_desc"></textarea></div>
+    <div class="form2">
+      <div class="mf"><label>Nuova password (opzionale)</label><input id="e_pwd" type="password" placeholder="Lascia vuoto per non cambiare"></div>
+      <div class="mf"><label>Conferma nuova password</label><input id="e_pwd2" type="password" placeholder=""></div>
+    </div>
+    <button class="btn-gold" style="margin-top:20px" onclick="saveSettings()">Salva modifiche</button>
+  </div>
+</div>
+
+<div class="toast toast-g" id="toastG"></div>
+<div class="toast toast-r" id="toastR"></div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   STORAGE
+   TODO SUPABASE: sostituire localStorage con
+   chiamate API Supabase per config e registrations
+   ═══════════════════════════════════════════════ */
+var LS_KEY  = 'ef_base_config';
+var LS_REGS = 'ef_base_regs';
+var SESSION = 'ef_base_session';
+
+function loadConfig(){ try{ return JSON.parse(localStorage.getItem(LS_KEY))||null; }catch(e){ return null; } }
+function saveConfig(c){ localStorage.setItem(LS_KEY, JSON.stringify(c)); }
+function getRegs(){ try{ return JSON.parse(localStorage.getItem(LS_REGS))||[]; }catch(e){ return []; } }
+function saveRegs(r){ localStorage.setItem(LS_REGS, JSON.stringify(r)); }
+
+/* ═══════════════════════════════════════════════
+   AUTH
+   ═══════════════════════════════════════════════ */
+function isLoggedIn(){ return sessionStorage.getItem(SESSION) === '1'; }
+function logout(){ sessionStorage.removeItem(SESSION); showView('login'); }
+
+function doLogin(){
+  var cfg = loadConfig();
+  if(!cfg){ goSetup(); return; }
+  var pwd = document.getElementById('loginPwd').value;
+  if(pwd === cfg.password){
+    sessionStorage.setItem(SESSION,'1');
+    showView('dash');
+    renderDash();
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('loginPwd').value = '';
+  }
+}
+
+function goSetup(){
+  var cfg = loadConfig();
+  if(cfg){
+    // Pre-popola se già configurato
+    document.getElementById('s_nome').value = cfg.nome || '';
+    document.getElementById('s_cap').value  = cfg.capienza || '';
+    document.getElementById('s_data').value = cfg.data || '';
+    document.getElementById('s_ora').value  = cfg.ora || '';
+    document.getElementById('s_luogo').value= cfg.luogo || '';
+    document.getElementById('s_desc').value = cfg.desc || '';
+    document.getElementById('s_attivo').value = cfg.attivo ? '1' : '0';
+  }
+  showView('setup');
+}
+
+/* ═══════════════════════════════════════════════
+   SETUP
+   ═══════════════════════════════════════════════ */
+function saveSetup(){
+  var nome  = document.getElementById('s_nome').value.trim();
+  var data  = document.getElementById('s_data').value.trim();
+  var ora   = document.getElementById('s_ora').value.trim();
+  var luogo = document.getElementById('s_luogo').value.trim();
+  var pwd   = document.getElementById('s_pwd').value;
+  var pwd2  = document.getElementById('s_pwd2').value;
+
+  if(!nome||!data||!ora||!luogo){ alert('Compila almeno: Nome evento, Data, Ora e Luogo.'); return; }
+  if(!pwd){ alert('Imposta una password per la dashboard.'); return; }
+  if(pwd !== pwd2){ alert('Le password non coincidono.'); return; }
+  if(pwd.length < 6){ alert('La password deve essere di almeno 6 caratteri.'); return; }
+
+  var cfg = {
+    configured: true,
+    nome:  nome,
+    capienza: parseInt(document.getElementById('s_cap').value)||null,
+    data:  data,
+    ora:   ora,
+    luogo: luogo,
+    desc:  document.getElementById('s_desc').value.trim(),
+    attivo: document.getElementById('s_attivo').value === '1',
+    password: pwd
+  };
+  saveConfig(cfg);
+  sessionStorage.setItem(SESSION,'1');
+  showView('dash');
+  renderDash();
+  showToast('Evento configurato!','g');
+}
+
+/* ═══════════════════════════════════════════════
+   DASHBOARD
+   ═══════════════════════════════════════════════ */
+function renderDash(){
+  var cfg  = loadConfig();
+  var regs = getRegs();
+  if(!cfg) return;
+
+  // Nav
+  document.getElementById('navEvName').textContent = cfg.nome;
+  document.getElementById('navLogout').style.display = 'inline';
+
+  // Header
+  document.getElementById('dash-title').textContent = cfg.nome;
+  document.getElementById('dash-sub').textContent = cfg.data + ' · ' + cfg.luogo;
+
+  // Stats
+  document.getElementById('stat-regs').textContent = regs.length;
+  var rimasti = cfg.capienza ? cfg.capienza - regs.length : '∞';
+  document.getElementById('stat-posti').textContent = rimasti;
+  var statoEl = document.getElementById('stat-stato');
+  if(cfg.attivo){
+    statoEl.innerHTML = '<span class="pill pill-green">Aperto</span>';
+  } else {
+    statoEl.innerHTML = '<span class="pill pill-red">Chiuso</span>';
+  }
+
+  // Status bar
+  document.getElementById('status-nome').textContent = cfg.nome;
+  document.getElementById('status-dettagli').textContent = cfg.data + ' · ' + cfg.ora + ' · ' + cfg.luogo;
+
+  // Panel
+  document.getElementById('panel-title').textContent = regs.length + ' iscritti';
+  document.getElementById('panel-sub').textContent = cfg.capienza
+    ? (cfg.capienza - regs.length) + ' posti ancora disponibili'
+    : 'Iscritti illimitati';
+
+  // Table
+  var tbody = document.getElementById('regTable');
+  if(regs.length === 0){
+    tbody.innerHTML = '<tr><td colspan="5" class="no-regs">Nessun iscritto ancora</td></tr>';
+  } else {
+    tbody.innerHTML = regs.map(function(r){
+      return '<tr>'
+        + '<td class="nm">' + r.nome + ' ' + r.cognome + '</td>'
+        + '<td>' + r.email + '</td>'
+        + '<td>' + (r.telefono||'—') + '</td>'
+        + '<td class="dt">' + r.data + '</td>'
+        + '<td class="dt">' + (r.ora||'') + '</td>'
+        + '</tr>';
+    }).join('');
+  }
+}
+
+function toggleStatus(){
+  var cfg = loadConfig();
+  cfg.attivo = !cfg.attivo;
+  saveConfig(cfg);
+  renderDash();
+  showToast(cfg.attivo ? 'Iscrizioni aperte' : 'Iscrizioni chiuse', cfg.attivo ? 'g' : 'r');
+}
+
+function resetAllData(){
+  if(!confirm('Eliminare TUTTI gli iscritti? Questa azione non può essere annullata.')) return;
+  saveRegs([]);
+  renderDash();
+  showToast('Dati eliminati','r');
+}
+
+function exportCSV(){
+  var regs = getRegs();
+  var cfg  = loadConfig();
+  if(!regs.length){ alert('Nessun iscritto da esportare.'); return; }
+  var h = ['Nome','Cognome','Email','Telefono','Data iscrizione','Ora','Newsletter'];
+  var rows = regs.map(function(r){
+    return [r.nome, r.cognome, r.email, r.telefono||'', r.data, r.ora||'', r.newsletter?'Sì':'No'];
+  });
+  var csv = [h, ...rows].map(function(r){ return r.map(function(v){ return '"'+v+'"'; }).join(','); }).join('\n');
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'}));
+  a.download = 'iscritti-' + cfg.nome + '.csv';
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════
+   SETTINGS MODAL
+   ═══════════════════════════════════════════════ */
+function goSettings(){
+  var cfg = loadConfig();
+  document.getElementById('e_nome').value  = cfg.nome || '';
+  document.getElementById('e_cap').value   = cfg.capienza || '';
+  document.getElementById('e_data').value  = cfg.data || '';
+  document.getElementById('e_ora').value   = cfg.ora || '';
+  document.getElementById('e_luogo').value = cfg.luogo || '';
+  document.getElementById('e_desc').value  = cfg.desc || '';
+  document.getElementById('e_pwd').value   = '';
+  document.getElementById('e_pwd2').value  = '';
+  openOv('ovSettings');
+}
+
+function saveSettings(){
+  var cfg  = loadConfig();
+  var nome = document.getElementById('e_nome').value.trim();
+  if(!nome){ alert('Il nome evento è obbligatorio.'); return; }
+  cfg.nome     = nome;
+  cfg.capienza = parseInt(document.getElementById('e_cap').value)||null;
+  cfg.data     = document.getElementById('e_data').value.trim();
+  cfg.ora      = document.getElementById('e_ora').value.trim();
+  cfg.luogo    = document.getElementById('e_luogo').value.trim();
+  cfg.desc     = document.getElementById('e_desc').value.trim();
+  var pwd  = document.getElementById('e_pwd').value;
+  var pwd2 = document.getElementById('e_pwd2').value;
+  if(pwd){
+    if(pwd !== pwd2){ alert('Le password non coincidono.'); return; }
+    if(pwd.length < 6){ alert('Password troppo corta (min. 6 caratteri).'); return; }
+    cfg.password = pwd;
+  }
+  saveConfig(cfg);
+  closeOv('ovSettings');
+  renderDash();
+  showToast('Impostazioni salvate','g');
+}
+
+/* ═══════════════════════════════════════════════
+   UTILS
+   ═══════════════════════════════════════════════ */
+function showView(name){
+  document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('on'); });
+  document.getElementById('view-'+name).classList.add('on');
+}
+function openOv(id){ document.getElementById(id).classList.add('on'); document.body.style.overflow='hidden'; }
+function closeOv(id){ document.getElementById(id).classList.remove('on'); document.body.style.overflow=''; }
+function showToast(msg, t){
+  var el = document.getElementById('toast'+t.toUpperCase());
+  el.textContent = (t==='g'?'✓ ':'✕ ')+msg;
+  el.style.display='block';
+  setTimeout(function(){ el.style.display='none'; }, 3000);
+}
+
+/* ═══════════════════════════════════════════════
+   INIT
+   ═══════════════════════════════════════════════ */
+(function(){
+  var cfg = loadConfig();
+  if(!cfg || !cfg.configured){
+    showView('login'); // mostra login che ha link a setup
+    return;
+  }
+  if(isLoggedIn()){
+    showView('dash');
+    renderDash();
+  } else {
+    showView('login');
+  }
+})();
+</script>
+
+<!-- VERSION BADGE -->
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.1</div>
+</body>
+</html>
