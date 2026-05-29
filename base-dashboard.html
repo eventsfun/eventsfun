@@ -2,6 +2,7 @@
 <!-- EventsFun | Base Dashboard | v6.0 Supabase -->
 <html lang="it">
 <head>
+<!-- EVENTSFUN-BUILD-205149-base -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dashboard Base — EventsFun</title>
@@ -563,6 +564,10 @@ function showErr() { showView('error'); }
 
 /* Helper sicuro: imposta display solo se l'elemento esiste */
 function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
+function setHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
+function getVal(id) { var el = document.getElementById(id); return el ? el.value : ''; }
 
 /* Rende un evento robusto: riempie i campi mancanti per evitare crash di render */
 function sanitizeEvent(ev) {
@@ -630,7 +635,6 @@ function renderDash() {
   setDisp('btnLanding', hasEv ? 'inline-block' : 'none');
   setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
   setDisp('btnSettings', hasEv ? 'inline-block' : 'none');
-  setDisp('btnCSV', hasEv ? 'inline-block' : 'none');
   setDisp('btnCreate', hasEv ? 'none' : 'inline-block');
   setDisp('btnToggleStatus', canEdit ? 'inline-block' : 'none');
 
@@ -643,13 +647,7 @@ function renderDash() {
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
 
-  /* Proroga */
-  var wp = document.getElementById('warnProroga');
-  if (ev && ev.activated && ev.expiry_date && ev.data_iso) {
-    wp.style.display = new Date(ev.data_iso) > new Date(ev.expiry_date) ? 'flex' : 'none';
-  } else { wp.style.display = 'none'; }
-
-  /* Countdown */
+  /* Proroga e Countdown non usati nel piano Base */
   // countdown non usato nel piano Base
 
   /* Status bar */
@@ -671,34 +669,7 @@ function renderDash() {
   renderTable(ev, regs, closed);
 }
 
-function renderCountdown(ev) {
-  var bar = document.getElementById('countdownBar');
-  setDisp('cdActBtn', 'none');
-  setDisp('cdClsBtn', 'none');
-  if (!ev) { bar.style.display = 'none'; document.getElementById('s-giorni').textContent = '—'; return; }
-  bar.style.display = 'flex';
-  var c = 2 * Math.PI * 22;
-  if (!ev.activated) {
-    document.getElementById('cdTitle').textContent = 'Evento non ancora attivato';
-    document.getElementById('cdSub').textContent = 'Attiva per avviare il countdown di 90 giorni';
-    document.getElementById('cdNum').textContent = '90';
-    document.getElementById('s-giorni').textContent = '—';
-    setDisp('cdActBtn', 'inline');
-    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', '0');
-    document.getElementById('cdBar').style.width = '100%';
-  } else {
-    var exp = new Date(ev.expiry_date), now = new Date();
-    var giorni = Math.max(0, Math.ceil((exp - now) / (1000 * 60 * 60 * 24)));
-    var pct = giorni / 90;
-    document.getElementById('cdTitle').textContent = 'Giorni rimasti';
-    document.getElementById('cdSub').textContent = 'Scade il ' + exp.toLocaleDateString('it-IT');
-    document.getElementById('cdNum').textContent = giorni;
-    document.getElementById('s-giorni').textContent = giorni;
-    setDisp('cdClsBtn', 'inline');
-    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', (c * (1 - pct)).toFixed(1));
-    document.getElementById('cdBar').style.width = (pct * 100) + '%';
-  }
-}
+function renderCountdown(ev) { /* countdown non usato in questo piano */ }
 
 function renderTable(ev, regs, closed) {
   if (!ev) {
@@ -764,12 +735,12 @@ function openCreateEvent() {
   openOv('ovCreate');
 }
 function resetEvForm(mode) {
-  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc'].forEach(function(id) { setVal(id, ''); });
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
   removeEvImg();
-  document.getElementById('cspList').innerHTML = '';
-  document.getElementById('ccfList').innerHTML = '';
+  setHTML('cspList', '');
+  setHTML('ccfList', '');
   spIdx.c = 0; cfIdx.c = 0;
   var defaults = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
   Object.keys(defaults).forEach(function(k) {
