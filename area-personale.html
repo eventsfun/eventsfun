@@ -1,492 +1,249 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v1.0 -->
+<!-- EventsFun | Area Personale | v4.0 Supabase Auth -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EventsFun — Area Personale</title>
+<title>Area Personale — EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'DM Sans',sans-serif;background:#0A0A0A;color:#F5F0E8;min-height:100vh}
-.nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:rgba(10,10,10,0.97);border-bottom:1px solid rgba(255,255,255,0.1);position:sticky;top:0;z-index:50;backdrop-filter:blur(16px)}
-.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:#F5F0E8;text-decoration:none}
-.nav-logo span{color:#C9A96E}
-.nav-right{display:flex;align-items:center;gap:12px}
-.nav-pill{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:700;letter-spacing:.5px}
-.pill-base{background:rgba(255,255,255,0.07);color:rgba(240,237,232,0.7);border:1px solid rgba(255,255,255,0.1)}
-.pill-pro{background:rgba(201,169,110,0.12);color:#C9A96E;border:1px solid rgba(201,169,110,0.25)}
-.pill-agenzia{background:rgba(110,201,130,0.1);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
-.main{max-width:860px;margin:0 auto;padding:48px 24px 80px}
-
-/* Stati */
-.state{display:none}.state.on{display:block}
-
-/* Loading */
-.loading-box{text-align:center;padding:100px 20px}
-.spinner{width:40px;height:40px;border:3px solid rgba(201,169,110,0.2);border-top-color:#C9A96E;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 20px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;background:var(--bg2);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:"Syne",sans-serif;font-size:17px;font-weight:800;color:var(--text);text-decoration:none;letter-spacing:-.3px}
+.nav-logo span{color:var(--gold)}
+.nav-back{font-size:13px;color:var(--text-dim);text-decoration:none;transition:color .2s}
+.nav-back:hover{color:var(--gold)}
+.wrap{max-width:640px;margin:0 auto;padding:60px 20px 80px}
+.hero{text-align:center;margin-bottom:40px}
+.hero h1{font-family:"Syne",sans-serif;font-size:32px;font-weight:800;letter-spacing:-.5px;margin-bottom:10px}
+.hero p{font-size:14px;color:var(--text-muted);line-height:1.7}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:36px;margin-bottom:20px}
+.login-icon{font-size:40px;text-align:center;margin-bottom:16px}
+.card h2{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;margin-bottom:6px;text-align:center}
+.card .card-sub{font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:24px;line-height:1.6}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)}
+.field input{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:13px 15px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
+.field input:focus{border-color:rgba(201,169,110,0.5)}
+.field input::placeholder{color:var(--text-dim)}
+.btn-gold{width:100%;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-gold:hover{opacity:.88}
+.btn-gold:disabled{opacity:.5;cursor:not-allowed}
+.alert{border-radius:8px;padding:11px 15px;font-size:13px;margin-bottom:16px;display:none;line-height:1.6}
+.alert-err{background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:var(--red)}
+.alert-ok{background:rgba(110,201,130,0.1);border:1px solid rgba(110,201,130,0.3);color:var(--green)}
+.muted{font-size:12px;color:var(--text-dim);text-align:center;margin-top:18px;line-height:1.6}
+.link-btn{background:none;border:none;color:var(--gold);font-family:inherit;font-size:12px;cursor:pointer;text-decoration:underline;padding:0}
+.link-btn:hover{opacity:.8}
+.plan-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:16px}
+.plan-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.plan-name{font-family:"Syne",sans-serif;font-size:18px;font-weight:700}
+.plan-badge{font-size:10px;padding:4px 12px;border-radius:20px;font-weight:700;letter-spacing:.5px}
+.badge-base{background:rgba(120,160,200,0.12);color:#8ab4d8;border:1px solid rgba(120,160,200,0.25)}
+.badge-pro{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
+.badge-agenzia{background:rgba(168,130,201,0.12);color:#b89cd8;border:1px solid rgba(168,130,201,0.25)}
+.plan-info{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:18px}
+.plan-info strong{color:var(--text)}
+.btn-dashboard{display:block;width:100%;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;transition:opacity .2s}
+.btn-dashboard:hover{opacity:.88}
+.status-line{display:flex;align-items:center;gap:8px;font-size:12px;margin-bottom:14px}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-green{background:var(--green)}.dot-gray{background:var(--text-dim)}.dot-gold{background:var(--gold)}
+.upsell{background:linear-gradient(135deg,rgba(201,169,110,0.1),rgba(201,169,110,0.03));border:1px solid rgba(201,169,110,0.3);border-radius:14px;padding:28px;margin-top:20px;text-align:center}
+.upsell h3{font-family:"Syne",sans-serif;font-size:19px;font-weight:700;margin-bottom:8px}
+.upsell p{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:20px}
+.pkg-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:8px}
+.pkg{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:18px;text-align:left;transition:border-color .2s}
+.pkg:hover{border-color:rgba(201,169,110,0.4)}
+.pkg-name{font-family:"Syne",sans-serif;font-size:14px;font-weight:700;margin-bottom:4px}
+.pkg-price{font-size:20px;font-weight:300;font-family:"Syne",sans-serif;color:var(--gold);margin-bottom:10px}
+.pkg-price span{font-size:12px;color:var(--text-dim)}
+.pkg a{display:block;padding:9px;border-radius:7px;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.3);color:var(--gold);font-size:12px;font-weight:700;text-align:center;text-decoration:none;transition:background .2s}
+.pkg a:hover{background:rgba(201,169,110,0.2)}
+.loading{text-align:center;padding:30px}
+.spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Error */
-.error-box{text-align:center;padding:80px 20px}
-.error-icon{font-size:48px;margin-bottom:20px}
-.error-box h2{font-family:'Syne',sans-serif;font-size:24px;font-weight:700;margin-bottom:10px}
-.error-box p{font-size:14px;color:rgba(240,237,232,0.65);line-height:1.7;max-width:400px;margin:0 auto 28px}
-
-/* Area */
-.area-header{margin-bottom:40px}
-.welcome{font-size:13px;color:rgba(240,237,232,0.6);margin-bottom:6px}
-.area-title{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;letter-spacing:-1px;margin-bottom:4px}
-.area-sub{font-size:13px;color:rgba(240,237,232,0.6)}
-
-/* Card */
-.card{background:#111;border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:28px;margin-bottom:16px;position:relative;overflow:hidden}
-.card-accent{position:absolute;top:0;left:0;right:0;height:2px}
-.card h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:6px}
-.card-sub{font-size:13px;color:rgba(240,237,232,0.65);margin-bottom:20px;line-height:1.6}
-
-/* Download */
-.dl-list{display:flex;flex-direction:column;gap:10px}
-.dl-item{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px}
-.dl-icon{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.dl-info{flex:1}
-.dl-name{font-size:13px;font-weight:600;color:#F5F0E8;margin-bottom:2px}
-.dl-desc{font-size:11px;color:rgba(240,237,232,0.55)}
-.dl-btn{padding:7px 14px;border-radius:7px;border:1px solid rgba(201,169,110,0.3);background:transparent;color:#C9A96E;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .2s}
-.dl-btn:hover{background:rgba(201,169,110,0.08)}
-.dl-btn.locked{border-color:rgba(255,255,255,0.1);color:rgba(240,237,232,0.3);cursor:not-allowed}
-
-/* Ordine */
-.info-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid rgba(255,255,255,0.06)}
-.info-row:last-child{border-bottom:none}
-.info-label{font-size:12px;color:rgba(240,237,232,0.55)}
-.info-val{font-size:12px;font-weight:600;color:#F5F0E8}
-
-/* Countdown */
-.countdown-wrap{text-align:center;padding:8px 0 16px}
-.countdown-ring{position:relative;width:110px;height:110px;margin:0 auto 16px}
-.countdown-ring svg{transform:rotate(-90deg)}
-.cd-track{fill:none;stroke:rgba(255,255,255,0.06);stroke-width:8}
-.cd-fill{fill:none;stroke:#C9A96E;stroke-width:8;stroke-linecap:round}
-.cd-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.cd-days{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#C9A96E;line-height:1}
-.cd-label{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-top:2px}
-.progress-bar{height:5px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden;margin:0 auto;max-width:200px}
-.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#8a6e3e,#C9A96E)}
-
-/* Badge */
-.badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.5px;margin-bottom:16px}
-.badge-wait{background:rgba(255,200,80,0.1);color:#FFD050;border:1px solid rgba(255,200,80,0.25)}
-.badge-active{background:rgba(110,201,130,0.1);color:#7ED99A;border:1px solid rgba(110,201,130,0.25)}
-.badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;animation:blink 1.5s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-
-/* Attivazione */
-.act-box{text-align:center;padding:24px 0}
-.act-icon{font-size:40px;margin-bottom:14px}
-.act-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;margin-bottom:8px}
-.act-desc{font-size:13px;color:rgba(240,237,232,0.65);line-height:1.7;max-width:380px;margin:0 auto 16px}
-.act-warn{font-size:11px;color:rgba(255,200,80,0.75);background:rgba(255,200,80,0.06);border:1px solid rgba(255,200,80,0.15);border-radius:8px;padding:10px 16px;margin-bottom:20px;line-height:1.6}
-
-/* Buttons */
-.btn-gold{display:inline-block;padding:13px 28px;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none;cursor:pointer;border:none;font-family:inherit;transition:opacity .2s}
-.btn-gold:hover{opacity:.87}
-.btn-outline{display:inline-block;padding:12px 24px;border-radius:9px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:rgba(240,237,232,0.65);font-size:13px;cursor:pointer;font-family:inherit;text-decoration:none;transition:all .2s}
-.btn-outline:hover{border-color:rgba(255,255,255,0.25);color:#F5F0E8}
-
-/* Upgrade */
-.upgrade-box{background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:12px;padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:16px}
-.upgrade-box p{font-size:13px;color:rgba(240,237,232,0.65)}
-.upgrade-box strong{color:#F5F0E8;display:block;margin-bottom:4px;font-size:14px}
-
-/* Support */
-.support-box{background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:18px 22px;display:flex;align-items:center;gap:14px;margin-top:28px}
-.support-box h4{font-size:13px;font-weight:600;margin-bottom:3px}
-.support-box p{font-size:12px;color:rgba(240,237,232,0.55);line-height:1.5}
-.support-box a{color:#C9A96E;font-size:12px;text-decoration:none}
-
-/* Scaduto */
-.expired-box{text-align:center;padding:28px 0}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
-@media(max-width:600px){.grid2{grid-template-columns:1fr}.main{padding:28px 16px}}
+.topbar-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
+.topbar-user p{font-size:14px;color:var(--text-muted)}
+@media(max-width:520px){.pkg-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <nav class="nav">
-  <a href="/" class="nav-logo">Events<span>Fun</span></a>
-  <div class="nav-right">
-    <span class="nav-pill" id="navPill" style="display:none"></span>
-  </div>
+  <a href="https://eventsfun.com" class="nav-logo">Events<span>Fun</span></a>
+  <a href="https://eventsfun.com" class="nav-back">← Torna al sito</a>
 </nav>
 
-<div class="main">
-
-  <!-- LOADING -->
-  <div class="state on" id="state-loading">
-    <div class="loading-box">
-      <div class="spinner"></div>
-      <p style="color:rgba(240,237,232,0.5);font-size:13px">Caricamento area personale...</p>
-    </div>
+<div class="wrap">
+  <div class="hero">
+    <h1>Area Personale</h1>
+    <p>Accedi per gestire i tuoi eventi da qualsiasi dispositivo.</p>
   </div>
 
-  <!-- ERRORE TOKEN -->
-  <div class="state" id="state-error">
-    <div class="error-box">
-      <div class="error-icon">🔐</div>
-      <h2>La tua area personale ti aspetta</h2>
-      <p>Questa pagina è riservata a chi ha già acquistato un pacchetto EventsFun.<br>Dopo l'acquisto riceverai via email il link personale per accedere.</p>
-      <p style="font-size:13px;opacity:.7;margin-top:8px">Hai già acquistato ma non trovi l'email? Controlla la cartella spam oppure contattaci.</p>
-      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-        <a href="https://eventsfun.com/#prezzi" class="btn-gold">Scegli il tuo piano</a>
-        <a href="mailto:info@eventsfun.com" class="btn-outline">Contattaci</a>
-      </div>
+  <!-- LOGIN -->
+  <div class="card" id="loginCard">
+    <div class="login-icon">🔑</div>
+    <h2>Accedi</h2>
+    <p class="card-sub">Inserisci email e password del tuo account.</p>
+    <div class="alert alert-err" id="loginAlert"></div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="emailInput" placeholder="latua@email.it">
     </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" id="pwdInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-gold" id="loginBtn" onclick="doLogin()">Accedi →</button>
+    <p class="muted">
+      <button class="link-btn" onclick="forgotPwd()">Password dimenticata?</button>
+      &nbsp;·&nbsp;
+      Non hai un account? <a href="https://eventsfun.com/#prezzi" style="color:var(--gold)">Acquista</a>
+    </p>
   </div>
 
-  <!-- EVENTO BASE -->
-  <div class="state" id="state-base">
-    <div class="area-header">
-      <div class="welcome" id="base-welcome">Benvenuto</div>
-      <h1 class="area-title">Area Personale</h1>
-      <p class="area-sub">Piano <strong style="color:#F5F0E8">Evento Base</strong></p>
-    </div>
-    <div class="card" style="border-color:rgba(255,255,255,0.12)">
-      <div class="card-accent" style="background:linear-gradient(90deg,#555,#999)"></div>
-      <h3>Il tuo pacchetto è pronto</h3>
-      <p class="card-sub">Scarica i file e segui la guida per configurare il tuo evento.</p>
-      <div class="dl-list">
-        <div class="dl-item">
-          <div class="dl-icon" style="background:rgba(255,255,255,0.06)">📦</div>
-          <div class="dl-info">
-            <div class="dl-name">eventsfun-base-dashboard.html</div>
-            <div class="dl-desc">Dashboard privata per gestire il tuo evento</div>
-          </div>
-          <button class="dl-btn" onclick="downloadFile('base-dashboard')">↓ Scarica</button>
-        </div>
-        <div class="dl-item">
-          <div class="dl-icon" style="background:rgba(255,255,255,0.06)">📖</div>
-          <div class="dl-info">
-            <div class="dl-name">Guida Evento Base</div>
-            <div class="dl-desc">Istruzioni complete per configurare e pubblicare il tuo evento · PDF</div>
-          </div>
-          <button class="dl-btn" onclick="downloadFile('guida-base')">↓ Scarica</button>
-        </div>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Dettagli ordine</h3>
-      <div style="margin-top:12px" id="base-ordine"></div>
-    </div>
-    <div class="upgrade-box">
-      <div>
-        <strong>Hai bisogno di più funzionalità?</strong>
-        <p>Passa a Evento Pro per sponsor, campi personalizzati e iscritti illimitati. Paghi solo la differenza di €50.</p>
-      </div>
-      <a href="https://buy.stripe.com/upgrade-pro" class="btn-gold" id="upgradeBtn">Upgrade a Pro →</a>
-    </div>
-    <div class="support-box">
-      <div style="font-size:22px">💬</div>
-      <div><h4>Hai bisogno di aiuto?</h4><p>Siamo disponibili per supporto e configurazione.</p><a href="mailto:info@eventsfun.com">info@eventsfun.com →</a></div>
-    </div>
-  </div>
-
-  <!-- EVENTO PRO - DA ATTIVARE -->
-  <div class="state" id="state-pro-inactive">
-    <div class="area-header">
-      <div class="welcome" id="pro-inactive-welcome">Benvenuto</div>
-      <h1 class="area-title">Area Personale</h1>
-      <p class="area-sub">Piano <strong style="color:#C9A96E">Evento Pro</strong></p>
-    </div>
-    <div class="card" style="border-color:rgba(201,169,110,0.2);background:linear-gradient(135deg,rgba(201,169,110,0.05),rgba(201,169,110,0.02))">
-      <div class="card-accent" style="background:linear-gradient(90deg,#8a6e3e,#C9A96E)"></div>
-      <span class="badge badge-wait"><span class="badge-dot"></span>In attesa di attivazione</span>
-      <div class="act-box">
-        <div class="act-icon">🚀</div>
-        <div class="act-title">Attiva il tuo Evento Pro</div>
-        <div class="act-desc">Quando sei pronto a pubblicare il tuo evento, clicca il pulsante. Da quel momento partono i tuoi <strong style="color:#F5F0E8">90 giorni</strong>.</div>
-        <div class="act-warn">⚠️ Attiva solo quando sei pronto a pubblicare — il countdown parte subito e non può essere messo in pausa.</div>
-        <button class="btn-gold" style="font-size:14px;padding:15px 36px" onclick="attivaProEvento()">Attiva ora — inizia i 90 giorni</button>
-      </div>
-    </div>
-    <div class="card">
-      <h3>I tuoi file — disponibili dopo l'attivazione</h3>
-      <p class="card-sub">I file saranno sbloccati non appena attiverai il piano.</p>
-      <div class="dl-list">
-        <div class="dl-item" style="opacity:.4">
-          <div class="dl-icon" style="background:rgba(255,255,255,0.04)">📦</div>
-          <div class="dl-info"><div class="dl-name">eventsfun-pro-dashboard.html</div><div class="dl-desc">Dashboard completa Pro</div></div>
-          <button class="dl-btn locked" disabled>🔒 Bloccato</button>
-        </div>
-        <div class="dl-item" style="opacity:.4">
-          <div class="dl-icon" style="background:rgba(255,255,255,0.04)">📖</div>
-          <div class="dl-info"><div class="dl-name">Guida Evento Pro</div><div class="dl-desc">Guida completa con sponsor e campi personalizzati · PDF</div></div>
-          <button class="dl-btn locked" disabled>🔒 Bloccato</button>
-        </div>
-      </div>
-    </div>
-    <div class="support-box">
-      <div style="font-size:22px">💬</div>
-      <div><h4>Hai domande prima di attivare?</h4><p>Contattaci prima di avviare il countdown.</p><a href="mailto:info@eventsfun.com">info@eventsfun.com →</a></div>
-    </div>
-  </div>
-
-  <!-- EVENTO PRO - ATTIVO -->
-  <div class="state" id="state-pro-active">
-    <div class="area-header">
-      <div class="welcome" id="pro-active-welcome">Benvenuto</div>
-      <h1 class="area-title">Area Personale</h1>
-      <p class="area-sub">Piano <strong style="color:#C9A96E">Evento Pro</strong></p>
-    </div>
-    <div class="grid2">
-      <div class="card" style="border-color:rgba(201,169,110,0.2);text-align:center">
-        <div class="card-accent" style="background:linear-gradient(90deg,#8a6e3e,#C9A96E)"></div>
-        <span class="badge badge-active" style="margin-top:8px"><span class="badge-dot"></span>Attivo</span>
-        <div class="countdown-wrap">
-          <div class="countdown-ring">
-            <svg width="110" height="110" viewBox="0 0 110 110">
-              <circle class="cd-track" cx="55" cy="55" r="46"/>
-              <circle class="cd-fill" cx="55" cy="55" r="46" id="cdFill" stroke-dasharray="289" stroke-dashoffset="0"/>
-            </svg>
-            <div class="cd-center">
-              <div class="cd-days" id="cdDays">—</div>
-              <div class="cd-label">giorni rimasti</div>
-            </div>
-          </div>
-          <p style="font-size:12px;color:rgba(240,237,232,0.5)">Scade il <strong style="color:#F5F0E8" id="cdExp">—</strong></p>
-          <div class="progress-bar" style="margin-top:10px"><div class="progress-fill" id="cdBar" style="width:100%"></div></div>
-        </div>
-      </div>
-      <div class="card">
-        <h3>Il tuo evento</h3>
-        <div style="margin-top:12px" id="pro-ordine"></div>
-        <button onclick="chiudiEvento()" style="margin-top:14px;width:100%;padding:9px;border-radius:8px;border:1px solid rgba(200,80,80,0.2);background:transparent;color:rgba(200,80,80,0.6);font-size:12px;font-family:inherit;cursor:pointer">
-          Chiudi evento anticipatamente
-        </button>
-      </div>
-    </div>
-    <div class="card" style="border-color:rgba(201,169,110,0.2)">
-      <div class="card-accent" style="background:linear-gradient(90deg,#8a6e3e,#C9A96E)"></div>
-      <h3>Scarica i tuoi file</h3>
-      <p class="card-sub">Disponibili per tutta la durata del periodo attivo.</p>
-      <div class="dl-list">
-        <div class="dl-item">
-          <div class="dl-icon" style="background:rgba(201,169,110,0.1)">📦</div>
-          <div class="dl-info"><div class="dl-name">eventsfun-pro-dashboard.html</div><div class="dl-desc">Dashboard completa Pro con sponsor e campi personalizzati</div></div>
-          <button class="dl-btn" onclick="downloadFile('pro-dashboard')">↓ Scarica</button>
-        </div>
-        <div class="dl-item">
-          <div class="dl-icon" style="background:rgba(255,255,255,0.05)">📖</div>
-          <div class="dl-info"><div class="dl-name">Guida Evento Pro</div><div class="dl-desc">Guida completa · PDF</div></div>
-          <button class="dl-btn" onclick="downloadFile('guida-pro')">↓ Scarica</button>
-        </div>
-      </div>
-    </div>
-    <div class="support-box">
-      <div style="font-size:22px">💬</div>
-      <div><h4>Supporto tecnico</h4><p>Hai problemi con la configurazione?</p><a href="mailto:info@eventsfun.com">info@eventsfun.com →</a></div>
-    </div>
-  </div>
-
-  <!-- PRO SCADUTO -->
-  <div class="state" id="state-pro-expired">
-    <div class="area-header">
-      <div class="welcome" id="expired-welcome">Ciao</div>
-      <h1 class="area-title">Area Personale</h1>
-      <p class="area-sub">Piano <strong style="color:#F5F0E8">Evento Pro</strong> — Scaduto</p>
-    </div>
-    <div class="card" style="border-color:rgba(200,80,80,0.2)">
-      <div class="card-accent" style="background:linear-gradient(90deg,#803030,#c05050)"></div>
-      <div class="expired-box">
-        <div style="font-size:40px;margin-bottom:14px">📅</div>
-        <h3 style="font-size:18px;margin-bottom:8px">Il periodo di 90 giorni è terminato</h3>
-        <p style="font-size:13px;color:rgba(240,237,232,0.65);line-height:1.7;max-width:400px;margin:0 auto 20px">La tua pagina evento è offline. I dati degli iscritti rimangono scaricabili per 30 giorni.</p>
-        <div class="dl-list" style="text-align:left;max-width:440px;margin:0 auto 20px">
-          <div class="dl-item">
-            <div class="dl-icon" style="background:rgba(200,80,80,0.08)">📋</div>
-            <div class="dl-info"><div class="dl-name">Export iscritti finale</div><div class="dl-desc">Scarica la lista completa degli iscritti · CSV</div></div>
-            <button class="dl-btn" onclick="downloadFile('export-csv')">↓ Scarica</button>
-          </div>
-        </div>
-        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
-          <a href="/#prezzi" class="btn-gold">Acquista un nuovo Evento Pro</a>
-          <a href="/#prezzi" class="btn-outline">Scopri il piano Agenzia</a>
-        </div>
-      </div>
-    </div>
-    <div class="support-box">
-      <div style="font-size:22px">💬</div>
-      <div><h4>Vuoi prolungare?</h4><p>Contattaci per opzioni di rinnovo.</p><a href="mailto:info@eventsfun.com">info@eventsfun.com →</a></div>
-    </div>
-  </div>
-
+  <div id="resultArea"></div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════
-// CONFIGURAZIONE SUPABASE
-// ═══════════════════════════════════════════════
-const SUPABASE_URL = 'https://vousendridklswygvqpl.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
+var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epS1oiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
 
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_KEY);
+function authH(){return {'apikey':SB_KEY,'Content-Type':'application/json'};}
+function sbH(token){return {'apikey':SB_KEY,'Authorization':'Bearer '+(token||SB_KEY),'Content-Type':'application/json'};}
 
-let currentToken = null;
-let currentOrder = null;
-let currentActivation = null;
+async function authLogin(email,pwd){
+  var r=await fetch(SB_URL+'/auth/v1/token?grant_type=password',{method:'POST',headers:authH(),body:JSON.stringify({email:email,password:pwd})});
+  var data=await r.json();
+  if(!r.ok)throw new Error(data.msg||data.error_description||data.error||'Credenziali non valide');
+  return data;
+}
+async function authReset(email){
+  var r=await fetch(SB_URL+'/auth/v1/recover',{method:'POST',headers:authH(),body:JSON.stringify({email:email,options:{redirectTo:'https://eventsfun.com/imposta-password.html'}})});
+  if(!r.ok){var d=await r.json();throw new Error(d.msg||'Errore');}
+  return true;
+}
+async function sbGet(table, filters, sel, token){
+  var url=SB_URL+'/rest/v1/'+table+'?';
+  if(sel)url+='select='+sel+'&';
+  Object.entries(filters||{}).forEach(function(e){url+=e[0]+'=eq.'+encodeURIComponent(e[1])+'&';});
+  var r=await fetch(url,{headers:sbH(token)});
+  if(!r.ok)throw new Error(await r.text());
+  return r.json();
+}
 
-// ═══════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════
-async function init() {
-  const params = new URLSearchParams(window.location.search);
-  const token = params.get('token');
+var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403'};
+var DASH_FILE={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html'};
+var PLAN_LABEL={base:'Base',pro:'Pro',agenzia:'Agenzia'};
+var currentEmail='',accessToken='';
 
-  if (!token) {
-    showState('error');
-    return;
+function isClosed(ev){if(!ev||!ev.data_iso)return false;var t=new Date();t.setHours(0,0,0,0);var d=new Date(ev.data_iso);d.setHours(0,0,0,0);d.setDate(d.getDate()+1);return t>=d;}
+function isoToIt(iso){if(!iso)return '';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+
+function showAlert(msg,type){var a=document.getElementById('loginAlert');a.className='alert alert-'+(type||'err');a.textContent=(type==='ok'?'':'⚠️ ')+msg;a.style.display='block';}
+function hideAlert(){document.getElementById('loginAlert').style.display='none';}
+
+async function doLogin(){
+  var email=(document.getElementById('emailInput').value||'').trim().toLowerCase();
+  var pwd=document.getElementById('pwdInput').value;
+  hideAlert();
+  if(!email||!email.includes('@')){showAlert('Inserisci un\'email valida.');return;}
+  if(!pwd){showAlert('Inserisci la password.');return;}
+  var btn=document.getElementById('loginBtn');btn.disabled=true;btn.textContent='Accesso...';
+  try{
+    var data=await authLogin(email,pwd);
+    accessToken=data.access_token;currentEmail=email;
+    sessionStorage.setItem('ef_at',accessToken);
+    sessionStorage.setItem('ef_email',email);
+    document.getElementById('loginCard').style.display='none';
+    await loadDashboards();
+  }catch(e){
+    btn.disabled=false;btn.textContent='Accedi →';
+    var m=(e.message||'').toLowerCase();
+    if(m.includes('not confirmed')){showAlert('Devi prima impostare la password dal link ricevuto via email.');}
+    else{showAlert('Email o password non corretti.');}
   }
+}
 
-  currentToken = token;
+async function forgotPwd(){
+  var email=(document.getElementById('emailInput').value||'').trim().toLowerCase();
+  if(!email||!email.includes('@')){showAlert('Inserisci prima la tua email, poi clicca "Password dimenticata".');return;}
+  try{
+    await authReset(email);
+    showAlert('Ti abbiamo inviato un\'email per reimpostare la password.','ok');
+  }catch(e){showAlert('Errore nell\'invio. Riprova.');}
+}
 
-  try {
-    // Carica activation
-    const { data: activation, error: actErr } = await sb
-      .from('activations')
-      .select('*, orders(*)')
-      .eq('token', token)
-      .single();
-
-    if (actErr || !activation) {
-      showState('error');
+async function loadDashboards(){
+  var area=document.getElementById('resultArea');
+  area.innerHTML='<div class="card"><div class="loading"><div class="spinner"></div><p style="font-size:13px;color:var(--text-muted)">Carico le tue dashboard...</p></div></div>';
+  try{
+    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,created_at',accessToken);
+    if(!orders||!orders.length){
+      area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
     }
-
-    currentActivation = activation;
-    currentOrder = activation.orders;
-
-    // Aggiorna nav
-    const pill = document.getElementById('navPill');
-    pill.style.display = 'inline';
-    if (currentOrder.piano === 'base') { pill.textContent = 'Evento Base'; pill.className = 'nav-pill pill-base'; }
-    else if (currentOrder.piano === 'pro') { pill.textContent = 'Evento Pro'; pill.className = 'nav-pill pill-pro'; }
-    else { pill.textContent = 'Agenzia'; pill.className = 'nav-pill pill-agenzia'; }
-
-    const nome = currentOrder.nome || '';
-    const dataAcquisto = new Date(currentOrder.created_at).toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'});
-
-    if (currentOrder.piano === 'base') {
-      document.getElementById('base-welcome').textContent = nome ? `Benvenuto, ${nome}` : 'Benvenuto';
-      renderOrdine('base-ordine', currentOrder, currentActivation);
-      showState('base');
-
-    } else if (currentOrder.piano === 'pro') {
-      const nomeEl = nome ? `Benvenuto, ${nome}` : 'Benvenuto';
-
-      if (!activation.activated) {
-        document.getElementById('pro-inactive-welcome').textContent = nomeEl;
-        showState('pro-inactive');
-      } else {
-        // Calcola giorni rimasti
-        const expiry = new Date(activation.expiry_date);
-        const now = new Date();
-        const diff = Math.ceil((expiry - now) / (1000*60*60*24));
-
-        if (diff <= 0) {
-          document.getElementById('expired-welcome').textContent = nome || 'Ciao';
-          showState('pro-expired');
-        } else {
-          document.getElementById('pro-active-welcome').textContent = nomeEl;
-          renderOrdine('pro-ordine', currentOrder, currentActivation);
-          renderCountdown(diff, expiry);
-          showState('pro-active');
-        }
+    var html='<div class="topbar-user"><p>Bentornato'+(orders[0].nome?', <strong style="color:var(--text)">'+orders[0].nome+'</strong>':'')+'</p><button class="link-btn" onclick="doLogout()">Esci</button></div>';
+    var anyActive=false;
+    for(var i=0;i<orders.length;i++){
+      var order=orders[i];var piano=order.piano||'base';var token=null,ev=null;
+      try{var acts=await sbGet('activations',{order_id:order.id},'token',accessToken);if(acts&&acts.length)token=acts[0].token;}catch(e){}
+      if(token){try{var evs=await sbGet('events',{activation_token:token},'nome,data_iso,attivo',accessToken);if(evs&&evs.length)ev=evs[0];}catch(e){}}
+      var dashUrl=token?(DASH_FILE[piano]+'?token='+token):null;
+      var closed=ev?isClosed(ev):false;var statusHtml,infoHtml,actionHtml;
+      if(!token){
+        statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Attivazione in corso</span></div>';
+        infoHtml='<div class="plan-info">Acquisto registrato. Ricarica tra poco.</div>';actionHtml='';
+      }else if(!ev){
+        anyActive=true;
+        statusHtml='<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pronto per il primo evento</span></div>';
+        infoHtml='<div class="plan-info">Accedi alla dashboard e crea il tuo evento.</div>';
+        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>';
+      }else if(closed){
+        statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Evento concluso</span></div>';
+        infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+' concluso.</div>';
+        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard" style="background:var(--inp-bg);color:var(--text);border:1px solid var(--border)">Rivedi i dati →</a>';
+      }else{
+        anyActive=true;
+        statusHtml='<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Evento attivo</span></div>';
+        infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+'.</div>';
+        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>';
       }
+      html+='<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+statusHtml+infoHtml+actionHtml+'</div>';
     }
-
-  } catch(e) {
-    console.error(e);
-    showState('error');
+    var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
+    if(!anyActive&&hasSingleUse){html+=buildUpsell();}
+    area.innerHTML=html;
+  }catch(e){
+    area.innerHTML='<div class="card"><p style="text-align:center;color:var(--red);font-size:14px">Errore nel caricamento. <button class="link-btn" onclick="loadDashboards()">Riprova</button></p></div>';
   }
 }
 
-function renderOrdine(elId, order, activation) {
-  const el = document.getElementById(elId);
-  const dataAcquisto = new Date(order.created_at).toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'});
-  const importo = (order.importo / 100).toFixed(2).replace('.', ',');
-  let html = `
-    <div class="info-row"><span class="info-label">Piano</span><span class="info-val">${order.piano === 'base' ? 'Evento Base' : 'Evento Pro'}</span></div>
-    <div class="info-row"><span class="info-label">Importo pagato</span><span class="info-val">€${importo}</span></div>
-    <div class="info-row"><span class="info-label">Data acquisto</span><span class="info-val">${dataAcquisto}</span></div>`;
-  if (activation.activation_date) {
-    const dataAtt = new Date(activation.activation_date).toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'});
-    const dataExp = new Date(activation.expiry_date).toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'});
-    html += `<div class="info-row"><span class="info-label">Attivato il</span><span class="info-val">${dataAtt}</span></div>`;
-    html += `<div class="info-row"><span class="info-label">Scade il</span><span class="info-val" style="color:#C9A96E">${dataExp}</span></div>`;
-  }
-  el.innerHTML = html;
+function buildUpsell(){
+  return '<div class="upsell"><h3>🎉 Organizza un nuovo evento</h3><p>Il tuo evento è concluso. Pronto per il prossimo?</p><div class="pkg-grid">'
+    +'<div class="pkg"><div class="pkg-name">Evento Base</div><div class="pkg-price">€29</div><a href="'+PAYMENT_LINKS.base+'">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Evento Pro</div><div class="pkg-price">€79</div><a href="'+PAYMENT_LINKS.pro+'">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+PAYMENT_LINKS.agenzia_mensile+'">Abbonati</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+PAYMENT_LINKS.agenzia_annuale+'">Abbonati</a></div>'
+    +'</div></div>';
 }
 
-function renderCountdown(days, expiry) {
-  document.getElementById('cdDays').textContent = days;
-  document.getElementById('cdExp').textContent = expiry.toLocaleDateString('it-IT', {day:'numeric',month:'long',year:'numeric'});
-  const pct = days / 90;
-  const circ = 2 * Math.PI * 46;
-  const fill = document.getElementById('cdFill');
-  fill.setAttribute('stroke-dasharray', circ.toFixed(1));
-  fill.setAttribute('stroke-dashoffset', (circ * (1 - pct)).toFixed(1));
-  document.getElementById('cdBar').style.width = (pct * 100) + '%';
+function doLogout(){
+  sessionStorage.removeItem('ef_at');sessionStorage.removeItem('ef_email');
+  accessToken='';currentEmail='';
+  document.getElementById('resultArea').innerHTML='';
+  document.getElementById('emailInput').value='';document.getElementById('pwdInput').value='';
+  document.getElementById('loginBtn').disabled=false;document.getElementById('loginBtn').textContent='Accedi →';
+  document.getElementById('loginCard').style.display='block';
+  hideAlert();
 }
 
-async function attivaProEvento() {
-  if (!confirm('Sei sicuro? Il countdown di 90 giorni parte ora e non può essere messo in pausa.')) return;
-  const now = new Date();
-  const expiry = new Date(now);
-  expiry.setDate(expiry.getDate() + 90);
-
-  const { error } = await sb.from('activations').update({
-    activated: true,
-    activation_date: now.toISOString(),
-    expiry_date: expiry.toISOString(),
-    stato: 'active'
-  }).eq('token', currentToken);
-
-  if (error) { alert('Errore durante l\'attivazione. Riprova o contattaci.'); return; }
-  window.location.reload();
-}
-
-async function chiudiEvento() {
-  if (!confirm('Chiudere l\'evento anticipatamente? La pagina andrà offline.')) return;
-  const { error } = await sb.from('activations').update({
-    expiry_date: new Date().toISOString(),
-    stato: 'closed'
-  }).eq('token', currentToken);
-  if (error) { alert('Errore. Riprova o contattaci.'); return; }
-  window.location.reload();
-}
-
-function downloadFile(type) {
-  const urls = {
-    'base-dashboard': 'https://eventsfun.com/downloads/eventsfun-base-dashboard.html',
-    'guida-base':     'https://eventsfun.com/downloads/eventsfun-guida-base.pdf',
-    'pro-dashboard':  'https://eventsfun.com/downloads/eventsfun-pro-dashboard.html',
-    'guida-pro':      'https://eventsfun.com/downloads/eventsfun-guida-pro.pdf',
-    'export-csv':     '#'
-  };
-  const url = urls[type];
-  if (url && url !== '#') window.open(url, '_blank');
-  else alert('File in preparazione. Contattaci a info@eventsfun.com');
-}
-
-function showState(name) {
-  document.querySelectorAll('.state').forEach(el => el.classList.remove('on'));
-  const el = document.getElementById('state-' + name);
-  if (el) el.classList.add('on');
-}
-
-init();
+(function(){
+  var at=sessionStorage.getItem('ef_at'),em=sessionStorage.getItem('ef_email');
+  if(at&&em){accessToken=at;currentEmail=em;document.getElementById('loginCard').style.display='none';loadDashboards();}
+})();
 </script>
 </body>
 </html>
