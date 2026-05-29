@@ -577,6 +577,10 @@ function showErr() { showView('error'); }
 
 /* Helper sicuro: imposta display solo se l'elemento esiste */
 function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
+function setHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
+function getVal(id) { var el = document.getElementById(id); return el ? el.value : ''; }
 
 /* Rende un evento robusto: riempie i campi mancanti per evitare crash di render */
 function sanitizeEvent(ev) {
@@ -778,12 +782,12 @@ function openCreateEvent() {
   openOv('ovCreate');
 }
 function resetEvForm(mode) {
-  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc'].forEach(function(id) { setVal(id, ''); });
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
   removeEvImg();
-  document.getElementById('cspList').innerHTML = '';
-  document.getElementById('ccfList').innerHTML = '';
+  setHTML('cspList', '');
+  setHTML('ccfList', '');
   spIdx.c = 0; cfIdx.c = 0;
   var defaults = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
   Object.keys(defaults).forEach(function(k) {
