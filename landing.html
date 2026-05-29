@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!-- EventsFun | Landing Page | v6.0 Supabase -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iscrizione evento — EventsFun</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-height:100vh;padding:40px 16px 80px}
+.wrap{max-width:520px;margin:0 auto}
+.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
+.ev-date{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:10px}
+.ev-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
+.ev-loc{font-size:13px;color:#666;margin-bottom:12px}
+.ev-desc{font-size:13px;color:#666;line-height:1.7}
+.ev-img{width:100%;max-height:220px;object-fit:cover;display:block;border-radius:12px;margin-bottom:20px}
+.cap-bar{background:#fff;border-radius:12px;padding:14px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.cap-row{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:8px}
+.cap-track{height:5px;background:#eee;border-radius:3px;overflow:hidden}
+.cap-fill{height:100%;background:#C9A96E;border-radius:3px}
+.form-title{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;margin-bottom:20px}
+.lp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.lp-fg{margin-bottom:16px}
+.lp-lbl{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#999;margin-bottom:6px}
+.lp-inp{width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:9px;font-size:13px;color:#1a1a1a;background:#fafaf8;outline:none;font-family:inherit;transition:border-color .2s}
+.lp-inp:focus{border-color:#C9A96E}
+.lp-inp::placeholder{color:#bbb}
+.lp-cnt{display:flex;align-items:center;gap:12px;margin-top:4px}
+.lp-cb{width:32px;height:32px;border-radius:7px;border:1.5px solid #e0ddd8;background:#fafaf8;font-size:17px;cursor:pointer;font-family:inherit;transition:border-color .2s}
+.lp-cb:hover{border-color:#C9A96E}
+.lp-cnt-val{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;min-width:24px;text-align:center}
+.lp-chk{display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer}
+.lp-nl{display:flex;align-items:center;gap:10px;font-size:13px;color:#888;cursor:pointer;margin-top:8px}
+.submit-btn{width:100%;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit;transition:opacity .2s}
+.submit-btn:hover{opacity:.87}
+.submit-btn:disabled{opacity:.5;cursor:not-allowed}
+.closed-box{background:#f5e6e6;border:1px solid #e0a0a0;border-radius:10px;padding:14px;text-align:center;color:#a04040;font-size:13px;font-weight:600}
+.spon-wrap{margin-top:32px;padding-top:28px;border-top:1px solid #e8e4de;text-align:center}
+.spon-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:18px}
+.spon-list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.spon-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f8f7f5;border:1px solid #e8e4de;border-radius:10px;text-decoration:none;color:#333;font-size:13px;font-weight:600}
+.spon-logo{width:28px;height:28px;border-radius:5px;object-fit:contain}
+.ef-footer{margin-top:32px;text-align:center}
+.ef-badge{display:inline-flex;align-items:center;gap:8px;background:#0A0A0A;border-radius:10px;padding:10px 20px}
+.ef-name{font-family:"Syne",sans-serif;font-size:14px;font-weight:800;color:#F5F0E8;letter-spacing:-.3px}
+.ef-name span{color:#C9A96E}
+.ef-sub{font-size:11px;color:rgba(245,240,232,.45);border-left:1px solid rgba(255,255,255,.12);padding-left:8px;margin-left:4px}
+/* SUCCESS */
+.success-box{text-align:center;padding:40px 20px}
+.success-icon{font-size:56px;margin-bottom:16px}
+.success-box h2{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;margin-bottom:8px}
+.success-box p{font-size:14px;color:#666;line-height:1.7;max-width:400px;margin:0 auto}
+/* LOADING */
+.loading{min-height:50vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
+.spinner{width:36px;height:36px;border:3px solid #e0ddd8;border-top-color:#C9A96E;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err-box{text-align:center;padding:48px 20px}
+.err-box h2{font-family:"Syne",sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;color:#1a1a1a}
+.err-box p{font-size:13px;color:#666;line-height:1.7}
+.alert{background:#fef3cd;border:1px solid #fdd77e;border-radius:8px;padding:10px 14px;font-size:12px;color:#856404;margin-bottom:14px;display:none}
+@media(max-width:400px){.lp-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="loading" id="loadingState">
+    <div class="spinner"></div>
+    <p style="font-size:13px;color:#888">Caricamento evento...</p>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   SUPABASE CONFIG
+   ============================================================ */
+var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
+var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epS1oiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
+
+function sbH() { return { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' }; }
+async function sbGet(table, filters, sel) {
+  var url = SB_URL + '/rest/v1/' + table + '?';
+  if (sel) url += 'select=' + sel + '&';
+  Object.entries(filters || {}).forEach(function(e) { url += e[0] + '=eq.' + encodeURIComponent(e[1]) + '&'; });
+  var r = await fetch(url, { headers: sbH() });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+async function sbPost(table, data) {
+  var r = await fetch(SB_URL + '/rest/v1/' + table, {
+    method: 'POST', headers: Object.assign({}, sbH(), { 'Prefer': 'return=representation' }), body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var ev = null;
+var regs = [];
+var adultiCount = 1;
+var bambiniCount = 0;
+
+function isoToIt(iso) { if (!iso) return '—'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isClosed(ev) {
+  if (!ev || !ev.data_iso) return false;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var d = new Date(ev.data_iso); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
+  return t >= d;
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+async function init() {
+  var evId = new URLSearchParams(window.location.search).get('id');
+  if (!evId) { showError('Link non valido', 'Questo link non contiene un evento valido.'); return; }
+  try {
+    var evs = await sbGet('events', { id: evId }, '*');
+    if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
+    ev = evs[0];
+    regs = await sbGet('registrations', { event_id: evId }, 'id');
+    document.title = ev.nome + ' — EventsFun';
+    render();
+  } catch(e) {
+    showError('Errore di caricamento', 'Non è stato possibile caricare l\'evento. Riprova tra qualche secondo.');
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render() {
+  var app = document.getElementById('app');
+  var closed = isClosed(ev) || !ev.attivo;
+  var cf = ev.custom_fields || [];
+  var sponsors = ev.sponsors || [];
+
+  var imgHtml = ev.immagine ? '<img src="' + ev.immagine + '" class="ev-img" alt="' + ev.nome + '">' : '';
+
+  var capHtml = '';
+  if (ev.opt_capienza && ev.capienza) {
+    var posti = Math.max(0, ev.capienza - regs.length);
+    var pct = Math.round((posti / ev.capienza) * 100);
+    capHtml = '<div class="cap-bar"><div class="cap-row"><span>Posti disponibili</span><span><strong>' + posti + '</strong> / ' + ev.capienza + '</span></div><div class="cap-track"><div class="cap-fill" style="width:' + pct + '%"></div></div></div>';
+  }
+
+  var extraFields = '';
+  if (ev.opt_multipla) {
+    extraFields += '<div class="lp-fg"><label class="lp-lbl">Adulti *</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',-1)">−</button><div class="lp-cnt-val" id="cnt_adulti">1</div><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',1)">+</button></div></div>';
+    extraFields += '<div class="lp-fg"><label class="lp-lbl">Bambini</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',-1)">−</button><div class="lp-cnt-val" id="cnt_bambini">0</div><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',1)">+</button></div></div>';
+  }
+  if (ev.opt_tipo) {
+    extraFields += '<div class="lp-fg"><label class="lp-lbl">Tipo iscritto *</label><select id="r_tipo" class="lp-inp"><option value="visitatore">Visitatore</option><option value="espositore">Espositore</option></select></div>';
+  }
+  if (ev.opt_pasto) {
+    var pastoOpts = '';
+    if (ev.opt_pasto_pranzo !== false) pastoOpts += '<label class="lp-chk"><input type="checkbox" id="r_pranzo" style="accent-color:#C9A96E"> Pranzo</label>';
+    if (ev.opt_pasto_cena !== false) pastoOpts += '<label class="lp-chk"><input type="checkbox" id="r_cena" style="accent-color:#C9A96E"> Cena</label>';
+    if (pastoOpts) extraFields += '<div class="lp-fg"><label class="lp-lbl">Vuoi prenotare il pasto?</label><div style="display:flex;gap:16px;margin-top:4px">' + pastoOpts + '</div></div>';
+  }
+  cf.forEach(function(f) {
+    extraFields += '<div class="lp-fg"><label class="lp-lbl">' + f.label + (f.required ? ' *' : '') + '</label><input id="rx_' + f.id + '" class="lp-inp" placeholder="' + (f.placeholder || '') + '"></div>';
+  });
+  var nlHtml = ev.opt_newsletter !== false
+    ? '<label class="lp-nl"><input type="checkbox" id="r_newsletter" style="accent-color:#C9A96E;width:15px;height:15px"> Acconsento a ricevere comunicazioni future</label>'
+    : '';
+
+  var gdprHtml = '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="r_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> Ho letto e accetto l\'<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">informativa sul trattamento dei dati personali</a> *</label>';
+
+  var formHtml = closed
+    ? '<div class="closed-box">⛔ Le iscrizioni per questo evento sono chiuse</div>'
+    : '<h2 class="form-title">Iscriviti</h2>'
+      + '<div class="alert" id="formAlert"></div>'
+      + '<div class="lp-grid">'
+      + '<div class="lp-fg"><label class="lp-lbl">Nome *</label><input id="r_nome" class="lp-inp" placeholder="Mario"></div>'
+      + '<div class="lp-fg"><label class="lp-lbl">Cognome *</label><input id="r_cognome" class="lp-inp" placeholder="Rossi"></div>'
+      + '</div>'
+      + '<div class="lp-grid">'
+      + '<div class="lp-fg"><label class="lp-lbl">Email *</label><input id="r_email" class="lp-inp" type="email" placeholder="mario@email.it"></div>'
+      + '<div class="lp-fg"><label class="lp-lbl">Telefono</label><input id="r_tel" class="lp-inp" placeholder="333 0000000"></div>'
+      + '</div>'
+      + extraFields
+      + nlHtml
+      + gdprHtml
+      + '<button class="submit-btn" id="submitBtn" onclick="submitReg()">Iscriviti →</button>';
+
+  var sponsorsHtml = '';
+  if (sponsors.length) {
+    sponsorsHtml = '<div class="spon-wrap"><div class="spon-title">Con il supporto di</div><div class="spon-list">'
+      + sponsors.map(function(s) {
+        return '<a href="' + (s.url || '#') + '" target="_blank" class="spon-item">'
+          + (s.logo ? '<img src="' + s.logo + '" class="spon-logo">' : '')
+          + '<span>' + s.nome + '</span></a>';
+      }).join('')
+      + '</div></div>';
+  }
+
+  app.innerHTML = '<div class="card">'
+    + imgHtml
+    + '<div class="ev-date">' + isoToIt(ev.data_iso) + (ev.ora ? ' &middot; ' + ev.ora : '') + '</div>'
+    + '<h1 class="ev-title">' + ev.nome + '</h1>'
+    + (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : '')
+    + (ev.descrizione ? '<p class="ev-desc">' + ev.descrizione + '</p>' : '')
+    + '</div>'
+    + capHtml
+    + '<div class="card">' + formHtml + '</div>'
+    + sponsorsHtml
+    + '<div class="ef-footer"><div class="ef-badge"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div></div>';
+}
+
+/* ============================================================
+   COUNTER
+   ============================================================ */
+function changeCount(field, delta) {
+  if (field === 'adulti') { adultiCount = Math.max(1, adultiCount + delta); document.getElementById('cnt_adulti').textContent = adultiCount; }
+  else { bambiniCount = Math.max(0, bambiniCount + delta); document.getElementById('cnt_bambini').textContent = bambiniCount; }
+}
+
+/* ============================================================
+   SUBMIT
+   ============================================================ */
+async function submitReg() {
+  var nome = (document.getElementById('r_nome').value || '').trim();
+  var cognome = (document.getElementById('r_cognome').value || '').trim();
+  var email = (document.getElementById('r_email').value || '').trim();
+  var gdpr = document.getElementById('r_gdpr').checked;
+
+  var alert = document.getElementById('formAlert');
+  if (!nome || !cognome || !email) { showAlert('Compila i campi obbligatori: Nome, Cognome ed Email.'); return; }
+  if (!email.includes('@')) { showAlert('Inserisci un indirizzo email valido.'); return; }
+  if (!gdpr) { showAlert('Devi accettare il trattamento dei dati per procedere.'); return; }
+
+  // Check capienza
+  if (ev.capienza && regs.length >= ev.capienza) { showAlert('Spiacenti, i posti disponibili sono esauriti.'); return; }
+
+  var btn = document.getElementById('submitBtn');
+  btn.disabled = true; btn.textContent = 'Invio in corso...';
+
+  var cf = ev.custom_fields || [], extra = {};
+  cf.forEach(function(f) { var el = document.getElementById('rx_' + f.id); if (el) extra[f.id] = el.value.trim(); });
+
+  var rt = document.getElementById('r_tipo');
+  var rp = document.getElementById('r_pranzo');
+  var rc = document.getElementById('r_cena');
+  var rn = document.getElementById('r_newsletter');
+
+  var regData = {
+    event_id: ev.id,
+    nome: nome, cognome: cognome, email: email,
+    telefono: (document.getElementById('r_tel').value || '').trim(),
+    adulti: ev.opt_multipla ? adultiCount : 1,
+    bambini: ev.opt_multipla ? bambiniCount : 0,
+    tipo: rt ? rt.value : 'visitatore',
+    pranzo: rp ? rp.checked : false,
+    cena: rc ? rc.checked : false,
+    newsletter: rn ? rn.checked : false,
+    extra: extra,
+    presente: false
+  };
+
+  try {
+    await sbPost('registrations', regData);
+    showSuccess(nome);
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Iscriviti →';
+    showAlert('Si è verificato un errore. Riprova tra qualche secondo.');
+  }
+}
+
+function showAlert(msg) {
+  var a = document.getElementById('formAlert'); if (!a) return;
+  a.textContent = '⚠️ ' + msg; a.style.display = 'block';
+  setTimeout(function() { a.style.display = 'none'; }, 5000);
+}
+
+function showSuccess(nome) {
+  document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
+    + '<div class="success-icon">🎉</div>'
+    + '<h2>Grazie, ' + nome + '!</h2>'
+    + '<p>La tua iscrizione a <strong>' + ev.nome + '</strong> è stata registrata con successo.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.</p>'
+    + '</div></div>'
+    + '<div class="ef-footer"><div class="ef-badge"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div></div>';
+}
+
+function showError(title, msg) {
+  document.getElementById('app').innerHTML = '<div class="card"><div class="err-box">'
+    + '<div style="font-size:48px;margin-bottom:16px">🔍</div>'
+    + '<h2>' + title + '</h2>'
+    + '<p>' + msg + '</p>'
+    + '<p style="margin-top:16px"><a href="https://eventsfun.com" style="color:#C9A96E;font-weight:600">← Torna a EventsFun</a></p>'
+    + '</div></div>';
+}
+
+/* START */
+init();
+</script>
+</body>
+</html>
