@@ -537,25 +537,63 @@ async function init() {
   TOKEN = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ef_token');
   if (!TOKEN) { hideLoading(); showErr(); return; }
   sessionStorage.setItem('ef_token', TOKEN);
+  // STEP 1: verifica token (solo questo determina accesso valido)
+  var rows;
   try {
-    var rows = await sbGet('activations', { token: TOKEN }, 'id,stato,orders(piano)');
-    if (!rows || !rows.length) { hideLoading(); showErr(); return; }
-    var row = rows[0];
-    PIANO = row.orders ? row.orders.piano : 'pro';
-    var evs = await sbGet('events', { activation_token: TOKEN }, '*');
-    currentEv = evs && evs.length ? evs[0] : null;
-    if (currentEv) currentRegs = await sbGet('registrations', { event_id: currentEv.id }, '*');
-    hideLoading();
-    document.getElementById('mainNav').style.display = 'flex';
-    showView('dash');
-    renderDash();
+    rows = await sbGet('activations', { token: TOKEN }, 'id,stato,orders(piano)');
   } catch(e) {
-    hideLoading(); showErr();
+    // errore di rete: NON e' colpa del token, mostra dashboard vuota
+    rows = null;
   }
+  if (rows === null) {
+    // problema di connessione: prova comunque a entrare
+    PIANO = PIANO || 'base';
+  } else if (!rows.length) {
+    hideLoading(); showErr(); return;  // token davvero inesistente
+  } else {
+    PIANO = rows[0].orders ? rows[0].orders.piano : PIANO;
+  }
+
+  // STEP 2: carica eventi (errori qui NON bloccano l'accesso)
+  try {
+    var evs = await sbGet('events', { activation_token: TOKEN }, '*');
+    currentEv = (evs && evs.length) ? sanitizeEvent(evs[0]) : null;
+  } catch(e) { currentEv = null; }
+
+  // STEP 3: carica iscritti
+  try {
+    if (currentEv) currentRegs = await sbGet('registrations', { event_id: currentEv.id }, '*') || [];
+  } catch(e) { currentRegs = []; }
+
+  // STEP 4: mostra dashboard (errori di render non causano "accesso non valido")
+  hideLoading();
+  document.getElementById('mainNav').style.display = 'flex';
+  showView('dash');
+  try { renderDash(); } catch(e) { console.error('render error:', e); }
 }
 
 function hideLoading() { document.getElementById('loading').style.display = 'none'; }
 function showErr() { showView('error'); }
+
+/* Rende un evento robusto: riempie i campi mancanti per evitare crash di render */
+function sanitizeEvent(ev) {
+  if (!ev) return null;
+  ev.nome = ev.nome || 'Evento senza nome';
+  ev.data_iso = ev.data_iso || '';
+  ev.ora = ev.ora || '';
+  ev.luogo = ev.luogo || '';
+  ev.descrizione = ev.descrizione || '';
+  ev.capienza = ev.capienza || null;
+  ev.immagine = ev.immagine || null;
+  ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
+  ev.custom_fields = Array.isArray(ev.custom_fields) ? ev.custom_fields : [];
+  ev.opt_multipla = !!ev.opt_multipla;
+  ev.opt_tipo = !!ev.opt_tipo;
+  ev.opt_pasto = !!ev.opt_pasto;
+  ev.opt_newsletter = ev.opt_newsletter !== false;
+  ev.opt_capienza = !!ev.opt_capienza;
+  return ev;
+}
 
 /* ============================================================
    THEME
