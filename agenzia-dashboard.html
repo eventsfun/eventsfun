@@ -707,7 +707,7 @@ function renderDash() {
   var canEdit = hasEv && !closed;
 
   /* Header */
-  document.getElementById('dash-title').textContent = ev ? ev.nome : 'Dashboard Pro';
+  document.getElementById('dash-title').textContent = ev ? ev.nome : 'Dashboard Agenzia';
   document.getElementById('dash-sub').textContent = ev
     ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : ''))
     : 'Nessun evento creato — clicca su "Crea evento" per iniziare';
