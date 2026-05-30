@@ -2,7 +2,7 @@
 <!-- EventsFun | Base Dashboard | v6.0 Supabase -->
 <html lang="it">
 <head>
-<!-- EVENTSFUN-BUILD-205149-base -->
+<!-- EVENTSFUN-BUILD-205149-pro -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -13,53 +13,23 @@
 <title>Dashboard Base — EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-/* OVERRIDE: no countdown for this plan */
-function renderCountdown(ev) { /* disabled */ }
-async function activateEv() { /* disabled */ }
-async function closeEvManual() { /* disabled */ }
-async function applyProroga() { /* disabled */ }
-
-
-/* OVERRIDE: no tipo/pasto for this plan */
-var _origApplyOpts = applyOpts;
+/* ===== OVERRIDE PIANO BASE ===== */
+function renderCountdown(ev) { /* base: nessun countdown */ }
+async function activateEv() { /* base: disabilitato */ }
+async function closeEvManual() { /* base: disabilitato */ }
+async function applyProroga() { /* base: disabilitato */ }
+function exportCSV() { alert('L\'export CSV e\' disponibile nel piano Pro.'); }
+/* opzioni tipo/pasto non presenti nel Base: forziamo false */
+var _origSaveEvent_base = saveEvent;
+saveEvent = async function() {
+  otogState.tipo = false; otogState.pasto = false;
+  await _origSaveEvent_base();
+};
+var _origApplyOpts_base = (typeof applyOpts === 'function') ? applyOpts : null;
 applyOpts = function(ev) {
   setDisp('sect_multipla', ev.opt_multipla ? 'block' : 'none');
   setDisp('sect_newsletter', ev.opt_newsletter !== false ? 'block' : 'none');
 };
-var _origSaveEv = saveEvent;
-saveEvent = async function() {
-  otogState.tipo = false; otogState.pasto = false;
-  await _origSaveEv();
-};
-
-
-/* OVERRIDE: no sponsor/CF for this plan */
-var _origSaveSet = saveSettings;
-saveSettings = async function() {
-  // patch: clear sponsor/CF refs
-  var ev = currentEv; if (!ev) return;
-  var se_nome = document.getElementById('se_nome').value.trim(); if (!se_nome) { alert('Nome obbligatorio.'); return; }
-  var si = document.getElementById('se_img_preview');
-  var upd = {
-    nome: se_nome,
-    capienza: parseInt(document.getElementById('se_cap').value) || null,
-    data_iso: document.getElementById('se_data').value,
-    ora: document.getElementById('se_ora').value.trim(),
-    luogo: document.getElementById('se_luogo').value.trim(),
-    descrizione: document.getElementById('se_desc').value.trim(),
-    immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
-    opt_multipla: stogState.multipla, opt_tipo: false, opt_pasto: false,
-    opt_pasto_pranzo: true, opt_pasto_cena: true,
-    opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
-    sponsors: [], custom_fields: []
-  };
-  try {
-    currentEv = await sbPatch('events', ev.id, upd);
-    closeOv('ovSettings'); renderDash(); showToast('Salvato', 'g');
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
-};
-
-function exportCSV() { alert('Il piano Base non include l\'export CSV. Passa al Pro per averlo.'); }
 
 </script>
 <style>
@@ -270,8 +240,6 @@ tbody td.xv{color:var(--gold)}
       <a href="https://eventsfun.com/#prezzi" target="_blank" style="padding:12px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none">Organizza il prossimo →</a>
     </div>
 
-
-
     <div class="stats">
       <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">—</div></div>
       <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">—</div></div>
@@ -328,7 +296,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: CREA EVENTO -->
-<div class="ov" id="ovCreate" onclick="if(event.target===this)closeOv('ovCreate')">
+<div class="ov" id="ovCreate" onclick="if(event.target===this)closeOv('ovCreate')" style="display:none">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovCreate')">✕</button>
     <h2 id="evModalTitle">Crea il tuo evento</h2>
@@ -354,11 +322,6 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="sec-div">⚙️ Opzioni modulo iscrizione</div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
-      <div style="display:flex;gap:16px">
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label>
-        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_cena" checked style="accent-color:var(--gold)"> Cena</label>
-      </div>
-    </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
     <button class="btn-full" id="evSaveBtn" onclick="saveEvent()" style="margin-top:16px">Crea evento →</button>
@@ -366,7 +329,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: IMPOSTAZIONI -->
-<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')">
+<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')" style="display:none">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
     <h2>Impostazioni evento</h2>
@@ -391,7 +354,6 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div></div><div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div></div>
-    </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
     <button class="btn-full" onclick="saveSettings()" style="margin-top:16px">Salva modifiche</button>
@@ -399,7 +361,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: ISCRITTO -->
-<div class="ov" id="ovReg" onclick="if(event.target===this)closeOv('ovReg')">
+<div class="ov" id="ovReg" onclick="if(event.target===this)closeOv('ovReg')" style="display:none">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovReg')">✕</button>
     <h2 id="regTitle">Aggiungi Iscritto</h2>
@@ -418,10 +380,6 @@ tbody td.xv{color:var(--gold)}
       <div class="counter-row"><div class="counter-lbl">Adulti</div><div class="counter-ctrl"><button class="cnt-btn" onclick="cc('adulti',-1)">−</button><div class="cnt-val" id="cnt_adulti">1</div><button class="cnt-btn" onclick="cc('adulti',1)">+</button></div></div>
       <div class="counter-row" style="margin-bottom:0"><div class="counter-lbl">Bambini</div><div class="counter-ctrl"><button class="cnt-btn" onclick="cc('bambini',-1)">−</button><div class="cnt-val" id="cnt_bambini">0</div><button class="cnt-btn" onclick="cc('bambini',1)">+</button></div></div>
     </div>
-    </div>
-      <div id="sect_pranzo_row"><label class="check-row"><input type="checkbox" id="r_pranzo"><span>Pranzo</span></label></div>
-      <div id="sect_cena_row"><label class="check-row" style="margin-bottom:0"><input type="checkbox" id="r_cena"><span>Cena</span></label></div>
-    </div>
     <div id="regExtra"></div>
     <div id="sect_newsletter" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)">
       <label class="check-row"><input type="checkbox" id="r_newsletter"><span style="color:var(--text)">Acconsento a ricevere comunicazioni future</span></label>
@@ -431,7 +389,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: QR -->
-<div class="ov" id="ovQR" onclick="if(event.target===this)closeOv('ovQR')">
+<div class="ov" id="ovQR" onclick="if(event.target===this)closeOv('ovQR')" style="display:none">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovQR')">✕</button>
     <h2>QR Code evento</h2>
@@ -444,9 +402,8 @@ tbody td.xv{color:var(--gold)}
   </div>
 </div>
 
-
 <!-- MODAL: ELIMINA -->
-<div class="ov" id="ovDel" onclick="if(event.target===this)closeOv('ovDel')">
+<div class="ov" id="ovDel" onclick="if(event.target===this)closeOv('ovDel')" style="display:none">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovDel')">✕</button>
     <h2>Elimina iscritto</h2>
@@ -653,7 +610,6 @@ function renderDash() {
   setDisp('closedBanner', closed ? 'flex' : 'none');
 
   /* Proroga e Countdown non usati nel piano Base */
-  // countdown non usato nel piano Base
 
   /* Status bar */
   document.getElementById('status-nome').textContent = ev ? ev.nome : 'Nessun evento';
@@ -674,7 +630,34 @@ function renderDash() {
   renderTable(ev, regs, closed);
 }
 
-function renderCountdown(ev) { /* countdown non usato in questo piano */ }
+function renderCountdown(ev) {
+  var bar = document.getElementById('countdownBar');
+  setDisp('cdActBtn', 'none');
+  setDisp('cdClsBtn', 'none');
+  if (!ev) { bar.style.display = 'none'; document.getElementById('s-giorni').textContent = '—'; return; }
+  bar.style.display = 'flex';
+  var c = 2 * Math.PI * 22;
+  if (!ev.activated) {
+    document.getElementById('cdTitle').textContent = 'Evento non ancora attivato';
+    document.getElementById('cdSub').textContent = 'Attiva per avviare il countdown di 90 giorni';
+    document.getElementById('cdNum').textContent = '90';
+    document.getElementById('s-giorni').textContent = '—';
+    setDisp('cdActBtn', 'inline');
+    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', '0');
+    document.getElementById('cdBar').style.width = '100%';
+  } else {
+    var exp = new Date(ev.expiry_date), now = new Date();
+    var giorni = Math.max(0, Math.ceil((exp - now) / (1000 * 60 * 60 * 24)));
+    var pct = giorni / 90;
+    document.getElementById('cdTitle').textContent = 'Giorni rimasti';
+    document.getElementById('cdSub').textContent = 'Scade il ' + exp.toLocaleDateString('it-IT');
+    document.getElementById('cdNum').textContent = giorni;
+    document.getElementById('s-giorni').textContent = giorni;
+    setDisp('cdClsBtn', 'inline');
+    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', (c * (1 - pct)).toFixed(1));
+    document.getElementById('cdBar').style.width = (pct * 100) + '%';
+  }
+}
 
 function renderTable(ev, regs, closed) {
   if (!ev) {
@@ -1138,60 +1121,30 @@ function removeSeImg() { var i = document.getElementById('se_img_preview'); i.sr
 
 /* UTILS */
 function showView(n) { document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); }); document.getElementById('view-' + n).classList.add('on'); if (n === 'presenze') renderPresenze(); }
-function openOv(id) { document.getElementById(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
-function closeOv(id) { document.getElementById(id).classList.remove('on'); document.body.style.overflow = ''; }
+function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
+function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
 function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
 
 /* INIT */
 init();
 
-/* OVERRIDE: no countdown for this plan */
-function renderCountdown(ev) { /* disabled */ }
-async function activateEv() { /* disabled */ }
-async function closeEvManual() { /* disabled */ }
-async function applyProroga() { /* disabled */ }
-
-
-/* OVERRIDE: no tipo/pasto for this plan */
-var _origApplyOpts = applyOpts;
+/* ===== OVERRIDE PIANO BASE ===== */
+function renderCountdown(ev) { /* base: nessun countdown */ }
+async function activateEv() { /* base: disabilitato */ }
+async function closeEvManual() { /* base: disabilitato */ }
+async function applyProroga() { /* base: disabilitato */ }
+function exportCSV() { alert('L\'export CSV e\' disponibile nel piano Pro.'); }
+/* opzioni tipo/pasto non presenti nel Base: forziamo false */
+var _origSaveEvent_base = saveEvent;
+saveEvent = async function() {
+  otogState.tipo = false; otogState.pasto = false;
+  await _origSaveEvent_base();
+};
+var _origApplyOpts_base = (typeof applyOpts === 'function') ? applyOpts : null;
 applyOpts = function(ev) {
   setDisp('sect_multipla', ev.opt_multipla ? 'block' : 'none');
   setDisp('sect_newsletter', ev.opt_newsletter !== false ? 'block' : 'none');
 };
-var _origSaveEv = saveEvent;
-saveEvent = async function() {
-  otogState.tipo = false; otogState.pasto = false;
-  await _origSaveEv();
-};
-
-
-/* OVERRIDE: no sponsor/CF for this plan */
-var _origSaveSet = saveSettings;
-saveSettings = async function() {
-  // patch: clear sponsor/CF refs
-  var ev = currentEv; if (!ev) return;
-  var se_nome = document.getElementById('se_nome').value.trim(); if (!se_nome) { alert('Nome obbligatorio.'); return; }
-  var si = document.getElementById('se_img_preview');
-  var upd = {
-    nome: se_nome,
-    capienza: parseInt(document.getElementById('se_cap').value) || null,
-    data_iso: document.getElementById('se_data').value,
-    ora: document.getElementById('se_ora').value.trim(),
-    luogo: document.getElementById('se_luogo').value.trim(),
-    descrizione: document.getElementById('se_desc').value.trim(),
-    immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
-    opt_multipla: stogState.multipla, opt_tipo: false, opt_pasto: false,
-    opt_pasto_pranzo: true, opt_pasto_cena: true,
-    opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
-    sponsors: [], custom_fields: []
-  };
-  try {
-    currentEv = await sbPatch('events', ev.id, upd);
-    closeOv('ovSettings'); renderDash(); showToast('Salvato', 'g');
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
-};
-
-function exportCSV() { alert('Il piano Base non include l\'export CSV. Passa al Pro per averlo.'); }
 
 </script>
 
