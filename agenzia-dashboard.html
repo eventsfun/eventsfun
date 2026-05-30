@@ -5,11 +5,6 @@
 <!-- EVENTSFUN-BUILD-205149-agenzia -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
-  <link rel="shortcut icon" href="favicon.ico">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <title>Dashboard Agenzia — EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
@@ -314,6 +309,7 @@ tbody td.xv{color:var(--gold)}
         <button class="btn-sm" id="btnQR" onclick="openQR()" style="display:none">📷 QR Code</button>
         <button class="btn-sm" id="btnLanding" onclick="openLanding()" style="display:none">👁 Anteprima</button>
         <button class="btn-sm" id="btnPresenze" onclick="showView('presenze')" style="display:none">👥 Presenze</button>
+        <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
         <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
         <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
         <button class="btn-create" id="btnCreate" onclick="openCreateEvent()">+ Crea evento</button>
@@ -363,6 +359,22 @@ tbody td.xv{color:var(--gold)}
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Link pagina pubblica</div>
       <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">—</code>
+    </div>
+
+    <!-- PANNELLO LISTA D'ATTESA -->
+    <div class="panel" id="panelAttesa" style="display:none;margin-top:16px;border-color:rgba(201,169,110,0.3)">
+      <div class="panel-head" style="background:rgba(201,169,110,0.04)">
+        <div>
+          <h3 style="color:var(--gold)">⏳ Lista d'attesa</h3>
+          <p id="attesaSub" style="font-size:12px;color:var(--text-muted);margin-top:2px">—</p>
+        </div>
+      </div>
+      <div class="twrap">
+        <table>
+          <thead><tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data richiesta</th><th></th></tr></thead>
+          <tbody id="attesaTable"><tr><td colspan="5" class="no-regs">Nessuno in lista d'attesa</td></tr></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -603,6 +615,7 @@ var cfIdx = { c: 0, s: 0 };
 var otogState = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
 var stogState = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
 var LS_THEME = 'ef_theme';
+var attesaVisible = false;
 
 /* ============================================================
    INIT
@@ -727,11 +740,19 @@ function renderDash() {
   setDisp('btnCreate', hasEv ? 'none' : 'inline-block');
   setDisp('btnToggleStatus', canEdit ? 'inline-block' : 'none');
 
-  /* Stats */
-  var totP = regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
-  document.getElementById('s-regs').textContent = hasEv ? regs.length : '—';
+  /* Stats: conta solo iscritti confermati (non lista attesa) */
+  var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
+  var inAttesa = regs.filter(function(r) { return !!r.in_lista_attesa; });
+  var totP = confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  document.getElementById('s-regs').textContent = hasEv ? confermati.length : '—';
   document.getElementById('s-persone').textContent = hasEv ? totP : '—';
-  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - regs.length) : '∞') : '—';
+  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - confermati.length) : '∞') : '—';
+
+  /* Pulsante lista attesa: visibile solo se ci sono iscritti in attesa o capienza piena */
+  var mostraAttesa = hasEv && (inAttesa.length > 0 || (ev.capienza && confermati.length >= ev.capienza));
+  setDisp('btnAttesa', mostraAttesa ? 'inline-block' : 'none');
+  var btnA = document.getElementById('btnAttesa');
+  if (btnA) btnA.textContent = '⏳ Lista attesa' + (inAttesa.length > 0 ? ' (' + inAttesa.length + ')' : '');
 
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
@@ -754,11 +775,74 @@ function renderDash() {
     ? 'https://eventsfun.com/landing.html?id=' + ev.id
     : '—';
 
-  /* Table */
-  renderTable(ev, regs, closed);
+  /* Table -- solo iscritti confermati */
+  renderTable(ev, confermati, closed);
+  /* Pannello lista attesa */
+  renderAttesa(ev, inAttesa, closed);
 }
 
 function renderCountdown(ev) { /* countdown non usato in questo piano */ }
+
+/* ============================================================
+   LISTA D'ATTESA
+   ============================================================ */
+function toggleAttesa() {
+  attesaVisible = !attesaVisible;
+  setDisp('panelAttesa', attesaVisible ? 'block' : 'none');
+  var btn = document.getElementById('btnAttesa');
+  if (btn) {
+    var inAttesa = currentRegs.filter(function(r) { return !!r.in_lista_attesa; });
+    btn.textContent = (attesaVisible ? '▲ ' : '⏳ ') + 'Lista attesa' + (inAttesa.length > 0 ? ' (' + inAttesa.length + ')' : '');
+  }
+}
+
+function renderAttesa(ev, inAttesa, closed) {
+  var panel = document.getElementById('panelAttesa');
+  if (!panel) return;
+  if (!ev || inAttesa.length === 0) {
+    panel.style.display = 'none';
+    attesaVisible = false;
+    return;
+  }
+  document.getElementById('attesaSub').textContent = inAttesa.length + ' persone in attesa di posto';
+  var tbody = document.getElementById('attesaTable');
+  if (!tbody) return;
+  // Controlla se ci sono posti liberi (per mostrare il pulsante "Promuovi")
+  var confermati = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
+  var postiLiberi = ev.capienza ? Math.max(0, ev.capienza - confermati.length) : 1;
+  tbody.innerHTML = inAttesa.map(function(r) {
+    var puoPromuovere = !closed && postiLiberi > 0;
+    return '<tr>'
+      + '<td class="nm">' + r.nome + ' ' + r.cognome + '</td>'
+      + '<td>' + r.email + '</td>'
+      + '<td>' + (r.telefono || '—') + '</td>'
+      + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '—') + '</td>'
+      + '<td><div class="act-cell">'
+      + (puoPromuovere ? '<button class="btn-sm btn-sm-green" style="font-size:11px;padding:5px 10px" onclick="promuoviAttesa(\'' + r.id + '\')">✓ Promuovi</button>' : '')
+      + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + r.nome + ' ' + r.cognome + '\')">🗑️</button>'
+      + '</div></td>'
+      + '</tr>';
+  }).join('');
+}
+
+async function promuoviAttesa(id) {
+  var r = currentRegs.find(function(x) { return x.id === id; });
+  if (!r) return;
+  if (!confirm('Promuovi ' + r.nome + ' ' + r.cognome + ' dalla lista d\'attesa agli iscritti confermati?')) return;
+  try {
+    var updated = await sbPatch('registrations', id, { in_lista_attesa: false });
+    var i = currentRegs.findIndex(function(x) { return x.id === id; });
+    if (i >= 0) currentRegs[i] = updated;
+    showToast(r.nome + ' promosso agli iscritti!', 'g');
+    // Invia email conferma promozione via Edge Function
+    fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ registration_id: id, event_id: currentEv.id })
+    }).catch(function(e) { console.warn('Email conferma promozione non inviata:', e); });
+    renderDash();
+  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
+}
 
 function renderTable(ev, regs, closed) {
   if (!ev) {

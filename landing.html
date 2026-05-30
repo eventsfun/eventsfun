@@ -149,7 +149,12 @@ function render() {
   if (ev.opt_capienza && ev.capienza) {
     var posti = Math.max(0, ev.capienza - regs.length);
     var pct = Math.round((posti / ev.capienza) * 100);
-    capHtml = '<div class="cap-bar"><div class="cap-row"><span>Posti disponibili</span><span><strong>' + posti + '</strong> / ' + ev.capienza + '</span></div><div class="cap-track"><div class="cap-fill" style="width:' + pct + '%"></div></div></div>';
+    var postiLabel = posti === 0
+      ? '<span style="color:#C9A96E;font-weight:700">Lista d\'attesa disponibile</span>'
+      : '<span><strong>' + posti + '</strong> / ' + ev.capienza + '</span>';
+    capHtml = '<div class="cap-bar"><div class="cap-row"><span>Posti disponibili</span>' + postiLabel + '</div><div class="cap-track"><div class="cap-fill" style="width:' + pct + '%"></div></div>'
+      + (posti === 0 ? '<p style="font-size:11px;color:#999;margin-top:8px">L\'evento è al completo. Puoi comunque iscriverti: verrai messo in lista d\'attesa.</p>' : '')
+      + '</div>';
   }
 
   var extraFields = '';
@@ -238,9 +243,6 @@ async function submitReg() {
   if (!email.includes('@')) { showAlert('Inserisci un indirizzo email valido.'); return; }
   if (!gdpr) { showAlert('Devi accettare il trattamento dei dati per procedere.'); return; }
 
-  // Check capienza
-  if (ev.capienza && regs.length >= ev.capienza) { showAlert('Spiacenti, i posti disponibili sono esauriti.'); return; }
-
   var btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Invio in corso...';
 
@@ -251,6 +253,9 @@ async function submitReg() {
   var rp = document.getElementById('r_pranzo');
   var rc = document.getElementById('r_cena');
   var rn = document.getElementById('r_newsletter');
+
+  // Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa
+  var capienzaPiena = ev.capienza && regs.length >= ev.capienza;
 
   var regData = {
     event_id: ev.id,
@@ -263,12 +268,26 @@ async function submitReg() {
     cena: rc ? rc.checked : false,
     newsletter: rn ? rn.checked : false,
     extra: extra,
-    presente: false
+    presente: false,
+    in_lista_attesa: !!capienzaPiena
   };
 
   try {
-    await sbPost('registrations', regData);
-    showSuccess(nome);
+    var newReg = await sbPost('registrations', regData);
+    // Aggiorna contatore locale iscritti confermati (non lista attesa)
+    if (!capienzaPiena) regs.push({ id: newReg[0] ? newReg[0].id : '' });
+
+    // Email conferma via Edge Function (non bloccante: se fallisce non impedisce l'iscrizione)
+    var regId = Array.isArray(newReg) ? (newReg[0] ? newReg[0].id : '') : (newReg ? newReg.id : '');
+    if (regId) {
+      fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ registration_id: regId, event_id: ev.id })
+      }).catch(function(e) { console.warn('Email conferma non inviata:', e); });
+    }
+
+    showSuccess(nome, !!capienzaPiena);
   } catch(e) {
     btn.disabled = false; btn.textContent = 'Iscriviti →';
     showAlert('Si è verificato un errore. Riprova tra qualche secondo.');
@@ -281,11 +300,16 @@ function showAlert(msg) {
   setTimeout(function() { a.style.display = 'none'; }, 5000);
 }
 
-function showSuccess(nome) {
+function showSuccess(nome, inAttesa) {
+  var titoloTxt = inAttesa ? 'Sei in lista d\'attesa!' : 'Grazie, ' + nome + '!';
+  var iconaTxt = inAttesa ? '⏳' : '🎉';
+  var testoTxt = inAttesa
+    ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
+    : 'La tua iscrizione a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.';
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
-    + '<div class="success-icon">🎉</div>'
-    + '<h2>Grazie, ' + nome + '!</h2>'
-    + '<p>La tua iscrizione a <strong>' + ev.nome + '</strong> è stata registrata con successo.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.</p>'
+    + '<div class="success-icon">' + iconaTxt + '</div>'
+    + '<h2>' + titoloTxt + '</h2>'
+    + '<p>' + testoTxt + '</p>'
     + '</div></div>'
     + '<div class="ef-footer"><div class="ef-badge"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div></div>';
 }
