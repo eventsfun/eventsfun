@@ -25,13 +25,64 @@ Deno.serve(async (req) => {
     const session = event.data.object;
     const metadata = session.metadata || {};
 
-    let piano = metadata.piano || "base";
+    // Mappa price_id -> piano (infallibile anche con coupon/sconti a euro 0)
+    const PRICE_MAP: Record<string, string> = {
+      "price_1Tc7yB0zA2w5BrZSOQdSrtgS": "base",     // Base 29euro
+      "price_1Tc81k0zA2w5BrZShi1wuE29": "pro",      // Pro 79euro
+      "price_11c84B0zA2w5BrZSSuR7r2h8": "agenzia",  // Agenzia mensile 69euro
+      "price_1Tc85W0zA2w5BrZS1sHkTMRJ": "agenzia",  // Agenzia annuale 588euro
+    };
+
+    // Estrae price_id -- i line_items non sono inclusi nel payload webhook,
+    // vanno recuperati via API Stripe. Per le subscription usiamo il sub ID.
+    let priceId: string = metadata.price_id || "";
+
+    if (!priceId && session.subscription) {
+      // Subscription: recupera i line items dalla subscription
+      try {
+        const stripeSecret = Deno.env.get("STRIPE_SECRET_KEY")!;
+        const subRes = await fetch(
+          "https://api.stripe.com/v1/subscriptions/" + session.subscription + "?expand[]=items.data.price",
+          { headers: { "Authorization": "Bearer " + stripeSecret } }
+        );
+        if (subRes.ok) {
+          const sub = await subRes.json();
+          priceId = sub.items?.data?.[0]?.price?.id || "";
+        }
+      } catch(e) {
+        console.warn("Impossibile recuperare price_id dalla subscription:", e);
+      }
+    }
+
+    if (!priceId && session.payment_intent) {
+      // Pagamento singolo: recupera i line items dalla sessione
+      try {
+        const stripeSecret = Deno.env.get("STRIPE_SECRET_KEY")!;
+        const sessRes = await fetch(
+          "https://api.stripe.com/v1/checkout/sessions/" + session.id + "/line_items",
+          { headers: { "Authorization": "Bearer " + stripeSecret } }
+        );
+        if (sessRes.ok) {
+          const li = await sessRes.json();
+          priceId = li.data?.[0]?.price?.id || "";
+        }
+      } catch(e) {
+        console.warn("Impossibile recuperare price_id dalla sessione:", e);
+      }
+    }
+
+    let piano: string = metadata.piano || PRICE_MAP[priceId] || "";
+
     const importo = session.amount_total || 0;
-    if (!metadata.piano) {
+
+    // Fallback su importo solo se non abbiamo ancora il piano
+    if (!piano) {
       if (importo >= 7900) piano = "pro";
       else if (importo >= 6900) piano = "agenzia";
       else piano = "base";
     }
+
+    console.log("Piano rilevato:", piano, "| price_id:", priceId, "| importo:", importo);
 
     const email = session.customer_details?.email || session.customer_email || metadata.email || "";
     const nomeCompleto = session.customer_details?.name || metadata.nome || "";
