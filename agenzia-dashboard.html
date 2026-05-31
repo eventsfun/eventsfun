@@ -539,9 +539,19 @@ select option{background:#1a1a1a;color:var(--text)}
       <div><div class="opt-lbl">Consenso newsletter</div></div>
       <div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div>
     </div>
-    <div class="opt-row" style="border-bottom:none">
+    <div class="opt-row">
       <div><div class="opt-lbl">Mostra posti disponibili</div></div>
       <div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
+          Gestione automatica lista d'attesa
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, quando elimini un iscritto confermato il primo in lista d'attesa viene automaticamente confermato e riceve l'email di conferma.</span></span>
+        </div>
+        <div class="opt-sub">Elimini un confermato? Il primo in attesa avanza in automatico</div>
+      </div>
+      <div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div>
     </div>
     <div class="sec-div">🤝 Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
     <div id="sspList" style="margin-bottom:8px"></div>
@@ -694,7 +704,7 @@ var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
 var otogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
-var stogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var stogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false };
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
 /* Card statistiche personalizzabili: array di 2 elementi, null = vuoto */
@@ -783,6 +793,7 @@ function sanitizeEvent(ev) {
   ev.opt_pasto = !!ev.opt_pasto;
   ev.opt_newsletter = ev.opt_newsletter !== false;
   ev.opt_capienza = !!ev.opt_capienza;
+  ev.promo_automatica = !!ev.promo_automatica;
   ev.bozza = !!ev.bozza;
   return ev;
 }
@@ -1066,24 +1077,6 @@ function renderAttesa(ev, inAttesa, closed) {
   }).join('');
 }
 
-async function promuoviAttesa(id) {
-  var r = currentRegs.find(function(x) { return x.id === id; });
-  if (!r) return;
-  if (!confirm('Promuovi ' + r.nome + ' ' + r.cognome + ' dalla lista d\'attesa agli iscritti confermati?')) return;
-  try {
-    var updated = await sbPatch('registrations', id, { in_lista_attesa: false });
-    var i = currentRegs.findIndex(function(x) { return x.id === id; });
-    if (i >= 0) currentRegs[i] = updated;
-    showToast(r.nome + ' promosso agli iscritti!', 'g');
-    fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
-      method: 'POST',
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ registration_id: id, event_id: currentEv.id })
-    }).catch(function(e) { console.warn('Email promozione non inviata:', e); });
-    renderDash();
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
-}
-
 /* ============================================================
    RENDER TABELLA ISCRITTI
    ============================================================ */
@@ -1237,8 +1230,9 @@ function openEditEvent() {
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla','cap_persona','tipo','pasto','newsletter','capienza'].forEach(function(k) {
-    stogState[k] = ev['opt_' + k] !== undefined ? ev['opt_' + k] : (k === 'newsletter');
+  ['multipla','cap_persona','tipo','pasto','newsletter','capienza','promo_auto'].forEach(function(k) {
+    var evKey = k === 'promo_auto' ? 'promo_automatica' : 'opt_' + k;
+    stogState[k] = ev[evKey] !== undefined ? ev[evKey] : (k === 'newsletter');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
   var ss = document.getElementById('spasto_sub'); if (ss) ss.style.display = stogState.pasto ? 'block' : 'none';
@@ -1275,6 +1269,7 @@ async function saveSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter,
     opt_capienza: stogState.capienza,
+    promo_automatica: stogState.promo_auto,
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
   };
@@ -1568,16 +1563,57 @@ async function saveReg() {
 function openDel(id, name) { delPending = id; setText('delName', name); openOv('ovDel'); }
 async function confirmDel() {
   if (!delPending) return;
+  var ev = currentEv;
+  /* Controlla se l'iscritto era confermato (non in lista attesa) */
+  var regEliminata = currentRegs.find(function(r) { return r.id === delPending; });
+  var eraConfermato = regEliminata && !regEliminata.in_lista_attesa;
   try {
     await sbDel('registrations', delPending);
     currentRegs = currentRegs.filter(function(r) { return r.id !== delPending; });
-    delPending = null; closeOv('ovDel'); showToast('Eliminato', 'r'); renderDash();
+    delPending = null; closeOv('ovDel'); showToast('Eliminato', 'r');
+    /* Promozione automatica: se l'evento ha promo_automatica attivo, era un confermato
+       e c'e qualcuno in lista attesa, promuovi il primo */
+    if (ev && ev.promo_automatica && eraConfermato) {
+      var inAttesa = currentRegs.filter(function(r) { return !!r.in_lista_attesa; });
+      if (inAttesa.length > 0) {
+        var primo = inAttesa[0];
+        try {
+          var updated = await sbPatch('registrations', primo.id, { in_lista_attesa: false });
+          var i = currentRegs.findIndex(function(x) { return x.id === primo.id; });
+          if (i >= 0) currentRegs[i] = updated;
+          showToast(primo.nome + ' ' + primo.cognome + ' promosso automaticamente!', 'g');
+          fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+            method: 'POST',
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ registration_id: primo.id, event_id: ev.id, nome: primo.nome, cognome: primo.cognome, email: primo.email, in_lista_attesa: false })
+          }).catch(function(e) { console.warn('Email promozione automatica non inviata:', e); });
+        } catch(e) { console.warn('Errore promozione automatica:', e); }
+      }
+    }
+    renderDash();
   } catch(e) { showToast('Errore', 'r'); }
 }
 
 /* ============================================================
-   CSV
+   PROMOZIONE MANUALE LISTA ATTESA
    ============================================================ */
+async function promuoviAttesa(id) {
+  var r = currentRegs.find(function(x) { return x.id === id; });
+  if (!r) return;
+  if (!confirm('Promuovi ' + r.nome + ' ' + r.cognome + ' dalla lista d\'attesa agli iscritti confermati?')) return;
+  try {
+    var updated = await sbPatch('registrations', id, { in_lista_attesa: false });
+    var i = currentRegs.findIndex(function(x) { return x.id === id; });
+    if (i >= 0) currentRegs[i] = updated;
+    showToast(r.nome + ' promosso agli iscritti!', 'g');
+    fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ registration_id: id, event_id: currentEv.id, nome: r.nome, cognome: r.cognome, email: r.email, in_lista_attesa: false })
+    }).catch(function(e) { console.warn('Email promozione non inviata:', e); });
+    renderDash();
+  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
+}
 function exportCSV() {
   var ev = currentEv; if (!ev) return;
   var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
@@ -1753,6 +1789,6 @@ function showToast(msg, t) { var el = document.getElementById('toast' + t.toUppe
 init();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.0 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.1 agenzia</div>
 </body>
 </html>
