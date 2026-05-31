@@ -48,10 +48,13 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .spon-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f8f7f5;border:1px solid #e8e4de;border-radius:10px;text-decoration:none;color:#333;font-size:13px;font-weight:600}
 .spon-logo{width:28px;height:28px;border-radius:5px;object-fit:contain}
 .ef-footer{margin-top:32px;text-align:center}
-.ef-badge{display:inline-flex;align-items:center;gap:8px;background:#0A0A0A;border-radius:10px;padding:10px 20px}
+.ef-badge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
+.ef-badge-inner{display:inline-flex;align-items:center;gap:8px;background:#0A0A0A;border-radius:10px;padding:10px 20px;transition:opacity .2s}
+.ef-badge:hover .ef-badge-inner{opacity:.85}
 .ef-name{font-family:"Syne",sans-serif;font-size:14px;font-weight:800;color:#F5F0E8;letter-spacing:-.3px}
 .ef-name span{color:#C9A96E}
 .ef-sub{font-size:11px;color:rgba(245,240,232,.45);border-left:1px solid rgba(255,255,255,.12);padding-left:8px;margin-left:4px}
+.ef-cta{font-size:11px;color:#aaa;margin-top:2px}
 /* SUCCESS */
 .success-box{text-align:center;padding:40px 20px}
 .success-icon{font-size:56px;margin-bottom:16px}
@@ -244,7 +247,7 @@ function render() {
     + capHtml
     + '<div class="card">' + formHtml + '</div>'
     + sponsorsHtml
-    + '<div class="ef-footer"><div class="ef-badge"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div></div>';
+    + '<div class="ef-footer"><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
 }
 
 /* ============================================================
@@ -352,7 +355,7 @@ function showSuccess(nome, inAttesa) {
     + '<h2>' + titoloTxt + '</h2>'
     + '<p>' + testoTxt + '</p>'
     + '</div></div>'
-    + '<div class="ef-footer"><div class="ef-badge"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div></div>';
+    + '<div class="ef-footer"><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
 }
 
 function showError(title, msg) {
