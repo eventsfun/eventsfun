@@ -327,7 +327,7 @@ async function submitReg() {
       fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ registration_id: regId, event_id: ev.id })
+        body: JSON.stringify({ registration_id: regId, event_id: ev.id, nome: nome, cognome: cognome, email: email, in_lista_attesa: !!capienzaPiena })
       }).catch(function(e) { console.warn('Email conferma non inviata:', e); });
     }
 
