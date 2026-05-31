@@ -135,7 +135,16 @@ tbody td.xv{color:var(--gold)}
 .add-row-btn{font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;cursor:pointer;transition:all .2s}
 .add-row-btn:hover{border-color:rgba(201,169,110,0.4);color:var(--gold)}
 .sp-row{display:grid;grid-template-columns:38px 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
-.cf-row{display:grid;grid-template-columns:1fr 1fr auto auto;gap:8px;align-items:center;margin-bottom:8px}
+.cf-row{display:grid;grid-template-columns:1fr 120px auto auto;gap:8px;align-items:start;margin-bottom:10px;padding:10px;background:var(--inp-bg);border:1px solid var(--border2);border-radius:8px}
+.cf-row select{background:var(--bg3);border:1px solid var(--inp-border);border-radius:7px;padding:9px 8px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;width:100%}
+.cf-row select option{background:var(--bg3);color:var(--text)}
+.cf-options-area{grid-column:1/-1;padding-top:8px;margin-top:4px;border-top:1px solid var(--border2)}
+.cf-opt-list{display:flex;flex-direction:column;gap:5px;margin-bottom:6px}
+.cf-opt-item{display:flex;gap:6px;align-items:center}
+.cf-opt-item input{flex:1;background:var(--bg);border:1px solid var(--inp-border);border-radius:6px;padding:6px 10px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none}
+.cf-opt-item input:focus{border-color:rgba(201,169,110,0.5)}
+.cf-add-opt{font-size:11px;padding:3px 10px;border-radius:5px;border:1px dashed var(--border);background:transparent;color:var(--text-dim);font-family:"DM Sans",sans-serif;cursor:pointer;transition:all .2s}
+.cf-add-opt:hover{color:var(--gold);border-color:rgba(201,169,110,0.4)}
 .row-inp{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:7px;padding:9px 11px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;width:100%}
 .row-inp::placeholder{color:var(--text-dim)}
 .logo-ph{width:38px;height:38px;border-radius:6px;border:1px dashed var(--border);background:var(--inp-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;color:var(--text-dim)}
@@ -312,6 +321,12 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="mf"><label>Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
     <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
+    <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questa email viene mostrata agli iscritti nell'email di conferma come riferimento per domande sull'evento. Usa una casella che controlli regolarmente.</span></span>
+      </label>
+      <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
     <div class="mf"><label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
         <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -322,8 +337,21 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="sec-div">⚙️ Opzioni modulo iscrizione</div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
+    <div id="o_capienza_pp_row" style="display:none" class="opt-row">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Capienza per persona
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, i posti scalano contando adulti + bambini. Es: 1 iscrizione con 2 adulti e 1 bambino occupa 3 posti.</span></span>
+        </div>
+        <div class="opt-sub">I posti scalano per persona, non per iscrizione</div>
+      </div>
+      <div class="tog" id="otog_cap_persona" onclick="otog('cap_persona')"><div class="tog-dot"></div></div>
+    </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
+    <div class="sec-div">📝 Campi aggiuntivi <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
+      <button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button>
+    </div>
+    <div id="ccfList" style="margin-bottom:8px"></div>
     <button class="btn-full" id="evSaveBtn" onclick="saveEvent()" style="margin-top:16px">Crea evento →</button>
   </div>
 </div>
@@ -344,6 +372,12 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="mf"><label>Luogo</label><input id="se_luogo"></div>
     <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
+    <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
+      </label>
+      <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
     <div class="mf"><label>Immagine evento</label>
       <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
         <div class="img-ph" id="seImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -354,8 +388,19 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div></div><div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div></div>
+    <div id="s_capienza_pp_row" style="display:none" class="opt-row">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Capienza per persona
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, i posti scalano contando adulti + bambini.</span></span>
+        </div>
+        <div class="opt-sub">I posti scalano per persona, non per iscrizione</div>
+      </div>
+      <div class="tog" id="stog_cap_persona" onclick="stog('cap_persona')"><div class="tog-dot"></div></div>
+    </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
+    <div class="sec-div">📝 Campi aggiuntivi<button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button></div>
+    <div id="scfList" style="margin-bottom:8px"></div>
     <button class="btn-full" onclick="saveSettings()" style="margin-top:16px">Salva modifiche</button>
   </div>
 </div>
@@ -474,8 +519,8 @@ var currentRegs = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
-var stogState = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var otogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var stogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
 var LS_THEME = 'ef_theme';
 
 /* ============================================================
@@ -526,6 +571,7 @@ function showErr() { showView('error'); }
 
 /* Helper sicuro: imposta display solo se l'elemento esiste */
 function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function setHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
 function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
 function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
@@ -539,6 +585,7 @@ function sanitizeEvent(ev) {
   ev.ora = ev.ora || '';
   ev.luogo = ev.luogo || '';
   ev.descrizione = ev.descrizione || '';
+  ev.email_contatto = ev.email_contatto || '';
   ev.capienza = ev.capienza || null;
   ev.immagine = ev.immagine || null;
   ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
@@ -602,9 +649,12 @@ function renderDash() {
 
   /* Stats */
   var totP = regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  var postiOccupati = (ev && ev.opt_cap_persona && ev.opt_multipla)
+    ? regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+    : regs.length;
   document.getElementById('s-regs').textContent = hasEv ? regs.length : '—';
   document.getElementById('s-persone').textContent = hasEv ? totP : '—';
-  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - regs.length) : '∞') : '—';
+  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '—';
 
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
@@ -723,27 +773,30 @@ function openCreateEvent() {
   openOv('ovCreate');
 }
 function resetEvForm(mode) {
-  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc'].forEach(function(id) { setVal(id, ''); });
+  ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc', 'ev_email_contatto'].forEach(function(id) { setVal(id, ''); });
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
   removeEvImg();
   setHTML('cspList', '');
   setHTML('ccfList', '');
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
     if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
   setDisp('opasto_sub', 'none');
+  setDisp('o_capienza_pp_row', 'none');
 }
 async function saveEvent() {
   var nome = document.getElementById('ev_nome').value.trim();
   var data = document.getElementById('ev_data').value;
   var ora = document.getElementById('ev_ora').value.trim();
   var luogo = document.getElementById('ev_luogo').value.trim();
+  var emailContatto = document.getElementById('ev_email_contatto').value.trim();
   if (!nome || !data || !ora || !luogo) { alert('Compila Nome, Data, Ora e Luogo.'); return; }
+  if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
     activation_token: TOKEN,
@@ -752,11 +805,13 @@ async function saveEvent() {
     data_iso: data,
     ora: ora,
     luogo: luogo,
+    email_contatto: emailContatto,
     descrizione: document.getElementById('ev_desc').value.trim(),
     capienza: parseInt(document.getElementById('ev_cap').value) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
     attivo: true,
     opt_multipla: otogState.multipla,
+    opt_cap_persona: otogState.cap_persona,
     opt_tipo: otogState.tipo,
     opt_pasto: otogState.pasto,
     opt_pasto_pranzo: !otogState.pasto || document.getElementById('oopt_pranzo').checked,
@@ -786,14 +841,16 @@ function openEditEvent() {
   document.getElementById('se_ora').value = ev.ora || '';
   document.getElementById('se_luogo').value = ev.luogo || '';
   document.getElementById('se_desc').value = ev.descrizione || '';
+  document.getElementById('se_email_contatto').value = ev.email_contatto || '';
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla', 'tipo', 'pasto', 'newsletter', 'capienza'].forEach(function(k) {
+  ['multipla', 'cap_persona', 'tipo', 'pasto', 'newsletter', 'capienza'].forEach(function(k) {
     stogState[k] = ev['opt_' + k] !== undefined ? ev['opt_' + k] : (k === 'newsletter');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
   var ss = document.getElementById('spasto_sub'); if (ss) ss.style.display = stogState.pasto ? 'block' : 'none';
+  setDisp('s_capienza_pp_row', stogState.multipla ? 'flex' : 'none');
   var sp2 = document.getElementById('sopt_pranzo'); if (sp2) sp2.checked = ev.opt_pasto_pranzo !== false;
   var sc2 = document.getElementById('sopt_cena'); if (sc2) sc2.checked = ev.opt_pasto_cena !== false;
   document.getElementById('sspList').innerHTML = ''; spIdx.s = 0;
@@ -805,16 +862,19 @@ function openEditEvent() {
 async function saveSettings() {
   var ev = currentEv; if (!ev) return;
   var nome = document.getElementById('se_nome').value.trim(); if (!nome) { alert('Nome obbligatorio.'); return; }
+  var emailContatto = document.getElementById('se_email_contatto').value.trim();
+  if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: nome,
+    email_contatto: emailContatto,
     capienza: parseInt(document.getElementById('se_cap').value) || null,
     data_iso: document.getElementById('se_data').value,
     ora: document.getElementById('se_ora').value.trim(),
     luogo: document.getElementById('se_luogo').value.trim(),
     descrizione: document.getElementById('se_desc').value.trim(),
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
-    opt_multipla: stogState.multipla, opt_tipo: stogState.tipo, opt_pasto: stogState.pasto,
+    opt_multipla: stogState.multipla, opt_cap_persona: stogState.cap_persona, opt_tipo: stogState.tipo, opt_pasto: stogState.pasto,
     opt_pasto_pranzo: !stogState.pasto || document.getElementById('sopt_pranzo').checked,
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
@@ -911,9 +971,27 @@ function applyOpts(ev) {
 }
 function buildExtra(ev, extra) {
   var cf = ev.custom_fields || []; if (!cf.length) return '';
-  return '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border2)"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;font-weight:700">Campi aggiuntivi</div><div class="fg2">'
-    + cf.map(function(f) { var v = (extra && extra[f.id]) ? extra[f.id] : ''; return '<div class="mf"><label>' + f.label + (f.required ? ' *' : '') + '</label><input id="rx' + f.id + '" placeholder="' + (f.placeholder || '') + '" value="' + v + '"></div>'; }).join('')
-    + '</div></div>';
+  var html = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border2)"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;font-weight:700">Campi aggiuntivi</div><div>';
+  cf.forEach(function(f) {
+    var val = (extra && extra[f.id] !== undefined) ? extra[f.id] : '';
+    html += '<div class="mf" style="margin-bottom:10px"><label>' + escHtml(f.label) + (f.required ? ' *' : '') + '</label>';
+    if (f.type === 'dropdown') {
+      html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
+        + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('') + '</select>';
+    } else if (f.type === 'checkbox') {
+      var vals = Array.isArray(val) ? val : [];
+      html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">'
+        + (f.options || []).map(function(o) {
+          return '<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);cursor:pointer;font-weight:400;letter-spacing:0;text-transform:none">'
+            + '<input type="checkbox" id="rxcb' + escHtml(f.id) + '_' + escHtml(o) + '" ' + (vals.includes(o)?'checked':'') + ' style="width:15px;height:15px;accent-color:var(--gold);flex-shrink:0;cursor:pointer"> ' + escHtml(o) + '</label>';
+        }).join('') + '</div>';
+    } else {
+      html += '<input id="rx' + f.id + '" placeholder="' + escHtml(f.placeholder || '') + '" value="' + escHtml(val || '') + '">';
+    }
+    html += '</div>';
+  });
+  html += '</div></div>';
+  return html;
 }
 function cc(f, d) { var el = document.getElementById('cnt_' + f); el.textContent = Math.max(f === 'adulti' ? 1 : 0, (parseInt(el.textContent) || 0) + d); }
 async function saveReg() {
@@ -923,7 +1001,13 @@ async function saveReg() {
   var email = document.getElementById('r_email').value.trim();
   if (!nome || !cognome || !email) { alert('Compila Nome, Cognome ed Email.'); return; }
   var cf = ev.custom_fields || [], extra = {};
-  cf.forEach(function(f) { var el = document.getElementById('rx' + f.id); if (el) extra[f.id] = el.value.trim(); });
+  cf.forEach(function(f) {
+    if (f.type === 'checkbox') {
+      var checked = [];
+      (f.options || []).forEach(function(o) { var cb = document.getElementById('rxcb' + f.id + '_' + o); if (cb && cb.checked) checked.push(o); });
+      extra[f.id] = checked;
+    } else { var el = document.getElementById('rx' + f.id); if (el) extra[f.id] = el.value.trim(); }
+  });
   var eid = document.getElementById('reg_edit_id').value;
   var rt = document.getElementById('r_tipo'), rp = document.getElementById('r_pranzo'), rc = document.getElementById('r_cena'), rn = document.getElementById('r_newsletter');
   var reg = {
@@ -1068,12 +1152,46 @@ function addSP(prefix, listId, data) {
 function addCF(prefix, listId, data) {
   var id = prefix + 'cf' + (cfIdx[prefix]++);
   var req = data && data.required;
+  var type = (data && data.type) ? data.type : 'text';
   var d = document.createElement('div'); d.className = 'cf-row'; d.id = 'cfr' + id;
-  d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + (data && data.label ? data.label : '') + '">'
-    + '<input class="row-inp" placeholder="Esempio" id="cfp' + id + '" value="' + (data && data.placeholder ? data.placeholder : '') + '">'
+  var optionsHtml = '';
+  if (type === 'dropdown' || type === 'checkbox') {
+    var opts = (data && data.options) ? data.options : [];
+    optionsHtml = '<div class="cf-options-area">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+      + '<div class="cf-opt-list" id="cfopts' + id + '">' + opts.map(function(o) { return buildOptItem(id, o); }).join('') + '</div>'
+      + '<button class="cf-add-opt" onclick="addOptItem(\'' + id + '\')">+ Aggiungi opzione</button></div>';
+  }
+  d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + (data && data.label ? escHtml(data.label) : '') + '">'
+    + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
+    + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
+    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
+    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
+    + '</select>'
     + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
-    + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>';
+    + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
+    + optionsHtml;
   document.getElementById(listId).appendChild(d);
+}
+function buildOptItem(cfId, val) {
+  return '<div class="cf-opt-item"><input placeholder="Es. Opzione 1" value="' + escHtml(val || '') + '"><button class="rm-btn" style="width:22px;height:22px;font-size:11px" onclick="this.parentElement.remove()">✕</button></div>';
+}
+function addOptItem(cfId) {
+  var list = document.getElementById('cfopts' + cfId); if (!list) return;
+  var item = document.createElement('div'); item.className = 'cf-opt-item';
+  item.innerHTML = '<input placeholder="Es. Opzione"><button class="rm-btn" style="width:22px;height:22px;font-size:11px" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(item);
+}
+function onCFTypeChange(cfId, type) {
+  var row = document.getElementById('cfr' + cfId); if (!row) return;
+  var existing = row.querySelector('.cf-options-area'); if (existing) existing.remove();
+  if (type === 'dropdown' || type === 'checkbox') {
+    var area = document.createElement('div'); area.className = 'cf-options-area';
+    area.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+      + '<div class="cf-opt-list" id="cfopts' + cfId + '"></div>'
+      + '<button class="cf-add-opt" onclick="addOptItem(\'' + cfId + '\')">+ Aggiungi opzione</button>';
+    row.appendChild(area);
+  }
 }
 function collectSP(listId) {
   var sp = [];
@@ -1088,9 +1206,19 @@ function collectSP(listId) {
 function collectCF(listId) {
   var cf = [];
   document.querySelectorAll('#' + listId + ' .cf-row').forEach(function(row) {
-    var l = row.querySelector('[id^="cfl"]'), p = row.querySelector('[id^="cfp"]'), r = row.querySelector('[id^="cfr_"]');
-    var lbl = l ? l.value.trim() : ''; var ph = p ? p.value.trim() : ''; var req = r ? r.classList.contains('on') : false;
-    if (lbl) cf.push({ id: lbl.toLowerCase().replace(/\s+/g, '_'), label: lbl, placeholder: ph || '', required: !!req });
+    var l = row.querySelector('[id^="cfl"]');
+    var t = row.querySelector('[id^="cft"]');
+    var r = row.querySelector('[id^="cfr_"]');
+    var lbl = l ? l.value.trim() : '';
+    var type = t ? t.value : 'text';
+    var req = r ? r.classList.contains('on') : false;
+    if (!lbl) return;
+    var options = [];
+    if (type === 'dropdown' || type === 'checkbox') {
+      var optList = row.querySelector('.cf-opt-list');
+      if (optList) optList.querySelectorAll('input').forEach(function(inp) { var v = inp.value.trim(); if (v) options.push(v); });
+    }
+    cf.push({ id: lbl.toLowerCase().replace(/\s+/g,'_'), label: lbl, type: type, options: options, required: !!req });
   });
   return cf;
 }
@@ -1106,11 +1234,13 @@ function otog(k) {
   otogState[k] = !otogState[k];
   var el = document.getElementById('otog_' + k); if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('opasto_sub'); if (s) s.style.display = otogState[k] ? 'block' : 'none'; }
+  if (k === 'multipla') { setDisp('o_capienza_pp_row', otogState[k] ? 'flex' : 'none'); if (!otogState[k]) { otogState['cap_persona'] = false; var cp = document.getElementById('otog_cap_persona'); if (cp) cp.classList.remove('on'); } }
 }
 function stog(k) {
   stogState[k] = !stogState[k];
   var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('spasto_sub'); if (s) s.style.display = stogState[k] ? 'block' : 'none'; }
+  if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); if (!stogState[k]) { stogState['cap_persona'] = false; var cp = document.getElementById('stog_cap_persona'); if (cp) cp.classList.remove('on'); } }
 }
 
 /* IMAGE UPLOAD */

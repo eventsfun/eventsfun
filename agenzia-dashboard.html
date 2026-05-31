@@ -388,6 +388,12 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="mf"><label>Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
     <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
     <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questa email viene mostrata agli iscritti nell'email di conferma come riferimento per domande sull'evento. Usa una casella che controlli regolarmente.</span></span>
+      </label>
+      <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
         <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -485,6 +491,12 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
     <div class="mf"><label>Luogo</label><input id="se_luogo"></div>
     <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
+    <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
+      </label>
+      <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
     <div class="mf">
       <label>Immagine evento</label>
       <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
@@ -760,6 +772,7 @@ function sanitizeEvent(ev) {
   ev.ora = ev.ora || '';
   ev.luogo = ev.luogo || '';
   ev.descrizione = ev.descrizione || '';
+  ev.email_contatto = ev.email_contatto || '';
   ev.capienza = ev.capienza || null;
   ev.immagine = ev.immagine || null;
   ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
@@ -1145,7 +1158,7 @@ function openCreateEvent() {
 }
 
 function resetEvForm() {
-  ['ev_nome','ev_ora','ev_luogo','ev_desc'].forEach(function(id) { setVal(id, ''); });
+  ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto'].forEach(function(id) { setVal(id, ''); });
   setVal('ev_cap', '');
   setVal('ev_data', '');
   removeEvImg();
@@ -1167,11 +1180,14 @@ async function saveEvent() {
   var data = getVal('ev_data');
   var ora = getVal('ev_ora').trim();
   var luogo = getVal('ev_luogo').trim();
+  var emailContatto = getVal('ev_email_contatto').trim();
   if (!nome || !data || !ora || !luogo) { alert('Compila Nome, Data, Ora e Luogo.'); return; }
+  if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
     activation_token: TOKEN, piano: PIANO,
     nome: nome, data_iso: data, ora: ora, luogo: luogo,
+    email_contatto: emailContatto,
     descrizione: getVal('ev_desc').trim(),
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
@@ -1217,6 +1233,7 @@ function openEditEvent() {
   setVal('se_ora', ev.ora || '');
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
+  setVal('se_email_contatto', ev.email_contatto || '');
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
@@ -1238,9 +1255,12 @@ function openEditEvent() {
 async function saveSettings() {
   var ev = currentEv; if (!ev) return;
   var nome = getVal('se_nome').trim(); if (!nome) { alert('Nome obbligatorio.'); return; }
+  var emailContatto = getVal('se_email_contatto').trim();
+  if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: nome,
+    email_contatto: emailContatto,
     capienza: parseInt(getVal('se_cap')) || null,
     data_iso: getVal('se_data'),
     ora: getVal('se_ora').trim(),
@@ -1624,6 +1644,7 @@ async function openPreviewFromForm() {
   var evData = {
     activation_token: TOKEN, piano: PIANO,
     nome: nome, data_iso: data, ora: ora, luogo: luogo,
+    email_contatto: getVal('ev_email_contatto').trim(),
     descrizione: getVal('ev_desc').trim(),
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
