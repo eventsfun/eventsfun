@@ -52,20 +52,14 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px}
 .stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700;display:flex;align-items:center;gap:5px}
 .stat-val{font-family:"Syne",sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
-.stat-custom{background:var(--bg2);border:1px dashed var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center}
-.stat-custom:hover{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.03)}
-.stat-custom-add{font-size:20px;color:var(--text-dim)}
+.stat-custom{background:var(--bg2);border:2px dashed rgba(201,169,110,0.25);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;position:relative}
+.stat-custom:hover{border-color:rgba(201,169,110,0.5);background:rgba(201,169,110,0.03)}
+.stat-custom-add{font-size:22px;color:rgba(201,169,110,0.4)}
 .stat-custom-lbl{font-size:11px;color:var(--text-dim)}
-.stat-custom.filled{cursor:default;align-items:flex-start;justify-content:flex-start;text-align:left}
-.stat-custom.filled:hover{border-color:var(--border);background:var(--bg2)}
-/* OPZIONI AVANZATE */
-.avanzate-toggle{display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;cursor:pointer;margin-bottom:16px;transition:all .2s;user-select:none}
-.avanzate-toggle:hover{border-color:rgba(201,169,110,0.3)}
-.avanzate-toggle-arrow{font-size:10px;color:var(--text-dim);transition:transform .2s}
-.avanzate-toggle.open .avanzate-toggle-arrow{transform:rotate(90deg)}
-.avanzate-toggle-lbl{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim)}
-.avanzate-body{display:none;margin-bottom:20px}
-.avanzate-body.open{display:block}
+.stat-custom.filled{cursor:default;align-items:flex-start;justify-content:flex-start;text-align:left;border-color:rgba(201,169,110,0.2)}
+.stat-custom.filled:hover{border-color:rgba(201,169,110,0.25);background:var(--bg2)}
+.stat-custom-tip{position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;border:1px solid rgba(201,169,110,0.3);color:rgba(201,169,110,0.5);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:help}
+.stat-custom-tip:hover{border-color:var(--gold);color:var(--gold)}
 /* STATUS BAR */
 .status-bar{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .sinfo h3{font-family:"Syne",sans-serif;font-size:15px;font-weight:700;margin-bottom:3px}.sinfo p{font-size:12px;color:var(--text-muted)}
@@ -302,18 +296,6 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="stat-custom" id="statCustom1" onclick="openStatConfig(1)">
         <div class="stat-custom-add">+</div>
         <div class="stat-custom-lbl">Aggiungi statistica</div>
-      </div>
-    </div>
-
-    <!-- OPZIONI AVANZATE (solo Agenzia) -->
-    <div class="avanzate-toggle" id="avanzateToggle" onclick="toggleAvanzate()" style="display:none">
-      <span class="avanzate-toggle-arrow">▶</span>
-      <span class="avanzate-toggle-lbl">Opzioni avanzate</span>
-      <span style="font-size:11px;color:var(--text-dim);margin-left:auto">Personalizza le statistiche in evidenza</span>
-    </div>
-    <div class="avanzate-body" id="avanzateBody">
-      <div class="info-box">
-        <strong>Card statistiche personalizzabili</strong> -- scegli quali dati aggiuntivi vuoi vedere in evidenza nelle due card extra. Puoi scegliere tra i campi aggiuntivi configurati per questo evento.
       </div>
     </div>
 
@@ -899,9 +881,6 @@ function renderDash() {
   /* Card custom stats */
   renderCustomStats(ev, confermati);
 
-  /* Opzioni avanzate -- sempre visibile per Agenzia */
-  setDisp('avanzateToggle', hasEv ? 'flex' : 'none');
-
   /* Lista attesa badge */
   var mostraAttesa = hasEv && (inAttesa.length > 0 || (ev.capienza && postiOccupati >= ev.capienza));
   setDisp('btnAttesa', mostraAttesa ? 'inline-block' : 'none');
@@ -966,23 +945,23 @@ function renderCustomStats(ev, confermati) {
     var cfg = customStats[i];
     if (!cfg) {
       el.className = 'stat-custom';
-      el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>';
+      el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
+        + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare. Disponibile per campi aggiuntivi di tipo Menu o Caselle.">?</div>';
       el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
     } else {
       var found = opts.find(function(o) { return o.id === cfg; });
       if (found) {
         el.className = 'stat-custom filled';
-        el.innerHTML = '<div class="stat-label" style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700;display:flex;align-items:center;gap:5px">'
-          + escHtml(found.label)
-          + '<span style="margin-left:auto;font-size:10px;cursor:pointer;color:var(--text-dim)" onclick="removeStatConfig(' + i + ');event.stopPropagation()">✕</span></div>'
-          + '<div class="stat-val">' + found.value + '</div>';
+        el.innerHTML = '<div class="stat-label">' + escHtml(found.label) + '</div>'
+          + '<div class="stat-val">' + found.value + '</div>'
+          + '<div class="stat-custom-tip" onclick="removeStatConfig(' + i + ');event.stopPropagation()" title="Rimuovi" style="cursor:pointer;border-color:rgba(255,255,255,0.15);color:var(--text-dim)">✕</div>';
         el.onclick = null;
       } else {
-        /* campo non più presente nell'evento */
         customStats[i] = null;
         saveCustomStats();
         el.className = 'stat-custom';
-        el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>';
+        el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
+          + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare.">?</div>';
         el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
       }
     }
@@ -1029,23 +1008,6 @@ function removeStatConfig(idx) {
 }
 function saveCustomStats() {
   try { localStorage.setItem('ef_custom_stats_' + TOKEN, JSON.stringify(customStats)); } catch(e) {}
-}
-
-/* ============================================================
-   OPZIONI AVANZATE TOGGLE
-   ============================================================ */
-function toggleAvanzate() {
-  var toggle = document.getElementById('avanzateToggle');
-  var body = document.getElementById('avanzateBody');
-  if (!toggle || !body) return;
-  var isOpen = body.classList.contains('open');
-  if (isOpen) {
-    body.classList.remove('open');
-    toggle.classList.remove('open');
-  } else {
-    body.classList.add('open');
-    toggle.classList.add('open');
-  }
 }
 
 /* ============================================================
@@ -1517,9 +1479,11 @@ function buildExtra(ev, extra) {
         + '</select>';
     } else if (f.type === 'checkbox') {
       var vals = Array.isArray(val) ? val : [];
-      html += '<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">'
+      html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">'
         + (f.options || []).map(function(o) {
-          return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer"><input type="checkbox" id="rxcb' + escHtml(f.id) + '_' + escHtml(o) + '" ' + (vals.includes(o)?'checked':'') + ' style="accent-color:var(--gold)"> ' + escHtml(o) + '</label>';
+          return '<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-muted);cursor:pointer;font-weight:400;letter-spacing:0;text-transform:none">'
+            + '<input type="checkbox" id="rxcb' + escHtml(f.id) + '_' + escHtml(o) + '" ' + (vals.includes(o) ? 'checked' : '') + ' style="width:15px;height:15px;accent-color:var(--gold);flex-shrink:0;cursor:pointer"> '
+            + escHtml(o) + '</label>';
         }).join('')
         + '</div>';
     } else {

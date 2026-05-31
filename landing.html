@@ -65,6 +65,12 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .err-box h2{font-family:"Syne",sans-serif;font-size:22px;font-weight:700;margin-bottom:8px;color:#1a1a1a}
 .err-box p{font-size:13px;color:#666;line-height:1.7}
 .alert{background:#fef3cd;border:1px solid #fdd77e;border-radius:8px;padding:10px 14px;font-size:12px;color:#856404;margin-bottom:14px;display:none}
+.lp-inp select{background:#fafaf8}
+.lp-select{width:100%;padding:11px 14px;border:1.5px solid #e0ddd8;border-radius:9px;font-size:13px;color:#1a1a1a;background:#fafaf8;outline:none;font-family:inherit;transition:border-color .2s;appearance:auto}
+.lp-select:focus{border-color:#C9A96E}
+.lp-chk-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.lp-chk-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;cursor:pointer}
+.lp-chk-item input[type=checkbox]{width:16px;height:16px;accent-color:#C9A96E;cursor:pointer;flex-shrink:0}
 @media(max-width:400px){.lp-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -126,7 +132,7 @@ async function init() {
     var evs = await sbGet('events', { id: evId }, '*');
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
-    regs = await sbGet('registrations', { event_id: evId }, 'id');
+    regs = await sbGet('registrations', { event_id: evId }, 'id,adulti,bambini,in_lista_attesa');
     document.title = ev.nome + ' — EventsFun';
     render();
   } catch(e) {
@@ -147,8 +153,12 @@ function render() {
 
   var capHtml = '';
   if (ev.opt_capienza && ev.capienza) {
-    var posti = Math.max(0, ev.capienza - regs.length);
-    var pct = Math.round((posti / ev.capienza) * 100);
+    var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
+    var occupati = ev.opt_cap_persona && ev.opt_multipla
+      ? confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+      : confermati.length;
+    var posti = Math.max(0, ev.capienza - occupati);
+    var pct = Math.round((occupati / ev.capienza) * 100);
     var postiLabel = posti === 0
       ? '<span style="color:#C9A96E;font-weight:700">Lista d\'attesa disponibile</span>'
       : '<span><strong>' + posti + '</strong> / ' + ev.capienza + '</span>';
@@ -172,7 +182,23 @@ function render() {
     if (pastoOpts) extraFields += '<div class="lp-fg"><label class="lp-lbl">Vuoi prenotare il pasto?</label><div style="display:flex;gap:16px;margin-top:4px">' + pastoOpts + '</div></div>';
   }
   cf.forEach(function(f) {
-    extraFields += '<div class="lp-fg"><label class="lp-lbl">' + f.label + (f.required ? ' *' : '') + '</label><input id="rx_' + f.id + '" class="lp-inp" placeholder="' + (f.placeholder || '') + '"></div>';
+    var lbl = '<label class="lp-lbl">' + f.label + (f.required ? ' *' : '') + '</label>';
+    if (f.type === 'dropdown') {
+      extraFields += '<div class="lp-fg">' + lbl
+        + '<select id="rx_' + f.id + '" class="lp-select">'
+        + '<option value="">-- Seleziona --</option>'
+        + (f.options || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('')
+        + '</select></div>';
+    } else if (f.type === 'checkbox') {
+      extraFields += '<div class="lp-fg">' + lbl
+        + '<div class="lp-chk-list" id="rxgrp_' + f.id + '">'
+        + (f.options || []).map(function(o) {
+          return '<label class="lp-chk-item"><input type="checkbox" id="rxcb_' + f.id + '_' + o.replace(/\s+/g,'_') + '" value="' + o + '" style="accent-color:#C9A96E"> ' + o + '</label>';
+        }).join('')
+        + '</div></div>';
+    } else {
+      extraFields += '<div class="lp-fg">' + lbl + '<input id="rx_' + f.id + '" class="lp-inp" placeholder="' + (f.placeholder || '') + '"></div>';
+    }
   });
   var nlHtml = ev.opt_newsletter !== false
     ? '<label class="lp-nl"><input type="checkbox" id="r_newsletter" style="accent-color:#C9A96E;width:15px;height:15px"> Acconsento a ricevere comunicazioni future</label>'
@@ -247,7 +273,19 @@ async function submitReg() {
   btn.disabled = true; btn.textContent = 'Invio in corso...';
 
   var cf = ev.custom_fields || [], extra = {};
-  cf.forEach(function(f) { var el = document.getElementById('rx_' + f.id); if (el) extra[f.id] = el.value.trim(); });
+  cf.forEach(function(f) {
+    if (f.type === 'checkbox') {
+      var checked = [];
+      (f.options || []).forEach(function(o) {
+        var cb = document.getElementById('rxcb_' + f.id + '_' + o.replace(/\s+/g,'_'));
+        if (cb && cb.checked) checked.push(o);
+      });
+      extra[f.id] = checked;
+    } else {
+      var el = document.getElementById('rx_' + f.id);
+      if (el) extra[f.id] = el.value.trim();
+    }
+  });
 
   var rt = document.getElementById('r_tipo');
   var rp = document.getElementById('r_pranzo');
@@ -255,7 +293,10 @@ async function submitReg() {
   var rn = document.getElementById('r_newsletter');
 
   // Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa
-  var capienzaPiena = ev.capienza && regs.length >= ev.capienza;
+  var postiOccupati = ev.opt_cap_persona && ev.opt_multipla
+    ? regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+    : regs.length;
+  var capienzaPiena = ev.capienza && postiOccupati >= ev.capienza;
 
   var regData = {
     event_id: ev.id,
