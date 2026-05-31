@@ -72,6 +72,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 @keyframes spin{to{transform:rotate(360deg)}}
 .topbar-user{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px}
 .topbar-user p{font-size:14px;color:var(--text-muted)}
+.upgrade-link{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--text-dim);text-decoration:none;padding:9px;border-radius:7px;border:1px solid var(--border);transition:all .2s}
+.upgrade-link:hover{border-color:rgba(201,169,110,0.4);color:var(--gold);background:rgba(201,169,110,0.05)}
+.upgrade-link strong{color:var(--gold)}
 @media(max-width:520px){.pkg-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -139,7 +142,7 @@ async function sbGet(table, filters, sel, token){
   return r.json();
 }
 
-var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403'};
+var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403',upgrade_base_pro:'https://buy.stripe.com/4gMaEPaoud3qdUA8uo14404'};
 var DASH_FILE={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html'};
 var PLAN_LABEL={base:'Base',pro:'Pro',agenzia:'Agenzia'};
 var currentEmail='',accessToken='';
@@ -205,7 +208,8 @@ async function loadDashboards(){
         anyActive=true;
         statusHtml='<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pronto per il primo evento</span></div>';
         infoHtml='<div class="plan-info">Accedi alla dashboard e crea il tuo evento.</div>';
-        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>';
+        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'
+          +(piano==='base'?'<a href="'+PAYMENT_LINKS.upgrade_base_pro+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'');
       }else if(closed){
         statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Evento concluso</span></div>';
         infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+' concluso.</div>';
@@ -214,7 +218,8 @@ async function loadDashboards(){
         anyActive=true;
         statusHtml='<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Evento attivo</span></div>';
         infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+'.</div>';
-        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>';
+        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'
+          +(piano==='base'?'<a href="'+PAYMENT_LINKS.upgrade_base_pro+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'');
       }
       html+='<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+statusHtml+infoHtml+actionHtml+'</div>';
     }
