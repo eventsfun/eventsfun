@@ -475,13 +475,14 @@
   /* ===================== CONFIG ===================== */
   var ADMIN_PWD = "Ef7$vQ2#mK9x";
   var SB_URL = "https://vousendridklswygvqpl.supabase.co";
-  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epSloiqSLC_GUeeroEzTiMbTAGe7rwMineoc";
-
+  // Nota: questa key viene sostituita con service_role via Supabase -- lascia placeholder
+  var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTgxMjU0NiwiZXhwIjoyMDk1Mzg4NTQ2fQ.be9qnbmygHlvnNK_XWCbPngGIr2ba3BzxnroPx4dsKA";
 
   /* ===================== AUTH ===================== */
   function doLogin() {
     var v = document.getElementById("pwd-input").value;
     if (v === ADMIN_PWD) {
+      sessionStorage.setItem("ef_admin", "1");
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
       loadSection("clienti");
@@ -492,7 +493,14 @@
   document.getElementById("pwd-input").addEventListener("keydown", function(e) {
     if (e.key === "Enter") doLogin();
   });
+  // Controlla sessione al caricamento pagina
+  if (sessionStorage.getItem("ef_admin") === "1") {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("app").style.display = "block";
+    loadSection("clienti");
+  }
   function doLogout() {
+    sessionStorage.removeItem("ef_admin");
     document.getElementById("app").style.display = "none";
     document.getElementById("login-screen").style.display = "flex";
     document.getElementById("pwd-input").value = "";
