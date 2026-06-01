@@ -68,6 +68,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .pill-red{background:rgba(200,80,80,0.12);color:var(--red);border:1px solid rgba(200,80,80,0.25)}
 .pill-gray{background:var(--inp-bg);color:var(--text-dim);border:1px solid var(--border)}
 .closed-banner{background:linear-gradient(135deg,rgba(201,169,110,0.12),rgba(201,169,110,0.05));border:1px solid rgba(201,169,110,0.3);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.sub-banner{border-radius:14px;padding:18px 24px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.sub-banner-warn{background:linear-gradient(135deg,rgba(224,128,128,0.12),rgba(224,128,128,0.05));border:1px solid rgba(224,128,128,0.35)}
+.sub-banner-exp{background:linear-gradient(135deg,rgba(200,80,80,0.18),rgba(200,80,80,0.08));border:1px solid rgba(200,80,80,0.45)}
 /* TABLE */
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
 .panel-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid var(--border2);flex-wrap:wrap;gap:10px}
@@ -231,6 +234,7 @@ select option{background:#1a1a1a;color:var(--text)}
   <div class="nav-logo">Events<span>Fun</span></div>
   <div class="nav-r">
     <span class="nav-plan">Agenzia</span>
+    <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">← Area personale</a>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
   </div>
 </nav>
@@ -278,10 +282,26 @@ select option{background:#1a1a1a;color:var(--text)}
 
     <div class="closed-banner" id="closedBanner">
       <div>
-        <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">🎉 Evento concluso!</h3>
+        <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3>
         <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura. Organizza il prossimo evento.</p>
       </div>
       <a href="https://eventsfun.com/#prezzi" target="_blank" style="padding:12px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none">Organizza il prossimo →</a>
+    </div>
+
+    <!-- BANNER SCADENZA ABBONAMENTO -->
+    <div class="sub-banner sub-banner-warn" id="subBannerWarn" style="display:none">
+      <div>
+        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#9888;&#65039; Abbonamento cancellato</p>
+        <p style="font-size:12px;color:var(--text-muted)" id="subBannerWarnText">Puoi continuare ad usare la dashboard fino alla scadenza del grace period.</p>
+      </div>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
+    </div>
+    <div class="sub-banner sub-banner-exp" id="subBannerExp" style="display:none">
+      <div>
+        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#128274; Abbonamento scaduto</p>
+        <p style="font-size:12px;color:var(--text-muted)">Il tuo abbonamento Agenzia &egrave; scaduto. I dati sono al sicuro -- riattiva per continuare.</p>
+      </div>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
     </div>
 
     <!-- STATISTICHE -->
@@ -724,7 +744,7 @@ async function init() {
 
   /* STEP 1: verifica token */
   var rows;
-  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,orders(piano)'); }
+  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at)'); }
   catch(e) { rows = null; }
   if (rows === null) {
     PIANO = 'agenzia';
@@ -732,6 +752,33 @@ async function init() {
     hideLoading(); showErr(); return;
   } else {
     PIANO = (rows[0].orders && rows[0].orders.piano) ? rows[0].orders.piano : 'agenzia';
+    /* Check stato abbonamento */
+    var subStatus = rows[0].orders ? rows[0].orders.subscription_status : null;
+    var subExpiresAt = rows[0].orders ? rows[0].orders.subscription_expires_at : null;
+    if (subStatus === 'canceled' || subStatus === 'past_due') {
+      var now = new Date();
+      var expires = subExpiresAt ? new Date(subExpiresAt) : null;
+      if (expires && now < expires) {
+        /* Grace period: mostra banner warning ma lascia accedere */
+        var daysLeft = Math.ceil((expires - now) / (1000 * 60 * 60 * 24));
+        var el = document.getElementById('subBannerWarn');
+        var txt = document.getElementById('subBannerWarnText');
+        if (txt) txt.textContent = 'Puoi continuare ad usare la dashboard per altri ' + daysLeft + ' giorn' + (daysLeft === 1 ? 'o' : 'i') + '. Riattiva per non perdere l\'accesso.';
+        if (el) el.style.display = 'flex';
+      } else if (!expires || now >= expires) {
+        /* Scaduto: mostra banner blocco e impedisce uso */
+        hideLoading();
+        var bannerExp = document.getElementById('subBannerExp');
+        if (bannerExp) bannerExp.style.display = 'flex';
+        setDisp('mainNav', 'flex');
+        showView('dash');
+        document.getElementById('statsRow') && (document.getElementById('statsRow').style.opacity = '0.3');
+        document.getElementById('statsRow') && (document.getElementById('statsRow').style.pointerEvents = 'none');
+        document.querySelector('.dash-header .dash-btns') && (document.querySelector('.dash-header .dash-btns').style.pointerEvents = 'none');
+        document.querySelector('.dash-header .dash-btns') && (document.querySelector('.dash-header .dash-btns').style.opacity = '0.3');
+        return;
+      }
+    }
   }
 
   /* STEP 2: carica tutti gli eventi del token, escludi bozze */

@@ -75,6 +75,33 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .upgrade-link{display:block;text-align:center;margin-top:12px;font-size:12px;color:var(--text-dim);text-decoration:none;padding:9px;border-radius:7px;border:1px solid var(--border);transition:all .2s}
 .upgrade-link:hover{border-color:rgba(201,169,110,0.4);color:var(--gold);background:rgba(201,169,110,0.05)}
 .upgrade-link strong{color:var(--gold)}
+.acc-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px;margin-bottom:20px;display:none}
+.acc-card h3{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border2)}
+.acc-row{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.acc-row label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim)}
+.acc-row input{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:11px 14px;font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s}
+.acc-row input:focus{border-color:rgba(201,169,110,0.5)}
+.acc-row input::placeholder{color:var(--text-dim)}
+.acc-toggle-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border2)}
+.acc-toggle-row:last-child{border-bottom:none}
+.acc-toggle-label{font-size:13px;color:var(--text-muted)}
+.acc-tog{width:40px;height:22px;border-radius:11px;background:var(--inp-bg);border:1px solid var(--inp-border);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.acc-tog.on{background:var(--gold);border-color:var(--gold)}
+.acc-tog-dot{width:16px;height:16px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .2s}
+.acc-tog.on .acc-tog-dot{left:20px}
+.btn-acc-save{padding:11px 22px;border:none;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-acc-save:hover{opacity:.88}
+.btn-acc-save:disabled{opacity:.5;cursor:not-allowed}
+.btn-acc-secondary{padding:11px 22px;border:1px solid var(--border);border-radius:8px;background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-acc-secondary:hover{border-color:rgba(201,169,110,0.4);color:var(--gold)}
+.btn-stripe{display:flex;align-items:center;gap:8px;padding:13px 18px;border:1px solid rgba(201,169,110,0.3);border-radius:9px;background:rgba(201,169,110,0.06);color:var(--gold);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .2s;width:100%;justify-content:center}
+.btn-stripe:hover{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.5)}
+.acc-alert{border-radius:7px;padding:9px 13px;font-size:12px;margin-bottom:12px;display:none;line-height:1.5}
+.acc-alert-err{background:rgba(200,80,80,0.1);border:1px solid rgba(200,80,80,0.3);color:var(--red)}
+.acc-alert-ok{background:rgba(110,201,130,0.1);border:1px solid rgba(110,201,130,0.3);color:var(--green)}
+.btn-account{background:none;border:1px solid var(--border);border-radius:7px;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:12px;padding:5px 12px;cursor:pointer;transition:all .2s}
+.btn-account:hover{border-color:rgba(201,169,110,0.4);color:var(--gold)}
+.acc-section-title{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin:18px 0 10px}
 @media(max-width:520px){.pkg-grid{grid-template-columns:1fr}}
 </style>
 </head>
@@ -113,6 +140,57 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
   </div>
 
   <div id="resultArea"></div>
+
+  <!-- SEZIONE IL MIO ACCOUNT -->
+  <div class="acc-card" id="accCard">
+    <h3>&#128100; Il mio account</h3>
+    <div class="acc-alert acc-alert-err" id="accAlertErr"></div>
+    <div class="acc-alert acc-alert-ok" id="accAlertOk"></div>
+
+    <div class="acc-section-title">Dati personali</div>
+    <div class="acc-row">
+      <label>Nome</label>
+      <input type="text" id="accNome" placeholder="Il tuo nome">
+    </div>
+    <div class="acc-row">
+      <label>Cognome</label>
+      <input type="text" id="accCognome" placeholder="Il tuo cognome">
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn-acc-save" id="accSaveProfile" onclick="saveProfile()">Salva dati</button>
+    </div>
+
+    <div class="acc-section-title">Password</div>
+    <div class="acc-row">
+      <label>Nuova password</label>
+      <input type="password" id="accNewPwd" placeholder="Minimo 6 caratteri">
+    </div>
+    <div class="acc-row">
+      <label>Conferma password</label>
+      <input type="password" id="accConfPwd" placeholder="Ripeti la password">
+    </div>
+    <div style="display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap">
+      <button class="btn-acc-save" id="accSavePwd" onclick="savePassword()">Cambia password</button>
+    </div>
+
+    <div class="acc-section-title">Preferenze</div>
+    <div class="acc-toggle-row">
+      <span class="acc-toggle-label">Newsletter EventsFun <span style="font-size:11px;color:var(--text-dim)">(novit&agrave;, aggiornamenti, consigli)</span></span>
+      <div class="acc-tog" id="accTogNewsletter" onclick="toggleAccNewsletter()"><div class="acc-tog-dot"></div></div>
+    </div>
+
+    <div id="accStripeSection" style="display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">
+      <div class="acc-section-title">Abbonamento Agenzia</div>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Gestisci il tuo abbonamento, aggiorna il metodo di pagamento o annulla dal portale Stripe.</p>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" class="btn-stripe">
+        &#128279; Gestisci abbonamento su Stripe &#8594;
+      </a>
+    </div>
+
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border2);text-align:right">
+      <button class="btn-acc-secondary" onclick="closeAccount()">Chiudi</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -193,7 +271,7 @@ async function loadDashboards(){
       area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
     }
-    var html='<div class="topbar-user"><p>Bentornato'+(orders[0].nome?', <strong style="color:var(--text)">'+orders[0].nome+'</strong>':'')+'</p><button class="link-btn" onclick="doLogout()">Esci</button></div>';
+    var html='<div class="topbar-user"><p>Bentornato'+(orders[0].nome?', <strong style="color:var(--text)">'+orders[0].nome+'</strong>':'')+'</p><div style="display:flex;gap:8px;align-items:center"><button class="btn-account" onclick="openAccount()">&#128100; Il mio account</button><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
     var anyActive=false;
     for(var i=0;i<orders.length;i++){
       var order=orders[i];var piano=order.piano||'base';var token=null,ev=null;
@@ -224,6 +302,7 @@ async function loadDashboards(){
       html+='<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+statusHtml+infoHtml+actionHtml+'</div>';
     }
     var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
+    hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'; });
     if(!anyActive&&hasSingleUse){html+=buildUpsell();}
     area.innerHTML=html;
   }catch(e){
@@ -240,10 +319,115 @@ function buildUpsell(){
     +'</div></div>';
 }
 
+var accNewsletterState = false;
+var hasAgenzia = false;
+
+function openAccount(){
+  var card = document.getElementById('accCard');
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  hideAccAlerts();
+  /* Pre-carica nome/cognome dall'ordine */
+  var nm = document.querySelector('#resultArea strong');
+  /* Carica dati utente da Supabase Auth */
+  loadAccountData();
+}
+
+function closeAccount(){
+  document.getElementById('accCard').style.display = 'none';
+}
+
+function hideAccAlerts(){
+  document.getElementById('accAlertErr').style.display = 'none';
+  document.getElementById('accAlertOk').style.display = 'none';
+}
+
+function showAccErr(msg){ hideAccAlerts(); var a=document.getElementById('accAlertErr'); a.textContent='&#9888;&#65039; '+msg; a.style.display='block'; }
+function showAccOk(msg){ hideAccAlerts(); var a=document.getElementById('accAlertOk'); a.textContent='&#10003; '+msg; a.style.display='block'; }
+
+async function loadAccountData(){
+  try {
+    var r = await fetch(SB_URL+'/auth/v1/user', { headers: sbH(accessToken) });
+    var u = await r.json();
+    if(u && u.user_metadata){
+      document.getElementById('accNome').value = u.user_metadata.nome || '';
+      document.getElementById('accCognome').value = u.user_metadata.cognome || '';
+    }
+    /* Newsletter: legge dal campo orders */
+    var orders = await sbGet('orders', { email: currentEmail }, 'newsletter', accessToken);
+    if(orders && orders.length){
+      accNewsletterState = !!orders[0].newsletter;
+      var tog = document.getElementById('accTogNewsletter');
+      if(accNewsletterState) tog.classList.add('on'); else tog.classList.remove('on');
+    }
+    /* Mostra sezione Stripe solo se ha piano Agenzia */
+    document.getElementById('accStripeSection').style.display = hasAgenzia ? 'block' : 'none';
+  } catch(e) { showAccErr('Errore nel caricamento dei dati.'); }
+}
+
+function toggleAccNewsletter(){
+  accNewsletterState = !accNewsletterState;
+  var tog = document.getElementById('accTogNewsletter');
+  if(accNewsletterState) tog.classList.add('on'); else tog.classList.remove('on');
+}
+
+async function saveProfile(){
+  var nome = (document.getElementById('accNome').value || '').trim();
+  var cognome = (document.getElementById('accCognome').value || '').trim();
+  if(!nome){ showAccErr('Inserisci almeno il nome.'); return; }
+  var btn = document.getElementById('accSaveProfile');
+  btn.disabled = true; btn.textContent = 'Salvo...';
+  try {
+    /* Aggiorna user_metadata su Supabase Auth */
+    var r = await fetch(SB_URL+'/auth/v1/user', {
+      method: 'PUT',
+      headers: sbH(accessToken),
+      body: JSON.stringify({ data: { nome: nome, cognome: cognome } })
+    });
+    if(!r.ok) throw new Error('Errore aggiornamento');
+    /* Aggiorna anche orders (nome/cognome) */
+    var orders = await sbGet('orders', { email: currentEmail }, 'id', accessToken);
+    if(orders && orders.length){
+      await fetch(SB_URL+'/rest/v1/orders?id=eq.'+orders[0].id, {
+        method: 'PATCH',
+        headers: { ...sbH(accessToken), 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ nome: nome, cognome: cognome, newsletter: accNewsletterState })
+      });
+    }
+    showAccOk('Dati salvati correttamente.');
+    /* Aggiorna il saluto nella topbar */
+    var nm = document.querySelector('#resultArea strong');
+    if(nm) nm.textContent = nome;
+  } catch(e){ showAccErr('Errore nel salvataggio. Riprova.'); }
+  btn.disabled = false; btn.textContent = 'Salva dati';
+}
+
+async function savePassword(){
+  var pwd = document.getElementById('accNewPwd').value;
+  var conf = document.getElementById('accConfPwd').value;
+  if(!pwd || pwd.length < 6){ showAccErr('La password deve essere di almeno 6 caratteri.'); return; }
+  if(pwd !== conf){ showAccErr('Le due password non coincidono.'); return; }
+  var btn = document.getElementById('accSavePwd');
+  btn.disabled = true; btn.textContent = 'Salvo...';
+  try {
+    var r = await fetch(SB_URL+'/auth/v1/user', {
+      method: 'PUT',
+      headers: sbH(accessToken),
+      body: JSON.stringify({ password: pwd })
+    });
+    if(!r.ok) throw new Error('Errore aggiornamento password');
+    document.getElementById('accNewPwd').value = '';
+    document.getElementById('accConfPwd').value = '';
+    showAccOk('Password aggiornata correttamente.');
+  } catch(e){ showAccErr('Errore nel cambio password. Riprova.'); }
+  btn.disabled = false; btn.textContent = 'Cambia password';
+}
+
 function doLogout(){
   sessionStorage.removeItem('ef_at');sessionStorage.removeItem('ef_email');
-  accessToken='';currentEmail='';
+  accessToken='';currentEmail='';hasAgenzia=false;
   document.getElementById('resultArea').innerHTML='';
+  document.getElementById('accCard').style.display='none';
   document.getElementById('emailInput').value='';document.getElementById('pwdInput').value='';
   document.getElementById('loginBtn').disabled=false;document.getElementById('loginBtn').textContent='Accedi →';
   document.getElementById('loginCard').style.display='block';

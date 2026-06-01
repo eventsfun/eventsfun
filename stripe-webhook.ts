@@ -15,6 +15,185 @@ Deno.serve(async (req) => {
     const event = JSON.parse(body);
     console.log("Evento Stripe ricevuto:", event.type);
 
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    // ================================================================
+    // GESTIONE SCADENZA ABBONAMENTO AGENZIA
+    // ================================================================
+
+    if (event.type === "customer.subscription.deleted") {
+      // Abbonamento cancellato o non rinnovato -- blocco soft dopo grace period
+      const sub = event.data.object;
+      const subscriptionId = sub.id;
+      const canceledAt = sub.canceled_at
+        ? new Date(sub.canceled_at * 1000).toISOString()
+        : new Date().toISOString();
+
+      console.log("Abbonamento cancellato:", subscriptionId);
+
+      // Trova l'ordine tramite subscription_id
+      const { data: order } = await supabase
+        .from("orders")
+        .select("id, email, nome")
+        .eq("subscription_id", subscriptionId)
+        .single();
+
+      if (order) {
+        // Grace period 7 giorni: expires_at = now + 7 giorni
+        const expiresAt = new Date();
+        expiresAt.setDate(expiresAt.getDate() + 7);
+
+        await supabase
+          .from("orders")
+          .update({
+            subscription_status: "canceled",
+            subscription_expires_at: expiresAt.toISOString(),
+          })
+          .eq("id", order.id);
+
+        console.log("Ordine aggiornato a canceled, scade:", expiresAt.toISOString());
+
+        // Manda email di avviso al cliente
+        const resendKey = Deno.env.get("RESEND_API_KEY")!;
+        const expiresStr = expiresAt.toLocaleDateString("it-IT", {
+          day: "numeric", month: "long", year: "numeric"
+        });
+        const emailHtml = `<!DOCTYPE html>
+<html lang="it">
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:40px 20px">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden">
+    <div style="background:#0A0A0A;padding:28px 32px">
+      <span style="font-family:Arial,sans-serif;font-size:20px;font-weight:800;color:#F5F0E8">Events<span style="color:#C9A96E">Fun</span></span>
+    </div>
+    <div style="padding:32px">
+      <h2 style="color:#1a1a1a;margin:0 0 8px">Il tuo abbonamento Agenzia &egrave; stato cancellato</h2>
+      <p style="color:#555;line-height:1.7;margin:0 0 20px">
+        Ciao ${order.nome || ""}! Il tuo abbonamento EventsFun Agenzia &egrave; stato cancellato.<br>
+        Potrai continuare ad accedere alla dashboard fino al <strong>${expiresStr}</strong>.
+      </p>
+      <p style="color:#555;line-height:1.7;margin:0 0 24px">
+        Vuoi riattivare il tuo abbonamento? Puoi farlo in qualsiasi momento dalla tua area personale.
+      </p>
+      <a href="https://eventsfun.com/area-personale.html" style="display:inline-block;padding:14px 28px;background:#C9A96E;color:#0A0A0A;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px">
+        Vai all'area personale
+      </a>
+      <p style="color:#999;font-size:12px;margin:24px 0 0;line-height:1.6">
+        Per assistenza: <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a>
+      </p>
+    </div>
+    <div style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee">
+      <p style="color:#bbb;font-size:11px;margin:0;text-align:center">2026 EventsFun -- eventsfun.com</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+        await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${resendKey}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from: "EventsFun <info@eventsfun.com>",
+            to: [order.email],
+            subject: "Il tuo abbonamento EventsFun Agenzia e stato cancellato",
+            html: emailHtml,
+          }),
+        });
+
+        console.log("Email cancellazione inviata a:", order.email);
+      } else {
+        console.warn("Ordine non trovato per subscription_id:", subscriptionId);
+      }
+
+      return new Response(JSON.stringify({ received: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (event.type === "invoice.payment_failed") {
+      // Pagamento fallito -- segnala ma non blocca ancora (Stripe riprova automaticamente)
+      const invoice = event.data.object;
+      const subscriptionId = invoice.subscription;
+      console.log("Pagamento fallito per subscription:", subscriptionId);
+
+      if (subscriptionId) {
+        await supabase
+          .from("orders")
+          .update({ subscription_status: "past_due" })
+          .eq("subscription_id", subscriptionId);
+
+        // Manda email di avviso pagamento fallito
+        const { data: order } = await supabase
+          .from("orders")
+          .select("email, nome")
+          .eq("subscription_id", subscriptionId)
+          .single();
+
+        if (order) {
+          const resendKey = Deno.env.get("RESEND_API_KEY")!;
+          const emailHtml = `<!DOCTYPE html>
+<html lang="it">
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:40px 20px">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden">
+    <div style="background:#0A0A0A;padding:28px 32px">
+      <span style="font-family:Arial,sans-serif;font-size:20px;font-weight:800;color:#F5F0E8">Events<span style="color:#C9A96E">Fun</span></span>
+    </div>
+    <div style="padding:32px">
+      <h2 style="color:#1a1a1a;margin:0 0 8px">Problema con il pagamento del tuo abbonamento</h2>
+      <p style="color:#555;line-height:1.7;margin:0 0 20px">
+        Ciao ${order.nome || ""}! Non &egrave; stato possibile rinnovare il tuo abbonamento EventsFun Agenzia.<br>
+        Riproveremo automaticamente nei prossimi giorni.
+      </p>
+      <p style="color:#555;line-height:1.7;margin:0 0 24px">
+        Per evitare interruzioni del servizio, aggiorna il tuo metodo di pagamento.
+      </p>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" style="display:inline-block;padding:14px 28px;background:#C9A96E;color:#0A0A0A;text-decoration:none;border-radius:8px;font-weight:700;font-size:14px">
+        Aggiorna metodo di pagamento
+      </a>
+      <p style="color:#999;font-size:12px;margin:24px 0 0;line-height:1.6">
+        Per assistenza: <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a>
+      </p>
+    </div>
+    <div style="background:#f9f9f9;padding:16px 32px;border-top:1px solid #eee">
+      <p style="color:#bbb;font-size:11px;margin:0;text-align:center">2026 EventsFun -- eventsfun.com</p>
+    </div>
+  </div>
+</body>
+</html>`;
+
+          await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${resendKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: "EventsFun <info@eventsfun.com>",
+              to: [order.email],
+              subject: "Problema con il pagamento -- EventsFun Agenzia",
+              html: emailHtml,
+            }),
+          });
+          console.log("Email pagamento fallito inviata a:", order.email);
+        }
+      }
+
+      return new Response(JSON.stringify({ received: true }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ================================================================
+    // GESTIONE NUOVO ACQUISTO (logica esistente)
+    // ================================================================
+
     if (event.type !== "checkout.session.completed" &&
         event.type !== "payment_intent.succeeded") {
       return new Response(JSON.stringify({ received: true }), {
@@ -114,9 +293,14 @@ Deno.serve(async (req) => {
     }
 
     // 1. Crea ordine
+    const subscriptionId = session.subscription || null;
     const { data: order, error: orderError } = await supabase
       .from("orders")
-      .insert({ email, nome, cognome, piano, stripe_id: stripeId, importo, newsletter })
+      .insert({
+        email, nome, cognome, piano, stripe_id: stripeId, importo, newsletter,
+        subscription_id: subscriptionId,
+        subscription_status: subscriptionId ? "active" : null,
+      })
       .select()
       .single();
 
