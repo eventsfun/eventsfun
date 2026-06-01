@@ -257,6 +257,21 @@
     .toast.success { border-left: 3px solid var(--green); }
     .toast.error { border-left: 3px solid var(--red); }
     .nl-info { background: var(--gold-dim2); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 20px; }
+    .nl-segment-row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .nl-seg {
+      display: flex; align-items: center; gap: 8px; padding: 10px 18px;
+      border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2);
+      transition: all 0.15s;
+    }
+    .nl-seg:hover { border-color: var(--gold); color: var(--text); background: var(--bg4); }
+    .nl-seg.active { background: var(--gold-dim); border-color: var(--border); color: var(--gold); font-weight: 600; }
+    .seg-count {
+      display: inline-flex; align-items: center; justify-content: center;
+      background: var(--bg4); border-radius: 20px; padding: 1px 8px;
+      font-size: 12px; font-weight: 700; min-width: 24px;
+    }
+    .nl-seg.active .seg-count { background: rgba(201,169,110,0.25); color: var(--gold); }
 
     /* ---- SUPPORTO ---- */
     .support-search-area { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; }
@@ -435,7 +450,21 @@
         <div class="nl-compose">
           <h3>&#128140; Invia campagna newsletter</h3>
           <div class="nl-info">
-            La mail viene inviata a tutti gli iscritti con consenso newsletter tramite Resend. Verifica oggetto e testo prima di inviare.
+            Scegli a chi inviare, poi compila oggetto e testo. L'invio avviene tramite Resend.
+          </div>
+          <div class="form-group">
+            <label>Destinatari</label>
+            <div class="nl-segment-row" id="nl-segment-row">
+              <button class="nl-seg active" data-seg="tutti" onclick="setSegment('tutti')">
+                &#127775; Tutti <span id="seg-count-tutti" class="seg-count">--</span>
+              </button>
+              <button class="nl-seg" data-seg="clienti" onclick="setSegment('clienti')">
+                &#128101; Solo clienti <span id="seg-count-clienti" class="seg-count">--</span>
+              </button>
+              <button class="nl-seg" data-seg="eventi" onclick="setSegment('eventi')">
+                &#127881; Solo iscritti eventi <span id="seg-count-eventi" class="seg-count">--</span>
+              </button>
+            </div>
           </div>
           <div class="form-group">
             <label>Oggetto email</label>
@@ -446,7 +475,7 @@
             <textarea id="nl-body" placeholder="Scrivi il testo della newsletter..."></textarea>
           </div>
           <div class="nl-actions">
-            <button class="btn-gold" onclick="sendNewsletter()">&#128140; Invia a tutti gli iscritti</button>
+            <button class="btn-gold" onclick="sendNewsletter()">&#128140; Invia ai destinatari selezionati</button>
             <button class="btn-ghost" onclick="previewNewsletter()">&#128065; Anteprima</button>
           </div>
           <div id="nl-send-result" style="margin-top:12px;font-size:13px;display:none;"></div>
@@ -669,38 +698,64 @@
   }
 
   /* ===================== NEWSLETTER ===================== */
+  var nlClienti = [];
+  var nlEventi = [];
   var allNL = [];
+  var nlSegmento = "tutti";
 
   function loadNewsletter() {
     Promise.all([
       sbFetch("orders?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true"),
       sbFetch("registrations?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true")
     ]).then(function(results) {
-      var clienti = (Array.isArray(results[0]) ? results[0] : []).map(function(r) { return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Cliente", data: r.created_at }; });
-      var eventi = (Array.isArray(results[1]) ? results[1] : []).map(function(r) { return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Evento", data: r.created_at }; });
-      // dedup per email
-      var seen = {};
-      var combined = [];
-      clienti.concat(eventi).forEach(function(r) {
-        if (r.email && !seen[r.email.toLowerCase()]) {
-          seen[r.email.toLowerCase()] = true;
-          combined.push(r);
+      nlClienti = (Array.isArray(results[0]) ? results[0] : []).map(function(r) {
+        return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Cliente", data: r.created_at };
+      });
+      // Iscritti eventi: escludi chi e' gia' cliente (dedup per email)
+      var clientiEmails = {};
+      nlClienti.forEach(function(r) { if (r.email) clientiEmails[r.email.toLowerCase()] = true; });
+      var eventiRaw = (Array.isArray(results[1]) ? results[1] : []).map(function(r) {
+        return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Evento", data: r.created_at };
+      });
+      // Dedup interni agli eventi
+      var seenEventi = {};
+      nlEventi = [];
+      eventiRaw.forEach(function(r) {
+        if (r.email && !seenEventi[r.email.toLowerCase()] && !clientiEmails[r.email.toLowerCase()]) {
+          seenEventi[r.email.toLowerCase()] = true;
+          nlEventi.push(r);
         }
       });
-      allNL = combined;
-      document.getElementById("nl-count").textContent = combined.length;
-      document.getElementById("nl-clienti").textContent = clienti.length;
-      document.getElementById("nl-eventi-count").textContent = eventi.length;
-      renderNL(allNL);
+      allNL = nlClienti.concat(nlEventi);
+      document.getElementById("nl-count").textContent = allNL.length;
+      document.getElementById("nl-clienti").textContent = nlClienti.length;
+      document.getElementById("nl-eventi-count").textContent = nlEventi.length;
+      document.getElementById("seg-count-tutti").textContent = allNL.length;
+      document.getElementById("seg-count-clienti").textContent = nlClienti.length;
+      document.getElementById("seg-count-eventi").textContent = nlEventi.length;
+      renderNL(getSegmento());
     }).catch(function() {
       document.getElementById("nl-tbody").innerHTML = "<tr><td colspan='4' class='empty-state'>Errore caricamento</td></tr>";
     });
   }
 
+  function setSegment(seg) {
+    nlSegmento = seg;
+    document.querySelectorAll(".nl-seg").forEach(function(b) { b.classList.remove("active"); });
+    document.querySelector(".nl-seg[data-seg='" + seg + "']").classList.add("active");
+    renderNL(getSegmento());
+  }
+
+  function getSegmento() {
+    if (nlSegmento === "clienti") return nlClienti;
+    if (nlSegmento === "eventi") return nlEventi;
+    return allNL;
+  }
+
   function renderNL(data) {
     var tbody = document.getElementById("nl-tbody");
     if (!data.length) {
-      tbody.innerHTML = "<tr><td colspan='4' class='empty-state'>Nessun iscritto</td></tr>";
+      tbody.innerHTML = "<tr><td colspan='4' class='empty-state'>Nessun iscritto in questo gruppo</td></tr>";
       return;
     }
     tbody.innerHTML = data.map(function(r) {
@@ -713,7 +768,7 @@
 
   function filterNL() {
     var q = document.getElementById("search-nl").value.toLowerCase();
-    renderNL(allNL.filter(function(r) { return (r.email || "").toLowerCase().includes(q); }));
+    renderNL(getSegmento().filter(function(r) { return (r.email || "").toLowerCase().includes(q); }));
   }
 
   function previewNewsletter() {
@@ -729,13 +784,15 @@
     var subj = document.getElementById("nl-subject").value.trim();
     var body = document.getElementById("nl-body").value.trim();
     if (!subj || !body) { showToast("Inserisci oggetto e testo", "error"); return; }
-    if (!allNL.length) { showToast("Nessun iscritto in lista", "error"); return; }
-    if (!confirm("Stai per inviare la newsletter a " + allNL.length + " iscritti. Confermi?")) return;
+    var destinatari = getSegmento();
+    if (!destinatari.length) { showToast("Nessun iscritto nel gruppo selezionato", "error"); return; }
+    var nomiGruppo = { tutti: "tutti gli iscritti", clienti: "i clienti", eventi: "gli iscritti agli eventi" };
+    if (!confirm("Stai per inviare la newsletter a " + destinatari.length + " destinatari (" + (nomiGruppo[nlSegmento] || nlSegmento) + "). Confermi?")) return;
     var result_div = document.getElementById("nl-send-result");
     result_div.style.display = "block";
     result_div.style.color = "var(--text3)";
     result_div.textContent = "Invio in corso... (potrebbe richiedere qualche secondo)";
-    var emails = allNL.map(function(r) { return r.email; }).filter(Boolean);
+    var emails = destinatari.map(function(r) { return r.email; }).filter(Boolean);
     fetch(SB_URL + "/functions/v1/send-newsletter", {
       method: "POST",
       headers: {
