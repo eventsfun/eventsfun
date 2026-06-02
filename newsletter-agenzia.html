@@ -738,6 +738,19 @@
   </div>
 </div>
 
+<!-- MODAL STORICO ANTEPRIMA -->
+<div id="storico-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;align-items:flex-start;justify-content:center;padding:28px 16px;backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:680px;padding:24px;position:relative;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gold);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="storico-modal-title"></div>
+      <button onclick="chiudiStoricoModal()" style="background:var(--bg3);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text-dim);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#10006;</button>
+    </div>
+    <div style="background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+      <iframe id="storico-iframe" style="width:100%;min-height:300px;border:none;" title="Anteprima email inviata"></iframe>
+    </div>
+  </div>
+</div>
+
 <!-- DIALOG LINK -->
 <div class="link-dialog" id="link-dialog">
   <div class="link-dialog-box">
@@ -1180,7 +1193,7 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
           const ev = allEvents.find(e => e.id === cb.value);
           return ev ? ev.nome : '';
         }).filter(Boolean).join(', ');
-        await salvaLog(oggetto, mittente, replyto, emails.length, eventiSelezionati);
+        await salvaLog(oggetto, mittente, replyto, emails.length, eventiSelezionati, htmlEmail);
         // Reset form
         document.getElementById('nl-oggetto').value = '';
         document.getElementById('editor').innerHTML = '';
@@ -1304,7 +1317,7 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
 
   // ===== TABS =====
   // ===== STORICO =====
-  async function salvaLog(oggetto, mittente, replyTo, destinatari, eventiNomi) {
+  async function salvaLog(oggetto, mittente, replyTo, destinatari, eventiNomi, corpoHtml) {
     try {
       await fetch(SUPA_URL + '/rest/v1/newsletter_logs', {
         method: 'POST',
@@ -1315,7 +1328,8 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
           mittente,
           reply_to: replyTo,
           destinatari,
-          eventi_nomi: eventiNomi
+          eventi_nomi: eventiNomi,
+          corpo_html: corpoHtml || null
         })
       });
     } catch (err) {
@@ -1348,7 +1362,9 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
       }
 
       list.style.display = 'block';
-      list.innerHTML = logs.map(log => {
+      // Salva i log in variabile globale per accesso da apriAnteprimaLog
+      window._storicoLogs = logs;
+      list.innerHTML = logs.map((log, idx) => {
         const data = new Date(log.created_at).toLocaleDateString('it-IT', {
           day: '2-digit', month: 'long', year: 'numeric'
         });
@@ -1359,13 +1375,18 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
           <div style="padding:16px 0;border-bottom:1px solid var(--border);">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px;">${escHtml(log.oggetto)}</div>
-                <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">Da: ${escHtml(log.mittente)} &bull; Reply-to: ${escHtml(log.reply_to || '-')}</div>
-                ${log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">Eventi: ' + escHtml(log.eventi_nomi) + '</div>' : ''}
+                <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px;">${escHtml(log.oggetto)}</div>
+                <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">
+                  <strong style="color:var(--text-muted);">Mittente:</strong> ${escHtml(log.mittente)}
+                  &nbsp;&bull;&nbsp;
+                  <strong style="color:var(--text-muted);">Reply-to:</strong> ${escHtml(log.reply_to || '-')}
+                </div>
+                ${log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;"><strong>Eventi:</strong> ' + escHtml(log.eventi_nomi) + '</div>' : ''}
               </div>
-              <div style="text-align:right;flex-shrink:0;">
-                <span class="badge badge-gold" style="margin-bottom:6px;display:inline-flex;">${log.destinatari} destinatari</span>
+              <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">
+                <span class="badge badge-gold">${log.destinatari} destinatari</span>
                 <div style="font-size:11px;color:var(--text-muted);">${data} alle ${ora}</div>
+                ${log.corpo_html ? '<button class="btn btn-outline btn-sm" onclick="apriAnteprimaLog(' + idx + ')">&#128065; Visualizza</button>' : ''}
               </div>
             </div>
           </div>
@@ -1381,6 +1402,30 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
       empty.style.display = 'block';
       console.error('Errore caricamento storico:', err);
     }
+  }
+
+  function apriAnteprimaLog(idx) {
+    const log = window._storicoLogs && window._storicoLogs[idx];
+    if (!log || !log.corpo_html) return;
+    const modal = document.getElementById('storico-modal');
+    const iframe = document.getElementById('storico-iframe');
+    const title = document.getElementById('storico-modal-title');
+    if (title) title.textContent = log.oggetto;
+    modal.style.display = 'flex';
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(log.corpo_html);
+    doc.close();
+    setTimeout(() => {
+      try {
+        const h = iframe.contentDocument.body.scrollHeight;
+        iframe.style.height = Math.min(h + 40, 600) + 'px';
+      } catch {}
+    }, 200);
+  }
+
+  function chiudiStoricoModal() {
+    document.getElementById('storico-modal').style.display = 'none';
   }
 
   function switchTab(name) {
