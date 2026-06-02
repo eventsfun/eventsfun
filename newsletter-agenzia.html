@@ -838,13 +838,18 @@
       gestioneData = [];
 
       for (const ev of allEvents) {
-        const rReg = await fetch(
-          SUPA_URL + '/rest/v1/registrations?event_id=eq.' + ev.id + '&newsletter=eq.true&in_lista_attesa=eq.false&select=id,nome,cognome,email,event_id',
-          { headers: supaHeaders() }
-        );
-        const regs = await rReg.json() || [];
-        nlData[ev.id] = regs;
-        regs.forEach(r => gestioneData.push({ ...r, evento_nome: ev.nome }));
+        try {
+          const rReg = await fetch(
+            SUPA_URL + '/rest/v1/registrations?event_id=eq.' + ev.id + '&newsletter=eq.true&in_lista_attesa=eq.false&select=id,nome,cognome,email,event_id',
+            { headers: supaHeaders() }
+          );
+          const regs = await rReg.json() || [];
+          nlData[ev.id] = regs;
+          regs.forEach(r => gestioneData.push({ ...r, evento_nome: ev.nome }));
+        } catch (evErr) {
+          console.warn('Errore caricamento iscritti evento', ev.id, evErr);
+          nlData[ev.id] = [];
+        }
       }
 
       // Rimuovi duplicati email in gestioneData (stessa email piu' eventi)
@@ -1119,7 +1124,8 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
     if (!oggetto) return showAlert(alertEl, 'error', 'Inserisci l\'oggetto dell\'email.');
     if (!mittente) return showAlert(alertEl, 'error', 'Inserisci il nome del mittente.');
     if (!replyto || !replyto.includes('@')) return showAlert(alertEl, 'error', 'Inserisci un\'email di risposta valida.');
-    if (!corpo || corpo === '<br>') return showAlert(alertEl, 'error', 'Scrivi il contenuto dell\'email.');
+    const corpoTesto = corpo.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim();
+    if (!corpoTesto) return showAlert(alertEl, 'error', 'Scrivi il contenuto dell\'email.');
 
     const checkboxes = document.querySelectorAll('#eventi-selector input[type="checkbox"]:checked');
     if (checkboxes.length === 0) return showAlert(alertEl, 'error', 'Seleziona almeno un evento.');
