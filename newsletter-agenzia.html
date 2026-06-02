@@ -807,61 +807,45 @@
   // ===== CARICA DATI =====
   async function caricaDati() {
     try {
-      // 1. Prendi tutti gli eventi del token (e degli altri 2 token dello stesso ordine)
-      // Prima trova l'order_id dal token corrente
-      const rAct = await fetch(
-        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(currentToken) + '&select=order_id',
-        { headers: supaHeaders() }
-      );
-      const actData = await rAct.json();
-      if (!actData || actData.length === 0) return;
-      const orderId = actData[0].order_id;
-
-      // 2. Trova tutti i token di questo ordine
-      const rTokens = await fetch(
-        SUPA_URL + '/rest/v1/activations?order_id=eq.' + orderId + '&select=token',
-        { headers: supaHeaders() }
-      );
-      const tokensData = await rTokens.json();
-      const tokens = tokensData.map(t => t.token);
-
-      // 3. Carica tutti gli eventi per questi token
-      const tokenFilter = tokens.map(t => 'activation_token=eq.' + encodeURIComponent(t)).join(',');
+      // Carica eventi direttamente per il token corrente (RLS-safe su events)
+      // Non usiamo activations->order_id perche' la RLS anon lo blocca
       const rEvents = await fetch(
-        SUPA_URL + '/rest/v1/events?or=(' + tokenFilter + ')&select=id,nome,data_iso,ora,luogo,email_contatto,attivo,bozza&order=created_at.desc',
+        SUPA_URL + '/rest/v1/events?activation_token=eq.' + encodeURIComponent(currentToken) + '&select=id,nome,data_iso,ora,luogo,email_contatto,attivo,bozza&order=created_at.desc',
         { headers: supaHeaders() }
       );
-      allEvents = await rEvents.json() || [];
-
-      // 4. Per ogni evento carica iscritti con newsletter=true
-      nlData = {};
-      gestioneData = [];
-
-      for (const ev of allEvents) {
-        try {
-          const rReg = await fetch(
-            SUPA_URL + '/rest/v1/registrations?event_id=eq.' + ev.id + '&newsletter=eq.true&in_lista_attesa=eq.false&select=id,nome,cognome,email,event_id',
-            { headers: supaHeaders() }
-          );
-          const regs = await rReg.json() || [];
-          nlData[ev.id] = regs;
-          regs.forEach(r => gestioneData.push({ ...r, evento_nome: ev.nome }));
-        } catch (evErr) {
-          console.warn('Errore caricamento iscritti evento', ev.id, evErr);
-          nlData[ev.id] = [];
-        }
-      }
-
-      // Rimuovi duplicati email in gestioneData (stessa email piu' eventi)
-      // Manteniamo tutti per permettere rimozione evento-specifica
-      renderLista();
-      renderSelectorInvia();
-      renderGestione();
-
+      if (!rEvents.ok) throw new Error('HTTP ' + rEvents.status);
+      const evData = await rEvents.json();
+      allEvents = Array.isArray(evData) ? evData.filter(e => !e.bozza) : [];
     } catch (err) {
-      console.error('Errore caricamento dati:', err);
+      console.error('Errore caricamento eventi:', err);
+      allEvents = [];
     }
+
+    // Per ogni evento carica iscritti con newsletter=true
+    nlData = {};
+    gestioneData = [];
+
+    for (const ev of allEvents) {
+      try {
+        const rReg = await fetch(
+          SUPA_URL + '/rest/v1/registrations?event_id=eq.' + ev.id + '&newsletter=eq.true&in_lista_attesa=eq.false&select=id,nome,cognome,email,event_id',
+          { headers: supaHeaders() }
+        );
+        const regs = await rReg.json() || [];
+        nlData[ev.id] = regs;
+        regs.forEach(r => gestioneData.push({ ...r, evento_nome: ev.nome }));
+      } catch (evErr) {
+        console.warn('Errore caricamento iscritti evento', ev.id, evErr);
+        nlData[ev.id] = [];
+      }
+    }
+
+    // Render sempre, anche se allEvents e' vuoto
+    renderLista();
+    renderSelectorInvia();
+    renderGestione();
   }
+
 
   // ===== TAB LISTA ISCRITTI =====
   function renderLista() {
