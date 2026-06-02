@@ -1355,21 +1355,21 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
         const ora = new Date(log.created_at).toLocaleTimeString('it-IT', {
           hour: '2-digit', minute: '2-digit'
         });
-        return \`
+        return `
           <div style="padding:16px 0;border-bottom:1px solid var(--border);">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
               <div style="flex:1;min-width:0;">
-                <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px;">\${escHtml(log.oggetto)}</div>
-                <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">Da: \${escHtml(log.mittente)} &bull; Reply-to: \${escHtml(log.reply_to || '-')}</div>
-                \${log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">Eventi: ' + escHtml(log.eventi_nomi) + '</div>' : ''}
+                <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px;">${escHtml(log.oggetto)}</div>
+                <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">Da: ${escHtml(log.mittente)} &bull; Reply-to: ${escHtml(log.reply_to || '-')}</div>
+                ${log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">Eventi: ' + escHtml(log.eventi_nomi) + '</div>' : ''}
               </div>
               <div style="text-align:right;flex-shrink:0;">
-                <span class="badge badge-gold" style="margin-bottom:6px;display:inline-flex;">\${log.destinatari} destinatari</span>
-                <div style="font-size:11px;color:var(--text-muted);">\${data} alle \${ora}</div>
+                <span class="badge badge-gold" style="margin-bottom:6px;display:inline-flex;">${log.destinatari} destinatari</span>
+                <div style="font-size:11px;color:var(--text-muted);">${data} alle ${ora}</div>
               </div>
             </div>
           </div>
-        \`;
+        `;
       }).join('');
 
       // Rimuovi bordo ultimo elemento
