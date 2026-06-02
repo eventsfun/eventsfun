@@ -124,6 +124,42 @@ h1 em{font-style:normal;color:var(--gold)}
 .case h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px}
 .case p{font-size:13px;line-height:1.65;color:var(--text-muted)}
 
+/* ── NEWSLETTER ── */
+.nl-section{padding:110px 40px;position:relative;z-index:1;overflow:hidden}
+.nl-section::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.nl-inner{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+.nl-benefits{display:flex;flex-direction:column;gap:24px;margin-bottom:40px}
+.nl-benefit{display:flex;align-items:flex-start;gap:16px}
+.nl-benefit-icon{width:40px;height:40px;border-radius:10px;background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.18);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px}
+.nl-benefit-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;letter-spacing:-.2px}
+.nl-benefit-desc{font-size:13px;line-height:1.65;color:var(--text-muted)}
+.nl-cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;padding:14px 28px;border-radius:10px;text-decoration:none;transition:opacity .2s,transform .2s;letter-spacing:-.2px}
+.nl-cta:hover{opacity:.88;transform:translateY(-1px)}
+.nl-mockup{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.4)}
+.nl-mockup-bar{background:var(--bg3);border-bottom:1px solid var(--border);padding:12px 16px;display:flex;align-items:center;gap:8px}
+.nl-mockup-dot{width:10px;height:10px;border-radius:50%;background:var(--border)}
+.nl-mockup-addr{font-size:11px;color:var(--text-muted);margin-left:8px;letter-spacing:.3px}
+.nl-mockup-body{padding:20px}
+.nl-composer{display:flex;flex-direction:column;gap:0}
+.nl-composer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
+.nl-composer-label{font-size:11px;color:var(--text-muted);width:76px;flex-shrink:0;letter-spacing:.3px;text-transform:uppercase}
+.nl-composer-chip{background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);color:var(--gold);font-size:12px;font-weight:500;padding:4px 10px;border-radius:6px}
+.nl-composer-val{font-size:13px;color:var(--text);line-height:1.4}
+.nl-gold{color:var(--gold);font-weight:600}
+.nl-composer-msg{padding:16px 0;font-size:13px;line-height:1.7;color:rgba(240,237,232,0.7);border-bottom:1px solid rgba(255,255,255,0.05)}
+.nl-composer-msg p{margin-bottom:8px}
+.nl-composer-msg strong{color:var(--text)}
+.nl-composer-send{display:flex;align-items:center;justify-content:space-between;padding-top:14px;flex-wrap:wrap;gap:10px}
+.nl-send-btn{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:12px;font-weight:700;padding:9px 18px;border-radius:8px;cursor:default;font-family:'Syne',sans-serif;letter-spacing:-.2px}
+@media(max-width:900px){
+  .nl-inner{grid-template-columns:1fr;gap:48px}
+  .nl-right{order:-1}
+}
+@media(max-width:600px){
+  .nl-section{padding:80px 20px}
+  .nl-composer-label{width:60px}
+}
+
 /* ── PRICING ── */
 .pricing{padding:100px 40px;background:var(--bg2);position:relative;z-index:1}
 .pricing::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
@@ -833,6 +869,93 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         </div>
       </div>
       <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-dim)">La pagina che vede il partecipante — si apre direttamente dal telefono dopo aver scansionato il QR</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section class="nl-section" id="newsletter">
+  <div class="nl-inner">
+
+    <div class="nl-left fade-up">
+      <div class="section-label">Solo piano Agenzia</div>
+      <h2 class="section-title">Parla direttamente<br>con i tuoi iscritti.</h2>
+      <p class="section-sub" style="max-width:420px;margin-bottom:40px">Hai gia' raccolto i contatti. Usali. Invia comunicazioni mirate agli iscritti di ogni evento -- senza uscire dalla dashboard, senza strumenti esterni.</p>
+
+      <div class="nl-benefits">
+        <div class="nl-benefit">
+          <div class="nl-benefit-icon">&#127987;</div>
+          <div>
+            <div class="nl-benefit-title">Divisa per evento</div>
+            <div class="nl-benefit-desc">Ogni lista e' separata. Scrivi a chi ha partecipato a quel preciso evento, non a tutti in modo indiscriminato.</div>
+          </div>
+        </div>
+        <div class="nl-benefit">
+          <div class="nl-benefit-icon">&#9993;</div>
+          <div>
+            <div class="nl-benefit-title">Il tuo nome, la tua email</div>
+            <div class="nl-benefit-desc">Il mittente sei tu. Le risposte arrivano a te. I tuoi iscritti non sanno che usi EventsFun -- vedono solo il tuo brand.</div>
+          </div>
+        </div>
+        <div class="nl-benefit">
+          <div class="nl-benefit-icon">&#128203;</div>
+          <div>
+            <div class="nl-benefit-title">Storico completo</div>
+            <div class="nl-benefit-desc">Ogni newsletter inviata e' archiviata. Rileggi il testo, controlla i destinatari, tieni traccia di ogni comunicazione.</div>
+          </div>
+        </div>
+        <div class="nl-benefit">
+          <div class="nl-benefit-icon">&#128274;</div>
+          <div>
+            <div class="nl-benefit-title">Consenso garantito</div>
+            <div class="nl-benefit-desc">Scrivi solo a chi ha dato il consenso esplicito all'iscrizione. GDPR rispettato, zero rischi.</div>
+          </div>
+        </div>
+      </div>
+
+      <a href="#prezzi" class="nl-cta">Scopri il piano Agenzia &rarr;</a>
+    </div>
+
+    <div class="nl-right fade-up">
+      <div class="nl-mockup">
+        <div class="nl-mockup-bar">
+          <div class="nl-mockup-dot"></div>
+          <div class="nl-mockup-dot"></div>
+          <div class="nl-mockup-dot"></div>
+          <div class="nl-mockup-addr">newsletter-agenzia &bull; EventsFun</div>
+        </div>
+        <div class="nl-mockup-body">
+          <div class="nl-composer">
+            <div class="nl-composer-row">
+              <span class="nl-composer-label">Evento</span>
+              <div class="nl-composer-chip">&#10003; Sagra del Risotto 2025 &nbsp;<span style="opacity:.5">+2</span></div>
+            </div>
+            <div class="nl-composer-row">
+              <span class="nl-composer-label">Destinatari</span>
+              <span class="nl-composer-val nl-gold">247 iscritti newsletter</span>
+            </div>
+            <div class="nl-composer-row">
+              <span class="nl-composer-label">Mittente</span>
+              <span class="nl-composer-val">Pro Loco Valpadana</span>
+            </div>
+            <div class="nl-composer-row">
+              <span class="nl-composer-label">Oggetto</span>
+              <span class="nl-composer-val">Grazie per esserci stati -- ci vediamo l'anno prossimo!</span>
+            </div>
+            <div class="nl-composer-msg">
+              <p>Cari amici,</p>
+              <p>quest'anno eravate in <strong>247</strong> -- il record di sempre. Grazie di cuore per la partecipazione e il calore che ci avete donato.</p>
+              <p>L'edizione 2026 e' gia' in programma. Restate sintonizzati.</p>
+              <p style="margin-top:12px">A presto,<br><strong>Pro Loco Valpadana</strong></p>
+            </div>
+            <div class="nl-composer-send">
+              <span style="font-size:11px;color:rgba(255,255,255,0.3)">Invia a 247 destinatari</span>
+              <div class="nl-send-btn">&#9654;&nbsp; Invia newsletter</div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
   </div>
