@@ -347,14 +347,22 @@ function showAccOk(msg){ hideAccAlerts(); var a=document.getElementById('accAler
 
 async function loadAccountData(){
   try {
-    var r = await fetch(SB_URL+'/auth/v1/user', { headers: sbH(accessToken) });
-    var u = await r.json();
-    if(u && u.user_metadata){
-      document.getElementById('accNome').value = u.user_metadata.nome || '';
-      document.getElementById('accCognome').value = u.user_metadata.cognome || '';
-    }
-    /* Newsletter: legge dal campo orders */
-    var orders = await sbGet('orders', { email: currentEmail }, 'newsletter', accessToken);
+    /* Legge dati Auth + orders in parallelo */
+    var rAuth = fetch(SB_URL+'/auth/v1/user', { headers: sbH(accessToken) });
+    var rOrders = sbGet('orders', { email: currentEmail }, 'nome,cognome,newsletter', accessToken);
+    var u = await (await rAuth).json();
+    var orders = await rOrders;
+
+    /* Nome e cognome: priorita' a user_metadata, fallback su orders */
+    var nomeAuth = (u && u.user_metadata && u.user_metadata.nome) ? u.user_metadata.nome : '';
+    var cognomeAuth = (u && u.user_metadata && u.user_metadata.cognome) ? u.user_metadata.cognome : '';
+    var nomeOrd = (orders && orders.length && orders[0].nome) ? orders[0].nome : '';
+    var cognomeOrd = (orders && orders.length && orders[0].cognome) ? orders[0].cognome : '';
+
+    document.getElementById('accNome').value = nomeAuth || nomeOrd;
+    document.getElementById('accCognome').value = cognomeAuth || cognomeOrd;
+
+    /* Newsletter */
     if(orders && orders.length){
       accNewsletterState = !!orders[0].newsletter;
       var tog = document.getElementById('accTogNewsletter');
