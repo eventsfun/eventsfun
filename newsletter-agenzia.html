@@ -583,6 +583,9 @@
     <button class="tab-btn" onclick="switchTab('gestione')">
       &#9998; Gestione
     </button>
+    <button class="tab-btn" onclick="switchTab('storico')">
+      &#128196; Storico invii
+    </button>
   </div>
 
   <!-- TAB: LISTA ISCRITTI -->
@@ -715,6 +718,23 @@
       </div>
     </div>
     <div id="alert-gestione" class="alert"></div>
+  </div>
+
+  <!-- TAB: STORICO INVII -->
+  <div class="tab-content" id="tab-storico">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Storico newsletter inviate</div>
+      </div>
+      <div id="storico-loading" class="loading-row">
+        <div class="spinner"></div> Caricamento storico...
+      </div>
+      <div id="storico-list" style="display:none;"></div>
+      <div id="storico-empty" class="empty-state" style="display:none;">
+        <div class="icon">&#128196;</div>
+        <p>Nessuna newsletter inviata ancora.</p>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1155,6 +1175,12 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
 
       if (result.success) {
         showAlert(alertEl, 'success', 'Newsletter inviata! ' + result.sent + ' email inviate' + (result.failed > 0 ? ', ' + result.failed + ' fallite.' : '.'));
+        // Salva log
+        const eventiSelezionati = [...checkboxes].map(cb => {
+          const ev = allEvents.find(e => e.id === cb.value);
+          return ev ? ev.nome : '';
+        }).filter(Boolean).join(', ');
+        await salvaLog(oggetto, mittente, replyto, emails.length, eventiSelezionati);
         // Reset form
         document.getElementById('nl-oggetto').value = '';
         document.getElementById('editor').innerHTML = '';
@@ -1277,13 +1303,94 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
   }
 
   // ===== TABS =====
+  // ===== STORICO =====
+  async function salvaLog(oggetto, mittente, replyTo, destinatari, eventiNomi) {
+    try {
+      await fetch(SUPA_URL + '/rest/v1/newsletter_logs', {
+        method: 'POST',
+        headers: supaHeaders({ 'Prefer': 'return=minimal' }),
+        body: JSON.stringify({
+          activation_token: currentToken,
+          oggetto,
+          mittente,
+          reply_to: replyTo,
+          destinatari,
+          eventi_nomi: eventiNomi
+        })
+      });
+    } catch (err) {
+      console.warn('Errore salvataggio log newsletter:', err);
+    }
+  }
+
+  async function renderStorico() {
+    const loading = document.getElementById('storico-loading');
+    const list = document.getElementById('storico-list');
+    const empty = document.getElementById('storico-empty');
+
+    loading.style.display = 'flex';
+    list.style.display = 'none';
+    empty.style.display = 'none';
+
+    try {
+      const res = await fetch(
+        SUPA_URL + '/rest/v1/newsletter_logs?activation_token=eq.' + encodeURIComponent(currentToken) + '&order=created_at.desc&select=*',
+        { headers: supaHeaders() }
+      );
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const logs = await res.json();
+
+      loading.style.display = 'none';
+
+      if (!Array.isArray(logs) || logs.length === 0) {
+        empty.style.display = 'block';
+        return;
+      }
+
+      list.style.display = 'block';
+      list.innerHTML = logs.map(log => {
+        const data = new Date(log.created_at).toLocaleDateString('it-IT', {
+          day: '2-digit', month: 'long', year: 'numeric'
+        });
+        const ora = new Date(log.created_at).toLocaleTimeString('it-IT', {
+          hour: '2-digit', minute: '2-digit'
+        });
+        return \`
+          <div style="padding:16px 0;border-bottom:1px solid var(--border);">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+              <div style="flex:1;min-width:0;">
+                <div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:4px;">\${escHtml(log.oggetto)}</div>
+                <div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">Da: \${escHtml(log.mittente)} &bull; Reply-to: \${escHtml(log.reply_to || '-')}</div>
+                \${log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-bottom:2px;">Eventi: ' + escHtml(log.eventi_nomi) + '</div>' : ''}
+              </div>
+              <div style="text-align:right;flex-shrink:0;">
+                <span class="badge badge-gold" style="margin-bottom:6px;display:inline-flex;">\${log.destinatari} destinatari</span>
+                <div style="font-size:11px;color:var(--text-muted);">\${data} alle \${ora}</div>
+              </div>
+            </div>
+          </div>
+        \`;
+      }).join('');
+
+      // Rimuovi bordo ultimo elemento
+      const lastEl = list.querySelector('div:last-child');
+      if (lastEl) lastEl.style.borderBottom = 'none';
+
+    } catch (err) {
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+      console.error('Errore caricamento storico:', err);
+    }
+  }
+
   function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      const names = ['lista', 'invia', 'gestione'];
+      const names = ['lista', 'invia', 'gestione', 'storico'];
       b.classList.toggle('active', names[i] === name);
     });
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
+    if (name === 'storico') renderStorico();
   }
 
   // ===== UTILS =====
