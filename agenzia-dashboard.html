@@ -47,6 +47,11 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .ev-selector-inner{display:flex;align-items:center;gap:12px;flex:1}
 .ev-selector-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
 .ev-selector select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;max-width:320px}
+.ev-tabs{display:flex;gap:6px;margin-bottom:10px}
+.ev-tab{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
+.ev-tab:hover{border-color:var(--gold);color:var(--gold)}
+.ev-tab.active{background:rgba(201,169,110,0.12);border-color:var(--gold);color:var(--gold)}
+.ev-tab .ev-tab-count{display:inline-block;background:rgba(201,169,110,0.2);border-radius:20px;padding:1px 7px;font-size:11px;margin-left:5px}
 /* STATS */
 .stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
 .stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px}
@@ -256,12 +261,22 @@ select option{background:#1a1a1a;color:var(--text)}
   <div class="dash">
 
     <!-- SELETTORE EVENTO -->
-    <div class="ev-selector" id="evSelector" style="display:none">
-      <div class="ev-selector-inner">
-        <span class="ev-selector-label">Evento</span>
-        <select id="evSelectBox" onchange="switchEvent(this.value)"></select>
+    <div id="evSelectorWrap" style="display:none;margin-bottom:20px;">
+      <div class="ev-tabs" id="evTabs">
+        <button class="ev-tab active" id="tabAttivi" onclick="switchEvTab('attivi')">
+          Eventi attivi <span class="ev-tab-count" id="countAttivi">0</span>
+        </button>
+        <button class="ev-tab" id="tabConclusi" onclick="switchEvTab('conclusi')">
+          Eventi conclusi <span class="ev-tab-count" id="countConclusi">0</span>
+        </button>
       </div>
-      <button class="btn-create" id="btnCreate" onclick="openCreateEvent()" style="display:none">+ Nuovo evento</button>
+      <div class="ev-selector" id="evSelector">
+        <div class="ev-selector-inner">
+          <span class="ev-selector-label">Evento</span>
+          <select id="evSelectBox" onchange="switchEvent(this.value)"></select>
+        </div>
+        <button class="btn-create" id="btnCreate" onclick="openCreateEvent()" style="display:none">+ Nuovo evento</button>
+      </div>
     </div>
 
     <div class="dash-header">
@@ -284,9 +299,8 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="closed-banner" id="closedBanner">
       <div>
         <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3>
-        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura. Organizza il prossimo evento.</p>
+        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura.</p>
       </div>
-      <a href="https://eventsfun.com/#prezzi" target="_blank" style="padding:12px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none">Organizza il prossimo →</a>
     </div>
 
     <!-- BANNER SCADENZA ABBONAMENTO -->
@@ -874,46 +888,90 @@ function isClosed(ev) {
 /* ============================================================
    MULTI-EVENT SELECTOR
    ============================================================ */
-function renderSelector() {
-  var sel = document.getElementById('evSelector');
-  var box = document.getElementById('evSelectBox');
-  var btnMain = document.getElementById('btnCreateMain');
-  if (!sel || !box) return;
-  if (allEvents.length === 0) {
-    sel.style.display = 'none';
-    setDisp('btnCreateMain', 'inline-block');
-    return;
-  }
-  sel.style.display = 'flex';
-  setDisp('btnCreateMain', 'none');
-  setDisp('btnCreate', 'inline-block');
-  var curId = currentEv ? currentEv.id : '';
+var evTabCorrente = 'attivi';
+
+function getEventiPerTab() {
   var oggi = new Date();
   oggi.setHours(0, 0, 0, 0);
-
   var attivi = allEvents.filter(function(e) {
     if (!e.data_iso) return true;
-    var d = new Date(e.data_iso + 'T00:00:00');
-    return d >= oggi;
+    return new Date(e.data_iso + 'T00:00:00') >= oggi;
   });
   var conclusi = allEvents.filter(function(e) {
     if (!e.data_iso) return false;
-    var d = new Date(e.data_iso + 'T00:00:00');
-    return d < oggi;
+    return new Date(e.data_iso + 'T00:00:00') < oggi;
   });
+  return { attivi: attivi, conclusi: conclusi };
+}
 
-  function makeOption(e) {
+function switchEvTab(tab) {
+  evTabCorrente = tab;
+  document.getElementById('tabAttivi').classList.toggle('active', tab === 'attivi');
+  document.getElementById('tabConclusi').classList.toggle('active', tab === 'conclusi');
+  var gruppi = getEventiPerTab();
+  var lista = gruppi[tab];
+  var box = document.getElementById('evSelectBox');
+  if (!box) return;
+  if (lista.length === 0) {
+    box.innerHTML = '<option value="">Nessun evento in questa categoria</option>';
+    return;
+  }
+  var curId = currentEv ? currentEv.id : '';
+  // Se l'evento corrente non e' in questa tab, seleziona il primo della tab
+  var inTab = lista.some(function(e) { return e.id === curId; });
+  if (!inTab) {
+    curId = lista[0].id;
+    switchEvent(curId);
+  }
+  box.innerHTML = lista.map(function(e) {
     return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+  }).join('');
+}
+
+function renderSelector() {
+  var wrap = document.getElementById('evSelectorWrap');
+  var box = document.getElementById('evSelectBox');
+  if (!wrap || !box) return;
+
+  if (allEvents.length === 0) {
+    wrap.style.display = 'none';
+    setDisp('btnCreateMain', 'inline-block');
+    return;
   }
 
-  var html = '';
-  if (attivi.length > 0) {
-    html += '<optgroup label="-- Eventi attivi --">' + attivi.map(makeOption).join('') + '</optgroup>';
+  wrap.style.display = 'block';
+  setDisp('btnCreateMain', 'none');
+  setDisp('btnCreate', 'inline-block');
+
+  var gruppi = getEventiPerTab();
+
+  // Aggiorna contatori tab
+  var cA = document.getElementById('countAttivi');
+  var cC = document.getElementById('countConclusi');
+  if (cA) cA.textContent = gruppi.attivi.length;
+  if (cC) cC.textContent = gruppi.conclusi.length;
+
+  // Se tab corrente e' vuota, passa all'altra automaticamente
+  if (evTabCorrente === 'attivi' && gruppi.attivi.length === 0 && gruppi.conclusi.length > 0) {
+    evTabCorrente = 'conclusi';
+  } else if (evTabCorrente === 'conclusi' && gruppi.conclusi.length === 0 && gruppi.attivi.length > 0) {
+    evTabCorrente = 'attivi';
   }
-  if (conclusi.length > 0) {
-    html += '<optgroup label="-- Eventi conclusi --">' + conclusi.map(makeOption).join('') + '</optgroup>';
+
+  document.getElementById('tabAttivi').classList.toggle('active', evTabCorrente === 'attivi');
+  document.getElementById('tabConclusi').classList.toggle('active', evTabCorrente === 'conclusi');
+
+  var lista = gruppi[evTabCorrente];
+  var curId = currentEv ? currentEv.id : '';
+
+  if (lista.length === 0) {
+    box.innerHTML = '<option value="">Nessun evento in questa categoria</option>';
+    return;
   }
-  box.innerHTML = html;
+
+  box.innerHTML = lista.map(function(e) {
+    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+  }).join('');
 }
 
 async function switchEvent(id) {
