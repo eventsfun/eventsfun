@@ -888,9 +888,32 @@ function renderSelector() {
   setDisp('btnCreateMain', 'none');
   setDisp('btnCreate', 'inline-block');
   var curId = currentEv ? currentEv.id : '';
-  box.innerHTML = allEvents.map(function(e) {
+  var oggi = new Date();
+  oggi.setHours(0, 0, 0, 0);
+
+  var attivi = allEvents.filter(function(e) {
+    if (!e.data_iso) return true;
+    var d = new Date(e.data_iso + 'T00:00:00');
+    return d >= oggi;
+  });
+  var conclusi = allEvents.filter(function(e) {
+    if (!e.data_iso) return false;
+    var d = new Date(e.data_iso + 'T00:00:00');
+    return d < oggi;
+  });
+
+  function makeOption(e) {
     return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
-  }).join('');
+  }
+
+  var html = '';
+  if (attivi.length > 0) {
+    html += '<optgroup label="-- Eventi attivi --">' + attivi.map(makeOption).join('') + '</optgroup>';
+  }
+  if (conclusi.length > 0) {
+    html += '<optgroup label="-- Eventi conclusi --">' + conclusi.map(makeOption).join('') + '</optgroup>';
+  }
+  box.innerHTML = html;
 }
 
 async function switchEvent(id) {
