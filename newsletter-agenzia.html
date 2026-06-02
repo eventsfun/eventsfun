@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newsletter -- EventsFun</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0A0A0A;
+      --bg2: #111111;
+      --bg3: #1A1A1A;
+      --border: #2A2A2A;
+      --gold: #C9A96E;
+      --gold-dim: rgba(201,169,110,0.15);
+      --gold-hover: #D9BC8A;
+      --text: #E8E8E8;
+      --text-dim: #888;
+      --text-muted: #555;
+      --danger: #E05555;
+      --danger-dim: rgba(224,85,85,0.12);
+      --success: #4CAF7D;
+      --success-dim: rgba(76,175,125,0.12);
+      --warn: #E0A855;
+      --warn-dim: rgba(224,168,85,0.12);
+      --radius: 10px;
+      --radius-sm: 6px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .navbar-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--gold);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+      white-space: nowrap;
+    }
+    .navbar-logo span { color: var(--text-dim); font-weight: 400; }
+    .navbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-btn.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+    /* ===== LAYOUT ===== */
+    #auth-screen {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 60px);
+      padding: 24px;
+    }
+    .auth-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .auth-card h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .auth-card p { color: var(--text-dim); font-size: 14px; margin-bottom: 24px; }
+
+    #main-app { display: none; }
+
+    .page-header {
+      padding: 32px 24px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .page-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .page-subtitle { color: var(--text-dim); font-size: 14px; }
+
+    /* ===== TABS ===== */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 24px 24px 0;
+      max-width: 1100px;
+      margin: 0 auto;
+      border-bottom: 1px solid var(--border);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 18px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-badge {
+      background: var(--gold-dim);
+      color: var(--gold);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    .tab-content { display: none; padding: 28px 24px; max-width: 1100px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* ===== CARDS ===== */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    /* ===== FORM ===== */
+    .form-group { margin-bottom: 18px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+    }
+    .form-input, .form-select, .form-textarea {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      padding: 10px 14px;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    .form-input:focus, .form-select:focus, .form-textarea:focus {
+      border-color: var(--gold);
+    }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-select { appearance: none; cursor: pointer; }
+    .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+
+    /* ===== BUTTONS ===== */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 10px 20px;
+      border-radius: var(--radius-sm);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .btn-gold {
+      background: var(--gold);
+      color: #0A0A0A;
+      font-weight: 600;
+    }
+    .btn-gold:hover { background: var(--gold-hover); }
+    .btn-gold:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger {
+      background: transparent;
+      border: 1px solid var(--danger);
+      color: var(--danger);
+      font-size: 13px;
+      padding: 5px 12px;
+    }
+    .btn-danger:hover { background: var(--danger-dim); }
+    .btn-sm { padding: 5px 12px; font-size: 13px; }
+
+    /* ===== BADGES ===== */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .badge-gold { background: var(--gold-dim); color: var(--gold); }
+    .badge-green { background: var(--success-dim); color: var(--success); }
+    .badge-red { background: var(--danger-dim); color: var(--danger); }
+    .badge-gray { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+    /* ===== EVENTO CARD (lista) ===== */
+    .evento-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .evento-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      cursor: pointer;
+      user-select: none;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+    .evento-card-header:hover { background: var(--bg3); }
+    .evento-card-info { flex: 1; min-width: 0; }
+    .evento-nome {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .evento-meta { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .evento-card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .toggle-icon { color: var(--text-muted); font-size: 18px; transition: transform 0.2s; }
+    .evento-card.open .toggle-icon { transform: rotate(180deg); }
+    .evento-iscritti-list {
+      display: none;
+      border-top: 1px solid var(--border);
+      padding: 0;
+    }
+    .evento-card.open .evento-iscritti-list { display: block; }
+
+    .iscritto-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .iscritto-row:last-child { border-bottom: none; }
+    .iscritto-info { flex: 1; min-width: 0; }
+    .iscritto-nome { font-size: 14px; font-weight: 500; }
+    .iscritto-email { font-size: 13px; color: var(--text-dim); }
+
+    /* ===== NEWSLETTER SEND ===== */
+    .eventi-selector {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .evento-check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .evento-check-item:hover { border-color: var(--gold); }
+    .evento-check-item input[type="checkbox"] {
+      accent-color: var(--gold);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .evento-check-item.selected { border-color: var(--gold); background: var(--gold-dim); }
+    .check-nome { font-weight: 500; font-size: 14px; }
+    .check-count { font-size: 13px; color: var(--text-dim); }
+    .check-spacer { flex: 1; }
+
+    .dest-counter {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .dest-counter .num {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--gold);
+    }
+    .dest-counter .label { font-size: 13px; color: var(--text-dim); }
+
+    /* ===== RICH TEXT EDITOR ===== */
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-bottom: none;
+      border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+      padding: 8px;
+    }
+    .tb-btn {
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      padding: 5px 9px;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tb-btn:hover { background: var(--border); color: var(--text); }
+    .tb-btn.active { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+    .tb-sep { width: 1px; background: var(--border); margin: 2px 4px; }
+    .editor-area {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.7;
+      min-height: 220px;
+      padding: 14px;
+      outline: none;
+      overflow-y: auto;
+    }
+    .editor-area:focus { border-color: var(--gold); }
+    .editor-area a { color: var(--gold); }
+    .editor-area img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
+
+    /* dialog link */
+    .link-dialog {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .link-dialog.open { display: flex; }
+    .link-dialog-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%;
+      max-width: 420px;
+    }
+    .link-dialog-box h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      color: var(--gold);
+      margin-bottom: 16px;
+    }
+
+    /* ===== ANTEPRIMA ===== */
+    .preview-frame {
+      background: #fff;
+      border-radius: var(--radius-sm);
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .preview-email-wrap {
+      max-width: 600px;
+      margin: 0 auto;
+      font-family: Arial, sans-serif;
+      color: #333;
+    }
+
+    /* ===== ALERT ===== */
+    .alert {
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .alert.show { display: flex; }
+    .alert-success { background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+    .alert-error { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); }
+    .alert-info { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold); }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--text-muted);
+    }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ===== LOADING ===== */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(201,169,110,0.3);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 32px;
+      color: var(--text-dim);
+      font-size: 14px;
+    }
+
+    /* ===== SEARCH ===== */
+    .search-wrap { position: relative; margin-bottom: 16px; }
+    .search-wrap .form-input { padding-left: 36px; }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+      font-size: 15px;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 600px) {
+      .navbar { padding: 0 14px; }
+      .page-header { padding: 20px 14px 0; }
+      .tabs { padding: 16px 14px 0; overflow-x: auto; }
+      .tab-content { padding: 20px 14px; }
+      .card { padding: 14px; }
+      .page-title { font-size: 20px; }
+      .auth-card { padding: 24px 18px; }
+      .tab-btn { padding: 8px 12px; font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-logo" href="#">Events<span>Fun</span></a>
+  <div class="navbar-actions">
+    <a id="nav-dashboard" class="nav-btn" href="agenzia-dashboard.html">
+      &#9632; Dashboard
+    </a>
+    <a id="nav-area" class="nav-btn" href="area-personale.html">
+      &#9632; Area personale
+    </a>
+  </div>
+</nav>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <h2>Newsletter Agenzia</h2>
+    <p>Caricamento in corso...</p>
+    <div style="display:flex;justify-content:center;margin-top:16px;">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="main-app">
+  <div class="page-header">
+    <div class="page-title">Newsletter</div>
+    <div class="page-subtitle">Gestisci e invia comunicazioni ai tuoi iscritti</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('lista')">
+      &#9632; Lista iscritti
+      <span class="tab-badge" id="badge-lista">0</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('invia')">
+      &#9654; Invia newsletter
+    </button>
+    <button class="tab-btn" onclick="switchTab('gestione')">
+      &#9998; Gestione
+    </button>
+  </div>
+
+  <!-- TAB: LISTA ISCRITTI -->
+  <div class="tab-content active" id="tab-lista">
+    <div id="lista-loading" class="loading-row">
+      <div class="spinner"></div> Caricamento eventi e iscritti...
+    </div>
+    <div id="lista-eventi" style="display:none;"></div>
+    <div id="lista-empty" class="empty-state" style="display:none;">
+      <div class="icon">&#128231;</div>
+      <p>Nessun iscritto alla newsletter trovato.</p>
+    </div>
+  </div>
+
+  <!-- TAB: INVIA NEWSLETTER -->
+  <div class="tab-content" id="tab-invia">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Destinatari</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Seleziona uno o piu' eventi</label>
+        <div class="eventi-selector" id="eventi-selector">
+          <div class="loading-row" style="padding:16px;">
+            <div class="spinner"></div> Caricamento eventi...
+          </div>
+        </div>
+        <div class="form-hint">Solo iscritti con consenso newsletter saranno inclusi.</div>
+      </div>
+      <div class="dest-counter">
+        <span class="num" id="dest-count">0</span>
+        <div>
+          <div class="label">destinatari selezionati</div>
+          <div class="form-hint" id="dest-detail" style="margin-top:0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Messaggio</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Oggetto email *</label>
+        <input class="form-input" type="text" id="nl-oggetto" placeholder="Es: Aggiornamento importante per l'evento..." />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nome mittente *</label>
+        <input class="form-input" type="text" id="nl-mittente" placeholder="Es: Mario Rossi / Associazione XYZ" />
+        <div class="form-hint">Apparira' come nome mittente nell'email. L'invio avviene tramite EventsFun ma il reply-to sara' il tuo indirizzo.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email reply-to *</label>
+        <input class="form-input" type="email" id="nl-replyto" placeholder="tua@email.it" />
+        <div class="form-hint">Le risposte degli iscritti arriveranno a questo indirizzo.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Testo email *</label>
+        <div class="editor-toolbar">
+          <button class="tb-btn" onclick="execCmd('bold')" title="Grassetto"><b>B</b></button>
+          <button class="tb-btn" onclick="execCmd('italic')" title="Corsivo"><i>I</i></button>
+          <button class="tb-btn" onclick="execCmd('underline')" title="Sottolineato"><u>S</u></button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
+          <button class="tb-btn" onclick="insertLink()" title="Inserisci link">&#128279; Link</button>
+          <button class="tb-btn" onclick="insertImage()" title="Inserisci immagine">&#128444; Immagine</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="execCmd('removeFormat')" title="Rimuovi formattazione">&#10006; Pulisci</button>
+        </div>
+        <div
+          class="editor-area"
+          id="editor"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          aria-label="Corpo email"
+          data-placeholder="Scrivi qui il tuo messaggio..."
+        ></div>
+        <div class="form-hint">Puoi usare grassetto, corsivo, elenchi, link e immagini.</div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="mostraAnteprima()">&#128065; Anteprima</button>
+        <button class="btn btn-gold" id="btn-invia" onclick="inviaNewsletter()">&#9654; Invia newsletter</button>
+      </div>
+
+      <div id="alert-invia" class="alert" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- ANTEPRIMA MODAL -->
+    <div id="anteprima-modal" style="display:none;">
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header">
+          <div class="card-title">Anteprima email</div>
+          <button class="btn btn-outline btn-sm" onclick="chiudiAnteprima()">&#10006; Chiudi</button>
+        </div>
+        <div class="preview-frame">
+          <iframe id="preview-iframe" style="width:100%;min-height:500px;border:none;" title="Anteprima newsletter"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: GESTIONE CANCELLAZIONI -->
+  <div class="tab-content" id="tab-gestione">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Gestione iscritti newsletter</div>
+      </div>
+      <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;">
+        Qui puoi rimuovere singoli iscritti dalla newsletter. L'azione e' reversibile solo manualmente su Supabase.
+      </p>
+
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input class="form-input" type="text" id="search-gestione" placeholder="Cerca per nome o email..." oninput="filtraGestione()" />
+      </div>
+
+      <div id="gestione-loading" class="loading-row">
+        <div class="spinner"></div> Caricamento...
+      </div>
+      <div id="gestione-list" style="display:none;"></div>
+      <div id="gestione-empty" class="empty-state" style="display:none;">
+        <div class="icon">&#128231;</div>
+        <p>Nessun iscritto trovato.</p>
+      </div>
+    </div>
+    <div id="alert-gestione" class="alert"></div>
+  </div>
+</div>
+
+<!-- DIALOG LINK -->
+<div class="link-dialog" id="link-dialog">
+  <div class="link-dialog-box">
+    <h3>Inserisci link</h3>
+    <div class="form-group">
+      <label class="form-label">Testo del link</label>
+      <input class="form-input" type="text" id="link-testo" placeholder="Es: Scopri di piu'" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">URL</label>
+      <input class="form-input" type="url" id="link-url" placeholder="https://..." />
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-outline" onclick="chiudiLinkDialog()">Annulla</button>
+      <button class="btn btn-gold" onclick="confermaLink()">Inserisci</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== CONFIG =====
+  const SUPA_URL = 'https://vousendridklswygvqpl.supabase.co';
+  const SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epSloiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
+
+  // ===== STATO =====
+  let currentToken = null;
+  let allEvents = [];       // eventi dell'account
+  let nlData = {};          // { event_id: [registrations con newsletter=true] }
+  let gestioneData = [];    // array piatto per tab gestione
+  let savedRange = null;    // selezione per inserimento link
+
+  // ===== INIT =====
+  document.addEventListener('DOMContentLoaded', async () => {
+    const params = new URLSearchParams(window.location.search);
+    currentToken = params.get('token');
+
+    if (!currentToken) {
+      showAuthError('Token mancante. Accedi dalla tua area personale.');
+      return;
+    }
+
+    // Verifica token
+    const valid = await verificaToken(currentToken);
+    if (!valid) {
+      showAuthError('Token non valido o scaduto.');
+      return;
+    }
+
+    // Aggiorna link dashboard e area personale con token
+    document.getElementById('nav-dashboard').href = 'agenzia-dashboard.html?token=' + currentToken;
+
+    // Mostra app
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
+
+    // Carica dati
+    await caricaDati();
+  });
+
+  function showAuthError(msg) {
+    const sc = document.getElementById('auth-screen');
+    sc.querySelector('p').textContent = msg;
+    sc.querySelector('.spinner').style.display = 'none';
+    sc.querySelector('h2').style.color = '#E05555';
+  }
+
+  async function verificaToken(token) {
+    try {
+      const r = await fetch(
+        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato',
+        { headers: supaHeaders() }
+      );
+      const data = await r.json();
+      if (!data || data.length === 0) return false;
+      return data[0].stato === 'active' || data[0].activated === true;
+    } catch { return false; }
+  }
+
+  function supaHeaders(extra) {
+    return Object.assign({
+      'apikey': SUPA_ANON,
+      'Authorization': 'Bearer ' + SUPA_ANON,
+      'Content-Type': 'application/json'
+    }, extra || {});
+  }
+
+  // ===== CARICA DATI =====
+  async function caricaDati() {
+    try {
+      // 1. Prendi tutti gli eventi del token (e degli altri 2 token dello stesso ordine)
+      // Prima trova l'order_id dal token corrente
+      const rAct = await fetch(
+        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(currentToken) + '&select=order_id',
+        { headers: supaHeaders() }
+      );
+      const actData = await rAct.json();
+      if (!actData || actData.length === 0) return;
+      const orderId = actData[0].order_id;
+
+      // 2. Trova tutti i token di questo ordine
+      const rTokens = await fetch(
+        SUPA_URL + '/rest/v1/activations?order_id=eq.' + orderId + '&select=token',
+        { headers: supaHeaders() }
+      );
+      const tokensData = await rTokens.json();
+      const tokens = tokensData.map(t => t.token);
+
+      // 3. Carica tutti gli eventi per questi token
+      const tokenFilter = tokens.map(t => 'activation_token=eq.' + encodeURIComponent(t)).join(',');
+      const rEvents = await fetch(
+        SUPA_URL + '/rest/v1/events?or=(' + tokenFilter + ')&select=id,nome,data_iso,ora,luogo,email_contatto,attivo,bozza&order=created_at.desc',
+        { headers: supaHeaders() }
+      );
+      allEvents = await rEvents.json() || [];
+
+      // 4. Per ogni evento carica iscritti con newsletter=true
+      nlData = {};
+      gestioneData = [];
+
+      for (const ev of allEvents) {
+        const rReg = await fetch(
+          SUPA_URL + '/rest/v1/registrations?event_id=eq.' + ev.id + '&newsletter=eq.true&in_lista_attesa=eq.false&select=id,nome,cognome,email,event_id',
+          { headers: supaHeaders() }
+        );
+        const regs = await rReg.json() || [];
+        nlData[ev.id] = regs;
+        regs.forEach(r => gestioneData.push({ ...r, evento_nome: ev.nome }));
+      }
+
+      // Rimuovi duplicati email in gestioneData (stessa email piu' eventi)
+      // Manteniamo tutti per permettere rimozione evento-specifica
+      renderLista();
+      renderSelectorInvia();
+      renderGestione();
+
+    } catch (err) {
+      console.error('Errore caricamento dati:', err);
+    }
+  }
+
+  // ===== TAB LISTA ISCRITTI =====
+  function renderLista() {
+    const container = document.getElementById('lista-eventi');
+    const loading = document.getElementById('lista-loading');
+    const empty = document.getElementById('lista-empty');
+
+    loading.style.display = 'none';
+
+    const totale = Object.values(nlData).reduce((s, a) => s + a.length, 0);
+    document.getElementById('badge-lista').textContent = totale;
+
+    if (allEvents.length === 0 || totale === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+
+    container.style.display = 'block';
+    container.innerHTML = '';
+
+    allEvents.forEach(ev => {
+      const iscritti = nlData[ev.id] || [];
+      if (iscritti.length === 0) return; // nascondi eventi senza iscritti nl
+
+      const card = document.createElement('div');
+      card.className = 'evento-card';
+      card.id = 'evcard-' + ev.id;
+
+      const dataStr = ev.data_iso ? new Date(ev.data_iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' }) : 'Data non definita';
+
+      card.innerHTML = `
+        <div class="evento-card-header" onclick="toggleEventoCard('${ev.id}')">
+          <div class="evento-card-info">
+            <div class="evento-nome">${escHtml(ev.nome || 'Evento senza nome')}</div>
+            <div class="evento-meta">${dataStr}${ev.luogo ? ' &bull; ' + escHtml(ev.luogo) : ''}</div>
+          </div>
+          <div class="evento-card-right">
+            <span class="badge badge-gold">&#9993; ${iscritti.length} iscritti nl</span>
+            <span class="toggle-icon">&#8964;</span>
+          </div>
+        </div>
+        <div class="evento-iscritti-list">
+          ${iscritti.map(r => `
+            <div class="iscritto-row">
+              <div class="iscritto-info">
+                <div class="iscritto-nome">${escHtml(r.nome || '')} ${escHtml(r.cognome || '')}</div>
+                <div class="iscritto-email">${escHtml(r.email || '')}</div>
+              </div>
+              <span class="badge badge-green">&#10003; Iscritto nl</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function toggleEventoCard(id) {
+    const card = document.getElementById('evcard-' + id);
+    if (card) card.classList.toggle('open');
+  }
+
+  // ===== TAB INVIA =====
+  function renderSelectorInvia() {
+    const container = document.getElementById('eventi-selector');
+    if (allEvents.length === 0) {
+      container.innerHTML = '<div style="color:var(--text-muted);font-size:14px;padding:12px;">Nessun evento trovato.</div>';
+      return;
+    }
+
+    container.innerHTML = allEvents.map(ev => {
+      const count = (nlData[ev.id] || []).length;
+      const dataStr = ev.data_iso ? new Date(ev.data_iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+      return `
+        <label class="evento-check-item" id="check-item-${ev.id}">
+          <input type="checkbox" value="${ev.id}" onchange="aggiornaDest()" ${count === 0 ? 'disabled' : ''} />
+          <div>
+            <div class="check-nome">${escHtml(ev.nome || 'Evento')}</div>
+            <div class="check-count">${dataStr ? dataStr + ' -- ' : ''}${count} iscritti newsletter</div>
+          </div>
+          <span class="check-spacer"></span>
+          ${count === 0 ? '<span class="badge badge-gray">Nessun iscritto</span>' : '<span class="badge badge-gold">' + count + '</span>'}
+        </label>
+      `;
+    }).join('');
+
+    aggiornaDest();
+  }
+
+  function aggiornaDest() {
+    const checkboxes = document.querySelectorAll('#eventi-selector input[type="checkbox"]:checked');
+    let totale = 0;
+    const dettagli = [];
+
+    checkboxes.forEach(cb => {
+      const evId = cb.value;
+      const n = (nlData[evId] || []).length;
+      totale += n;
+      const ev = allEvents.find(e => e.id === evId);
+      if (ev) dettagli.push(escHtml(ev.nome || 'Evento') + ' (' + n + ')');
+    });
+
+    document.getElementById('dest-count').textContent = totale;
+    document.getElementById('dest-detail').textContent = dettagli.length > 0 ? dettagli.join(', ') : '';
+
+    // Aggiorna stile checkbox items
+    document.querySelectorAll('#eventi-selector .evento-check-item').forEach(item => {
+      const cb = item.querySelector('input[type="checkbox"]');
+      if (cb && cb.checked) item.classList.add('selected');
+      else item.classList.remove('selected');
+    });
+  }
+
+  // ===== EDITOR =====
+  function execCmd(cmd) {
+    document.getElementById('editor').focus();
+    document.execCommand(cmd, false, null);
+  }
+
+  let savedSelection = null;
+
+  function insertLink() {
+    // Salva selezione corrente
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedSelection = sel.getRangeAt(0).cloneRange();
+      const selText = sel.toString();
+      document.getElementById('link-testo').value = selText || '';
+    }
+    document.getElementById('link-url').value = '';
+    document.getElementById('link-dialog').classList.add('open');
+    setTimeout(() => document.getElementById('link-url').focus(), 50);
+  }
+
+  function chiudiLinkDialog() {
+    document.getElementById('link-dialog').classList.remove('open');
+  }
+
+  function confermaLink() {
+    const testo = document.getElementById('link-testo').value.trim();
+    const url = document.getElementById('link-url').value.trim();
+    if (!url) { alert('Inserisci un URL valido.'); return; }
+
+    const editor = document.getElementById('editor');
+    editor.focus();
+
+    if (savedSelection) {
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(savedSelection);
+    }
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.textContent = testo || url;
+    link.target = '_blank';
+
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      const range = sel.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(link);
+      range.collapse(false);
+    }
+    chiudiLinkDialog();
+  }
+
+  function insertImage() {
+    const url = prompt('URL immagine (deve essere un link pubblico):');
+    if (!url) return;
+    document.getElementById('editor').focus();
+    document.execCommand('insertImage', false, url);
+  }
+
+  // Placeholder per editor vuoto
+  document.addEventListener('DOMContentLoaded', () => {
+    const editor = document.getElementById('editor');
+    if (!editor) return;
+    editor.addEventListener('focus', () => editor.classList.remove('empty'));
+    editor.addEventListener('blur', () => {
+      if (!editor.textContent.trim()) editor.classList.add('empty');
+    });
+    editor.classList.add('empty');
+  });
+
+  // ===== ANTEPRIMA =====
+  function mostraAnteprima() {
+    const oggetto = document.getElementById('nl-oggetto').value.trim();
+    const mittente = document.getElementById('nl-mittente').value.trim();
+    const corpo = document.getElementById('editor').innerHTML;
+
+    const html = buildEmailHtml(mittente, corpo, oggetto);
+
+    const modal = document.getElementById('anteprima-modal');
+    const iframe = document.getElementById('preview-iframe');
+    modal.style.display = 'block';
+
+    iframe.onload = null;
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    doc.open();
+    doc.write(html);
+    doc.close();
+
+    setTimeout(() => {
+      try {
+        const h = iframe.contentDocument.body.scrollHeight;
+        iframe.style.height = (h + 40) + 'px';
+      } catch {}
+    }, 200);
+
+    modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function chiudiAnteprima() {
+    document.getElementById('anteprima-modal').style.display = 'none';
+  }
+
+  function buildEmailHtml(mittente, corpo, oggetto) {
+    return `<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>${escHtml(oggetto)}</title>
+<style>
+body{margin:0;padding:20px;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;color:#333;}
+.wrap{max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+.body{padding:32px 36px;}
+.body a{color:#C9A96E;}
+.body img{max-width:100%;height:auto;border-radius:6px;margin:8px 0;}
+.footer{background:#f9f9f9;border-top:1px solid #eee;padding:20px 36px;font-size:12px;color:#999;text-align:center;}
+.footer a{color:#999;}
+.unsubscribe{margin-top:8px;font-size:11px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="body">
+${corpo || '<p>Nessun contenuto.</p>'}
+</div>
+<div class="footer">
+${mittente ? '<div>' + escHtml(mittente) + '</div>' : ''}
+<div class="unsubscribe">Hai ricevuto questa email perche\' hai dato il consenso alla newsletter al momento dell\'iscrizione.<br/>
+Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
+</div>
+</div>
+</body>
+</html>`;
+  }
+
+  // ===== INVIO NEWSLETTER =====
+  async function inviaNewsletter() {
+    const oggetto = document.getElementById('nl-oggetto').value.trim();
+    const mittente = document.getElementById('nl-mittente').value.trim();
+    const replyto = document.getElementById('nl-replyto').value.trim();
+    const corpo = document.getElementById('editor').innerHTML.trim();
+    const alertEl = document.getElementById('alert-invia');
+
+    // Validazione
+    if (!oggetto) return showAlert(alertEl, 'error', 'Inserisci l\'oggetto dell\'email.');
+    if (!mittente) return showAlert(alertEl, 'error', 'Inserisci il nome del mittente.');
+    if (!replyto || !replyto.includes('@')) return showAlert(alertEl, 'error', 'Inserisci un\'email di risposta valida.');
+    if (!corpo || corpo === '<br>') return showAlert(alertEl, 'error', 'Scrivi il contenuto dell\'email.');
+
+    const checkboxes = document.querySelectorAll('#eventi-selector input[type="checkbox"]:checked');
+    if (checkboxes.length === 0) return showAlert(alertEl, 'error', 'Seleziona almeno un evento.');
+
+    // Raccogli email uniche
+    const emailSet = new Set();
+    checkboxes.forEach(cb => {
+      (nlData[cb.value] || []).forEach(r => { if (r.email) emailSet.add(r.email); });
+    });
+    const emails = [...emailSet];
+
+    if (emails.length === 0) return showAlert(alertEl, 'error', 'Nessun destinatario trovato per gli eventi selezionati.');
+
+    const conferma = confirm(
+      'Stai per inviare la newsletter a ' + emails.length + ' destinatari.\n\nOggetto: ' + oggetto + '\n\nConfermi l\'invio?'
+    );
+    if (!conferma) return;
+
+    const btn = document.getElementById('btn-invia');
+    btn.disabled = true;
+    btn.textContent = 'Invio in corso...';
+    showAlert(alertEl, 'info', 'Invio in corso, non chiudere la pagina...');
+
+    try {
+      const htmlEmail = buildEmailHtml(mittente, corpo, oggetto);
+
+      const res = await fetch(SUPA_URL + '/functions/v1/send-newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + SUPA_ANON
+        },
+        body: JSON.stringify({
+          subject: oggetto,
+          html: htmlEmail,
+          emails: emails,
+          replyTo: replyto,
+          fromName: mittente
+        })
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        showAlert(alertEl, 'success', 'Newsletter inviata! ' + result.sent + ' email inviate' + (result.failed > 0 ? ', ' + result.failed + ' fallite.' : '.'));
+        // Reset form
+        document.getElementById('nl-oggetto').value = '';
+        document.getElementById('editor').innerHTML = '';
+        document.querySelectorAll('#eventi-selector input[type="checkbox"]').forEach(c => { c.checked = false; });
+        aggiornaDest();
+      } else {
+        showAlert(alertEl, 'error', 'Errore invio: ' + (result.error || JSON.stringify(result)));
+      }
+    } catch (err) {
+      showAlert(alertEl, 'error', 'Errore di rete: ' + err.message);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '&#9654; Invia newsletter';
+    }
+  }
+
+  // ===== TAB GESTIONE =====
+  function renderGestione() {
+    document.getElementById('gestione-loading').style.display = 'none';
+    const list = document.getElementById('gestione-list');
+    const empty = document.getElementById('gestione-empty');
+
+    if (gestioneData.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+
+    list.style.display = 'block';
+    renderGestioneFiltered(gestioneData);
+  }
+
+  function renderGestioneFiltered(data) {
+    const list = document.getElementById('gestione-list');
+    const empty = document.getElementById('gestione-empty');
+
+    if (data.length === 0) {
+      list.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+
+    // Raggruppa per evento
+    const byEvent = {};
+    data.forEach(r => {
+      if (!byEvent[r.event_id]) byEvent[r.event_id] = { nome: r.evento_nome, rows: [] };
+      byEvent[r.event_id].rows.push(r);
+    });
+
+    list.innerHTML = Object.entries(byEvent).map(([evId, gruppo]) => `
+      <div style="margin-bottom:20px;">
+        <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">
+          ${escHtml(gruppo.nome || 'Evento')}
+        </div>
+        ${gruppo.rows.map(r => `
+          <div class="iscritto-row" id="grow-${r.id}">
+            <div class="iscritto-info">
+              <div class="iscritto-nome">${escHtml(r.nome || '')} ${escHtml(r.cognome || '')}</div>
+              <div class="iscritto-email">${escHtml(r.email || '')}</div>
+            </div>
+            <button class="btn btn-danger" onclick="rimuoviNl('${r.id}', '${r.event_id}')">
+              &#10006; Rimuovi newsletter
+            </button>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+  }
+
+  function filtraGestione() {
+    const q = document.getElementById('search-gestione').value.toLowerCase().trim();
+    if (!q) { renderGestioneFiltered(gestioneData); return; }
+    const filtered = gestioneData.filter(r =>
+      (r.nome || '').toLowerCase().includes(q) ||
+      (r.cognome || '').toLowerCase().includes(q) ||
+      (r.email || '').toLowerCase().includes(q)
+    );
+    renderGestioneFiltered(filtered);
+  }
+
+  async function rimuoviNl(regId, eventId) {
+    const alertEl = document.getElementById('alert-gestione');
+    if (!confirm('Rimuovere questo iscritto dalla newsletter? L\'iscrizione all\'evento rimane invariata.')) return;
+
+    try {
+      const res = await fetch(
+        SUPA_URL + '/rest/v1/registrations?id=eq.' + regId,
+        {
+          method: 'PATCH',
+          headers: supaHeaders({ 'Prefer': 'return=minimal' }),
+          body: JSON.stringify({ newsletter: false })
+        }
+      );
+
+      if (!res.ok) throw new Error('Errore aggiornamento');
+
+      // Aggiorna stato locale
+      nlData[eventId] = (nlData[eventId] || []).filter(r => r.id !== regId);
+      gestioneData = gestioneData.filter(r => r.id !== regId);
+
+      // Rimuovi riga dalla UI
+      const row = document.getElementById('grow-' + regId);
+      if (row) row.remove();
+
+      // Aggiorna badge lista
+      const totale = Object.values(nlData).reduce((s, a) => s + a.length, 0);
+      document.getElementById('badge-lista').textContent = totale;
+
+      // Aggiorna selettore invio
+      renderSelectorInvia();
+
+      showAlert(alertEl, 'success', 'Iscritto rimosso dalla newsletter.');
+      alertEl.classList.add('show');
+      setTimeout(() => alertEl.classList.remove('show'), 4000);
+
+    } catch (err) {
+      showAlert(alertEl, 'error', 'Errore: ' + err.message);
+      alertEl.classList.add('show');
+    }
+  }
+
+  // ===== TABS =====
+  function switchTab(name) {
+    document.querySelectorAll('.tab-btn').forEach((b, i) => {
+      const names = ['lista', 'invia', 'gestione'];
+      b.classList.toggle('active', names[i] === name);
+    });
+    document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+  }
+
+  // ===== UTILS =====
+  function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function showAlert(el, type, msg) {
+    el.className = 'alert alert-' + type + ' show';
+    el.textContent = msg;
+    if (type !== 'info') setTimeout(() => { el.classList.remove('show'); }, 6000);
+  }
+</script>
+</body>
+</html>
