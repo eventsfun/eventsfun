@@ -46,7 +46,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .ev-selector{margin-bottom:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .ev-selector-inner{display:flex;align-items:center;gap:12px;flex:1}
 .ev-selector-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
-.ev-selector select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;max-width:320px}
+.ev-selector select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;min-width:0;max-width:320px;overflow:hidden;text-overflow:ellipsis}
 .ev-tabs{display:flex;gap:6px;margin-bottom:10px}
 .ev-tab{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
 .ev-tab:hover{border-color:var(--gold);color:var(--gold)}
@@ -224,7 +224,12 @@ select option{background:#1a1a1a;color:var(--text)}
 .stat-cfg-option:hover,.stat-cfg-option.sel{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.06)}
 .stat-cfg-option.sel .stat-cfg-check{opacity:1}
 .stat-cfg-check{width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0A0A0A;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .2s}
-@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}}
+@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}
+  .ev-selector{flex-direction:column;align-items:stretch}
+  .ev-selector-inner{flex-direction:column;align-items:stretch}
+  .ev-selector select{max-width:100%;width:100%}
+  .demo-banner{flex-direction:column;align-items:flex-start}
+}
 /* DEMO STYLES */
 .demo-banner{position:sticky;top:0;z-index:60;background:linear-gradient(90deg,#1a1200,#2a1e00);border-bottom:1px solid rgba(201,169,110,0.4);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .demo-banner-left{display:flex;align-items:center;gap:10px}
@@ -1296,11 +1301,76 @@ function openQR() {
 function dlQR() { demoBlock(); }
 
 /* ============================================================
-   LANDING (apre la landing reale in sola lettura)
+   LANDING (anteprima simulata in modale -- non chiama Supabase)
    ============================================================ */
 function openLanding() {
   var ev = currentEv; if (!ev) return;
-  window.open('https://eventsfun.com/landing.html?id=' + ev.id, '_blank');
+  var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
+  var postiOccupati = calcPostiOccupati(ev, currentRegs);
+  var postiLiberi = ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : null;
+  var capPiena = ev.capienza && postiLiberi <= 0;
+
+  var sponsorsHtml = '';
+  if (ev.sponsors && ev.sponsors.length) {
+    sponsorsHtml = '<div class="preview-sponsors">' + ev.sponsors.map(function(s) {
+      return '<div class="preview-sp-item">' + escHtml(s.nome) + '</div>';
+    }).join('') + '</div>';
+  }
+
+  var fieldsHtml = '';
+  (ev.custom_fields || []).forEach(function(f) {
+    fieldsHtml += '<div class="preview-field"><label>' + escHtml(f.label) + (f.required ? ' *' : '') + '</label>';
+    if (f.type === 'dropdown') {
+      fieldsHtml += '<select><option>-- Seleziona --</option>' + (f.options||[]).map(function(o){ return '<option>' + escHtml(o) + '</option>'; }).join('') + '</select>';
+    } else if (f.type === 'checkbox') {
+      fieldsHtml += '<div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">' + (f.options||[]).map(function(o){ return '<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(240,237,232,0.6)"><input type="checkbox" style="accent-color:#C9A96E"> ' + escHtml(o) + '</label>'; }).join('') + '</div>';
+    } else {
+      fieldsHtml += '<input placeholder="">';
+    }
+    fieldsHtml += '</div>';
+  });
+
+  var formContent = capPiena
+    ? '<div style="background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.3);border-radius:10px;padding:20px;text-align:center"><div style="font-size:24px;margin-bottom:8px">⏳</div><div style="font-size:14px;font-weight:700;color:#C9A96E;margin-bottom:6px">Posti esauriti</div><div style="font-size:12px;color:rgba(240,237,232,0.6)">Puoi iscriverti alla lista d\'attesa</div><button class="preview-btn" style="margin-top:16px;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.4);color:#C9A96E">Iscriviti alla lista d\'attesa</button></div>'
+    : '<div class="preview-fg2"><div class="preview-field"><label>Nome *</label><input placeholder="Mario"></div><div class="preview-field"><label>Cognome *</label><input placeholder="Rossi"></div></div>'
+      + '<div class="preview-field"><label>Email *</label><input placeholder="mario@email.it"></div>'
+      + (ev.opt_multipla ? '<div style="display:flex;gap:16px;margin-bottom:12px"><div class="preview-field" style="flex:1"><label>Adulti *</label><input type="number" value="1" min="1"></div><div class="preview-field" style="flex:1"><label>Bambini</label><input type="number" value="0" min="0"></div></div>' : '')
+      + fieldsHtml
+      + '<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:8px;margin-top:4px"><input type="checkbox" style="accent-color:#C9A96E"> Acconsento a ricevere comunicazioni future</label>'
+      + '<label style="display:flex;align-items:center;gap:8px;font-size:12px;color:rgba(240,237,232,0.5);margin-bottom:16px"><input type="checkbox" style="accent-color:#C9A96E"> Ho letto e accetto l\'<span style="color:#C9A96E">informativa privacy</span> *</label>'
+      + '<button class="preview-btn" onclick="demoBlock()">Iscriviti →</button>';
+
+  var html = '<div class="preview-frame">'
+    + '<div class="preview-hero">'
+    + '<div class="preview-badge">📅 ' + isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + '</div>'
+    + '<div class="preview-title">' + escHtml(ev.nome) + '</div>'
+    + '<div class="preview-meta">'
+    + (ev.luogo ? '<div class="preview-meta-item">📍 ' + escHtml(ev.luogo) + '</div>' : '')
+    + (ev.capienza && ev.opt_capienza ? '<div class="preview-meta-item">🪑 ' + postiLiberi + ' posti disponibili</div>' : '')
+    + '</div>'
+    + (ev.descrizione ? '<div class="preview-desc">' + escHtml(ev.descrizione) + '</div>' : '')
+    + sponsorsHtml
+    + '</div>'
+    + '<div class="preview-form">'
+    + '<div class="preview-form-title">Iscriviti all\'evento</div>'
+    + formContent
+    + '</div></div>';
+
+  var modal = document.getElementById('ovLanding');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'ovLanding';
+    modal.className = 'ov';
+    modal.onclick = function(e) { if (e.target === modal) closeOv('ovLanding'); };
+    modal.innerHTML = '<div class="modal xl"><button class="mcls" onclick="closeOv(\'ovLanding\')">✕</button>'
+      + '<h2 style="margin-bottom:4px">Anteprima landing</h2>'
+      + '<p class="modal-sub">Questa è la pagina pubblica che vedono i tuoi iscritti.</p>'
+      + '<div id="landingPreviewContent" style="max-height:70vh;overflow-y:auto;border-radius:10px;margin-top:8px"></div>'
+      + '</div>';
+    document.body.appendChild(modal);
+  }
+  document.getElementById('landingPreviewContent').innerHTML = html;
+  openOv('ovLanding');
 }
 function openPreviewFromForm() { demoBlock(); }
 function openPreviewFromSettings() { demoBlock(); }
