@@ -290,7 +290,6 @@ function render() {
     + '<h1 class="ev-title">' + ev.nome + '</h1>'
     + (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : '')
     + (ev.descrizione ? '<p class="ev-desc">' + ev.descrizione + '</p>' : '')
-    + (!isClosed(ev) && ev.attivo ? gcalBtnHtml(ev) : '')
     + '</div>'
     + capHtml
     + '<div class="card">' + formHtml + '</div>'
