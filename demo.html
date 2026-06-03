@@ -1,0 +1,1482 @@
+<!DOCTYPE html>
+<!-- EventsFun | Demo Dashboard Agenzia -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo Dashboard Agenzia -- EventsFun</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);--row-hover:rgba(255,255,255,0.04);}
+body.light{--bg:#f4f3f0;--bg2:#fff;--bg3:#fafaf8;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.06);--text:#1a1a1a;--text-muted:rgba(20,20,20,0.6);--text-dim:rgba(20,20,20,0.4);--inp-bg:rgba(0,0,0,0.04);--inp-border:rgba(0,0,0,0.12);--row-hover:rgba(0,0,0,0.03);}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
+/* NAV */
+.nav{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);gap:10px;flex-wrap:wrap}
+.nav-logo{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px}.nav-logo span{color:var(--gold)}
+.nav-r{display:flex;align-items:center;gap:10px}
+.nav-plan{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
+.theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+/* VIEWS */
+.view{display:none}.view.on{display:block}
+/* ERROR */
+.err-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.err-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:400px;text-align:center}
+.err-box h2{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;margin:12px 0 8px}
+.err-box p{font-size:13px;color:var(--text-muted);line-height:1.7}
+/* LOADING */
+.loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
+.spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{font-size:13px;color:var(--text-muted)}
+/* DASHBOARD */
+.dash{max-width:1020px;margin:0 auto;padding:36px 20px 80px}
+.dash-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:16px;flex-wrap:wrap}
+.dash-header-left h1{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:4px}
+.dash-header-left p{font-size:13px;color:var(--text-muted)}
+.dash-btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn-create{padding:10px 20px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.btn-create:hover{opacity:.87}
+.btn-sm{padding:7px 14px;border-radius:7px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:12px;cursor:pointer;font-weight:500;transition:all .2s}
+.btn-sm:hover{color:var(--text);background:var(--inp-bg)}
+.btn-sm-gold{border-color:rgba(201,169,110,0.35);color:var(--gold)}.btn-sm-gold:hover{background:rgba(201,169,110,0.08)}
+.btn-sm-green{border-color:rgba(110,201,130,0.35);color:var(--green)}.btn-sm-green:hover{background:rgba(110,201,130,0.08)}
+/* EVENT SELECTOR */
+.ev-selector{margin-bottom:20px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ev-selector-inner{display:flex;align-items:center;gap:12px;flex:1}
+.ev-selector-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
+.ev-selector select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;max-width:320px}
+.ev-tabs{display:flex;gap:6px;margin-bottom:10px}
+.ev-tab{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
+.ev-tab:hover{border-color:var(--gold);color:var(--gold)}
+.ev-tab.active{background:rgba(201,169,110,0.12);border-color:var(--gold);color:var(--gold)}
+.ev-tab .ev-tab-count{display:inline-block;background:rgba(201,169,110,0.2);border-radius:20px;padding:1px 7px;font-size:11px;margin-left:5px}
+/* STATS */
+.stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px}
+.stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700;display:flex;align-items:center;gap:5px}
+.stat-val{font-family:"Syne",sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
+.stat-custom{background:var(--bg2);border:2px dashed rgba(201,169,110,0.25);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;position:relative}
+.stat-custom:hover{border-color:rgba(201,169,110,0.5);background:rgba(201,169,110,0.03)}
+.stat-custom-add{font-size:22px;color:rgba(201,169,110,0.4)}
+.stat-custom-lbl{font-size:11px;color:var(--text-dim)}
+.stat-custom.filled{cursor:default;align-items:flex-start;justify-content:flex-start;text-align:left;border-color:rgba(201,169,110,0.2)}
+.stat-custom.filled:hover{border-color:rgba(201,169,110,0.25);background:var(--bg2)}
+.stat-custom-tip{position:absolute;top:10px;right:10px;width:16px;height:16px;border-radius:50%;border:1px solid rgba(201,169,110,0.3);color:rgba(201,169,110,0.5);font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:help}
+.stat-custom-tip:hover{border-color:var(--gold);color:var(--gold)}
+/* STATUS BAR */
+.status-bar{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.sinfo h3{font-family:"Syne",sans-serif;font-size:15px;font-weight:700;margin-bottom:3px}.sinfo p{font-size:12px;color:var(--text-muted)}
+.pill{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;display:inline-block}
+.pill-green{background:rgba(110,201,130,0.12);color:var(--green);border:1px solid rgba(110,201,130,0.25)}
+.pill-red{background:rgba(200,80,80,0.12);color:var(--red);border:1px solid rgba(200,80,80,0.25)}
+.pill-gray{background:var(--inp-bg);color:var(--text-dim);border:1px solid var(--border)}
+.closed-banner{background:linear-gradient(135deg,rgba(201,169,110,0.12),rgba(201,169,110,0.05));border:1px solid rgba(201,169,110,0.3);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.sub-banner{border-radius:14px;padding:18px 24px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.sub-banner-warn{background:linear-gradient(135deg,rgba(224,128,128,0.12),rgba(224,128,128,0.05));border:1px solid rgba(224,128,128,0.35)}
+.sub-banner-exp{background:linear-gradient(135deg,rgba(200,80,80,0.18),rgba(200,80,80,0.08));border:1px solid rgba(200,80,80,0.45)}
+/* TABLE */
+.panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid var(--border2);flex-wrap:wrap;gap:10px}
+.panel-head h3{font-family:"Syne",sans-serif;font-size:17px;font-weight:700}.panel-head p{font-size:12px;color:var(--text-muted);margin-top:2px}
+.twrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:540px}
+thead tr{border-bottom:1px solid var(--border2)}
+thead th{padding:10px 16px;text-align:left;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);font-weight:700;white-space:nowrap}
+thead th.xh{color:rgba(201,169,110,0.7)}
+tbody tr{border-bottom:1px solid var(--border2);transition:background .15s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--row-hover)}
+tbody td{padding:11px 16px;font-size:12px;color:var(--text-muted);white-space:nowrap}
+tbody td.nm{color:var(--text);font-weight:600}
+tbody td.dt{color:var(--text-dim);font-size:11px}
+tbody td.xv{color:var(--gold)}
+.act-cell{display:flex;gap:5px}
+.ic{background:var(--inp-bg);border:1px solid var(--border);border-radius:5px;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
+.ic:hover{background:var(--row-hover)}
+.no-regs{padding:36px;text-align:center;color:var(--text-dim);font-size:13px}
+/* PRESENZE */
+.presenze-wrap{max-width:760px;margin:0 auto;padding:28px 20px 80px}
+.pres-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.pres-header h2{font-family:"Syne",sans-serif;font-size:22px;font-weight:800}
+.pres-stats{display:flex;gap:12px}
+.pres-stat{padding:6px 14px;border-radius:8px;font-weight:700;font-size:13px}
+.pres-stat-pres{background:rgba(110,201,130,0.12);color:var(--green);border:1px solid rgba(110,201,130,0.25)}
+.pres-stat-ass{background:var(--inp-bg);color:var(--text-muted);border:1px solid var(--border)}
+.pres-list{display:flex;flex-direction:column;gap:8px}
+.pres-row{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.pres-row.presente{border-color:rgba(110,201,130,0.35);background:rgba(110,201,130,0.04)}
+.pres-name{font-size:14px;font-weight:600;color:var(--text)}.pres-detail{font-size:11px;color:var(--text-dim);margin-top:2px}
+.pres-btn{padding:7px 16px;border-radius:7px;border:1px solid var(--border);background:var(--inp-bg);color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;white-space:nowrap}
+.pres-btn.on{background:rgba(110,201,130,0.12);border-color:rgba(110,201,130,0.4);color:var(--green)}
+.pres-search{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);color:var(--text);font-family:"DM Sans",sans-serif;font-size:13px;outline:none;margin-bottom:16px}
+.pres-search::placeholder{color:var(--text-dim)}
+/* FORM */
+.mf{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.mf label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);display:flex;align-items:center;gap:5px}
+.mf input,.mf textarea,.mf select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:10px 13px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;transition:border-color .2s;width:100%}
+.mf input:focus,.mf textarea:focus,.mf select:focus{border-color:rgba(201,169,110,0.5)}
+.mf input::placeholder,.mf textarea::placeholder{color:var(--text-dim)}
+.mf textarea{resize:vertical;min-height:72px}.mf select option{background:var(--bg2)}
+select option{background:#1a1a1a;color:var(--text)}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.add-row-btn{font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;cursor:pointer;transition:all .2s}
+.add-row-btn:hover{border-color:rgba(201,169,110,0.4);color:var(--gold)}
+/* SPONSOR ROW */
+.sp-row{display:grid;grid-template-columns:38px 1fr 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
+/* CF ROW -- tipo campo aggiuntivo */
+.cf-row{display:grid;grid-template-columns:1fr 120px auto auto;gap:8px;align-items:start;margin-bottom:10px;padding:10px;background:var(--inp-bg);border:1px solid var(--border2);border-radius:8px}
+.cf-row select{background:var(--bg3);border:1px solid var(--inp-border);border-radius:7px;padding:9px 8px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;width:100%}
+.cf-row select option{background:var(--bg3);color:var(--text)}
+.cf-row-top{display:flex;gap:8px;align-items:center}
+.cf-options-area{grid-column:1/-1;padding-top:8px;margin-top:4px;border-top:1px solid var(--border2)}
+.cf-opt-list{display:flex;flex-direction:column;gap:5px;margin-bottom:6px}
+.cf-opt-item{display:flex;gap:6px;align-items:center}
+.cf-opt-item input{flex:1;background:var(--bg);border:1px solid var(--inp-border);border-radius:6px;padding:6px 10px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none}
+.cf-opt-item input:focus{border-color:rgba(201,169,110,0.5)}
+.cf-add-opt{font-size:11px;padding:3px 10px;border-radius:5px;border:1px dashed var(--border);background:transparent;color:var(--text-dim);font-family:"DM Sans",sans-serif;cursor:pointer;transition:all .2s}
+.cf-add-opt:hover{color:var(--gold);border-color:rgba(201,169,110,0.4)}
+.row-inp{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:7px;padding:9px 11px;font-family:"DM Sans",sans-serif;font-size:12px;color:var(--text);outline:none;width:100%}
+.row-inp:focus{border-color:rgba(201,169,110,0.5)}
+.row-inp::placeholder{color:var(--text-dim)}
+.logo-ph{width:38px;height:38px;border-radius:6px;border:1px dashed var(--border);background:var(--inp-bg);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:14px;color:var(--text-dim)}
+.logo-img{width:38px;height:38px;border-radius:6px;object-fit:contain;background:#fff;padding:3px;display:none;flex-shrink:0}
+.logo-file{display:none}
+.rm-btn{width:28px;height:28px;border-radius:6px;background:var(--inp-bg);border:1px solid var(--border);cursor:pointer;color:var(--text-dim);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.rm-btn:hover{background:rgba(200,80,80,0.15);border-color:rgba(200,80,80,0.35);color:#e06060}
+.req-toggle{width:28px;height:28px;border-radius:6px;background:var(--inp-bg);border:1px solid var(--border);cursor:pointer;color:var(--text-dim);font-size:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700;transition:all .2s}
+.req-toggle.on{background:rgba(201,169,110,0.12);border-color:rgba(201,169,110,0.35);color:var(--gold)}
+.img-upload-area{border:2px dashed var(--border);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all .2s}
+.img-upload-area:hover{border-color:var(--gold);background:rgba(201,169,110,0.04)}
+.img-ph{color:var(--text-dim);font-size:13px}.img-ph span{font-size:24px;display:block;margin-bottom:6px}
+.check-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;cursor:pointer}
+.check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
+.check-row span{font-size:13px;color:var(--text-muted)}
+.sec-div{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin:20px 0 12px;padding-top:18px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.opt-row{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border2)}
+.opt-row:last-child{border-bottom:none;padding-bottom:0}
+.opt-lbl{font-size:13px;color:var(--text)}.opt-sub{font-size:11px;color:var(--text-dim);margin-top:2px}
+.tog{width:40px;height:22px;border-radius:11px;background:var(--inp-bg);border:1px solid var(--border);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.tog.on{background:rgba(201,169,110,0.35);border-color:rgba(201,169,110,0.5)}
+.tog-dot{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--text-dim);transition:left .2s,background .2s}
+.tog.on .tog-dot{left:20px;background:var(--gold)}
+.counter-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.counter-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-muted);flex:1}
+.counter-ctrl{display:flex;align-items:center;gap:10px}
+.cnt-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--inp-bg);color:var(--text);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-family:inherit}
+.cnt-btn:hover{border-color:var(--gold);color:var(--gold)}
+.cnt-val{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;color:var(--text);min-width:28px;text-align:center}
+.info-box{background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.2);border-radius:10px;padding:14px 18px;font-size:12px;color:var(--text-muted);line-height:1.7;margin-bottom:16px}
+.info-box strong{color:var(--gold)}
+/* MODAL */
+.ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;overflow-y:auto;padding:28px 16px;backdrop-filter:blur(6px)}
+.ov.on{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:var(--bg3);border:1px solid var(--border);border-radius:14px;width:100%;max-width:700px;padding:28px;position:relative}
+.modal.sm{max-width:460px}
+.modal.xl{max-width:860px}
+.mcls{position:absolute;top:14px;right:14px;background:var(--inp-bg);border:none;border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text-muted);font-size:13px;display:flex;align-items:center;justify-content:center}
+.mcls:hover{color:var(--text)}
+.modal h2{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;margin-bottom:4px}
+.modal-sub{font-size:12px;color:var(--text-muted);margin-bottom:22px}
+.del-btns{display:flex;gap:10px;margin-top:20px}
+.del-no{flex:1;padding:12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer}
+.del-yes{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#b04040,#803030);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+.btn-full{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
+.btn-full:hover{opacity:.87}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:nowrap}
+.toast-g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:var(--green)}
+.toast-r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:var(--red)}
+/* MODAL FOOTER BTNS */
+.modal-footer{display:flex;gap:10px;margin-top:20px}
+.btn-outline{flex:1;padding:12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer;transition:all .2s}
+.btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+/* LISTA ATTESA */
+.panel-attesa{background:var(--bg2);border:1px solid rgba(201,169,110,0.3);border-radius:12px;overflow:hidden;margin-bottom:16px;margin-top:16px;display:none}
+.panel-attesa .panel-head{background:rgba(201,169,110,0.04)}
+/* TOOLTIP */
+.tip{position:relative;display:inline-flex;align-items:center;cursor:default}
+.tip-icon{width:16px;height:16px;border-radius:50%;border:1px solid var(--text-dim);color:var(--text-dim);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;line-height:1}
+.tip-icon:hover{border-color:var(--gold);color:var(--gold)}
+.tip-box{position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:#222;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text-muted);line-height:1.6;white-space:nowrap;max-width:240px;white-space:normal;width:max-content;max-width:220px;z-index:100;display:none;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.4)}
+.tip-icon:hover + .tip-box,.tip-icon:focus + .tip-box{display:block}
+/* ANTEPRIMA LANDING */
+.preview-frame{background:#0A0A0A;border-radius:10px;overflow:hidden;font-family:"DM Sans",sans-serif}
+.preview-hero{padding:28px 24px 20px;background:linear-gradient(180deg,#111 0%,#0A0A0A 100%)}
+.preview-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C9A96E;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);border-radius:20px;padding:3px 12px;margin-bottom:14px}
+.preview-title{font-family:"Syne",sans-serif;font-size:22px;font-weight:800;color:#F5F0E8;margin-bottom:8px;line-height:1.2}
+.preview-meta{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}
+.preview-meta-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(240,237,232,0.6)}
+.preview-desc{font-size:13px;color:rgba(240,237,232,0.6);line-height:1.7;margin-bottom:16px}
+.preview-img{width:100%;max-height:180px;object-fit:cover;border-radius:8px;margin-bottom:16px;display:block}
+.preview-sponsors{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.preview-sp-item{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:6px 14px;font-size:12px;color:rgba(240,237,232,0.7)}
+.preview-form{background:#111;border-top:1px solid rgba(255,255,255,0.08);padding:22px 24px}
+.preview-form-title{font-family:"Syne",sans-serif;font-size:15px;font-weight:700;color:#F5F0E8;margin-bottom:16px}
+.preview-field{margin-bottom:12px}
+.preview-field label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.5);margin-bottom:5px}
+.preview-field input,.preview-field select,.preview-field textarea{width:100%;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:7px;padding:9px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:#F5F0E8;outline:none}
+.preview-field input::placeholder,.preview-field textarea::placeholder{color:rgba(240,237,232,0.3)}
+.preview-fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.preview-btn{width:100%;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;margin-top:8px;cursor:default}
+/* MODAL CARD STAT CONFIG */
+.stat-cfg-option{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);cursor:pointer;transition:all .2s;margin-bottom:8px}
+.stat-cfg-option:hover,.stat-cfg-option.sel{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.06)}
+.stat-cfg-option.sel .stat-cfg-check{opacity:1}
+.stat-cfg-check{width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0A0A0A;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .2s}
+@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}}
+/* DEMO STYLES */
+.demo-banner{position:sticky;top:0;z-index:60;background:linear-gradient(90deg,#1a1200,#2a1e00);border-bottom:1px solid rgba(201,169,110,0.4);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.demo-banner-left{display:flex;align-items:center;gap:10px}
+.demo-badge{background:var(--gold);color:#0A0A0A;font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.demo-banner-text{font-size:12px;color:rgba(201,169,110,0.85);line-height:1.5}
+.demo-banner-cta{padding:9px 20px;border-radius:8px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap;border:none;cursor:pointer;font-family:"DM Sans",sans-serif}
+.demo-banner-cta:hover{opacity:.87}
+.demo-overlay-msg{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(6px)}
+.demo-overlay-msg.on{display:flex}
+.demo-msg-box{background:var(--bg3);border:1px solid rgba(201,169,110,0.4);border-radius:16px;padding:32px 28px;max-width:400px;width:100%;text-align:center}
+.demo-msg-icon{font-size:40px;margin-bottom:12px}
+.demo-msg-title{font-family:"Syne",sans-serif;font-size:18px;font-weight:700;color:var(--text);margin-bottom:8px}
+.demo-msg-sub{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:24px}
+.demo-msg-btns{display:flex;gap:10px;flex-wrap:wrap}
+.demo-msg-ok{flex:1;padding:12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:13px;cursor:pointer}
+.demo-msg-go{flex:2;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;display:flex;align-items:center;justify-content:center}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p>Caricamento in corso...</p>
+</div>
+
+<!-- BANNER DEMO -->
+<div class="demo-banner" id="demoBanner" style="display:none">
+  <div class="demo-banner-left">
+    <span class="demo-badge">Demo</span>
+    <span class="demo-banner-text">Stai esplorando una dashboard di esempio con dati fittizi.<br>Nessun dato viene salvato.</span>
+  </div>
+  <a href="https://eventsfun.com/#piani" class="demo-banner-cta">Inizia con il tuo piano →</a>
+</div>
+
+<!-- MODALE DEMO: azione bloccata -->
+<div class="demo-overlay-msg" id="demoOverlay">
+  <div class="demo-msg-box">
+    <div class="demo-msg-icon">🔒</div>
+    <div class="demo-msg-title">Funzione disponibile nel piano reale</div>
+    <div class="demo-msg-sub">Nella demo le modifiche non vengono salvate e i dati sono fittizi.<br>Attiva il tuo piano per gestire i tuoi eventi reali.</div>
+    <div class="demo-msg-btns">
+      <button class="demo-msg-ok" onclick="closeDemoOverlay()">Continua a esplorare</button>
+      <a href="https://eventsfun.com/#piani" class="demo-msg-go">Scegli il tuo piano →</a>
+    </div>
+  </div>
+</div>
+
+<nav class="nav" style="display:none" id="mainNav">
+  <div class="nav-logo">Events<span>Fun</span></div>
+  <div class="nav-r">
+    <span class="nav-plan">Agenzia</span>
+    <a id="navNlLink" href="#" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128231; Newsletter</a>
+    <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#8592; Area personale</a>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+  </div>
+</nav>
+
+<!-- ERRORE TOKEN -->
+<div class="view" id="view-error">
+  <div class="err-wrap">
+    <div class="err-box">
+      <div style="font-size:48px">🔐</div>
+      <h2>Accesso non valido</h2>
+      <p>Questo link non è valido o è scaduto.<br>Accedi dalla tua <a href="https://eventsfun.com/area-personale.html" style="color:var(--gold)">area personale</a> per ottenere il link corretto.</p>
+    </div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="view" id="view-dash">
+  <div class="dash">
+
+    <!-- SELETTORE EVENTO -->
+    <div id="evSelectorWrap" style="display:none;margin-bottom:20px;">
+      <div class="ev-tabs" id="evTabs">
+        <button class="ev-tab active" id="tabAttivi" onclick="switchEvTab('attivi')">
+          Eventi attivi <span class="ev-tab-count" id="countAttivi">0</span>
+        </button>
+        <button class="ev-tab" id="tabConclusi" onclick="switchEvTab('conclusi')">
+          Eventi conclusi <span class="ev-tab-count" id="countConclusi">0</span>
+        </button>
+      </div>
+      <div class="ev-selector" id="evSelector">
+        <div class="ev-selector-inner">
+          <span class="ev-selector-label">Evento</span>
+          <select id="evSelectBox" onchange="switchEvent(this.value)"></select>
+        </div>
+        <button class="btn-create" id="btnCreate" onclick="openCreateEvent()" style="display:none">+ Nuovo evento</button>
+      </div>
+    </div>
+
+    <div class="dash-header">
+      <div class="dash-header-left">
+        <h1 id="dash-title">Dashboard Agenzia</h1>
+        <p id="dash-sub">Nessun evento creato -- clicca su "Crea evento" per iniziare</p>
+      </div>
+      <div class="dash-btns">
+        <button class="btn-sm btn-sm-green" id="btnAddReg" onclick="openAddReg()" style="display:none">+ Aggiungi iscritto</button>
+        <button class="btn-sm" id="btnQR" onclick="openQR()" style="display:none">📷 QR Code</button>
+        <button class="btn-sm" id="btnLanding" onclick="openLanding()" style="display:none">👁 Anteprima</button>
+        <button class="btn-sm" id="btnPresenze" onclick="showView('presenze')" style="display:none">👥 Presenze</button>
+        <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
+        <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
+        <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
+        <button class="btn-create" id="btnCreateMain" onclick="openCreateEvent()">+ Crea evento</button>
+      </div>
+    </div>
+
+    <div class="closed-banner" id="closedBanner">
+      <div>
+        <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3>
+        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura.</p>
+      </div>
+    </div>
+
+    <!-- BANNER SCADENZA ABBONAMENTO -->
+    <div class="sub-banner sub-banner-warn" id="subBannerWarn" style="display:none">
+      <div>
+        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#9888;&#65039; Abbonamento cancellato</p>
+        <p style="font-size:12px;color:var(--text-muted)" id="subBannerWarnText">Puoi continuare ad usare la dashboard fino alla scadenza del grace period.</p>
+      </div>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
+    </div>
+    <div class="sub-banner sub-banner-exp" id="subBannerExp" style="display:none">
+      <div>
+        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#128274; Abbonamento scaduto</p>
+        <p style="font-size:12px;color:var(--text-muted)">Il tuo abbonamento Agenzia &egrave; scaduto. I dati sono al sicuro -- riattiva per continuare.</p>
+      </div>
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
+    </div>
+
+    <!-- STATISTICHE -->
+    <div class="stats-row" id="statsRow">
+      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">--</div></div>
+      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">--</div></div>
+      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">--</div></div>
+      <div class="stat-custom" id="statCustom0" onclick="openStatConfig(0)">
+        <div class="stat-custom-add">+</div>
+        <div class="stat-custom-lbl">Aggiungi statistica</div>
+      </div>
+      <div class="stat-custom" id="statCustom1" onclick="openStatConfig(1)">
+        <div class="stat-custom-add">+</div>
+        <div class="stat-custom-lbl">Aggiungi statistica</div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="sinfo">
+        <h3 id="status-nome">Nessun evento</h3>
+        <p id="status-det">Crea il tuo primo evento per iniziare</p>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <span id="status-pill"><span class="pill pill-gray">--</span></span>
+        <button class="btn-sm" id="btnToggleStatus" onclick="toggleStatus()" style="display:none">Cambia stato</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <div><h3 id="panel-title">Iscritti</h3><p id="panel-sub">Crea un evento per visualizzare gli iscritti</p></div>
+        <div style="display:flex;gap:8px" id="panelBtns"></div>
+      </div>
+      <div class="twrap">
+        <table>
+          <thead id="tableHead"><tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data</th><th></th></tr></thead>
+          <tbody id="regTable"><tr><td colspan="5" class="no-regs">Crea il tuo evento per visualizzare gli iscritti</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Link pagina pubblica</div>
+      <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">--</code>
+    </div>
+
+    <!-- PANNELLO LISTA D'ATTESA -->
+    <div class="panel-attesa" id="panelAttesa">
+      <div class="panel-head" style="background:rgba(201,169,110,0.04)">
+        <div>
+          <h3 style="color:var(--gold)">⏳ Lista d'attesa</h3>
+          <p id="attesaSub" style="font-size:12px;color:var(--text-muted);margin-top:2px">--</p>
+        </div>
+      </div>
+      <div class="twrap">
+        <table>
+          <thead><tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data richiesta</th><th></th></tr></thead>
+          <tbody id="attesaTable"><tr><td colspan="5" class="no-regs">Nessuno in lista d'attesa</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PRESENZE -->
+<div class="view" id="view-presenze">
+  <div class="presenze-wrap">
+    <div class="pres-header">
+      <div><h2>Presenze</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">--</p></div>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="pres-stats">
+          <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
+          <span class="pres-stat pres-stat-ass" id="presAss">0 assenti</span>
+        </div>
+        <button class="btn-sm" onclick="showView('dash')">← Dashboard</button>
+      </div>
+    </div>
+    <input class="pres-search" id="presSearch" placeholder="Cerca per nome o email..." oninput="renderPresenze()">
+    <div class="pres-list" id="presList"></div>
+  </div>
+</div>
+
+<!-- MODAL: CREA EVENTO -->
+<div class="ov" id="ovCreate" onclick="if(event.target===this)closeOv('ovCreate')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOv('ovCreate')">✕</button>
+    <h2 id="evModalTitle">Crea il tuo evento</h2>
+    <p class="modal-sub">Compila i dettagli. Potrai modificarli in qualsiasi momento prima della data evento.</p>
+    <div class="fg2">
+      <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
+      <div class="mf">
+        <label>
+          Capienza
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per iscrizioni illimitate. Se attivi "Capienza per persona", il numero conta le persone totali (adulti + bambini), non le iscrizioni.</span></span>
+        </label>
+        <input id="ev_cap" type="number" placeholder="Vuoto = illimitata" min="1">
+      </div>
+    </div>
+    <div class="fg2">
+      <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
+      <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
+    </div>
+    <div class="mf"><label>Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
+    <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
+    <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questa email viene mostrata agli iscritti nell'email di conferma come riferimento per domande sull'evento. Usa una casella che controlli regolarmente.</span></span>
+      </label>
+      <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
+      <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
+        <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
+        <img id="ev_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
+      </div>
+      <input type="file" id="ev_img_file" accept="image/*" style="display:none" onchange="loadEvImg()">
+      <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">✕ Rimuovi</button>
+    </div>
+    <div class="sec-div">
+      ⚙️ Opzioni modulo iscrizione
+    </div>
+    <div class="opt-row">
+      <div>
+        <div class="opt-lbl">Iscrizione multipla</div>
+        <div class="opt-sub">Adulti + bambini in una sola iscrizione</div>
+      </div>
+      <div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div>
+    </div>
+    <div id="o_capienza_pp_row" style="display:none" class="opt-row">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
+          Capienza per persona
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, i posti vengono scalati contando ogni persona (adulti + bambini). Es: 1 iscrizione con 2 adulti e 1 bambino occupa 3 posti.</span></span>
+        </div>
+        <div class="opt-sub">I posti scalano per persona, non per iscrizione</div>
+      </div>
+      <div class="tog" id="otog_cap_persona" onclick="otog('cap_persona')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row">
+      <div>
+        <div class="opt-lbl">Tipo iscritto</div>
+        <div class="opt-sub">Visitatore / Espositore</div>
+      </div>
+      <div class="tog" id="otog_tipo" onclick="otog('tipo')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row">
+      <div>
+        <div class="opt-lbl">Vuoi prenotare il pasto?</div>
+        <div class="opt-sub">Selezione pasto nel modulo</div>
+      </div>
+      <div class="tog" id="otog_pasto" onclick="otog('pasto')"><div class="tog-dot"></div></div>
+    </div>
+    <div id="opasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px">
+      <div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Mostra nel modulo:</div>
+      <div style="display:flex;gap:16px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_cena" checked style="accent-color:var(--gold)"> Cena</label>
+      </div>
+    </div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Consenso newsletter</div></div>
+      <div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
+          Mostra posti disponibili
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">L'iscritto vede quanti posti restano nella pagina pubblica.</span></span>
+        </div>
+      </div>
+      <div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">
+      🤝 Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
+      <button class="add-row-btn" onclick="addSP('c','cspList')">+ Aggiungi</button>
+    </div>
+    <div id="cspList" style="margin-bottom:8px"></div>
+    <div class="sec-div">
+      📝 Campi aggiuntivi
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi domande personalizzate al modulo di iscrizione. Scegli il tipo: testo libero, menu a scelta singola o caselle di spunta multiple.</span></span>
+      <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim);margin-left:4px">(opzionale)</span>
+      <button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button>
+    </div>
+    <div id="ccfList" style="margin-bottom:8px"></div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="openPreviewFromForm()">👁 Anteprima landing</button>
+      <button class="btn-full" id="evSaveBtn" onclick="saveEvent()" style="flex:2">Crea evento →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: IMPOSTAZIONI -->
+<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')">
+  <div class="modal">
+    <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
+    <h2>Impostazioni evento</h2>
+    <p class="modal-sub">Modifica i dati. Le modifiche si applicano subito.</p>
+    <div class="fg2">
+      <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
+      <div class="mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
+    </div>
+    <div class="fg2">
+      <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
+      <div class="mf"><label>Ora</label><input id="se_ora"></div>
+    </div>
+    <div class="mf"><label>Luogo</label><input id="se_luogo"></div>
+    <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
+    <div class="mf">
+      <label>Email di contatto per gli iscritti *
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
+      </label>
+      <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Immagine evento</label>
+      <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
+        <div class="img-ph" id="seImgPh"><span>🖼️</span>Clicca per caricare</div>
+        <img id="se_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
+      </div>
+      <input type="file" id="se_img_file" accept="image/*" style="display:none" onchange="loadSeImg()">
+      <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">✕ Rimuovi</button>
+    </div>
+    <div class="sec-div">⚙️ Opzioni modulo</div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Iscrizione multipla</div></div>
+      <div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div>
+    </div>
+    <div id="s_capienza_pp_row" style="display:none" class="opt-row">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
+          Capienza per persona
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, i posti vengono scalati contando ogni persona (adulti + bambini).</span></span>
+        </div>
+        <div class="opt-sub">I posti scalano per persona, non per iscrizione</div>
+      </div>
+      <div class="tog" id="stog_cap_persona" onclick="stog('cap_persona')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Tipo iscritto</div></div>
+      <div class="tog" id="stog_tipo" onclick="stog('tipo')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div>
+      <div class="tog" id="stog_pasto" onclick="stog('pasto')"><div class="tog-dot"></div></div>
+    </div>
+    <div id="spasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px">
+      <div style="display:flex;gap:16px">
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_cena" checked style="accent-color:var(--gold)"> Cena</label>
+      </div>
+    </div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Consenso newsletter</div></div>
+      <div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row">
+      <div><div class="opt-lbl">Mostra posti disponibili</div></div>
+      <div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
+          Gestione automatica lista d'attesa
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, quando elimini un iscritto confermato il primo in lista d'attesa viene automaticamente confermato e riceve l'email di conferma.</span></span>
+        </div>
+        <div class="opt-sub">Elimini un confermato? Il primo in attesa avanza in automatico</div>
+      </div>
+      <div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">🤝 Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
+    <div id="sspList" style="margin-bottom:8px"></div>
+    <div class="sec-div">
+      📝 Campi aggiuntivi
+      <button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button>
+    </div>
+    <div id="scfList" style="margin-bottom:8px"></div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="openPreviewFromSettings()">👁 Anteprima landing</button>
+      <button class="btn-full" onclick="saveSettings()" style="flex:2">Salva modifiche</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ISCRITTO -->
+<div class="ov" id="ovReg" onclick="if(event.target===this)closeOv('ovReg')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovReg')">✕</button>
+    <h2 id="regTitle">Aggiungi Iscritto</h2>
+    <p class="modal-sub" id="regSub">Inserisci i dati manualmente.</p>
+    <input type="hidden" id="reg_edit_id">
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Nome *</label><input id="r_nome" placeholder="Mario"></div>
+      <div class="mf"><label>Cognome *</label><input id="r_cognome" placeholder="Rossi"></div>
+    </div>
+    <div class="fg2" style="margin-bottom:12px">
+      <div class="mf"><label>Email *</label><input id="r_email" placeholder="mario@email.it"></div>
+      <div class="mf"><label>Telefono</label><input id="r_tel" placeholder="333 0000000"></div>
+    </div>
+    <div id="sect_multipla" style="display:none;margin-bottom:12px;padding:14px;background:var(--inp-bg);border:1px solid var(--border);border-radius:10px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px">Partecipanti</div>
+      <div class="counter-row"><div class="counter-lbl">Adulti</div><div class="counter-ctrl"><button class="cnt-btn" onclick="cc('adulti',-1)">−</button><div class="cnt-val" id="cnt_adulti">1</div><button class="cnt-btn" onclick="cc('adulti',1)">+</button></div></div>
+      <div class="counter-row" style="margin-bottom:0"><div class="counter-lbl">Bambini</div><div class="counter-ctrl"><button class="cnt-btn" onclick="cc('bambini',-1)">−</button><div class="cnt-val" id="cnt_bambini">0</div><button class="cnt-btn" onclick="cc('bambini',1)">+</button></div></div>
+    </div>
+    <div id="sect_tipo" style="display:none;margin-bottom:12px">
+      <div class="mf"><label>Tipo iscritto</label><select id="r_tipo"><option value="visitatore">Visitatore</option><option value="espositore">Espositore</option></select></div>
+    </div>
+    <div id="sect_pasto" style="display:none;margin-bottom:12px;padding:12px 14px;background:var(--inp-bg);border:1px solid var(--border);border-radius:10px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Vuoi prenotare il pasto?</div>
+      <div id="sect_pranzo_row"><label class="check-row"><input type="checkbox" id="r_pranzo"><span>Pranzo</span></label></div>
+      <div id="sect_cena_row"><label class="check-row" style="margin-bottom:0"><input type="checkbox" id="r_cena"><span>Cena</span></label></div>
+    </div>
+    <div id="regExtra"></div>
+    <div id="sect_newsletter" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)">
+      <label class="check-row"><input type="checkbox" id="r_newsletter"><span style="color:var(--text)">Acconsento a ricevere comunicazioni future</span></label>
+    </div>
+    <button class="btn-full" style="margin-top:18px" onclick="saveReg()">Salva iscritto</button>
+  </div>
+</div>
+
+<!-- MODAL: QR -->
+<div class="ov" id="ovQR" onclick="if(event.target===this)closeOv('ovQR')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovQR')">✕</button>
+    <h2>QR Code evento</h2>
+    <p class="modal-sub">Inseriscilo nella locandina o condividilo.</p>
+    <div style="text-align:center;padding:8px 0">
+      <div style="background:#fff;border-radius:10px;display:inline-block;padding:14px;margin:16px 0"><div id="qrCode"></div></div>
+      <div style="font-size:11px;color:var(--text-dim);word-break:break-all;margin-bottom:16px;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px" id="qrUrl"></div>
+      <button class="btn-full" onclick="dlQR()">↓ Scarica QR</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: ELIMINA -->
+<div class="ov" id="ovDel" onclick="if(event.target===this)closeOv('ovDel')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovDel')">✕</button>
+    <h2>Elimina iscritto</h2>
+    <p class="modal-sub">Questa azione non può essere annullata.</p>
+    <p style="font-size:14px;color:var(--text-muted);line-height:1.6">Eliminare <strong id="delName" style="color:var(--text)"></strong>?</p>
+    <div class="del-btns"><button class="del-no" onclick="closeOv('ovDel')">Annulla</button><button class="del-yes" onclick="confirmDel()">Elimina</button></div>
+  </div>
+</div>
+
+<!-- MODAL: CONFIGURA CARD STATISTICA -->
+<div class="ov" id="ovStatConfig" onclick="if(event.target===this)closeOv('ovStatConfig')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovStatConfig')">✕</button>
+    <h2>Scegli statistica</h2>
+    <p class="modal-sub">Seleziona quale dato vuoi vedere in evidenza in questa card.</p>
+    <div id="statConfigOptions"></div>
+    <div class="del-btns" style="margin-top:8px">
+      <button class="del-no" onclick="closeOv('ovStatConfig')">Annulla</button>
+      <button class="del-yes" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A" onclick="confirmStatConfig()">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast toast-g" id="toastG"></div>
+<div class="toast toast-r" id="toastR"></div>
+
+<script>
+/* ============================================================
+   EVENTSFUN DEMO -- Dati fittizi, nessuna scrittura su Supabase
+   ============================================================ */
+
+var DEMO_MODE = true;
+
+/* ============================================================
+   DATI DEMO
+   ============================================================ */
+var DEMO_EVENTS = [
+  {
+    id: 'demo-ev-001',
+    activation_token: 'demo-public-token-001',
+    nome: 'Convegno HR & People Management 2026',
+    data_iso: '2026-09-18',
+    ora: '09:00',
+    luogo: 'MiCo -- Milano Convention Centre',
+    descrizione: 'Un\'intera giornata dedicata ai professionisti delle risorse umane, con keynote speaker internazionali, tavole rotonde e sessioni di networking. Focus su benessere aziendale, intelligenza artificiale nel recruiting e leadership del futuro.',
+    capienza: 120,
+    email_contatto: 'info@hrconvegno.it',
+    attivo: true,
+    bozza: false,
+    opt_multipla: false,
+    opt_cap_persona: false,
+    opt_tipo: true,
+    opt_pasto: true,
+    opt_pasto_pranzo: true,
+    opt_pasto_cena: false,
+    opt_newsletter: true,
+    opt_capienza: true,
+    promo_automatica: true,
+    immagine: null,
+    sponsors: [
+      { nome: 'Randstad Italia', url: 'https://www.randstad.it', logo: null },
+      { nome: 'Welfare Academy', url: '#', logo: null }
+    ],
+    custom_fields: [
+      { id: 'azienda', label: 'Azienda', type: 'text', options: [], required: true },
+      { id: 'ruolo', label: 'Ruolo aziendale', type: 'dropdown', options: ['HR Manager', 'Recruiter', 'Responsabile formazione', 'CEO / Direzione', 'Altro'], required: false }
+    ],
+    created_at: '2026-06-01T10:00:00Z',
+    piano: 'agenzia'
+  },
+  {
+    id: 'demo-ev-002',
+    activation_token: 'demo-public-token-001',
+    nome: 'Workshop Fotografia di Paesaggio',
+    data_iso: '2026-07-12',
+    ora: '10:00',
+    luogo: 'Dolomiti -- Cortina d\'Ampezzo (BL)',
+    descrizione: 'Due giorni immersi nelle Dolomiti per imparare le tecniche di fotografia di paesaggio: golden hour, gestione della luce naturale, composizione e post-produzione. Adatto a tutti i livelli, con massimo 18 partecipanti per garantire attenzione personalizzata.',
+    capienza: 18,
+    email_contatto: 'workshop@fotodolomiti.it',
+    attivo: true,
+    bozza: false,
+    opt_multipla: false,
+    opt_cap_persona: false,
+    opt_tipo: false,
+    opt_pasto: false,
+    opt_pasto_pranzo: false,
+    opt_pasto_cena: false,
+    opt_newsletter: true,
+    opt_capienza: true,
+    promo_automatica: false,
+    immagine: null,
+    sponsors: [],
+    custom_fields: [
+      { id: 'attrezzatura', label: 'Attrezzatura principale', type: 'dropdown', options: ['Reflex Canon', 'Reflex Nikon', 'Mirrorless Sony', 'Mirrorless Fujifilm', 'Altra'], required: true },
+      { id: 'livello', label: 'Livello di esperienza', type: 'dropdown', options: ['Principiante', 'Intermedio', 'Avanzato'], required: true }
+    ],
+    created_at: '2026-06-05T14:00:00Z',
+    piano: 'agenzia'
+  },
+  {
+    id: 'demo-ev-003',
+    activation_token: 'demo-public-token-001',
+    nome: 'Cena di Gala -- Associazione Imprenditori Nord',
+    data_iso: '2026-04-10',
+    ora: '20:00',
+    luogo: 'Villa Reale di Monza -- Monza (MB)',
+    descrizione: 'Serata di gala annuale dell\'Associazione Imprenditori del Nord Italia. Cena di representanza, premiazioni e networking esclusivo tra i soci.',
+    capienza: 80,
+    email_contatto: 'segreteria@ainord.it',
+    attivo: false,
+    bozza: false,
+    opt_multipla: true,
+    opt_cap_persona: true,
+    opt_tipo: false,
+    opt_pasto: true,
+    opt_pasto_pranzo: false,
+    opt_pasto_cena: true,
+    opt_newsletter: true,
+    opt_capienza: false,
+    promo_automatica: false,
+    immagine: null,
+    sponsors: [{ nome: 'Confindustria Lombardia', url: '#', logo: null }],
+    custom_fields: [
+      { id: 'intolleranze', label: 'Intolleranze alimentari', type: 'text', options: [], required: false },
+      { id: 'tavolo', label: 'Preferenza tavolo', type: 'checkbox', options: ['Vicino al palco', 'Zona tranquilla', 'Vicino all\'uscita'], required: false }
+    ],
+    created_at: '2026-03-01T09:00:00Z',
+    piano: 'agenzia'
+  }
+];
+
+var DEMO_REGS = {
+  'demo-ev-001': [
+    { id:'dr001', event_id:'demo-ev-001', nome:'Giulia', cognome:'Ferrari', email:'g.ferrari@hrgroup.it', telefono:'333 1234567', adulti:1, bambini:0, tipo:'visitatore', pranzo:true, cena:false, newsletter:true, extra:{azienda:'HR Group Srl', ruolo:'HR Manager'}, presente:false, in_lista_attesa:false, created_at:'2026-07-10T09:12:00Z' },
+    { id:'dr002', event_id:'demo-ev-001', nome:'Marco', cognome:'Bianchi', email:'m.bianchi@startup.io', telefono:'340 9876543', adulti:1, bambini:0, tipo:'espositore', pranzo:true, cena:false, newsletter:false, extra:{azienda:'Startup.io', ruolo:'CEO / Direzione'}, presente:false, in_lista_attesa:false, created_at:'2026-07-12T11:30:00Z' },
+    { id:'dr003', event_id:'demo-ev-001', nome:'Sara', cognome:'Conti', email:'sara.conti@welfareacademy.it', telefono:'347 5551234', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{azienda:'Welfare Academy', ruolo:'Responsabile formazione'}, presente:false, in_lista_attesa:false, created_at:'2026-07-14T14:22:00Z' },
+    { id:'dr004', event_id:'demo-ev-001', nome:'Luca', cognome:'Marino', email:'l.marino@consulenzahr.it', telefono:'339 4441234', adulti:1, bambini:0, tipo:'visitatore', pranzo:true, cena:false, newsletter:true, extra:{azienda:'Consulenza HR Srl', ruolo:'Recruiter'}, presente:false, in_lista_attesa:false, created_at:'2026-07-16T10:05:00Z' },
+    { id:'dr005', event_id:'demo-ev-001', nome:'Anna', cognome:'Ricci', email:'a.ricci@impresafuturo.it', telefono:'', adulti:1, bambini:0, tipo:'visitatore', pranzo:true, cena:false, newsletter:true, extra:{azienda:'Impresa Futuro SpA', ruolo:'Altro'}, presente:false, in_lista_attesa:false, created_at:'2026-07-18T16:40:00Z' },
+    { id:'dr006', event_id:'demo-ev-001', nome:'Paolo', cognome:'Greco', email:'p.greco@grecoeassociati.it', telefono:'335 7778888', adulti:1, bambini:0, tipo:'espositore', pranzo:false, cena:false, newsletter:false, extra:{azienda:'Greco & Associati', ruolo:'CEO / Direzione'}, presente:false, in_lista_attesa:false, created_at:'2026-07-20T09:00:00Z' },
+    { id:'dr007', event_id:'demo-ev-001', nome:'Francesca', cognome:'Lombardi', email:'f.lombardi@people360.it', telefono:'342 1234000', adulti:1, bambini:0, tipo:'visitatore', pranzo:true, cena:false, newsletter:true, extra:{azienda:'People360', ruolo:'HR Manager'}, presente:false, in_lista_attesa:false, created_at:'2026-07-21T13:15:00Z' },
+    { id:'dr008', event_id:'demo-ev-001', nome:'Roberto', cognome:'Esposito', email:'r.esposito@talentfirst.it', telefono:'348 3330001', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{azienda:'TalentFirst', ruolo:'Recruiter'}, presente:false, in_lista_attesa:true, created_at:'2026-07-23T10:10:00Z' },
+    { id:'dr009', event_id:'demo-ev-001', nome:'Chiara', cognome:'De Luca', email:'c.deluca@hrinnovation.it', telefono:'333 9990001', adulti:1, bambini:0, tipo:'visitatore', pranzo:true, cena:false, newsletter:true, extra:{azienda:'HR Innovation Lab', ruolo:'Responsabile formazione'}, presente:false, in_lista_attesa:true, created_at:'2026-07-24T08:45:00Z' }
+  ],
+  'demo-ev-002': [
+    { id:'dr010', event_id:'demo-ev-002', nome:'Matteo', cognome:'Gallo', email:'m.gallo@foto.it', telefono:'329 1112222', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{attrezzatura:'Mirrorless Sony', livello:'Intermedio'}, presente:false, in_lista_attesa:false, created_at:'2026-06-20T10:00:00Z' },
+    { id:'dr011', event_id:'demo-ev-002', nome:'Elena', cognome:'Moretti', email:'elena.moretti@gmail.com', telefono:'333 4445555', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{attrezzatura:'Reflex Canon', livello:'Principiante'}, presente:false, in_lista_attesa:false, created_at:'2026-06-22T15:30:00Z' },
+    { id:'dr012', event_id:'demo-ev-002', nome:'Antonio', cognome:'Russo', email:'a.russo@pixelstudio.it', telefono:'347 6667778', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:false, extra:{attrezzatura:'Mirrorless Fujifilm', livello:'Avanzato'}, presente:false, in_lista_attesa:false, created_at:'2026-06-25T11:00:00Z' },
+    { id:'dr013', event_id:'demo-ev-002', nome:'Valentina', cognome:'Costa', email:'v.costa@naturaclick.it', telefono:'339 1234001', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{attrezzatura:'Reflex Nikon', livello:'Intermedio'}, presente:false, in_lista_attesa:false, created_at:'2026-06-28T09:20:00Z' },
+    { id:'dr014', event_id:'demo-ev-002', nome:'Simone', cognome:'Ferrara', email:'simone.ferrara@libero.it', telefono:'', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:false, newsletter:true, extra:{attrezzatura:'Mirrorless Sony', livello:'Principiante'}, presente:false, in_lista_attesa:false, created_at:'2026-07-01T16:00:00Z' }
+  ],
+  'demo-ev-003': [
+    { id:'dr015', event_id:'demo-ev-003', nome:'Giovanni', cognome:'Rizzo', email:'g.rizzo@rizzoimprese.it', telefono:'335 1112233', adulti:2, bambini:0, tipo:'visitatore', pranzo:false, cena:true, newsletter:true, extra:{intolleranze:'', tavolo:['Vicino al palco']}, presente:true, in_lista_attesa:false, created_at:'2026-03-10T10:00:00Z' },
+    { id:'dr016', event_id:'demo-ev-003', nome:'Maria', cognome:'Colombo', email:'m.colombo@confindustria.it', telefono:'02 3334455', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:true, newsletter:false, extra:{intolleranze:'Celiaca', tavolo:['Zona tranquilla']}, presente:true, in_lista_attesa:false, created_at:'2026-03-12T11:30:00Z' },
+    { id:'dr017', event_id:'demo-ev-003', nome:'Stefano', cognome:'Bruno', email:'s.bruno@brunogroup.com', telefono:'339 7778880', adulti:2, bambini:1, tipo:'visitatore', pranzo:false, cena:true, newsletter:true, extra:{intolleranze:'', tavolo:['Vicino al palco']}, presente:true, in_lista_attesa:false, created_at:'2026-03-15T09:00:00Z' },
+    { id:'dr018', event_id:'demo-ev-003', nome:'Laura', cognome:'Gentile', email:'l.gentile@imprendinord.it', telefono:'333 0001112', adulti:1, bambini:0, tipo:'visitatore', pranzo:false, cena:true, newsletter:true, extra:{intolleranze:'Vegetariana', tavolo:['Zona tranquilla', 'Vicino all\'uscita']}, presente:false, in_lista_attesa:false, created_at:'2026-03-18T14:00:00Z' },
+    { id:'dr019', event_id:'demo-ev-003', nome:'Carlo', cognome:'Fontana', email:'c.fontana@fontanapartners.it', telefono:'347 4445556', adulti:2, bambini:0, tipo:'visitatore', pranzo:false, cena:true, newsletter:false, extra:{intolleranze:'', tavolo:['Vicino al palco']}, presente:true, in_lista_attesa:false, created_at:'2026-03-20T10:00:00Z' }
+  ]
+};
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var PIANO = 'agenzia';
+var currentEv = null;
+var currentRegs = [];
+var allEvents = [];
+var delPending = null;
+var spIdx = { c: 0, s: 0 };
+var cfIdx = { c: 0, s: 0 };
+var otogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var stogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false };
+var attesaVisible = false;
+var LS_THEME = 'ef_theme';
+var customStats = [null, null];
+var configStatIdx = null;
+var configStatSel = null;
+var bozzaId = null;
+var evTabCorrente = 'attivi';
+
+/* ============================================================
+   DEMO INTERCEPT
+   ============================================================ */
+function demoBlock() {
+  document.getElementById('demoOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+  return false;
+}
+function closeDemoOverlay() {
+  document.getElementById('demoOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+function init() {
+  initTheme();
+  allEvents = DEMO_EVENTS.map(function(e) { return sanitizeEvent(JSON.parse(JSON.stringify(e))); });
+  currentEv = allEvents[0];
+  currentRegs = JSON.parse(JSON.stringify(DEMO_REGS[currentEv.id] || []));
+  customStats = [null, null];
+  hideLoading();
+  document.getElementById('demoBanner').style.display = 'flex';
+  setDisp('mainNav', 'flex');
+  showView('dash');
+  renderDash();
+}
+
+function hideLoading() { setDisp('loading', 'none'); }
+function showErr() { showView('error'); }
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
+function setHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
+function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
+function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
+function getVal(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+
+function sanitizeEvent(ev) {
+  if (!ev) return null;
+  ev.nome = ev.nome || 'Evento senza nome';
+  ev.data_iso = ev.data_iso || '';
+  ev.ora = ev.ora || '';
+  ev.luogo = ev.luogo || '';
+  ev.descrizione = ev.descrizione || '';
+  ev.email_contatto = ev.email_contatto || '';
+  ev.capienza = ev.capienza || null;
+  ev.immagine = ev.immagine || null;
+  ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
+  ev.custom_fields = Array.isArray(ev.custom_fields) ? ev.custom_fields : [];
+  ev.opt_multipla = !!ev.opt_multipla;
+  ev.opt_cap_persona = !!ev.opt_cap_persona;
+  ev.opt_tipo = !!ev.opt_tipo;
+  ev.opt_pasto = !!ev.opt_pasto;
+  ev.opt_newsletter = ev.opt_newsletter !== false;
+  ev.opt_capienza = !!ev.opt_capienza;
+  ev.promo_automatica = !!ev.promo_automatica;
+  ev.bozza = !!ev.bozza;
+  return ev;
+}
+
+/* ============================================================
+   THEME
+   ============================================================ */
+function toggleTheme() {
+  var l = document.body.classList.toggle('light');
+  document.getElementById('themeBtn').textContent = l ? '☀️' : '🌙';
+  localStorage.setItem(LS_THEME, l ? 'light' : 'dark');
+}
+function initTheme() {
+  if (localStorage.getItem(LS_THEME) === 'light') { document.body.classList.add('light'); document.getElementById('themeBtn').textContent = '☀️'; }
+}
+
+/* ============================================================
+   DATE UTILS
+   ============================================================ */
+function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isClosed(ev) {
+  if (!ev || !ev.data_iso) return false;
+  var t = new Date(); t.setHours(0,0,0,0);
+  var d = new Date(ev.data_iso); d.setHours(0,0,0,0); d.setDate(d.getDate() + 1);
+  return t >= d;
+}
+
+/* ============================================================
+   MULTI-EVENT SELECTOR
+   ============================================================ */
+function getEventiPerTab() {
+  var oggi = new Date(); oggi.setHours(0,0,0,0);
+  var attivi = allEvents.filter(function(e) { if (!e.data_iso) return true; return new Date(e.data_iso + 'T00:00:00') >= oggi; });
+  var conclusi = allEvents.filter(function(e) { if (!e.data_iso) return false; return new Date(e.data_iso + 'T00:00:00') < oggi; });
+  return { attivi: attivi, conclusi: conclusi };
+}
+
+function switchEvTab(tab) {
+  evTabCorrente = tab;
+  document.getElementById('tabAttivi').classList.toggle('active', tab === 'attivi');
+  document.getElementById('tabConclusi').classList.toggle('active', tab === 'conclusi');
+  var gruppi = getEventiPerTab();
+  var lista = gruppi[tab];
+  var box = document.getElementById('evSelectBox');
+  if (!box) return;
+  if (lista.length === 0) { box.innerHTML = '<option value="">Nessun evento in questa categoria</option>'; return; }
+  var curId = currentEv ? currentEv.id : '';
+  var inTab = lista.some(function(e) { return e.id === curId; });
+  if (!inTab) { curId = lista[0].id; switchEvent(curId); }
+  box.innerHTML = lista.map(function(e) {
+    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+  }).join('');
+}
+
+function renderSelector() {
+  var wrap = document.getElementById('evSelectorWrap');
+  var box = document.getElementById('evSelectBox');
+  if (!wrap || !box) return;
+  if (allEvents.length === 0) { wrap.style.display = 'none'; setDisp('btnCreateMain', 'inline-block'); return; }
+  wrap.style.display = 'block';
+  setDisp('btnCreateMain', 'none');
+  setDisp('btnCreate', 'inline-block');
+  var gruppi = getEventiPerTab();
+  var cA = document.getElementById('countAttivi');
+  var cC = document.getElementById('countConclusi');
+  if (cA) cA.textContent = gruppi.attivi.length;
+  if (cC) cC.textContent = gruppi.conclusi.length;
+  if (evTabCorrente === 'attivi' && gruppi.attivi.length === 0 && gruppi.conclusi.length > 0) evTabCorrente = 'conclusi';
+  else if (evTabCorrente === 'conclusi' && gruppi.conclusi.length === 0 && gruppi.attivi.length > 0) evTabCorrente = 'attivi';
+  document.getElementById('tabAttivi').classList.toggle('active', evTabCorrente === 'attivi');
+  document.getElementById('tabConclusi').classList.toggle('active', evTabCorrente === 'conclusi');
+  var lista = gruppi[evTabCorrente];
+  var curId = currentEv ? currentEv.id : '';
+  if (lista.length === 0) { box.innerHTML = '<option value="">Nessun evento in questa categoria</option>'; return; }
+  box.innerHTML = lista.map(function(e) {
+    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+  }).join('');
+}
+
+function switchEvent(id) {
+  currentEv = allEvents.find(function(e) { return e.id === id; }) || null;
+  currentRegs = currentEv ? JSON.parse(JSON.stringify(DEMO_REGS[currentEv.id] || [])) : [];
+  attesaVisible = false;
+  renderDash();
+}
+
+function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ============================================================
+   CALCOLO POSTI
+   ============================================================ */
+function calcPostiOccupati(ev, regs) {
+  var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
+  if (ev && ev.opt_cap_persona && ev.opt_multipla) {
+    return confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  }
+  return confermati.length;
+}
+
+/* ============================================================
+   RENDER DASHBOARD
+   ============================================================ */
+function renderDash() {
+  var ev = currentEv;
+  var regs = currentRegs;
+  var closed = ev ? isClosed(ev) : false;
+  var hasEv = !!ev;
+  var canEdit = hasEv && !closed;
+  renderSelector();
+  setText('dash-title', ev ? ev.nome : 'Dashboard Agenzia');
+  setText('dash-sub', ev ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : '')) : 'Nessun evento');
+  setDisp('btnAddReg', canEdit ? 'inline-block' : 'none');
+  setDisp('btnQR', hasEv ? 'inline-block' : 'none');
+  setDisp('btnLanding', hasEv ? 'inline-block' : 'none');
+  setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
+  setDisp('btnSettings', hasEv ? 'inline-block' : 'none');
+  setDisp('btnCSV', hasEv ? 'inline-block' : 'none');
+  setDisp('btnToggleStatus', canEdit ? 'inline-block' : 'none');
+  var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
+  var inAttesa = regs.filter(function(r) { return !!r.in_lista_attesa; });
+  var totP = confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  var postiOccupati = hasEv ? calcPostiOccupati(ev, regs) : 0;
+  setText('s-regs', hasEv ? confermati.length : '--');
+  setText('s-persone', hasEv ? totP : '--');
+  setText('s-posti', hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '--');
+  renderCustomStats(ev, confermati);
+  var mostraAttesa = hasEv && (inAttesa.length > 0 || (ev.capienza && postiOccupati >= ev.capienza));
+  setDisp('btnAttesa', mostraAttesa ? 'inline-block' : 'none');
+  var btnA = document.getElementById('btnAttesa');
+  if (btnA) btnA.textContent = (attesaVisible ? '▲ ' : '⏳ ') + 'Lista attesa' + (inAttesa.length > 0 ? ' (' + inAttesa.length + ')' : '');
+  setDisp('closedBanner', closed ? 'flex' : 'none');
+  setText('status-nome', ev ? ev.nome : 'Nessun evento');
+  setText('status-det', ev ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '')) : '');
+  var sp = document.getElementById('status-pill');
+  if (sp) {
+    if (!ev) sp.innerHTML = '<span class="pill pill-gray">--</span>';
+    else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
+    else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">Iscrizioni aperte</span>';
+    else sp.innerHTML = '<span class="pill pill-red">Iscrizioni chiuse</span>';
+  }
+  setText('pubLink', hasEv ? 'https://eventsfun.com/landing.html?id=' + ev.id : '--');
+  renderTable(ev, confermati, closed);
+  renderAttesa(ev, inAttesa, closed);
+}
+
+/* ============================================================
+   CARD STATISTICHE PERSONALIZZABILI
+   ============================================================ */
+function getStatOptions(ev, confermati) {
+  var opts = [];
+  if (!ev) return opts;
+  var cf = ev.custom_fields || [];
+  cf.forEach(function(f) {
+    if (f.type === 'dropdown' || f.type === 'checkbox') {
+      var options = f.options || [];
+      options.forEach(function(opt) {
+        var count = confermati.filter(function(r) {
+          if (!r.extra) return false;
+          var val = r.extra[f.id];
+          if (f.type === 'checkbox') { return Array.isArray(val) ? val.includes(opt) : false; }
+          return val === opt;
+        }).length;
+        opts.push({ id: f.id + '__' + opt, label: f.label + ': ' + opt, value: count });
+      });
+    } else if (f.type === 'text') {
+      var filled = confermati.filter(function(r) { return r.extra && r.extra[f.id] && r.extra[f.id].toString().trim(); }).length;
+      opts.push({ id: f.id + '__filled', label: f.label + ' (compilati)', value: filled });
+    }
+  });
+  return opts;
+}
+
+function renderCustomStats(ev, confermati) {
+  var opts = getStatOptions(ev, confermati);
+  for (var i = 0; i < 2; i++) {
+    var el = document.getElementById('statCustom' + i);
+    if (!el) continue;
+    var cfg = customStats[i];
+    if (!cfg) {
+      el.className = 'stat-custom';
+      el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
+        + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare.">?</div>';
+      el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
+    } else {
+      var found = opts.find(function(o) { return o.id === cfg; });
+      if (found) {
+        el.className = 'stat-custom filled';
+        el.innerHTML = '<div class="stat-label">' + escHtml(found.label) + '</div>'
+          + '<div class="stat-val">' + found.value + '</div>'
+          + '<div class="stat-custom-tip" onclick="removeStatConfig(' + i + ');event.stopPropagation()" title="Rimuovi" style="cursor:pointer;border-color:rgba(255,255,255,0.15);color:var(--text-dim)">✕</div>';
+        el.onclick = null;
+      } else {
+        customStats[i] = null;
+        el.className = 'stat-custom';
+        el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
+          + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare.">?</div>';
+        el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
+      }
+    }
+  }
+}
+
+function openStatConfig(idx) {
+  var ev = currentEv;
+  var confermati = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
+  var opts = getStatOptions(ev, confermati);
+  if (!opts.length) { alert('Questo evento non ha campi aggiuntivi di tipo Dropdown o Checkbox.'); return; }
+  configStatIdx = idx;
+  configStatSel = customStats[idx] || null;
+  var container = document.getElementById('statConfigOptions');
+  if (!container) return;
+  container.innerHTML = opts.map(function(o) {
+    var sel = configStatSel === o.id;
+    return '<div class="stat-cfg-option' + (sel ? ' sel' : '') + '" onclick="selectStatOption(\'' + o.id + '\')">'
+      + '<div class="stat-cfg-check">✓</div>'
+      + '<div style="flex:1"><div style="font-size:13px;color:var(--text)">' + escHtml(o.label) + '</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px">Valore attuale: ' + o.value + '</div></div>'
+      + '</div>';
+  }).join('');
+  openOv('ovStatConfig');
+}
+function selectStatOption(id) {
+  configStatSel = id;
+  document.querySelectorAll('.stat-cfg-option').forEach(function(el) { el.classList.remove('sel'); });
+  event.currentTarget.classList.add('sel');
+}
+function confirmStatConfig() {
+  if (configStatIdx === null || configStatSel === null) return;
+  customStats[configStatIdx] = configStatSel;
+  closeOv('ovStatConfig');
+  renderDash();
+}
+function removeStatConfig(idx) { customStats[idx] = null; renderDash(); }
+
+/* ============================================================
+   LISTA D'ATTESA
+   ============================================================ */
+function toggleAttesa() {
+  attesaVisible = !attesaVisible;
+  var panel = document.getElementById('panelAttesa');
+  if (panel) panel.style.display = attesaVisible ? 'block' : 'none';
+  var inAttesa = currentRegs.filter(function(r) { return !!r.in_lista_attesa; });
+  var btnA = document.getElementById('btnAttesa');
+  if (btnA) btnA.textContent = (attesaVisible ? '▲ ' : '⏳ ') + 'Lista attesa' + (inAttesa.length > 0 ? ' (' + inAttesa.length + ')' : '');
+}
+
+function renderAttesa(ev, inAttesa, closed) {
+  var panel = document.getElementById('panelAttesa');
+  if (!panel) return;
+  if (!ev || inAttesa.length === 0) {
+    if (!attesaVisible) panel.style.display = 'none';
+    setText('attesaSub', '--');
+    setHTML('attesaTable', '<tr><td colspan="5" class="no-regs">Nessuno in lista d\'attesa</td></tr>');
+    return;
+  }
+  if (attesaVisible) panel.style.display = 'block';
+  setText('attesaSub', inAttesa.length + ' ' + (inAttesa.length === 1 ? 'persona in attesa' : 'persone in attesa') + ' di posto');
+  var tbody = document.getElementById('attesaTable');
+  if (!tbody) return;
+  tbody.innerHTML = inAttesa.map(function(r) {
+    return '<tr>'
+      + '<td class="nm">' + escHtml(r.nome + ' ' + r.cognome) + '</td>'
+      + '<td>' + escHtml(r.email) + '</td>'
+      + '<td>' + escHtml(r.telefono || '--') + '</td>'
+      + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--') + '</td>'
+      + '<td><div class="act-cell">'
+      + (!closed ? '<button class="btn-sm btn-sm-green" style="font-size:11px;padding:5px 10px" onclick="demoBlock()">✓ Promuovi</button>' : '')
+      + '<button class="ic" onclick="demoBlock()">🗑️</button>'
+      + '</div></td>'
+      + '</tr>';
+  }).join('');
+}
+
+/* ============================================================
+   RENDER TABELLA ISCRITTI
+   ============================================================ */
+function renderTable(ev, regs, closed) {
+  if (!ev) {
+    setHTML('tableHead', '<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data</th><th></th></tr>');
+    setHTML('regTable', '<tr><td colspan="5" class="no-regs">Crea il tuo evento per visualizzare gli iscritti</td></tr>');
+    setText('panel-title', 'Iscritti');
+    setText('panel-sub', 'Crea un evento per visualizzare gli iscritti');
+    setHTML('panelBtns', '');
+    return;
+  }
+  var cf = ev.custom_fields || [];
+  var hM = ev.opt_multipla, hT = ev.opt_tipo, hP = ev.opt_pasto, hN = ev.opt_newsletter !== false;
+  var th = '<tr><th>Nome</th><th>Email</th><th>Telefono</th>';
+  if (hM) th += '<th class="xh">Adulti</th><th class="xh">Bambini</th>';
+  if (hT) th += '<th class="xh">Tipo</th>';
+  if (hP) th += '<th class="xh">Pasto</th>';
+  cf.forEach(function(f) { th += '<th class="xh">' + escHtml(f.label) + '</th>'; });
+  if (hN) th += '<th class="xh">📧</th>';
+  th += '<th>Data</th><th></th></tr>';
+  setHTML('tableHead', th);
+  var n = 4 + (hM ? 2 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
+  setText('panel-title', regs.length + ' iscritti');
+  setText('panel-sub', ev.capienza ? (Math.max(0, ev.capienza - calcPostiOccupati(ev, currentRegs)) + ' posti disponibili') : 'Iscrizioni illimitate');
+  if (!regs.length) {
+    setHTML('regTable', '<tr><td colspan="' + n + '" class="no-regs">Nessun iscritto</td></tr>');
+  } else {
+    setHTML('regTable', regs.map(function(r) {
+      var xc = '';
+      if (hM) xc += '<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>';
+      if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '--') + '</td>';
+      if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '--') + '</td>'; }
+      cf.forEach(function(f) {
+        var val = (r.extra && r.extra[f.id] !== undefined) ? r.extra[f.id] : '--';
+        if (Array.isArray(val)) val = val.join(', ') || '--';
+        xc += '<td class="xv">' + escHtml(String(val)) + '</td>';
+      });
+      if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '--') + '</td>';
+      var presente = !!r.presente;
+      return '<tr>'
+        + '<td class="nm">' + (presente ? '<span style="color:var(--green)">● </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</td>'
+        + '<td>' + escHtml(r.email) + '</td><td>' + escHtml(r.telefono || '--') + '</td>'
+        + xc
+        + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--') + '</td>'
+        + '<td><div class="act-cell">'
+        + (!closed ? '<button class="ic" onclick="demoBlock()">✏️</button>' : '')
+        + '<button class="ic" onclick="demoBlock()">🗑️</button>'
+        + '</div></td></tr>';
+    }).join(''));
+  }
+  var pb = document.getElementById('panelBtns');
+  if (pb) {
+    pb.innerHTML = '';
+    var csvBtn = document.createElement('button');
+    csvBtn.className = 'btn-sm btn-sm-gold';
+    csvBtn.textContent = '↓ Esporta CSV';
+    csvBtn.onclick = demoBlock;
+    pb.appendChild(csvBtn);
+  }
+}
+
+/* ============================================================
+   AZIONI BLOCCATE IN DEMO
+   ============================================================ */
+function openCreateEvent() { demoBlock(); }
+function openEditEvent() { demoBlock(); }
+function saveEvent() { demoBlock(); }
+function saveSettings() { demoBlock(); }
+function toggleStatus() { demoBlock(); }
+function openAddReg() { demoBlock(); }
+function openEditReg() { demoBlock(); }
+function saveReg() { demoBlock(); }
+function openDel() { demoBlock(); }
+function confirmDel() { demoBlock(); }
+function promuoviAttesa() { demoBlock(); }
+function exportCSV() { demoBlock(); }
+
+/* ============================================================
+   QR CODE (funziona in demo -- mostra QR della landing reale)
+   ============================================================ */
+function openQR() {
+  var ev = currentEv; if (!ev) return;
+  var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
+  setText('qrUrl', url);
+  var w = document.getElementById('qrCode'); w.innerHTML = '';
+  new QRCode(w, { text: url, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+  openOv('ovQR');
+}
+function dlQR() { demoBlock(); }
+
+/* ============================================================
+   LANDING (apre la landing reale in sola lettura)
+   ============================================================ */
+function openLanding() {
+  var ev = currentEv; if (!ev) return;
+  window.open('https://eventsfun.com/landing.html?id=' + ev.id, '_blank');
+}
+function openPreviewFromForm() { demoBlock(); }
+function openPreviewFromSettings() { demoBlock(); }
+
+/* ============================================================
+   PRESENZE (funziona in demo -- dati locali)
+   ============================================================ */
+function renderPresenze() {
+  var ev = currentEv; if (!ev) return;
+  var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
+  var q = (getVal('presSearch') || '').toLowerCase();
+  var filtered = regs.filter(function(r) { return !q || (r.nome + ' ' + r.cognome + ' ' + r.email).toLowerCase().includes(q); });
+  var presenti = regs.filter(function(r) { return r.presente; }).length;
+  setText('presPres', presenti + ' presenti');
+  setText('presAss', (regs.length - presenti) + ' assenti');
+  setText('presSub', ev.nome + ' -- ' + regs.length + ' iscritti');
+  var list = document.getElementById('presList');
+  if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px">Nessun risultato</div>'; return; }
+  list.innerHTML = filtered.map(function(r) {
+    var p = !!r.presente;
+    return '<div class="pres-row' + (p ? ' presente' : '') + '">'
+      + '<div><div class="pres-name">' + (p ? '<span style="color:var(--green)">✓ </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</div>'
+      + '<div class="pres-detail">' + escHtml(r.email) + '</div></div>'
+      + '<button class="pres-btn' + (p ? ' on' : '') + '" onclick="togglePresenza(\'' + r.id + '\')">' + (p ? 'Presente ✓' : 'Segna presente') + '</button>'
+      + '</div>';
+  }).join('');
+}
+
+function togglePresenza(id) {
+  var r = currentRegs.find(function(x) { return x.id === id; }); if (!r) return;
+  r.presente = !r.presente;
+  renderPresenze();
+}
+
+/* ============================================================
+   TOGGLE OPZIONI
+   ============================================================ */
+function otog(k) {
+  otogState[k] = !otogState[k];
+  var el = document.getElementById('otog_' + k); if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
+  if (k === 'pasto') { var s = document.getElementById('opasto_sub'); if (s) s.style.display = otogState[k] ? 'block' : 'none'; }
+  if (k === 'multipla') { setDisp('o_capienza_pp_row', otogState[k] ? 'flex' : 'none'); }
+}
+function stog(k) {
+  stogState[k] = !stogState[k];
+  var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
+  if (k === 'pasto') { var s = document.getElementById('spasto_sub'); if (s) s.style.display = stogState[k] ? 'block' : 'none'; }
+  if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); }
+}
+
+/* ============================================================
+   SPONSOR & CAMPI AGGIUNTIVI (solo visualizzazione form -- salvataggio bloccato)
+   ============================================================ */
+function addSP(prefix, listId, data) {
+  var id = prefix + 'sp' + (spIdx[prefix]++);
+  var d = document.createElement('div'); d.className = 'sp-row'; d.id = 'spr' + id;
+  d.innerHTML = '<div class="logo-ph" id="sph' + id + '" onclick="demoBlock()" title="Logo">🖼</div>'
+    + '<img class="logo-img" id="spi' + id + '" src="" alt="">'
+    + '<input type="file" class="logo-file" id="spf' + id + '" accept="image/*">'
+    + '<input class="row-inp" placeholder="Nome sponsor" id="spn' + id + '" value="' + escHtml(data && data.nome ? data.nome : '') + '">'
+    + '<input class="row-inp" placeholder="URL sito" id="spu' + id + '" value="' + escHtml(data && data.url && data.url !== '#' ? data.url : '') + '">'
+    + '<button class="rm-btn" onclick="document.getElementById(\'spr' + id + '\').remove()">✕</button>';
+  document.getElementById(listId).appendChild(d);
+}
+
+function addCF(prefix, listId, data) {
+  var id = prefix + 'cf' + (cfIdx[prefix]++);
+  var req = data && data.required;
+  var type = (data && data.type) ? data.type : 'text';
+  var d = document.createElement('div'); d.className = 'cf-row'; d.id = 'cfr' + id;
+  var optionsHtml = '';
+  if (type === 'dropdown' || type === 'checkbox') {
+    var opts = (data && data.options) ? data.options : [];
+    optionsHtml = '<div class="cf-options-area">'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">'
+      + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+      + '<div class="cf-opt-list" id="cfopts' + id + '">'
+      + opts.map(function(o) { return buildOptItem(id, o); }).join('')
+      + '</div>'
+      + '<button class="cf-add-opt" onclick="addOptItem(\'' + id + '\')">+ Aggiungi opzione</button>'
+      + '</div>';
+  }
+  d.innerHTML = '<input class="row-inp" placeholder="Nome campo" id="cfl' + id + '" value="' + escHtml(data && data.label ? data.label : '') + '">'
+    + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
+    + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
+    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
+    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
+    + '</select>'
+    + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
+    + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
+    + optionsHtml;
+  document.getElementById(listId).appendChild(d);
+}
+
+function buildOptItem(cfId, val) {
+  return '<div class="cf-opt-item"><input placeholder="Es. Opzione 1" value="' + escHtml(val || '') + '"><button class="rm-btn" style="width:22px;height:22px;font-size:11px" onclick="this.parentElement.remove()">✕</button></div>';
+}
+function addOptItem(cfId) {
+  var list = document.getElementById('cfopts' + cfId); if (!list) return;
+  var item = document.createElement('div'); item.className = 'cf-opt-item';
+  item.innerHTML = '<input placeholder="Es. Opzione"><button class="rm-btn" style="width:22px;height:22px;font-size:11px" onclick="this.parentElement.remove()">✕</button>';
+  list.appendChild(item);
+}
+function onCFTypeChange(cfId, type) {
+  var row = document.getElementById('cfr' + cfId); if (!row) return;
+  var existing = row.querySelector('.cf-options-area'); if (existing) existing.remove();
+  if (type === 'dropdown' || type === 'checkbox') {
+    var area = document.createElement('div'); area.className = 'cf-options-area';
+    area.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">'
+      + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+      + '<div class="cf-opt-list" id="cfopts' + cfId + '"></div>'
+      + '<button class="cf-add-opt" onclick="addOptItem(\'' + cfId + '\')">+ Aggiungi opzione</button>';
+    row.appendChild(area);
+  }
+}
+
+function cc(f, d) { var el = document.getElementById('cnt_' + f); el.textContent = Math.max(f === 'adulti' ? 1 : 0, (parseInt(el.textContent) || 0) + d); }
+
+function applyOpts(ev) {
+  setDisp('sect_multipla', ev.opt_multipla ? 'block' : 'none');
+  setDisp('sect_tipo', ev.opt_tipo ? 'block' : 'none');
+  setDisp('sect_pasto', ev.opt_pasto ? 'block' : 'none');
+  if (ev.opt_pasto) {
+    setDisp('sect_pranzo_row', ev.opt_pasto_pranzo !== false ? 'block' : 'none');
+    setDisp('sect_cena_row', ev.opt_pasto_cena !== false ? 'block' : 'none');
+  }
+  setDisp('sect_newsletter', ev.opt_newsletter !== false ? 'block' : 'none');
+}
+function buildExtra(ev, extra) {
+  var cf = ev.custom_fields || []; if (!cf.length) return '';
+  var html = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border2)"><div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:12px;font-weight:700">Campi aggiuntivi</div><div>';
+  cf.forEach(function(f) {
+    var val = (extra && extra[f.id] !== undefined) ? extra[f.id] : '';
+    html += '<div class="mf" style="margin-bottom:10px"><label>' + escHtml(f.label) + (f.required ? ' *' : '') + '</label>';
+    if (f.type === 'dropdown') {
+      html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
+        + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('')
+        + '</select>';
+    } else if (f.type === 'checkbox') {
+      var vals = Array.isArray(val) ? val : [];
+      html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">'
+        + (f.options || []).map(function(o) {
+          return '<label style="display:flex;align-items:center;gap:10px;font-size:13px;cursor:pointer;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-muted)">'
+            + '<input type="checkbox" ' + (vals.includes(o) ? 'checked' : '') + ' style="width:15px;height:15px;accent-color:var(--gold);flex-shrink:0"> '
+            + escHtml(o) + '</label>';
+        }).join('')
+        + '</div>';
+    } else {
+      html += '<input id="rx' + f.id + '" value="' + escHtml(val || '') + '">';
+    }
+    html += '</div>';
+  });
+  html += '</div></div>';
+  return html;
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function showView(n) {
+  document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); });
+  document.getElementById('view-' + n).classList.add('on');
+  if (n === 'presenze') renderPresenze();
+}
+function openOv(id) { document.getElementById(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
+function closeOv(id) { document.getElementById(id).classList.remove('on'); document.body.style.overflow = ''; }
+function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
+
+/* ============================================================
+   START
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', function() { init(); });
+</script>
+
+
+
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">demo v1.0</div>
+</body>
+</html>
