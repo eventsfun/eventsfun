@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Newsletter Demo -- EventsFun</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0A0A0A; --bg2: #111111; --bg3: #1A1A1A; --border: #2A2A2A;
+      --gold: #C9A96E; --gold-dim: rgba(201,169,110,0.15); --gold-hover: #D9BC8A;
+      --text: #E8E8E8; --text-dim: #888; --text-muted: #555;
+      --danger: #E05555; --danger-dim: rgba(224,85,85,0.12);
+      --success: #4CAF7D; --success-dim: rgba(76,175,125,0.12);
+      --warn: #E0A855; --warn-dim: rgba(224,168,85,0.12);
+      --radius: 10px; --radius-sm: 6px;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+    /* DEMO BANNER */
+    .demo-banner { background: linear-gradient(90deg,#1a1200,#2a1e00); border-bottom: 1px solid rgba(201,169,110,0.4); padding: 10px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .demo-badge { background: var(--gold); color: #0A0A0A; font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; white-space: nowrap; }
+    .demo-banner-text { font-size: 12px; color: rgba(201,169,110,0.85); }
+    .demo-banner-cta { padding: 8px 18px; border-radius: 8px; background: linear-gradient(135deg,var(--gold),#8a6e3e); color: #0A0A0A; font-size: 12px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+    .demo-banner-cta:hover { opacity: .87; }
+
+    /* NAVBAR */
+    .navbar { position: sticky; top: 0; z-index: 100; background: rgba(10,10,10,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .navbar-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; color: var(--gold); text-decoration: none; letter-spacing: -0.3px; white-space: nowrap; }
+    .navbar-logo span { color: var(--text-dim); font-weight: 400; }
+    .navbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
+    .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* LAYOUT */
+    .page-header { padding: 32px 24px 0; max-width: 1100px; margin: 0 auto; }
+    .page-title { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .page-subtitle { color: var(--text-dim); font-size: 14px; }
+
+    /* TABS */
+    .tabs { display: flex; gap: 4px; padding: 24px 24px 0; max-width: 1100px; margin: 0 auto; border-bottom: 1px solid var(--border); overflow-x: auto; }
+    .tab-btn { background: none; border: none; color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 10px 18px; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+    .tab-badge { background: var(--gold-dim); color: var(--gold); font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; }
+    .tab-content { display: none; padding: 28px 24px; max-width: 1100px; margin: 0 auto; }
+    .tab-content.active { display: block; }
+
+    /* CARDS */
+    .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin-bottom: 16px; }
+    .card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+    .card-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); }
+
+    /* FORM */
+    .form-group { margin-bottom: 18px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-dim); margin-bottom: 6px; }
+    .form-input, .form-select, .form-textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; padding: 10px 14px; transition: border-color 0.2s; outline: none; }
+    .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); }
+    .form-textarea { min-height: 120px; resize: vertical; }
+    .form-hint { font-size: 12px; color: var(--text-muted); margin-top: 5px; }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 10px 20px; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border: none; transition: all 0.2s; text-decoration: none; white-space: nowrap; }
+    .btn-gold { background: var(--gold); color: #0A0A0A; font-weight: 600; }
+    .btn-gold:hover { background: var(--gold-hover); }
+    .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dim); }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+    .btn-danger { background: transparent; border: 1px solid var(--danger); color: var(--danger); font-size: 13px; padding: 5px 12px; }
+    .btn-danger:hover { background: var(--danger-dim); }
+    .btn-sm { padding: 5px 12px; font-size: 13px; }
+
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; font-weight: 500; padding: 3px 10px; border-radius: 20px; }
+    .badge-gold { background: var(--gold-dim); color: var(--gold); }
+    .badge-green { background: var(--success-dim); color: var(--success); }
+    .badge-red { background: var(--danger-dim); color: var(--danger); }
+    .badge-gray { background: rgba(255,255,255,0.05); color: var(--text-muted); }
+
+    /* EVENTO CARD */
+    .evento-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 16px; }
+    .evento-card-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; cursor: pointer; user-select: none; gap: 12px; transition: background 0.15s; }
+    .evento-card-header:hover { background: var(--bg3); }
+    .evento-card-info { flex: 1; min-width: 0; }
+    .evento-nome { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .evento-meta { font-size: 13px; color: var(--text-dim); margin-top: 2px; }
+    .evento-card-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .toggle-icon { color: var(--text-muted); font-size: 18px; transition: transform 0.2s; }
+    .evento-card.open .toggle-icon { transform: rotate(180deg); }
+    .evento-iscritti-list { display: none; border-top: 1px solid var(--border); }
+    .evento-card.open .evento-iscritti-list { display: block; }
+    .iscritto-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.04); gap: 12px; flex-wrap: wrap; }
+    .iscritto-row:last-child { border-bottom: none; }
+    .iscritto-info { flex: 1; min-width: 0; }
+    .iscritto-nome { font-size: 14px; font-weight: 500; }
+    .iscritto-email { font-size: 13px; color: var(--text-dim); }
+
+    /* NEWSLETTER SEND */
+    .eventi-selector { display: grid; gap: 10px; margin-bottom: 6px; }
+    .evento-check-item { display: flex; align-items: center; gap: 12px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; cursor: pointer; transition: border-color 0.2s; }
+    .evento-check-item:hover { border-color: var(--gold); }
+    .evento-check-item input[type="checkbox"] { accent-color: var(--gold); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+    .evento-check-item.selected { border-color: var(--gold); background: var(--gold-dim); }
+    .check-nome { font-weight: 500; font-size: 14px; }
+    .check-count { font-size: 13px; color: var(--text-dim); }
+    .check-spacer { flex: 1; }
+    .dest-counter { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 16px; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .dest-counter .num { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
+    .dest-counter .label { font-size: 13px; color: var(--text-dim); }
+
+    /* EDITOR */
+    .editor-toolbar { display: flex; flex-wrap: wrap; gap: 4px; background: var(--bg3); border: 1px solid var(--border); border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 8px; }
+    .tb-btn { background: none; border: 1px solid transparent; border-radius: 4px; color: var(--text-dim); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 600; padding: 5px 9px; transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px; }
+    .tb-btn:hover { background: var(--border); color: var(--text); }
+    .tb-sep { width: 1px; background: var(--border); margin: 2px 4px; }
+    .editor-area { background: var(--bg3); border: 1px solid var(--border); border-radius: 0 0 var(--radius-sm) var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.7; min-height: 220px; padding: 14px; outline: none; overflow-y: auto; }
+    .editor-area:focus { border-color: var(--gold); }
+    .editor-area a { color: var(--gold); }
+    .editor-area img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
+
+    /* DIALOG LINK */
+    .link-dialog { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .link-dialog.open { display: flex; }
+    .link-dialog-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; }
+    .link-dialog-box h3 { font-family: 'Syne', sans-serif; font-size: 16px; color: var(--gold); margin-bottom: 16px; }
+
+    /* ANTEPRIMA */
+    .preview-frame { background: #fff; border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+
+    /* ALERT */
+    .alert { padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; display: none; align-items: flex-start; gap: 10px; margin-bottom: 16px; }
+    .alert.show { display: flex; }
+    .alert-success { background: var(--success-dim); border: 1px solid var(--success); color: var(--success); }
+    .alert-error { background: var(--danger-dim); border: 1px solid var(--danger); color: var(--danger); }
+    .alert-info { background: var(--gold-dim); border: 1px solid var(--gold); color: var(--gold); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+    .empty-state .icon { font-size: 36px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* SPINNER */
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(201,169,110,0.3); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SEARCH */
+    .search-wrap { position: relative; margin-bottom: 16px; }
+    .search-wrap .form-input { padding-left: 36px; }
+    .search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 15px; }
+
+    /* DEMO OVERLAY */
+    .demo-overlay-msg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(6px); }
+    .demo-overlay-msg.on { display: flex; }
+    .demo-msg-box { background: var(--bg3); border: 1px solid rgba(201,169,110,0.4); border-radius: 16px; padding: 32px 28px; max-width: 400px; width: 100%; text-align: center; }
+    .demo-msg-icon { font-size: 40px; margin-bottom: 12px; }
+    .demo-msg-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .demo-msg-sub { font-size: 13px; color: var(--text-dim); line-height: 1.7; margin-bottom: 24px; }
+    .demo-msg-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    .demo-msg-ok { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; }
+    .demo-msg-go { flex: 2; padding: 12px; border-radius: 8px; border: none; background: linear-gradient(135deg,var(--gold),#8a6e3e); color: #0A0A0A; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; }
+
+    @media (max-width: 600px) {
+      .navbar { padding: 0 14px; }
+      .page-header { padding: 20px 14px 0; }
+      .tabs { padding: 16px 14px 0; }
+      .tab-content { padding: 20px 14px; }
+      .card { padding: 14px; }
+      .page-title { font-size: 20px; }
+      .demo-banner { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- DEMO BANNER -->
+<div class="demo-banner">
+  <div style="display:flex;align-items:center;gap:10px">
+    <span class="demo-badge">Demo</span>
+    <span class="demo-banner-text">Stai esplorando la newsletter con dati di esempio. Nessun dato viene salvato.</span>
+  </div>
+  <a href="https://eventsfun.com/#prezzi" class="demo-banner-cta">Inizia con il tuo piano →</a>
+</div>
+
+<!-- DEMO OVERLAY -->
+<div class="demo-overlay-msg" id="demoOverlay">
+  <div class="demo-msg-box">
+    <div class="demo-msg-icon">🔒</div>
+    <div class="demo-msg-title">Funzione disponibile nel piano reale</div>
+    <div class="demo-msg-sub">Nella demo le modifiche non vengono salvate.<br>Attiva il tuo piano per inviare newsletter reali ai tuoi iscritti.</div>
+    <div class="demo-msg-btns">
+      <button class="demo-msg-ok" onclick="closeDemoOverlay()">Continua a esplorare</button>
+      <a href="https://eventsfun.com/#prezzi" class="demo-msg-go">Scegli il tuo piano →</a>
+    </div>
+  </div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="navbar-logo" href="demo.html">Events<span>Fun</span></a>
+  <div class="navbar-actions">
+    <a class="nav-btn" href="demo.html">&#9632; Dashboard</a>
+    <a class="nav-btn" href="https://eventsfun.com/#prezzi">&#9632; Area personale</a>
+  </div>
+</nav>
+
+<!-- MAIN APP -->
+<div id="main-app">
+  <div class="page-header">
+    <div class="page-title">Newsletter</div>
+    <div class="page-subtitle">Gestisci e invia comunicazioni ai tuoi iscritti</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('lista')">
+      &#9632; Lista iscritti
+      <span class="tab-badge" id="badge-lista">22</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('invia')">&#9654; Invia newsletter</button>
+    <button class="tab-btn" onclick="switchTab('gestione')">&#9998; Gestione</button>
+    <button class="tab-btn" onclick="switchTab('storico')">&#128196; Storico invii</button>
+  </div>
+
+  <!-- TAB: LISTA ISCRITTI -->
+  <div class="tab-content active" id="tab-lista">
+    <div id="lista-eventi"></div>
+  </div>
+
+  <!-- TAB: INVIA NEWSLETTER -->
+  <div class="tab-content" id="tab-invia">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Destinatari</div></div>
+      <div class="form-group">
+        <label class="form-label">Seleziona uno o piu' eventi</label>
+        <div class="eventi-selector" id="eventi-selector"></div>
+        <div class="form-hint">Solo iscritti con consenso newsletter saranno inclusi.</div>
+      </div>
+      <div class="dest-counter">
+        <span class="num" id="dest-count">0</span>
+        <div>
+          <div class="label">destinatari selezionati</div>
+          <div class="form-hint" id="dest-detail" style="margin-top:0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Messaggio</div></div>
+      <div class="form-group">
+        <label class="form-label">Oggetto email *</label>
+        <input class="form-input" type="text" id="nl-oggetto" placeholder="Es: Aggiornamento importante per l'evento..." />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nome mittente *</label>
+        <input class="form-input" type="text" id="nl-mittente" placeholder="Es: Mario Rossi / Associazione XYZ" />
+        <div class="form-hint">Apparira' come nome mittente nell'email. Il reply-to sara' il tuo indirizzo.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email reply-to *</label>
+        <input class="form-input" type="email" id="nl-replyto" placeholder="tua@email.it" />
+        <div class="form-hint">Le risposte degli iscritti arriveranno a questo indirizzo.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Testo email *</label>
+        <div class="editor-toolbar">
+          <button class="tb-btn" onclick="execCmd('bold')" title="Grassetto"><b>B</b></button>
+          <button class="tb-btn" onclick="execCmd('italic')" title="Corsivo"><i>I</i></button>
+          <button class="tb-btn" onclick="execCmd('underline')" title="Sottolineato"><u>S</u></button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
+          <button class="tb-btn" onclick="insertLink()" title="Inserisci link">&#128279; Link</button>
+          <button class="tb-btn" onclick="insertImage()" title="Inserisci immagine">&#128444; Immagine</button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="execCmd('removeFormat')" title="Rimuovi formattazione">&#10006; Pulisci</button>
+        </div>
+        <div class="editor-area" id="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Corpo email"></div>
+        <div class="form-hint">Puoi usare grassetto, corsivo, elenchi, link e immagini.</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="mostraAnteprima()">&#128065; Anteprima</button>
+        <button class="btn btn-gold" id="btn-invia" onclick="inviaNewsletter()">&#9654; Invia newsletter</button>
+      </div>
+      <div id="alert-invia" class="alert" style="margin-top:16px;"></div>
+    </div>
+
+    <!-- ANTEPRIMA MODAL -->
+    <div id="anteprima-modal" style="display:none;">
+      <div class="card" style="margin-top:16px;">
+        <div class="card-header">
+          <div class="card-title">Anteprima email</div>
+          <button class="btn btn-outline btn-sm" onclick="chiudiAnteprima()">&#10006; Chiudi</button>
+        </div>
+        <div class="preview-frame">
+          <iframe id="preview-iframe" style="width:100%;min-height:500px;border:none;" title="Anteprima newsletter"></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: GESTIONE -->
+  <div class="tab-content" id="tab-gestione">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Gestione iscritti newsletter</div></div>
+      <p style="color:var(--text-dim);font-size:14px;margin-bottom:16px;">
+        Qui puoi rimuovere singoli iscritti dalla newsletter. L'azione e' reversibile solo manualmente.
+      </p>
+      <div class="search-wrap">
+        <span class="search-icon">&#128269;</span>
+        <input class="form-input" type="text" id="search-gestione" placeholder="Cerca per nome o email..." oninput="filtraGestione()" />
+      </div>
+      <div id="gestione-list"></div>
+    </div>
+    <div id="alert-gestione" class="alert"></div>
+  </div>
+
+  <!-- TAB: STORICO -->
+  <div class="tab-content" id="tab-storico">
+    <div class="card">
+      <div class="card-header"><div class="card-title">Storico newsletter inviate</div></div>
+      <div id="storico-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL STORICO ANTEPRIMA -->
+<div id="storico-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:300;align-items:flex-start;justify-content:center;padding:28px 16px;backdrop-filter:blur(6px);overflow-y:auto;">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:14px;width:100%;max-width:680px;padding:24px;position:relative;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px;">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--gold);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" id="storico-modal-title"></div>
+      <button onclick="chiudiStoricoModal()" style="background:var(--bg3);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;cursor:pointer;color:var(--text-dim);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#10006;</button>
+    </div>
+    <div style="background:#fff;border-radius:8px;overflow:hidden;border:1px solid var(--border);">
+      <iframe id="storico-iframe" style="width:100%;min-height:300px;border:none;" title="Anteprima email inviata"></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- DIALOG LINK -->
+<div class="link-dialog" id="link-dialog">
+  <div class="link-dialog-box">
+    <h3>Inserisci link</h3>
+    <div class="form-group">
+      <label class="form-label">Testo del link</label>
+      <input class="form-input" type="text" id="link-testo" placeholder="Es: Scopri di piu'" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">URL</label>
+      <input class="form-input" type="url" id="link-url" placeholder="https://..." />
+    </div>
+    <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+      <button class="btn btn-outline" onclick="chiudiLinkDialog()">Annulla</button>
+      <button class="btn btn-gold" onclick="confermaLink()">Inserisci</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== DATI DEMO =====
+var DEMO_EVENTS = [
+  { id: 'demo-ev-001', nome: 'Convegno HR & People Management 2026', data_iso: '2026-09-18', luogo: 'MiCo -- Milano Convention Centre' },
+  { id: 'demo-ev-002', nome: 'Workshop Fotografia di Paesaggio', data_iso: '2026-07-12', luogo: 'Cortina d\'Ampezzo (BL)' },
+  { id: 'demo-ev-003', nome: 'Cena di Gala -- Associazione Imprenditori Nord', data_iso: '2026-04-10', luogo: 'Villa Reale di Monza' }
+];
+
+var DEMO_NL = {
+  'demo-ev-001': [
+    { id:'n001', nome:'Giulia', cognome:'Ferrari', email:'g.ferrari@hrgroup.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n002', nome:'Sara', cognome:'Conti', email:'sara.conti@welfareacademy.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n003', nome:'Luca', cognome:'Marino', email:'l.marino@consulenzahr.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n004', nome:'Anna', cognome:'Ricci', email:'a.ricci@impresafuturo.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n005', nome:'Francesca', cognome:'Lombardi', email:'f.lombardi@people360.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n006', nome:'Roberto', cognome:'Esposito', email:'r.esposito@talentfirst.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n007', nome:'Chiara', cognome:'De Luca', email:'c.deluca@hrinnovation.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' }
+  ],
+  'demo-ev-002': [
+    { id:'n008', nome:'Matteo', cognome:'Gallo', email:'m.gallo@foto.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n009', nome:'Elena', cognome:'Moretti', email:'elena.moretti@gmail.com', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n010', nome:'Valentina', cognome:'Costa', email:'v.costa@naturaclick.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n011', nome:'Simone', cognome:'Ferrara', email:'simone.ferrara@libero.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' }
+  ],
+  'demo-ev-003': [
+    { id:'n012', nome:'Giovanni', cognome:'Rizzo', email:'g.rizzo@rizzoimprese.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n013', nome:'Maria', cognome:'Colombo', email:'m.colombo@confindustria.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n014', nome:'Stefano', cognome:'Bruno', email:'s.bruno@brunogroup.com', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n015', nome:'Laura', cognome:'Gentile', email:'l.gentile@imprendinord.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n016', nome:'Carlo', cognome:'Fontana', email:'c.fontana@fontanapartners.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n017', nome:'Beatrice', cognome:'Marini', email:'b.marini@ainord.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n018', nome:'Giorgio', cognome:'Ferrero', email:'g.ferrero@ferrerogroup.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n019', nome:'Claudia', cognome:'Martini', email:'c.martini@gruppoalpino.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n020', nome:'Daniele', cognome:'Vitali', email:'d.vitali@vitaliinvest.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n021', nome:'Paola', cognome:'Serra', email:'p.serra@nord-holding.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
+    { id:'n022', nome:'Alberto', cognome:'Negri', email:'a.negri@negrieassociati.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' }
+  ]
+};
+
+var DEMO_STORICO = [
+  {
+    id: 's001',
+    oggetto: 'Programma definitivo -- Convegno HR 2026',
+    mittente: 'Segreteria Convegno HR',
+    reply_to: 'info@hrconvegno.it',
+    destinatari: 7,
+    eventi_nomi: 'Convegno HR & People Management 2026',
+    created_at: '2026-08-15T10:32:00Z',
+    corpo_html: buildEmailHtml('Segreteria Convegno HR', '<p>Cari partecipanti,</p><p>siamo lieti di condividere il <strong>programma definitivo</strong> del Convegno HR & People Management 2026.</p><p>La giornata si aprira\' alle 9:00 con i saluti istituzionali, seguita da tre sessioni plenarie e tavole rotonde nel pomeriggio.</p><p>Vi ricordiamo che il pranzo e\' incluso per chi ha selezionato questa opzione.</p><p>A presto!<br>La Segreteria</p>', 'Programma definitivo -- Convegno HR 2026')
+  },
+  {
+    id: 's002',
+    oggetto: 'Come prepararsi al Workshop -- Attrezzatura consigliata',
+    mittente: 'Studio FotoDolomiti',
+    reply_to: 'workshop@fotodolomiti.it',
+    destinatari: 4,
+    eventi_nomi: 'Workshop Fotografia di Paesaggio',
+    created_at: '2026-07-01T09:15:00Z',
+    corpo_html: buildEmailHtml('Studio FotoDolomiti', '<p>Cari partecipanti al Workshop,</p><p>mancano solo <strong>11 giorni</strong> al nostro appuntamento nelle Dolomiti!</p><p>Ecco cosa portare:</p><ul><li>La vostra fotocamera con batterie cariche e schede vuote</li><li>Obiettivo grandangolare (consigliato)</li><li>Abbigliamento a strati (le mattine in quota sono fresche)</li><li>Zaino con acqua e snack per le uscite sul campo</li></ul><p>Vi aspettiamo!<br>Lo Staff di FotoDolomiti</p>', 'Come prepararsi al Workshop -- Attrezzatura consigliata')
+  },
+  {
+    id: 's003',
+    oggetto: 'Conferma partecipazione e dettagli serata -- Gala Imprenditori Nord',
+    mittente: 'Associazione Imprenditori Nord',
+    reply_to: 'segreteria@ainord.it',
+    destinatari: 11,
+    eventi_nomi: 'Cena di Gala -- Associazione Imprenditori Nord',
+    created_at: '2026-04-01T14:00:00Z',
+    corpo_html: buildEmailHtml('Associazione Imprenditori Nord', '<p>Gentili Soci,</p><p>la nostra Cena di Gala annuale si avvicina. Vi inviamo in allegato il programma della serata e i dettagli logistici.</p><p><strong>Dove parcheggiare:</strong> parcheggio riservato ai soci disponibile all\'ingresso principale di Villa Reale.</p><p><strong>Dress code:</strong> Elegante</p><p><strong>Inizio:</strong> ore 20:00, aperitivo di benvenuto nel giardino storico.</p><p>Siamo lieti di accogliervi in questa serata dedicata al networking e alla celebrazione dei traguardi comuni.</p><p>Con stima,<br>La Segreteria dell\'Associazione</p>', 'Conferma partecipazione e dettagli serata -- Gala Imprenditori Nord')
+  }
+];
+
+// Copia locale modificabile
+var nlData = JSON.parse(JSON.stringify(DEMO_NL));
+var gestioneData = [];
+DEMO_EVENTS.forEach(function(ev) {
+  (nlData[ev.id] || []).forEach(function(r) {
+    gestioneData.push(Object.assign({}, r, { evento_nome: ev.nome }));
+  });
+});
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', function() {
+  renderLista();
+  renderSelectorInvia();
+  renderGestione();
+  aggiornaDest();
+});
+
+// ===== DEMO OVERLAY =====
+function demoBlock() {
+  document.getElementById('demoOverlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeDemoOverlay() {
+  document.getElementById('demoOverlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+// ===== UTILS =====
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function isoToIt(iso) {
+  if (!iso) return '--';
+  return new Date(iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+function isoToShort(iso) {
+  if (!iso) return '';
+  return new Date(iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' });
+}
+function showAlert(el, type, msg) {
+  el.className = 'alert alert-' + type + ' show';
+  el.textContent = msg;
+  if (type !== 'info') setTimeout(function() { el.classList.remove('show'); }, 5000);
+}
+
+// ===== TAB LISTA ISCRITTI =====
+function renderLista() {
+  var container = document.getElementById('lista-eventi');
+  var totale = 0;
+  Object.values(nlData).forEach(function(arr) { totale += arr.length; });
+  document.getElementById('badge-lista').textContent = totale;
+  container.innerHTML = '';
+  DEMO_EVENTS.forEach(function(ev) {
+    var iscritti = nlData[ev.id] || [];
+    if (!iscritti.length) return;
+    var card = document.createElement('div');
+    card.className = 'evento-card';
+    card.id = 'evcard-' + ev.id;
+    card.innerHTML = '<div class="evento-card-header" onclick="toggleEventoCard(\'' + ev.id + '\')">'
+      + '<div class="evento-card-info">'
+      + '<div class="evento-nome">' + escHtml(ev.nome) + '</div>'
+      + '<div class="evento-meta">' + isoToIt(ev.data_iso) + (ev.luogo ? ' &bull; ' + escHtml(ev.luogo) : '') + '</div>'
+      + '</div>'
+      + '<div class="evento-card-right">'
+      + '<span class="badge badge-gold">&#9993; ' + iscritti.length + ' iscritti nl</span>'
+      + '<span class="toggle-icon">&#8964;</span>'
+      + '</div></div>'
+      + '<div class="evento-iscritti-list">'
+      + iscritti.map(function(r) {
+          return '<div class="iscritto-row">'
+            + '<div class="iscritto-info">'
+            + '<div class="iscritto-nome">' + escHtml(r.nome + ' ' + r.cognome) + '</div>'
+            + '<div class="iscritto-email">' + escHtml(r.email) + '</div>'
+            + '</div>'
+            + '<span class="badge badge-green">&#10003; Iscritto nl</span>'
+            + '</div>';
+        }).join('')
+      + '</div>';
+    container.appendChild(card);
+  });
+}
+
+function toggleEventoCard(id) {
+  var card = document.getElementById('evcard-' + id);
+  if (card) card.classList.toggle('open');
+}
+
+// ===== TAB INVIA =====
+function renderSelectorInvia() {
+  var container = document.getElementById('eventi-selector');
+  container.innerHTML = DEMO_EVENTS.map(function(ev) {
+    var count = (nlData[ev.id] || []).length;
+    return '<label class="evento-check-item" id="check-item-' + ev.id + '">'
+      + '<input type="checkbox" value="' + ev.id + '" onchange="aggiornaDest()" ' + (count === 0 ? 'disabled' : '') + ' />'
+      + '<div>'
+      + '<div class="check-nome">' + escHtml(ev.nome) + '</div>'
+      + '<div class="check-count">' + isoToShort(ev.data_iso) + ' -- ' + count + ' iscritti newsletter</div>'
+      + '</div>'
+      + '<span class="check-spacer"></span>'
+      + (count === 0
+        ? '<span class="badge badge-gray">Nessun iscritto</span>'
+        : '<span class="badge badge-gold">' + count + '</span>')
+      + '</label>';
+  }).join('');
+}
+
+function aggiornaDest() {
+  var checkboxes = document.querySelectorAll('#eventi-selector input[type="checkbox"]:checked');
+  var totale = 0;
+  var dettagli = [];
+  checkboxes.forEach(function(cb) {
+    var n = (nlData[cb.value] || []).length;
+    totale += n;
+    var ev = DEMO_EVENTS.find(function(e) { return e.id === cb.value; });
+    if (ev) dettagli.push(escHtml(ev.nome) + ' (' + n + ')');
+  });
+  document.getElementById('dest-count').textContent = totale;
+  document.getElementById('dest-detail').textContent = dettagli.length ? dettagli.join(', ') : '';
+  document.querySelectorAll('#eventi-selector .evento-check-item').forEach(function(item) {
+    var cb = item.querySelector('input[type="checkbox"]');
+    if (cb && cb.checked) item.classList.add('selected');
+    else item.classList.remove('selected');
+  });
+}
+
+// ===== EDITOR =====
+function execCmd(cmd) {
+  document.getElementById('editor').focus();
+  document.execCommand(cmd, false, null);
+}
+
+var savedSelection = null;
+function insertLink() {
+  var sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    savedSelection = sel.getRangeAt(0).cloneRange();
+    document.getElementById('link-testo').value = sel.toString() || '';
+  }
+  document.getElementById('link-url').value = '';
+  document.getElementById('link-dialog').classList.add('open');
+  setTimeout(function() { document.getElementById('link-url').focus(); }, 50);
+}
+function chiudiLinkDialog() { document.getElementById('link-dialog').classList.remove('open'); }
+function confermaLink() {
+  var testo = document.getElementById('link-testo').value.trim();
+  var url = document.getElementById('link-url').value.trim();
+  if (!url) { alert('Inserisci un URL valido.'); return; }
+  var editor = document.getElementById('editor');
+  editor.focus();
+  if (savedSelection) {
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(savedSelection);
+  }
+  var link = document.createElement('a');
+  link.href = url;
+  link.textContent = testo || url;
+  link.target = '_blank';
+  var sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0) {
+    var range = sel2.getRangeAt(0);
+    range.deleteContents();
+    range.insertNode(link);
+    range.collapse(false);
+  }
+  chiudiLinkDialog();
+}
+function insertImage() {
+  var url = prompt('URL immagine (deve essere un link pubblico):');
+  if (!url) return;
+  document.getElementById('editor').focus();
+  document.execCommand('insertImage', false, url);
+}
+
+// ===== ANTEPRIMA =====
+function mostraAnteprima() {
+  var oggetto = document.getElementById('nl-oggetto').value.trim();
+  var mittente = document.getElementById('nl-mittente').value.trim();
+  var corpo = document.getElementById('editor').innerHTML;
+  var html = buildEmailHtml(mittente, corpo, oggetto);
+  var modal = document.getElementById('anteprima-modal');
+  var iframe = document.getElementById('preview-iframe');
+  modal.style.display = 'block';
+  var doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open(); doc.write(html); doc.close();
+  setTimeout(function() {
+    try { iframe.style.height = (iframe.contentDocument.body.scrollHeight + 40) + 'px'; } catch(e) {}
+  }, 200);
+  modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function chiudiAnteprima() { document.getElementById('anteprima-modal').style.display = 'none'; }
+
+function buildEmailHtml(mittente, corpo, oggetto) {
+  return '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"/>'
+    + '<style>body{margin:0;padding:20px;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;color:#333;}'
+    + '.wrap{max-width:600px;margin:0 auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);}'
+    + '.body{padding:32px 36px;}.body a{color:#C9A96E;}.body img{max-width:100%;height:auto;border-radius:6px;margin:8px 0;}'
+    + '.footer{background:#f9f9f9;border-top:1px solid #eee;padding:20px 36px;font-size:12px;color:#999;text-align:center;}'
+    + '.unsubscribe{margin-top:8px;font-size:11px;}</style></head><body>'
+    + '<div class="wrap"><div class="body">' + (corpo || '<p>Nessun contenuto.</p>') + '</div>'
+    + '<div class="footer">' + (mittente ? '<div>' + escHtml(mittente) + '</div>' : '')
+    + '<div class="unsubscribe">Hai ricevuto questa email perche\' hai dato il consenso alla newsletter al momento dell\'iscrizione.<br/>Per cancellarti, rispondi con oggetto "Cancellami".</div>'
+    + '</div></div></body></html>';
+}
+
+// ===== INVIO (bloccato in demo) =====
+function inviaNewsletter() {
+  var oggetto = document.getElementById('nl-oggetto').value.trim();
+  var mittente = document.getElementById('nl-mittente').value.trim();
+  var replyto = document.getElementById('nl-replyto').value.trim();
+  var corpo = document.getElementById('editor').innerHTML.trim().replace(/<br\s*\/?>/gi,'').replace(/<[^>]+>/g,'').trim();
+  var alertEl = document.getElementById('alert-invia');
+  var checkboxes = document.querySelectorAll('#eventi-selector input[type="checkbox"]:checked');
+  if (!oggetto) return showAlert(alertEl, 'error', 'Inserisci l\'oggetto dell\'email.');
+  if (!mittente) return showAlert(alertEl, 'error', 'Inserisci il nome del mittente.');
+  if (!replyto || !replyto.includes('@')) return showAlert(alertEl, 'error', 'Inserisci un\'email di risposta valida.');
+  if (!corpo) return showAlert(alertEl, 'error', 'Scrivi il contenuto dell\'email.');
+  if (!checkboxes.length) return showAlert(alertEl, 'error', 'Seleziona almeno un evento.');
+  demoBlock();
+}
+
+// ===== TAB GESTIONE =====
+function renderGestione() {
+  var list = document.getElementById('gestione-list');
+  renderGestioneFiltered(gestioneData);
+}
+
+function renderGestioneFiltered(data) {
+  var list = document.getElementById('gestione-list');
+  if (!data.length) { list.innerHTML = '<div class="empty-state"><div class="icon">&#128231;</div><p>Nessun iscritto trovato.</p></div>'; return; }
+  var byEvent = {};
+  data.forEach(function(r) {
+    if (!byEvent[r.event_id]) byEvent[r.event_id] = { nome: r.evento_nome, rows: [] };
+    byEvent[r.event_id].rows.push(r);
+  });
+  list.innerHTML = Object.entries(byEvent).map(function(entry) {
+    var evId = entry[0], gruppo = entry[1];
+    return '<div style="margin-bottom:20px;">'
+      + '<div style="font-family:\'Syne\',sans-serif;font-size:14px;font-weight:700;color:var(--gold);margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border);">'
+      + escHtml(gruppo.nome) + '</div>'
+      + gruppo.rows.map(function(r) {
+          return '<div class="iscritto-row" id="grow-' + r.id + '">'
+            + '<div class="iscritto-info">'
+            + '<div class="iscritto-nome">' + escHtml(r.nome + ' ' + r.cognome) + '</div>'
+            + '<div class="iscritto-email">' + escHtml(r.email) + '</div>'
+            + '</div>'
+            + '<button class="btn btn-danger" onclick="rimuoviNl(\'' + r.id + '\',\'' + r.event_id + '\')">&#10006; Rimuovi newsletter</button>'
+            + '</div>';
+        }).join('')
+      + '</div>';
+  }).join('');
+}
+
+function filtraGestione() {
+  var q = document.getElementById('search-gestione').value.toLowerCase().trim();
+  if (!q) { renderGestioneFiltered(gestioneData); return; }
+  renderGestioneFiltered(gestioneData.filter(function(r) {
+    return (r.nome||'').toLowerCase().includes(q) || (r.cognome||'').toLowerCase().includes(q) || (r.email||'').toLowerCase().includes(q);
+  }));
+}
+
+function rimuoviNl(regId, eventId) {
+  var alertEl = document.getElementById('alert-gestione');
+  if (!confirm('Rimuovere questo iscritto dalla newsletter? Nella demo la modifica e\' solo locale.')) return;
+  nlData[eventId] = (nlData[eventId] || []).filter(function(r) { return r.id !== regId; });
+  gestioneData = gestioneData.filter(function(r) { return r.id !== regId; });
+  var row = document.getElementById('grow-' + regId);
+  if (row) row.remove();
+  var totale = 0;
+  Object.values(nlData).forEach(function(arr) { totale += arr.length; });
+  document.getElementById('badge-lista').textContent = totale;
+  renderSelectorInvia();
+  aggiornaDest();
+  showAlert(alertEl, 'success', 'Iscritto rimosso dalla newsletter (demo -- non salvato).');
+  alertEl.classList.add('show');
+  setTimeout(function() { alertEl.classList.remove('show'); }, 4000);
+}
+
+// ===== TAB STORICO =====
+function renderStorico() {
+  var list = document.getElementById('storico-list');
+  window._storicoLogs = DEMO_STORICO;
+  list.innerHTML = DEMO_STORICO.map(function(log, idx) {
+    var data = new Date(log.created_at).toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
+    var ora = new Date(log.created_at).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    return '<div style="padding:16px 0;border-bottom:1px solid var(--border);">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;">'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div style="font-weight:600;font-size:14px;color:var(--text);margin-bottom:6px;">' + escHtml(log.oggetto) + '</div>'
+      + '<div style="font-size:13px;color:var(--text-dim);margin-bottom:2px;">'
+      + '<strong style="color:var(--text-muted);">Mittente:</strong> ' + escHtml(log.mittente)
+      + ' &nbsp;&bull;&nbsp; <strong style="color:var(--text-muted);">Reply-to:</strong> ' + escHtml(log.reply_to)
+      + '</div>'
+      + (log.eventi_nomi ? '<div style="font-size:12px;color:var(--text-muted);margin-top:2px;"><strong>Eventi:</strong> ' + escHtml(log.eventi_nomi) + '</div>' : '')
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0;">'
+      + '<span class="badge badge-gold">' + log.destinatari + ' destinatari</span>'
+      + '<div style="font-size:11px;color:var(--text-muted);">' + data + ' alle ' + ora + '</div>'
+      + '<button class="btn btn-outline btn-sm" onclick="apriAnteprimaLog(' + idx + ')">&#128065; Visualizza</button>'
+      + '</div></div></div>';
+  }).join('');
+  var lastEl = list.querySelector('div:last-child');
+  if (lastEl) lastEl.style.borderBottom = 'none';
+}
+
+function apriAnteprimaLog(idx) {
+  var log = window._storicoLogs && window._storicoLogs[idx];
+  if (!log) return;
+  var modal = document.getElementById('storico-modal');
+  var iframe = document.getElementById('storico-iframe');
+  document.getElementById('storico-modal-title').textContent = log.oggetto;
+  modal.style.display = 'flex';
+  var doc = iframe.contentDocument || iframe.contentWindow.document;
+  doc.open(); doc.write(log.corpo_html); doc.close();
+  setTimeout(function() {
+    try { iframe.style.height = Math.min(iframe.contentDocument.body.scrollHeight + 40, 600) + 'px'; } catch(e) {}
+  }, 200);
+}
+function chiudiStoricoModal() { document.getElementById('storico-modal').style.display = 'none'; }
+
+// ===== TABS =====
+function switchTab(name) {
+  var names = ['lista','invia','gestione','storico'];
+  document.querySelectorAll('.tab-btn').forEach(function(b, i) {
+    b.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(function(tc) { tc.classList.remove('active'); });
+  document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'storico') renderStorico();
+}
+</script>
+</body>
+</html>
