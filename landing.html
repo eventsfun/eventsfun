@@ -75,6 +75,10 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .lp-chk-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;cursor:pointer}
 .lp-chk-item input[type=checkbox]{width:16px;height:16px;accent-color:#C9A96E;cursor:pointer;flex-shrink:0}
 @media(max-width:400px){.lp-grid{grid-template-columns:1fr}}
+.gcal-btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 18px;background:#fff;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;font-weight:600;color:#333;text-decoration:none;transition:border-color .2s,box-shadow .2s;cursor:pointer}
+.gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
+.gcal-btn svg{flex-shrink:0}
+.gcal-wrap{margin-top:4px}
 </style>
 </head>
 <body>
@@ -123,6 +127,49 @@ function isClosed(ev) {
   var t = new Date(); t.setHours(0, 0, 0, 0);
   var d = new Date(ev.data_iso); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
   return t >= d;
+}
+
+/* Costruisce link Google Calendar con dati evento */
+function buildGCalLink(ev) {
+  if (!ev || !ev.data_iso) return null;
+  /* Data inizio: YYYYMMDD */
+  var dateStr = ev.data_iso.replace(/-/g, '');
+  var startDt, endDt;
+  if (ev.ora) {
+    /* Con orario: formato YYYYMMDDTHHmmss */
+    var hm = ev.ora.replace(':', '');
+    if (hm.length === 4) hm = hm + '00';
+    startDt = dateStr + 'T' + hm;
+    /* Durata default 2 ore */
+    var startH = parseInt(ev.ora.split(':')[0], 10);
+    var startM = parseInt(ev.ora.split(':')[1] || '0', 10);
+    var endH = startH + 2; if (endH >= 24) endH = 23;
+    endDt = dateStr + 'T' + (endH < 10 ? '0' + endH : '' + endH) + (startM < 10 ? '0' + startM : '' + startM) + '00';
+  } else {
+    /* Tutto il giorno */
+    var nextDay = new Date(ev.data_iso);
+    nextDay.setDate(nextDay.getDate() + 1);
+    var nd = nextDay.toISOString().split('T')[0].replace(/-/g,'');
+    startDt = dateStr;
+    endDt = nd;
+  }
+  var params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: ev.nome,
+    dates: startDt + '/' + endDt,
+    details: (ev.descrizione || '') + '\n\nIscrizione gestita con EventsFun -- eventsfun.com',
+    location: ev.luogo || ''
+  });
+  return 'https://calendar.google.com/calendar/render?' + params.toString();
+}
+
+/* HTML del bottone Google Calendar */
+function gcalBtnHtml(ev) {
+  var link = buildGCalLink(ev);
+  if (!link) return '';
+  return '<div class="gcal-wrap"><a href="' + link + '" target="_blank" rel="noopener" class="gcal-btn">'
+    + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="17" rx="2" stroke="#4285F4" stroke-width="2"/><path d="M3 9h18" stroke="#4285F4" stroke-width="2"/><path d="M8 2v4M16 2v4" stroke="#4285F4" stroke-width="2" stroke-linecap="round"/><rect x="7" y="13" width="4" height="3" rx="0.5" fill="#4285F4"/></svg>'
+    + 'Aggiungi a Google Calendar</a></div>';
 }
 
 /* ============================================================
@@ -243,6 +290,7 @@ function render() {
     + '<h1 class="ev-title">' + ev.nome + '</h1>'
     + (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : '')
     + (ev.descrizione ? '<p class="ev-desc">' + ev.descrizione + '</p>' : '')
+    + (!isClosed(ev) && ev.attivo ? gcalBtnHtml(ev) : '')
     + '</div>'
     + capHtml
     + '<div class="card">' + formHtml + '</div>'
@@ -350,10 +398,12 @@ function showSuccess(nome, inAttesa) {
   var testoTxt = inAttesa
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
     : 'La tua iscrizione a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.';
+  var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:20px;display:flex;justify-content:center">' + gcalBtnHtml(ev) + '</div>' : '';
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
     + '<div class="success-icon">' + iconaTxt + '</div>'
     + '<h2>' + titoloTxt + '</h2>'
     + '<p>' + testoTxt + '</p>'
+    + gcalSuccessHtml
     + '</div></div>'
     + '<div class="ef-footer"><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
 }
