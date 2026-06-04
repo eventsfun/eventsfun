@@ -441,8 +441,14 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="mf">
       <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
       <div style="position:relative">
-        <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count')" style="padding-right:48px">
+        <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px">
         <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      </div>
+      <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center">
+        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
+          <div id="ev_qr_preview_canvas"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
       </div>
     </div>
     <div class="sec-div">
@@ -552,8 +558,14 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="mf">
       <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
       <div style="position:relative">
-        <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count')" style="padding-right:48px">
+        <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px">
         <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      </div>
+      <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center">
+        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
+          <div id="se_qr_preview_canvas"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
       </div>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
@@ -1302,6 +1314,19 @@ function updateQrCount(inputId, countId) {
   cnt.textContent = 18 - inp.value.length;
   cnt.style.color = inp.value.length >= 15 ? 'var(--gold)' : 'var(--text-dim)';
 }
+function updateQrPreview(inputId, previewId) {
+  var inp = document.getElementById(inputId);
+  var wrap = document.getElementById(previewId);
+  var canvasWrap = document.getElementById(previewId + '_canvas');
+  if (!inp || !wrap || !canvasWrap) return;
+  var testo = inp.value.trim();
+  if (!testo) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  canvasWrap.innerHTML = '';
+  var previewUrl = 'https://eventsfun.com/evento?id=anteprima';
+  new QRCode(canvasWrap, { text: previewUrl, width: 120, height: 120, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+  setTimeout(function() { drawQrOverlay(canvasWrap, testo); }, 120);
+}
 function openCreateEvent() {
   resetEvForm();
   bozzaId = null;
@@ -1313,6 +1338,7 @@ function openCreateEvent() {
 function resetEvForm() {
   ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo'].forEach(function(id) { setVal(id, ''); });
   updateQrCount('ev_qr_testo','ev_qr_count');
+  var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
   setVal('ev_cap', '');
   setVal('ev_data', '');
   removeEvImg();
@@ -1391,6 +1417,7 @@ function openEditEvent() {
   setVal('se_email_contatto', ev.email_contatto || '');
   setVal('se_qr_testo', ev.qr_testo || '');
   updateQrCount('se_qr_testo','se_qr_count');
+  updateQrPreview('se_qr_testo','se_qr_preview');
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
@@ -1901,7 +1928,7 @@ function openQR() {
   var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
   setText('qrUrl', url);
   var w = document.getElementById('qrCode'); w.innerHTML = '';
-  new QRCode(w, { text: url, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+  new QRCode(w, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
   if (ev.qr_testo && ev.qr_testo.trim()) {
     setTimeout(function() { drawQrOverlay(w, ev.qr_testo.trim()); }, 120);
   }
