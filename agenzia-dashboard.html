@@ -1325,7 +1325,13 @@ function updateQrPreview(inputId, previewId) {
   canvasWrap.innerHTML = '';
   var previewUrl = 'https://eventsfun.com/evento?id=anteprima';
   new QRCode(canvasWrap, { text: previewUrl, width: 120, height: 120, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-  setTimeout(function() { drawQrOverlay(canvasWrap, testo); }, 120);
+  var attempts = 0;
+  function tryOverlay() {
+    var c = canvasWrap.querySelector('canvas');
+    if (c) { drawQrOverlay(canvasWrap, testo); return; }
+    if (attempts++ < 20) setTimeout(tryOverlay, 50);
+  }
+  setTimeout(tryOverlay, 80);
 }
 function openCreateEvent() {
   resetEvForm();
@@ -1938,20 +1944,26 @@ function drawQrOverlay(container, testo) {
   var canvas = container.querySelector('canvas'); if (!canvas) return;
   var ctx = canvas.getContext('2d');
   var size = canvas.width;
-  var fontSize = Math.max(10, Math.min(16, Math.floor(size / (testo.length + 2))));
+  var maxWidth = size * 0.7;
+  var fontSize = Math.min(16, Math.max(8, Math.floor(size / 10)));
   ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+  while (ctx.measureText(testo).width > maxWidth && fontSize > 7) {
+    fontSize--;
+    ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+  }
   var tw = ctx.measureText(testo).width;
-  var padX = 10, padY = 6;
-  var bx = (size - tw) / 2 - padX;
-  var by = (size - fontSize) / 2 - padY;
+  var padX = Math.max(4, Math.floor(size * 0.04));
+  var padY = Math.max(3, Math.floor(size * 0.03));
   var bw = tw + padX * 2;
   var bh = fontSize + padY * 2;
+  var bx = (size - bw) / 2;
+  var by = (size - bh) / 2;
   ctx.fillStyle = '#ffffff';
   ctx.beginPath();
-  ctx.roundRect(bx, by, bw, bh, 4);
+  ctx.roundRect(bx, by, bw, bh, 3);
   ctx.fill();
   ctx.strokeStyle = '#C9A96E';
-  ctx.lineWidth = 1.5;
+  ctx.lineWidth = Math.max(1, size / 120);
   ctx.stroke();
   ctx.fillStyle = '#1a1a1a';
   ctx.textAlign = 'center';
