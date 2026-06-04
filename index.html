@@ -7,6 +7,7 @@
 <title>EventsFun — Gestione iscrizioni per eventi</title>
 <meta name="description" content="Crea la landing page del tuo evento, raccogli iscrizioni e gestisci tutto da un'unica dashboard. Semplice, veloce, professionale.">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root {
   --gold: #C9A96E;
@@ -773,56 +774,11 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         </div>
         <div style="padding:36px 28px;text-align:center">
           <h3 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:700;color:#F5F0E8;margin-bottom:6px">Evento creato!</h3>
-          <p style="font-size:13px;color:rgba(240,237,232,0.5);margin-bottom:24px">Il QR è pronto — inseriscilo nella locandina o condividi il link direttamente.</p>
+          <p style="font-size:13px;color:rgba(240,237,232,0.5);margin-bottom:24px">Il QR è pronto -- inseriscilo nella locandina o condividi il link direttamente.</p>
           <div style="background:#fff;border-radius:12px;display:inline-block;padding:18px;margin-bottom:12px">
-            <svg width="160" height="160" viewBox="0 0 160 160" xmlns="http://www.w3.org/2000/svg">
-              <rect x="10" y="10" width="50" height="50" fill="none" stroke="#000" stroke-width="6" rx="4"/>
-              <rect x="25" y="25" width="20" height="20" fill="#000" rx="2"/>
-              <rect x="100" y="10" width="50" height="50" fill="none" stroke="#000" stroke-width="6" rx="4"/>
-              <rect x="115" y="25" width="20" height="20" fill="#000" rx="2"/>
-              <rect x="10" y="100" width="50" height="50" fill="none" stroke="#000" stroke-width="6" rx="4"/>
-              <rect x="25" y="115" width="20" height="20" fill="#000" rx="2"/>
-              <rect x="70" y="10" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="10" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="22" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="22" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="94" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="82" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="94" y="82" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="106" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="118" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="130" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="142" y="70" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="106" y="82" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="130" y="82" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="94" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="94" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="106" y="94" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="118" y="94" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="142" y="94" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="106" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="94" y="106" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="118" y="106" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="130" y="106" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="118" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="118" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="94" y="118" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="118" y="118" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="142" y="118" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="130" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="94" y="130" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="106" y="130" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="130" y="130" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="70" y="142" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="82" y="142" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="106" y="142" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="118" y="142" width="8" height="8" fill="#000" rx="1"/>
-              <rect x="142" y="142" width="8" height="8" fill="#000" rx="1"/>
-            </svg>
+            <div id="mockQrCanvas"></div>
           </div>
-          <div style="font-size:10px;color:rgba(0,0,0,0.4);margin-bottom:16px">eventsfun.com/evento?id=gala-estivo-2026</div>
+          <div style="font-size:11px;color:rgba(240,237,232,0.35);background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;padding:9px 13px;margin-bottom:16px;word-break:break-all;text-align:left">eventsfun.com/evento?id=gala-estivo-2026</div>
           <div style="display:flex;gap:10px">
             <div style="flex:1;padding:11px;border-radius:8px;background:linear-gradient(135deg,#C9A96E,#a07830);color:#0a0a0a;font-size:12px;font-weight:700;cursor:pointer;text-align:center">↓ Scarica PNG</div>
             <div style="flex:1;padding:11px;border-radius:8px;border:1px solid rgba(255,255,255,0.14);color:rgba(240,237,232,0.7);font-size:12px;cursor:pointer;text-align:center">Chiudi</div>
@@ -1323,6 +1279,7 @@ checkFade();
 
 // Screen tabs
 var screens = ['dashboard','nuovo','qr','landing'];
+var mockQrGenerated = false;
 function showScreen(name){
   screens.forEach(function(s){
     var el = document.getElementById('screen-'+s);
@@ -1342,6 +1299,19 @@ function showScreen(name){
       }
     }
   });
+  if(name==='qr' && !mockQrGenerated){
+    var container = document.getElementById('mockQrCanvas');
+    if(container && typeof QRCode !== 'undefined'){
+      container.innerHTML = '';
+      new QRCode(container, {
+        text: 'https://eventsfun.com/evento?id=gala-estivo-2026',
+        width: 160, height: 160,
+        colorDark: '#000000', colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+      mockQrGenerated = true;
+    }
+  }
 }
 
 // FAQ accordion
