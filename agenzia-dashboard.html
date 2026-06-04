@@ -1551,7 +1551,7 @@ function collectCF(listId) {
         });
       }
     }
-    cf.push({ id: lbl.toLowerCase().replace(/\s+/g,'_'), label: lbl, type: type, options: options, required: !!req });
+    cf.push({ id: lbl.toLowerCase().replace(/\s+/g,'_').replace(/[^a-z0-9_]/g,''), label: lbl, type: type, options: options, required: !!req });
   });
   return cf;
 }
