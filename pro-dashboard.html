@@ -869,14 +869,15 @@ function updateQrPreview(inputId, previewId) {
   wrap.style.display = 'block';
   canvasWrap.innerHTML = '';
   var previewUrl = 'https://eventsfun.com/evento?id=anteprima';
-  new QRCode(canvasWrap, { text: previewUrl, width: 120, height: 120, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-  var attempts = 0;
-  function tryOverlay() {
+  var observer = new MutationObserver(function(mutations, obs) {
     var c = canvasWrap.querySelector('canvas');
-    if (c) { drawQrOverlay(canvasWrap, testo); return; }
-    if (attempts++ < 20) setTimeout(tryOverlay, 50);
-  }
-  setTimeout(tryOverlay, 80);
+    if (c) {
+      obs.disconnect();
+      setTimeout(function() { drawQrOverlay(canvasWrap, testo); }, 30);
+    }
+  });
+  observer.observe(canvasWrap, { childList: true, subtree: true });
+  new QRCode(canvasWrap, { text: previewUrl, width: 120, height: 120, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
 }
 function openCreateEvent() {
   resetEvForm('create');
