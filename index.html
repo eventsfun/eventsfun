@@ -303,7 +303,6 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <h1>Le iscrizioni al tuo evento,<br><em>senza complicazioni</em></h1>
       <p class="hero-sub">Crea la pagina del tuo evento in pochi minuti. Raggiungi i partecipanti come vuoi — QR code sulla locandina, link sui social, bottone sul sito, o direttamente nella tua newsletter.</p>
       <div class="hero-btns">
-        <a href="#prezzi" class="btn-primary">Scegli il tuo piano</a>
         <a href="demo.html" class="btn-demo">Prova la demo →</a>
         <a href="#come-funziona" class="btn-secondary">Come funziona →</a>
       </div>
@@ -389,14 +388,6 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     </div>
   </div>
 </section>
-
-<!-- RETURNING CUSTOMER -->
-<div style="background:rgba(201,169,110,0.06);border-top:1px solid rgba(201,169,110,0.12);border-bottom:1px solid rgba(201,169,110,0.12);padding:14px 40px;position:relative;z-index:1">
-  <div style="max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
-    <p style="font-size:13px;color:rgba(240,237,232,0.65)">Hai già acquistato un pacchetto? Accedi alla tua area personale per gestire il tuo evento.</p>
-    <a href="https://eventsfun.com/area-personale.html" style="padding:9px 20px;border-radius:8px;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);color:#C9A96E;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;transition:all .2s" onmouseover="this.style.background='rgba(201,169,110,0.22)'" onmouseout="this.style.background='rgba(201,169,110,0.15)'">Accedi all'area personale →</a>
-  </div>
-</div>
 
 <!-- PROOF -->
 <div class="proof">
@@ -842,36 +833,68 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     </div>
 
     <!-- LANDING CLIENTE -->
-    <div id="screen-landing" style="display:none;max-width:460px;margin:0 auto">
-      <div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6)">
+    <div id="screen-landing" style="display:none;max-width:480px;margin:0 auto">
+      <div style="background:#0a0a0a;border:1px solid rgba(255,255,255,0.1);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.6);font-family:'DM Sans',sans-serif">
+        <!-- Browser bar -->
         <div style="background:#111;padding:12px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.07)">
-          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div><div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div><div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#febc2e"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#28c840"></div>
           <div style="flex:1;background:rgba(255,255,255,0.05);border-radius:5px;padding:5px 12px;font-size:11px;color:rgba(240,237,232,0.3);text-align:center;margin:0 12px">eventsfun.com/evento?id=gala-estivo</div>
         </div>
-        <div style="padding:24px">
-          <div style="background:linear-gradient(135deg,#1e1810,#2d1a08);border-radius:12px;padding:22px;margin-bottom:18px;border:1px solid rgba(201,169,110,0.2)">
-            <div style="display:inline-block;padding:3px 10px;border-radius:20px;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);font-size:9px;font-weight:700;letter-spacing:2px;color:#D4B87A;text-transform:uppercase;margin-bottom:12px">Evento</div>
-            <div style="font-size:20px;font-weight:300;color:#F5F0E8;margin-bottom:10px;line-height:1.2">Gala Estivo 2026</div>
-            <div style="font-size:12px;color:rgba(240,237,232,0.65);margin-bottom:4px">📅 10 Settembre 2026 · 19:30</div>
-            <div style="font-size:12px;color:rgba(240,237,232,0.65)">📍 Grand Hotel, Roma</div>
-          </div>
-          <div style="margin-bottom:16px">
-            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.35);margin-bottom:8px">Con il supporto di</div>
+        <!-- Pagina evento -->
+        <div style="background:#0A0A0A">
+          <!-- Hero evento -->
+          <div style="background:linear-gradient(180deg,#111 0%,#0A0A0A 100%);padding:28px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.06)">
+            <div style="display:inline-block;padding:3px 12px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.25);font-size:9px;font-weight:700;letter-spacing:2px;color:#C9A96E;text-transform:uppercase;margin-bottom:14px">Evento</div>
+            <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#F5F0E8;margin-bottom:12px;line-height:1.15;letter-spacing:-0.5px">Gala di Primavera 2026</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px">
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(240,237,232,0.6)">
+                <span>📅</span><span>14 Giugno 2026 · 19:30</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(240,237,232,0.6)">
+                <span>📍</span><span>Villa Reale, Milano</span>
+              </div>
+            </div>
+            <div style="font-size:12px;color:rgba(240,237,232,0.55);line-height:1.65;margin-bottom:16px">Una serata esclusiva tra arte, musica e networking. Dress code: elegante. Posti limitati.</div>
+            <!-- Posti rimasti -->
+            <div style="display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:20px;background:rgba(110,201,130,0.08);border:1px solid rgba(110,201,130,0.2);font-size:11px;color:#7ED99A;font-weight:600;margin-bottom:16px">
+              <span style="width:6px;height:6px;border-radius:50%;background:#7ED99A;display:inline-block"></span>31 posti disponibili
+            </div>
+            <!-- Sponsor -->
+            <div style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(240,237,232,0.3);margin-bottom:8px">Con il supporto di</div>
             <div style="display:flex;gap:8px;flex-wrap:wrap">
-              <div style="padding:5px 12px;background:rgba(255,255,255,0.06);border-radius:6px;font-size:11px;color:rgba(240,237,232,0.7);border:1px solid rgba(255,255,255,0.1)">🏦 Banca Generosa</div>
-              <div style="padding:5px 12px;background:rgba(255,255,255,0.06);border-radius:6px;font-size:11px;color:rgba(240,237,232,0.7);border:1px solid rgba(255,255,255,0.1)">🏢 LuxGroup</div>
+              <div style="padding:5px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:11px;color:rgba(240,237,232,0.65);border:1px solid rgba(255,255,255,0.08)">🏦 Banca Generosa</div>
+              <div style="padding:5px 12px;background:rgba(255,255,255,0.05);border-radius:6px;font-size:11px;color:rgba(240,237,232,0.65);border:1px solid rgba(255,255,255,0.08)">🏢 LuxGroup</div>
             </div>
           </div>
-          <div style="font-size:16px;font-weight:600;color:#F5F0E8;margin-bottom:12px">Iscriviti all'evento</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
-            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 11px;font-size:12px;color:rgba(240,237,232,0.4)">Nome</div>
-            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 11px;font-size:12px;color:rgba(240,237,232,0.4)">Cognome</div>
+          <!-- Form iscrizione -->
+          <div style="padding:22px 24px">
+            <div style="font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:#F5F0E8;margin-bottom:16px">Iscriviti all'evento</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+              <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-size:12px;color:rgba(240,237,232,0.35)">Nome</div>
+              <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-size:12px;color:rgba(240,237,232,0.35)">Cognome</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-size:12px;color:rgba(240,237,232,0.35);margin-bottom:8px">Email</div>
+            <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-size:12px;color:rgba(240,237,232,0.35);margin-bottom:8px">Telefono (opzionale)</div>
+            <!-- Campo personalizzato -->
+            <div style="margin-bottom:12px">
+              <div style="font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(240,237,232,0.4);margin-bottom:5px">Azienda / Ente</div>
+              <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:10px 12px;font-size:12px;color:rgba(240,237,232,0.35)">Es. Rossi S.r.l.</div>
+            </div>
+            <!-- Newsletter checkbox -->
+            <div style="display:flex;align-items:flex-start;gap:9px;margin-bottom:16px;padding-top:4px">
+              <div style="width:14px;height:14px;border-radius:3px;border:1px solid rgba(255,255,255,0.2);background:rgba(201,169,110,0.2);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center">
+                <div style="width:8px;height:8px;background:#C9A96E;border-radius:1px"></div>
+              </div>
+              <span style="font-size:11px;color:rgba(240,237,232,0.5);line-height:1.5">Acconsento a ricevere comunicazioni future legate all'evento</span>
+            </div>
+            <!-- CTA -->
+            <div style="background:linear-gradient(135deg,#C9A96E,#8a6e3e);border-radius:9px;padding:13px;text-align:center;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:#0a0a0a;letter-spacing:0.2px">Conferma iscrizione</div>
           </div>
-          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:7px;padding:9px 11px;font-size:12px;color:rgba(240,237,232,0.4);margin-bottom:12px">Email</div>
-          <div style="background:linear-gradient(135deg,#C9A96E,#a07830);border-radius:8px;padding:12px;text-align:center;font-size:12px;font-weight:700;color:#0a0a0a">Conferma iscrizione</div>
         </div>
       </div>
-      <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-dim)">La pagina che vede il partecipante — si apre direttamente dal telefono dopo aver scansionato il QR</p>
+      <p style="text-align:center;margin-top:14px;font-size:12px;color:var(--text-dim)">La pagina che vede il partecipante -- si apre direttamente dal telefono dopo aver scansionato il QR</p>
     </div>
 
   </div>
@@ -996,10 +1019,12 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Landing page pubblica</div>
           <div class="plan-feat">QR code automatico</div>
           <div class="plan-feat">Dashboard iscritti</div>
-          <div class="plan-feat">Attivo 90 giorni</div>
+          <div class="plan-feat">Lista presenze con check-in</div>
+          <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Aggiungi a Google Calendar</div>
+          <div class="plan-feat">Campi personalizzati</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export CSV</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Sponsor</div>
-          <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Campi personalizzati</div>
         </div>
         <a href="https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400" target="_blank" style="display:block;text-align:center;padding:13px;border-radius:9px;border:1px solid rgba(255,255,255,0.15);color:var(--text);font-size:13px;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.06)'" onmouseout="this.style.background='transparent'">Acquista →</a>
       </div>
@@ -1017,9 +1042,13 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Landing page pubblica</div>
           <div class="plan-feat">QR code automatico</div>
           <div class="plan-feat">Dashboard iscritti</div>
+          <div class="plan-feat">Lista presenze con check-in</div>
+          <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Aggiungi a Google Calendar</div>
           <div class="plan-feat">Export CSV</div>
           <div class="plan-feat">Sponsor con logo e link</div>
           <div class="plan-feat">Campi personalizzati</div>
+          <div class="plan-feat">Tipo iscritto e selezione pasto</div>
           <div class="plan-feat">Attivo 90 giorni</div>
         </div>
         <a href="https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401" target="_blank" style="display:block;text-align:center;padding:13px;border-radius:9px;border:1px solid rgba(255,255,255,0.2);color:var(--text);font-size:13px;font-weight:700;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(255,255,255,0.07)'" onmouseout="this.style.background='transparent'">Acquista →</a>
@@ -1033,7 +1062,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <div style="font-family:'Syne',sans-serif;font-size:44px;font-weight:800;letter-spacing:-2px;color:var(--text);line-height:1;margin-bottom:4px">
           <span id="proPrice">€69</span><span style="font-size:16px;font-weight:400;letter-spacing:0;color:var(--text-muted)" id="proPeriod"> / mese</span>
         </div>
-        <div id="proAnnualNote" style="display:none;font-size:11px;color:#7ED99A;margin-bottom:4px">€588 / anno — risparmi 2 mesi rispetto al mensile</div>
+        <div id="proAnnualNote" style="display:none;font-size:11px;color:#7ED99A;margin-bottom:4px">€588 / anno -- risparmi 2 mesi rispetto al mensile</div>
         <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px" id="proConvenienza">Organizzi più di 1 evento al mese? Il Pro si ripaga già al secondo.</div>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,0.08);line-height:1.65">Per chi gestisce più eventi ogni mese. Tutto incluso, eventi e iscritti illimitati.</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
@@ -1041,11 +1070,14 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Iscritti illimitati</div>
           <div class="plan-feat">Landing page per ogni evento</div>
           <div class="plan-feat">QR code automatico</div>
-          <div class="plan-feat">Export CSV avanzato</div>
+          <div class="plan-feat">Dashboard iscritti</div>
+          <div class="plan-feat">Lista presenze con check-in</div>
+          <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Aggiungi a Google Calendar</div>
+          <div class="plan-feat">Export CSV</div>
           <div class="plan-feat">Sponsor con logo e link</div>
           <div class="plan-feat">Campi personalizzati</div>
           <div class="plan-feat">Lista d'attesa automatica</div>
-          <div class="plan-feat">Email conferma iscritti</div>
           <div class="plan-feat">3 account dashboard</div>
           <div class="plan-feat">Gestione newsletter iscritti</div>
           <div class="plan-feat">Supporto prioritario</div>
@@ -1401,6 +1433,6 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.1</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.2</div>
 </body>
 </html>
