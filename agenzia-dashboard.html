@@ -438,6 +438,13 @@ select option{background:#1a1a1a;color:var(--text)}
       <input type="file" id="ev_img_file" accept="image/*" style="display:none" onchange="loadEvImg()">
       <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">✕ Rimuovi</button>
     </div>
+    <div class="mf">
+      <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="position:relative">
+        <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count')" style="padding-right:48px">
+        <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      </div>
+    </div>
     <div class="sec-div">
       ⚙️ Opzioni modulo iscrizione
     </div>
@@ -541,6 +548,13 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <input type="file" id="se_img_file" accept="image/*" style="display:none" onchange="loadSeImg()">
       <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">✕ Rimuovi</button>
+    </div>
+    <div class="mf">
+      <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="position:relative">
+        <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count')" style="padding-right:48px">
+        <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      </div>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
     <div class="opt-row">
@@ -848,6 +862,7 @@ function sanitizeEvent(ev) {
   ev.luogo = ev.luogo || '';
   ev.descrizione = ev.descrizione || '';
   ev.email_contatto = ev.email_contatto || '';
+  ev.qr_testo = ev.qr_testo || '';
   ev.capienza = ev.capienza || null;
   ev.immagine = ev.immagine || null;
   ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
@@ -1280,6 +1295,13 @@ function renderTable(ev, regs, closed) {
 /* ============================================================
    CREATE / EDIT EVENT
    ============================================================ */
+function updateQrCount(inputId, countId) {
+  var inp = document.getElementById(inputId);
+  var cnt = document.getElementById(countId);
+  if (!inp || !cnt) return;
+  cnt.textContent = 18 - inp.value.length;
+  cnt.style.color = inp.value.length >= 15 ? 'var(--gold)' : 'var(--text-dim)';
+}
 function openCreateEvent() {
   resetEvForm();
   bozzaId = null;
@@ -1289,7 +1311,8 @@ function openCreateEvent() {
 }
 
 function resetEvForm() {
-  ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto'].forEach(function(id) { setVal(id, ''); });
+  ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo'].forEach(function(id) { setVal(id, ''); });
+  updateQrCount('ev_qr_testo','ev_qr_count');
   setVal('ev_cap', '');
   setVal('ev_data', '');
   removeEvImg();
@@ -1320,6 +1343,7 @@ async function saveEvent() {
     nome: nome, data_iso: data, ora: ora, luogo: luogo,
     email_contatto: emailContatto,
     descrizione: getVal('ev_desc').trim(),
+    qr_testo: getVal('ev_qr_testo').trim().slice(0,18) || null,
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
     attivo: true, bozza: false,
@@ -1365,6 +1389,8 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
+  setVal('se_qr_testo', ev.qr_testo || '');
+  updateQrCount('se_qr_testo','se_qr_count');
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
@@ -1393,6 +1419,7 @@ async function saveSettings() {
   var upd = {
     nome: nome,
     email_contatto: emailContatto,
+    qr_testo: getVal('se_qr_testo').trim().slice(0,18) || null,
     capienza: parseInt(getVal('se_cap')) || null,
     data_iso: getVal('se_data'),
     ora: getVal('se_ora').trim(),
@@ -1875,10 +1902,38 @@ function openQR() {
   setText('qrUrl', url);
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+  if (ev.qr_testo && ev.qr_testo.trim()) {
+    setTimeout(function() { drawQrOverlay(w, ev.qr_testo.trim()); }, 120);
+  }
   openOv('ovQR');
 }
+function drawQrOverlay(container, testo) {
+  var canvas = container.querySelector('canvas'); if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var size = canvas.width;
+  var fontSize = Math.max(10, Math.min(16, Math.floor(size / (testo.length + 2))));
+  ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+  var tw = ctx.measureText(testo).width;
+  var padX = 10, padY = 6;
+  var bx = (size - tw) / 2 - padX;
+  var by = (size - fontSize) / 2 - padY;
+  var bw = tw + padX * 2;
+  var bh = fontSize + padY * 2;
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.roundRect(bx, by, bw, bh, 4);
+  ctx.fill();
+  ctx.strokeStyle = '#C9A96E';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = '#1a1a1a';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(testo, size / 2, size / 2);
+}
 function dlQR() {
-  var c = document.querySelector('#qrCode canvas'); if (!c) return;
+  var w = document.getElementById('qrCode');
+  var c = w ? w.querySelector('canvas') : null; if (!c) return;
   var a = document.createElement('a'); a.href = c.toDataURL('image/png'); a.download = 'qr-evento.png'; a.click();
 }
 
