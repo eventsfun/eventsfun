@@ -448,7 +448,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="ev_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="sec-div">
@@ -565,7 +565,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="se_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
@@ -1942,9 +1942,15 @@ function openQR() {
   openOv('ovQR');
 }
 function drawQrOverlay(container, testo) {
-  var canvas = container.querySelector('canvas'); if (!canvas) return;
+  /* qrcodejs genera canvas (display:none) + img -- rendiamo visibile il canvas */
+  var canvas = container.querySelector('canvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  var img = container.querySelector('img');
+  if (img) img.style.display = 'none';
   var ctx = canvas.getContext('2d');
   var size = canvas.width;
+  if (!size) return;
   var maxWidth = size * 0.7;
   var fontSize = Math.min(16, Math.max(8, Math.floor(size / 10)));
   ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';

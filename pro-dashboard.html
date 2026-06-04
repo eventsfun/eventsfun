@@ -355,7 +355,7 @@ tbody td.xv{color:var(--gold)}
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="ev_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
@@ -429,7 +429,7 @@ tbody td.xv{color:var(--gold)}
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="se_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima QR</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
@@ -1211,11 +1211,16 @@ function openQR() {
   openOv('ovQR');
 }
 function drawQrOverlay(container, testo) {
-  var canvas = container.querySelector('canvas'); if (!canvas) return;
+  /* qrcodejs genera canvas (display:none) + img -- rendiamo visibile il canvas */
+  var canvas = container.querySelector('canvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  var img = container.querySelector('img');
+  if (img) img.style.display = 'none';
   var ctx = canvas.getContext('2d');
   var size = canvas.width;
-  var maxWidth = size * 0.7; /* occupa al massimo il 70% della larghezza */
-  /* Trova il font size massimo che fa stare il testo in maxWidth */
+  if (!size) return;
+  var maxWidth = size * 0.7;
   var fontSize = Math.min(16, Math.max(8, Math.floor(size / 10)));
   ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
   while (ctx.measureText(testo).width > maxWidth && fontSize > 7) {
@@ -1229,7 +1234,6 @@ function drawQrOverlay(container, testo) {
   var bh = fontSize + padY * 2;
   var bx = (size - bw) / 2;
   var by = (size - bh) / 2;
-  /* Sfondo bianco con bordo oro */
   ctx.fillStyle = '#ffffff';
   ctx.beginPath();
   ctx.roundRect(bx, by, bw, bh, 3);
@@ -1237,7 +1241,6 @@ function drawQrOverlay(container, testo) {
   ctx.strokeStyle = '#C9A96E';
   ctx.lineWidth = Math.max(1, size / 120);
   ctx.stroke();
-  /* Testo */
   ctx.fillStyle = '#1a1a1a';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
