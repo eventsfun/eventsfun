@@ -292,6 +292,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
         <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
         <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
+        <button class="btn-sm btn-sm-gold" id="btnPDF" onclick="exportPDF()" style="display:none">↓ PDF</button>
         <button class="btn-create" id="btnCreateMain" onclick="openCreateEvent()">+ Crea evento</button>
       </div>
     </div>
@@ -1022,6 +1023,7 @@ function renderDash() {
   setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
   setDisp('btnSettings', hasEv ? 'inline-block' : 'none');
   setDisp('btnCSV', hasEv ? 'inline-block' : 'none');
+  setDisp('btnPDF', hasEv ? 'inline-block' : 'none');
   setDisp('btnToggleStatus', canEdit ? 'inline-block' : 'none');
 
   /* Stats */
@@ -1267,6 +1269,11 @@ function renderTable(ev, regs, closed) {
     csvBtn.textContent = '↓ Esporta CSV';
     csvBtn.onclick = exportCSV;
     pb.appendChild(csvBtn);
+    var pdfBtn = document.createElement('button');
+    pdfBtn.className = 'btn-sm btn-sm-gold';
+    pdfBtn.textContent = '↓ Esporta PDF';
+    pdfBtn.onclick = exportPDF;
+    pb.appendChild(pdfBtn);
   }
 }
 
@@ -1775,6 +1782,88 @@ function exportCSV() {
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
   a.download = 'iscritti-' + ev.nome.replace(/[^a-zA-Z0-9]/g,'-') + '.csv'; a.click();
+}
+
+function exportPDF() {
+  var ev = currentEv; if (!ev) return;
+  var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
+  if (!regs.length) { alert('Nessun iscritto da esportare.'); return; }
+
+  var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' }) : '--';
+  if (ev.ora) dataStr += ' · ' + ev.ora;
+  var luogoStr = ev.luogo || '';
+  var cf = ev.custom_fields || [];
+
+  /* Costruisce le righe della tabella */
+  var righe = regs.map(function(r, i) {
+    var extra = [];
+    if (ev.opt_multipla) extra.push('Adulti: ' + (r.adulti || 1) + (r.bambini ? ', Bambini: ' + r.bambini : ''));
+    if (ev.opt_tipo && r.tipo) extra.push(r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1));
+    if (ev.opt_pasto) {
+      var pasti = [];
+      if (r.pranzo) pasti.push('Pranzo');
+      if (r.cena) pasti.push('Cena');
+      if (pasti.length) extra.push(pasti.join(', '));
+    }
+    cf.forEach(function(f) {
+      var v = (r.extra && r.extra[f.id] !== undefined) ? r.extra[f.id] : '';
+      if (Array.isArray(v)) v = v.join(', ');
+      if (v) extra.push(f.label + ': ' + v);
+    });
+    var extraHtml = extra.length ? '<div style="font-size:10px;color:#888;margin-top:2px">' + extra.map(function(s){ return escHtml(s); }).join(' &nbsp;·&nbsp; ') + '</div>' : '';
+    return '<tr>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:13px;color:#555;width:32px;text-align:center">' + (i + 1) + '</td>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee"><div style="font-weight:600;font-size:13px">' + escHtml(r.nome + ' ' + r.cognome) + '</div>' + extraHtml + '</td>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:12px;color:#666">' + escHtml(r.email) + '</td>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:12px;color:#666">' + escHtml(r.telefono || '--') + '</td>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:center"><div style="width:20px;height:20px;border:2px solid #ccc;border-radius:4px;display:inline-block"></div></td>'
+      + '</tr>';
+  }).join('');
+
+  var html = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">'
+    + '<title>Lista presenze -- ' + escHtml(ev.nome) + '</title>'
+    + '<style>'
+    + 'body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:32px 40px;color:#111;background:#fff}'
+    + 'h1{font-size:22px;font-weight:700;margin:0 0 6px;color:#111}'
+    + '.meta{font-size:13px;color:#555;margin-bottom:4px}'
+    + '.header-block{margin-bottom:28px;padding-bottom:20px;border-bottom:2px solid #111}'
+    + '.badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;background:#f5f0e8;border:1px solid #c9a96e;color:#8a6e3e;padding:3px 10px;border-radius:20px;margin-bottom:12px}'
+    + 'table{width:100%;border-collapse:collapse}'
+    + 'thead th{padding:8px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;border-bottom:2px solid #111}'
+    + 'thead th:last-child{text-align:center}'
+    + 'tbody tr:last-child td{border-bottom:none}'
+    + '.footer{margin-top:32px;padding-top:16px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}'
+    + '@media print{body{padding:20px 28px}@page{margin:1.5cm}}'
+    + '</style></head><body>'
+    + '<div class="header-block">'
+    + '<div class="badge">Lista presenze</div>'
+    + '<h1>' + escHtml(ev.nome) + '</h1>'
+    + '<div class="meta">📅 ' + escHtml(dataStr) + '</div>'
+    + (luogoStr ? '<div class="meta">📍 ' + escHtml(luogoStr) + '</div>' : '')
+    + '<div class="meta" style="margin-top:8px;color:#888">Iscritti: <strong style="color:#111">' + regs.length + '</strong></div>'
+    + '</div>'
+    + '<table>'
+    + '<thead><tr>'
+    + '<th style="width:32px">#</th>'
+    + '<th>Nome e cognome</th>'
+    + '<th>Email</th>'
+    + '<th>Telefono</th>'
+    + '<th style="width:60px;text-align:center">Presente</th>'
+    + '</tr></thead>'
+    + '<tbody>' + righe + '</tbody>'
+    + '</table>'
+    + '<div class="footer">'
+    + '<span>EventsFun &mdash; eventsfun.com</span>'
+    + '<span>Stampato il ' + new Date().toLocaleDateString('it-IT') + '</span>'
+    + '</div>'
+    + '</body></html>';
+
+  var win = window.open('', '_blank');
+  if (!win) { alert('Il browser ha bloccato la finestra popup. Consenti i popup per questo sito e riprova.'); return; }
+  win.document.write(html);
+  win.document.close();
+  win.focus();
+  setTimeout(function() { win.print(); }, 400);
 }
 
 /* ============================================================
