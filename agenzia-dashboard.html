@@ -451,6 +451,16 @@ select option{background:#1a1a1a;color:var(--text)}
         <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
+    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+      <div>
+        <div class="opt-lbl">Tema pagina iscrizione</div>
+        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" id="ev_tema_chiaro" onclick="setTema('ev','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
+        <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
+      </div>
+    </div>
     <div class="sec-div">
       ⚙️ Opzioni modulo iscrizione
     </div>
@@ -566,6 +576,16 @@ select option{background:#1a1a1a;color:var(--text)}
           <div id="se_qr_preview_canvas"></div>
         </div>
         <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
+      </div>
+    </div>
+    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+      <div>
+        <div class="opt-lbl">Tema pagina iscrizione</div>
+        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
+        <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
       </div>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
@@ -875,6 +895,7 @@ function sanitizeEvent(ev) {
   ev.descrizione = ev.descrizione || '';
   ev.email_contatto = ev.email_contatto || '';
   ev.qr_testo = ev.qr_testo || '';
+  ev.landing_tema = ev.landing_tema || 'chiaro';
   ev.capienza = ev.capienza || null;
   ev.immagine = ev.immagine || null;
   ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
@@ -1307,6 +1328,21 @@ function renderTable(ev, regs, closed) {
 /* ============================================================
    CREATE / EDIT EVENT
    ============================================================ */
+var evTemaState = 'chiaro';
+var seTemaState = 'chiaro';
+function setTema(prefix, val) {
+  if (prefix === 'ev') evTemaState = val;
+  else seTemaState = val;
+  var gold = 'var(--gold)', transp = 'transparent';
+  var active = {border:'1.5px solid var(--gold)',background:gold,color:'#0A0A0A'};
+  var inactive = {border:'1.5px solid rgba(255,255,255,.15)',background:transp,color:'var(--text-muted)'};
+  var btnC = document.getElementById(prefix + '_tema_chiaro');
+  var btnS = document.getElementById(prefix + '_tema_scuro');
+  if (!btnC || !btnS) return;
+  var isC = (val === 'chiaro');
+  Object.assign(btnC.style, isC ? active : inactive);
+  Object.assign(btnS.style, isC ? inactive : active);
+}
 function updateQrCount(inputId, countId) {
   var inp = document.getElementById(inputId);
   var cnt = document.getElementById(countId);
@@ -1346,6 +1382,7 @@ function resetEvForm() {
   ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo'].forEach(function(id) { setVal(id, ''); });
   updateQrCount('ev_qr_testo','ev_qr_count');
   var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
+  evTemaState = 'chiaro'; setTema('ev', 'chiaro');
   setVal('ev_cap', '');
   setVal('ev_data', '');
   removeEvImg();
@@ -1377,6 +1414,7 @@ async function saveEvent() {
     email_contatto: emailContatto,
     descrizione: getVal('ev_desc').trim(),
     qr_testo: getVal('ev_qr_testo').trim().slice(0,18) || null,
+    landing_tema: evTemaState || 'chiaro',
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
     attivo: true, bozza: false,
@@ -1425,6 +1463,8 @@ function openEditEvent() {
   setVal('se_qr_testo', ev.qr_testo || '');
   updateQrCount('se_qr_testo','se_qr_count');
   updateQrPreview('se_qr_testo','se_qr_preview');
+  seTemaState = ev.landing_tema || 'chiaro';
+  setTema('se', seTemaState);
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
@@ -1454,6 +1494,7 @@ async function saveSettings() {
     nome: nome,
     email_contatto: emailContatto,
     qr_testo: getVal('se_qr_testo').trim().slice(0,18) || null,
+    landing_tema: seTemaState || 'chiaro',
     capienza: parseInt(getVal('se_cap')) || null,
     data_iso: getVal('se_data'),
     ora: getVal('se_ora').trim(),

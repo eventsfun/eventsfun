@@ -79,6 +79,42 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
 .gcal-btn svg{flex-shrink:0}
 .gcal-wrap{margin-top:4px}
+/* ============================================================
+   TEMA SCURO
+   ============================================================ */
+body.dark{background:#0A0A0A;color:#F5F0E8}
+body.dark .card{background:#111;box-shadow:0 2px 16px rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.07)}
+body.dark .cap-bar{background:#111;box-shadow:0 2px 8px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.07)}
+body.dark .cap-track{background:rgba(255,255,255,.08)}
+body.dark .ev-date{color:rgba(245,240,232,.4)}
+body.dark .ev-loc{color:rgba(245,240,232,.55)}
+body.dark .ev-desc{color:rgba(245,240,232,.55)}
+body.dark .cap-row{color:rgba(245,240,232,.45)}
+body.dark .form-title{color:#F5F0E8}
+body.dark .lp-lbl{color:rgba(245,240,232,.4)}
+body.dark .lp-inp{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#F5F0E8}
+body.dark .lp-inp:focus{border-color:#C9A96E}
+body.dark .lp-inp::placeholder{color:rgba(245,240,232,.25)}
+body.dark .lp-select{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#F5F0E8}
+body.dark .lp-select:focus{border-color:#C9A96E}
+body.dark .lp-cb{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#F5F0E8}
+body.dark .lp-cb:hover{border-color:#C9A96E}
+body.dark .lp-nl{color:rgba(245,240,232,.45)}
+body.dark .lp-chk-item{color:rgba(245,240,232,.7)}
+body.dark .lp-cnt-val{color:#F5F0E8}
+body.dark .alert{background:rgba(254,243,205,.08);border-color:rgba(253,215,126,.2);color:#fdd77e}
+body.dark .spon-wrap{border-top-color:rgba(255,255,255,.08)}
+body.dark .spon-title{color:rgba(245,240,232,.35)}
+body.dark .spon-item{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);color:rgba(245,240,232,.75)}
+body.dark .closed-box{background:rgba(160,64,64,.12);border-color:rgba(160,64,64,.3);color:#e07070}
+body.dark .success-box p{color:rgba(245,240,232,.6)}
+body.dark .err-box p{color:rgba(245,240,232,.55)}
+body.dark .err-box h2{color:#F5F0E8}
+body.dark .loading p{color:rgba(245,240,232,.5)}
+body.dark .spinner{border-color:rgba(255,255,255,.1);border-top-color:#C9A96E}
+body.dark .gcal-btn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.8)}
+body.dark .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
+body.dark .ef-cta{color:rgba(245,240,232,.35)}
 </style>
 </head>
 <body>
@@ -182,6 +218,7 @@ async function init() {
     var evs = await sbGet('events', { id: evId }, '*');
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
+    if (ev.landing_tema === 'scuro') document.body.classList.add('dark');
     regs = await sbGet('registrations', { event_id: evId }, 'id,adulti,bambini,in_lista_attesa');
     document.title = ev.nome + ' — EventsFun';
     render();
