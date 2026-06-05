@@ -51,15 +51,6 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700}
 .stat-val{font-family:"Syne",sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
 /* COUNTDOWN */
-.countdown-bar{background:var(--bg2);border:1px solid rgba(201,169,110,0.2);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
-.cd-left{display:flex;align-items:center;gap:16px}
-.cd-ring{position:relative;width:52px;height:52px;flex-shrink:0}.cd-ring svg{transform:rotate(-90deg)}
-.cd-ring .tr{fill:none;stroke:var(--border);stroke-width:5}.cd-ring .pr{fill:none;stroke:var(--gold);stroke-width:5;stroke-linecap:round}
-.cd-center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"Syne",sans-serif;font-size:13px;font-weight:800;color:var(--gold)}
-.cd-info h4{font-family:"Syne",sans-serif;font-size:14px;font-weight:700;margin-bottom:3px}.cd-info p{font-size:12px;color:var(--text-muted)}
-.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:8px;width:200px}
-.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--gold-dark),var(--gold))}
-.warn-bar{background:rgba(200,160,60,0.08);border:1px solid rgba(200,160,60,0.3);border-radius:12px;padding:14px 20px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
 .warn-bar p{font-size:13px;color:#d4a840}
 /* STATUS BAR */
 .status-bar{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 22px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
@@ -227,35 +218,9 @@ tbody td.xv{color:var(--gold)}
     <div class="closed-banner" id="closedBanner">
       <div>
         <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">🎉 Evento concluso!</h3>
-        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura. Organizza il prossimo evento.</p>
+        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura per 30 giorni. Organizza il prossimo evento.</p>
       </div>
       <a href="https://eventsfun.com/#prezzi" target="_blank" style="padding:12px 22px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none">Organizza il prossimo →</a>
-    </div>
-
-    <div class="warn-bar" id="warnProroga" style="display:none">
-      <p>⚠️ La data evento supera la scadenza dei 90 giorni. Estendi per continuare.</p>
-      <button class="btn-sm btn-sm-gold" onclick="openOv('ovProroga')">Estendi di 30 giorni →</button>
-    </div>
-
-    <div class="countdown-bar" id="countdownBar" style="display:none">
-      <div class="cd-left">
-        <div class="cd-ring">
-          <svg width="52" height="52" viewBox="0 0 52 52">
-            <circle class="tr" cx="26" cy="26" r="22"/>
-            <circle class="pr" cx="26" cy="26" r="22" stroke-dasharray="138" id="cdCircle" stroke-dashoffset="0"/>
-          </svg>
-          <div class="cd-center" id="cdNum">90</div>
-        </div>
-        <div class="cd-info">
-          <h4 id="cdTitle">Giorni rimasti</h4>
-          <p id="cdSub">—</p>
-          <div class="progress-bar"><div class="progress-fill" id="cdBar" style="width:100%"></div></div>
-        </div>
-      </div>
-      <div>
-        <button class="btn-sm" id="cdActBtn" onclick="activateEv()" style="display:none">🚀 Attiva 90 giorni</button>
-        <button class="btn-sm" id="cdClsBtn" onclick="closeEvManual()" style="display:none">Chiudi anticipatamente</button>
-      </div>
     </div>
 
     <div class="stats">
@@ -571,18 +536,6 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: PROROGA -->
-<div class="ov" id="ovProroga" onclick="if(event.target===this)closeOv('ovProroga')">
-  <div class="modal sm">
-    <button class="mcls" onclick="closeOv('ovProroga')">✕</button>
-    <h2>Estendi il servizio</h2>
-    <p class="modal-sub">Proroga di 30 giorni per il tuo pacchetto Pro.</p>
-    <div class="info-box"><strong>Proroga 30 giorni — €15</strong><br>Dopo il pagamento ricevi un codice da inserire qui sotto.</div>
-    <a href="https://buy.stripe.com/aFa00b54a7J67wc6mg14405" target="_blank" class="btn-full" style="display:block;text-align:center;text-decoration:none;margin-bottom:12px">Acquista proroga €15 →</a>
-    <div class="mf"><label>Codice proroga</label><input id="prorogaCode" placeholder="PROROGA-XXXXX"></div>
-    <button class="btn-sm btn-sm-gold" onclick="applyProroga()" style="width:100%;padding:10px;margin-top:6px">Applica codice</button>
-  </div>
-</div>
-
 <!-- MODAL: ELIMINA -->
 <div class="ov" id="ovDel" onclick="if(event.target===this)closeOv('ovDel')">
   <div class="modal sm">
@@ -799,14 +752,15 @@ function renderDash() {
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
 
-  /* Proroga */
-  var wp = document.getElementById('warnProroga');
-  if (ev && ev.activated && ev.expiry_date && ev.data_iso) {
-    wp.style.display = new Date(ev.data_iso) > new Date(ev.expiry_date) ? 'flex' : 'none';
-  } else { wp.style.display = 'none'; }
-
-  /* Countdown */
-  renderCountdown(ev);
+  /* Giorni all'evento */
+  if (ev && ev.data_iso && !closed) {
+    var evDate = new Date(ev.data_iso); evDate.setHours(0,0,0,0);
+    var oggi = new Date(); oggi.setHours(0,0,0,0);
+    var diff = Math.ceil((evDate - oggi) / (1000*60*60*24));
+    document.getElementById('s-giorni').textContent = diff > 0 ? diff : '0';
+  } else {
+    document.getElementById('s-giorni').textContent = closed ? '—' : '—';
+  }
 
   /* Status bar */
   document.getElementById('status-nome').textContent = ev ? ev.nome : 'Nessun evento';
@@ -825,35 +779,6 @@ function renderDash() {
 
   /* Table */
   renderTable(ev, regs, closed);
-}
-
-function renderCountdown(ev) {
-  var bar = document.getElementById('countdownBar');
-  setDisp('cdActBtn', 'none');
-  setDisp('cdClsBtn', 'none');
-  if (!ev) { bar.style.display = 'none'; document.getElementById('s-giorni').textContent = '—'; return; }
-  bar.style.display = 'flex';
-  var c = 2 * Math.PI * 22;
-  if (!ev.activated) {
-    document.getElementById('cdTitle').textContent = 'Evento non ancora attivato';
-    document.getElementById('cdSub').textContent = 'Attiva per avviare il countdown di 90 giorni';
-    document.getElementById('cdNum').textContent = '90';
-    document.getElementById('s-giorni').textContent = '—';
-    setDisp('cdActBtn', 'inline');
-    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', '0');
-    document.getElementById('cdBar').style.width = '100%';
-  } else {
-    var exp = new Date(ev.expiry_date), now = new Date();
-    var giorni = Math.max(0, Math.ceil((exp - now) / (1000 * 60 * 60 * 24)));
-    var pct = giorni / 90;
-    document.getElementById('cdTitle').textContent = 'Giorni rimasti';
-    document.getElementById('cdSub').textContent = 'Scade il ' + exp.toLocaleDateString('it-IT');
-    document.getElementById('cdNum').textContent = giorni;
-    document.getElementById('s-giorni').textContent = giorni;
-    setDisp('cdClsBtn', 'inline');
-    document.getElementById('cdCircle').setAttribute('stroke-dashoffset', (c * (1 - pct)).toFixed(1));
-    document.getElementById('cdBar').style.width = (pct * 100) + '%';
-  }
 }
 
 function renderTable(ev, regs, closed) {
@@ -1194,31 +1119,6 @@ async function toggleStatus() {
 }
 
 /* COUNTDOWN */
-async function activateEv() {
-  if (!confirm('Sei sicuro? Il countdown di 90 giorni parte subito.')) return;
-  var ev = currentEv; if (!ev) return;
-  var now = new Date(), exp = new Date(now); exp.setDate(exp.getDate() + 90);
-  try {
-    currentEv = await sbPatch('events', ev.id, { activated: true, activation_date: now.toISOString(), expiry_date: exp.toISOString() });
-    renderDash(); showToast('Attivato! 90 giorni iniziati.', 'g');
-  } catch(e) { showToast('Errore', 'r'); }
-}
-async function closeEvManual() {
-  if (!confirm('Chiudere anticipatamente?')) return;
-  var ev = currentEv; if (!ev) return;
-  try {
-    currentEv = await sbPatch('events', ev.id, { attivo: false, expiry_date: new Date().toISOString() });
-    renderDash(); showToast('Evento chiuso', 'r');
-  } catch(e) { showToast('Errore', 'r'); }
-}
-async function applyProroga() {
-  var code = document.getElementById('prorogaCode').value.trim().toUpperCase();
-  if (!['PROROGA30', 'EXTEND30'].includes(code)) { alert('Codice non valido.'); return; }
-  var ev = currentEv; if (!ev) return;
-  if (ev.expiry_date) { var e = new Date(ev.expiry_date); e.setDate(e.getDate() + 30); currentEv = await sbPatch('events', ev.id, { expiry_date: e.toISOString() }); }
-  closeOv('ovProroga'); renderDash(); showToast('+30 giorni applicati', 'g');
-}
-
 /* ============================================================
    REGISTRANTS
    ============================================================ */
