@@ -346,16 +346,37 @@ tbody td.xv{color:var(--gold)}
       <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">✕ Rimuovi</button>
     </div>
     <div class="mf">
-      <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
-      <div style="position:relative">
-        <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px">
-        <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button type="button" id="ev_qr_tipo_nessuno" onclick="setQrTipo('ev','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
+        <button type="button" id="ev_qr_tipo_testo" onclick="setQrTipo('ev','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+        <button type="button" id="ev_qr_tipo_logo" onclick="setQrTipo('ev','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
       </div>
+      <!-- Sezione testo -->
+      <div id="ev_qr_testo_wrap" style="display:none">
+        <div style="position:relative">
+          <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px">
+          <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+        </div>
+      </div>
+      <!-- Sezione logo -->
+      <div id="ev_qr_logo_wrap" style="display:none">
+        <div class="img-upload-area" onclick="document.getElementById('ev_qr_logo_file').click()" style="min-height:80px">
+          <div class="img-ph" id="ev_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
+          <img id="ev_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+        </div>
+        <input type="file" id="ev_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('ev')">
+        <button type="button" id="ev_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('ev')">✕ Rimuovi logo</button>
+        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
+          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
+        </div>
+      </div>
+      <!-- Anteprima comune -->
       <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center">
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="ev_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
@@ -430,16 +451,34 @@ tbody td.xv{color:var(--gold)}
       <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">✕ Rimuovi</button>
     </div>
     <div class="mf">
-      <label>Testo sul QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
-      <div style="position:relative">
-        <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px">
-        <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button type="button" id="se_qr_tipo_nessuno" onclick="setQrTipo('se','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
+        <button type="button" id="se_qr_tipo_testo" onclick="setQrTipo('se','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+        <button type="button" id="se_qr_tipo_logo" onclick="setQrTipo('se','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
+      </div>
+      <div id="se_qr_testo_wrap" style="display:none">
+        <div style="position:relative">
+          <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px">
+          <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+        </div>
+      </div>
+      <div id="se_qr_logo_wrap" style="display:none">
+        <div class="img-upload-area" onclick="document.getElementById('se_qr_logo_file').click()" style="min-height:80px">
+          <div class="img-ph" id="se_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
+          <img id="se_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+        </div>
+        <input type="file" id="se_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('se')">
+        <button type="button" id="se_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('se')">✕ Rimuovi logo</button>
+        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
+          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
+        </div>
       </div>
       <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center">
         <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
           <div id="se_qr_preview_canvas"></div>
         </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva del testo -- il QR definitivo viene generato dopo il salvataggio</div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
     <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
@@ -684,6 +723,7 @@ function sanitizeEvent(ev) {
   ev.descrizione = ev.descrizione || '';
   ev.email_contatto = ev.email_contatto || '';
   ev.qr_testo = ev.qr_testo || '';
+  ev.qr_logo = ev.qr_logo || null;
   ev.landing_tema = ev.landing_tema || 'chiaro';
   ev.capienza = ev.capienza || null;
   ev.immagine = ev.immagine || null;
@@ -875,6 +915,80 @@ function renderTable(ev, regs, closed) {
    ============================================================ */
 var evTemaState = 'chiaro';
 var seTemaState = 'chiaro';
+var evQrTipo = 'nessuno';
+var seQrTipo = 'nessuno';
+var evQrLogoB64 = null;
+var seQrLogoB64 = null;
+
+function setQrTipo(prefix, tipo) {
+  if (prefix === 'ev') evQrTipo = tipo;
+  else seQrTipo = tipo;
+  var gold = 'var(--gold)', transp = 'transparent';
+  var active = {border:'1.5px solid var(--gold)',background:gold,color:'#0A0A0A'};
+  var inactive = {border:'1.5px solid rgba(255,255,255,.15)',background:transp,color:'var(--text-muted)'};
+  ['nessuno','testo','logo'].forEach(function(t) {
+    var btn = document.getElementById(prefix + '_qr_tipo_' + t);
+    if (btn) Object.assign(btn.style, t === tipo ? active : inactive);
+  });
+  var tw = document.getElementById(prefix + '_qr_testo_wrap');
+  var lw = document.getElementById(prefix + '_qr_logo_wrap');
+  var pv = document.getElementById(prefix + '_qr_preview');
+  if (tw) tw.style.display = tipo === 'testo' ? 'block' : 'none';
+  if (lw) lw.style.display = tipo === 'logo' ? 'block' : 'none';
+  if (pv) pv.style.display = 'none';
+  /* Aggiorna preview se testo */
+  if (tipo === 'testo') {
+    var inp = document.getElementById(prefix + '_qr_testo');
+    if (inp && inp.value.trim()) updateQrPreview(prefix + '_qr_testo', prefix + '_qr_preview');
+  }
+}
+function loadQrLogo(prefix) {
+  var file = document.getElementById(prefix + '_qr_logo_file');
+  if (!file || !file.files[0]) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var b64 = e.target.result;
+    if (prefix === 'ev') evQrLogoB64 = b64;
+    else seQrLogoB64 = b64;
+    var ph = document.getElementById(prefix + '_qr_logo_ph');
+    var prev = document.getElementById(prefix + '_qr_logo_preview');
+    var rm = document.getElementById(prefix + '_qr_logo_rm');
+    if (ph) ph.style.display = 'none';
+    if (prev) { prev.src = b64; prev.style.display = 'block'; }
+    if (rm) rm.style.display = 'inline-block';
+    /* Mostra anteprima QR con logo */
+    updateQrPreviewLogo(prefix, b64);
+  };
+  reader.readAsDataURL(file.files[0]);
+}
+function removeQrLogo(prefix) {
+  if (prefix === 'ev') evQrLogoB64 = null;
+  else seQrLogoB64 = null;
+  var ph = document.getElementById(prefix + '_qr_logo_ph');
+  var prev = document.getElementById(prefix + '_qr_logo_preview');
+  var rm = document.getElementById(prefix + '_qr_logo_rm');
+  var pv = document.getElementById(prefix + '_qr_preview');
+  var fi = document.getElementById(prefix + '_qr_logo_file');
+  if (ph) ph.style.display = 'flex';
+  if (prev) { prev.src = ''; prev.style.display = 'none'; }
+  if (rm) rm.style.display = 'none';
+  if (pv) pv.style.display = 'none';
+  if (fi) fi.value = '';
+}
+function updateQrPreviewLogo(prefix, b64) {
+  var wrap = document.getElementById(prefix + '_qr_preview');
+  var canvasWrap = document.getElementById(prefix + '_qr_preview_canvas');
+  if (!wrap || !canvasWrap) return;
+  wrap.style.display = 'block';
+  canvasWrap.innerHTML = '';
+  var previewUrl = 'https://eventsfun.com/evento?id=anteprima';
+  var observer = new MutationObserver(function(m, obs) {
+    var c = canvasWrap.querySelector('canvas');
+    if (c) { obs.disconnect(); setTimeout(function() { drawQrLogoOverlay(canvasWrap, b64); }, 30); }
+  });
+  observer.observe(canvasWrap, { childList: true, subtree: true });
+  new QRCode(canvasWrap, { text: previewUrl, width: 120, height: 120, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
+}
 function setTema(prefix, val) {
   if (prefix === 'ev') evTemaState = val;
   else seTemaState = val;
@@ -925,6 +1039,8 @@ function resetEvForm(mode) {
   ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc', 'ev_email_contatto', 'ev_qr_testo'].forEach(function(id) { setVal(id, ''); });
   updateQrCount('ev_qr_testo','ev_qr_count');
   var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
+  evQrTipo = 'nessuno'; evQrLogoB64 = null; setQrTipo('ev', 'nessuno');
+  removeQrLogo('ev');
   evTemaState = 'chiaro'; setTema('ev', 'chiaro');
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
@@ -959,7 +1075,8 @@ async function saveEvent() {
     luogo: luogo,
     email_contatto: emailContatto,
     descrizione: document.getElementById('ev_desc').value.trim(),
-    qr_testo: document.getElementById('ev_qr_testo').value.trim().slice(0,18) || null,
+    qr_testo: evQrTipo === 'testo' ? (document.getElementById('ev_qr_testo').value.trim().slice(0,18) || null) : null,
+    qr_logo: evQrTipo === 'logo' ? (evQrLogoB64 || null) : null,
     landing_tema: evTemaState || 'chiaro',
     capienza: parseInt(document.getElementById('ev_cap').value) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
@@ -997,7 +1114,26 @@ function openEditEvent() {
   document.getElementById('se_desc').value = ev.descrizione || '';
   document.getElementById('se_email_contatto').value = ev.email_contatto || '';
   var seQr = document.getElementById('se_qr_testo');
-  if (seQr) { seQr.value = ev.qr_testo || ''; updateQrCount('se_qr_testo','se_qr_count'); updateQrPreview('se_qr_testo','se_qr_preview'); }
+  /* Ripristina tipo overlay QR */
+  if (ev.qr_logo) {
+    seQrTipo = 'logo'; seQrLogoB64 = ev.qr_logo;
+    setQrTipo('se', 'logo');
+    var sp = document.getElementById('se_qr_logo_preview');
+    var sph = document.getElementById('se_qr_logo_ph');
+    var srm = document.getElementById('se_qr_logo_rm');
+    if (sp) { sp.src = ev.qr_logo; sp.style.display = 'block'; }
+    if (sph) sph.style.display = 'none';
+    if (srm) srm.style.display = 'inline-block';
+    updateQrPreviewLogo('se', ev.qr_logo);
+  } else if (ev.qr_testo) {
+    seQrTipo = 'testo'; seQrLogoB64 = null;
+    setQrTipo('se', 'testo');
+    if (seQr) { seQr.value = ev.qr_testo; updateQrCount('se_qr_testo','se_qr_count'); updateQrPreview('se_qr_testo','se_qr_preview'); }
+  } else {
+    seQrTipo = 'nessuno'; seQrLogoB64 = null;
+    setQrTipo('se', 'nessuno');
+    if (seQr) { seQr.value = ''; updateQrCount('se_qr_testo','se_qr_count'); }
+  }
   seTemaState = ev.landing_tema || 'chiaro';
   setTema('se', seTemaState);
   var si = document.getElementById('se_img_preview');
@@ -1026,7 +1162,8 @@ async function saveSettings() {
   var upd = {
     nome: nome,
     email_contatto: emailContatto,
-    qr_testo: document.getElementById('se_qr_testo').value.trim().slice(0,18) || null,
+    qr_testo: seQrTipo === 'testo' ? (document.getElementById('se_qr_testo').value.trim().slice(0,18) || null) : null,
+    qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
     landing_tema: seTemaState || 'chiaro',
     capienza: parseInt(document.getElementById('se_cap').value) || null,
     data_iso: document.getElementById('se_data').value,
@@ -1245,8 +1382,9 @@ function openQR() {
   document.getElementById('qrUrl').textContent = url;
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
-  /* Disegna testo overlay sul canvas dopo la generazione */
-  if (ev.qr_testo && ev.qr_testo.trim()) {
+  if (ev.qr_logo) {
+    setTimeout(function() { drawQrLogoOverlay(w, ev.qr_logo); }, 120);
+  } else if (ev.qr_testo && ev.qr_testo.trim()) {
     setTimeout(function() { drawQrOverlay(w, ev.qr_testo.trim()); }, 120);
   }
   openOv('ovQR');
@@ -1287,6 +1425,41 @@ function drawQrOverlay(container, testo) {
   ctx.textBaseline = 'middle';
   ctx.fillText(testo, size / 2, size / 2);
 }
+function drawQrLogoOverlay(container, b64) {
+  var canvas = container.querySelector('canvas');
+  if (!canvas) return;
+  canvas.style.display = 'block';
+  var imgEl = container.querySelector('img');
+  if (imgEl) imgEl.style.display = 'none';
+  var ctx = canvas.getContext('2d');
+  var size = canvas.width;
+  if (!size) return;
+  /* Box centrale: 28% del QR */
+  var boxSize = Math.floor(size * 0.28);
+  var pad = Math.floor(boxSize * 0.12);
+  var bx = (size - boxSize) / 2;
+  var by = (size - boxSize) / 2;
+  /* Sfondo bianco con bordo oro */
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.roundRect(bx, by, boxSize, boxSize, 4);
+  ctx.fill();
+  ctx.strokeStyle = '#C9A96E';
+  ctx.lineWidth = Math.max(1, size / 120);
+  ctx.stroke();
+  /* Disegna logo */
+  var logo = new Image();
+  logo.onload = function() {
+    var iw = logo.width, ih = logo.height;
+    var avail = boxSize - pad * 2;
+    var scale = Math.min(avail / iw, avail / ih);
+    var dw = iw * scale, dh = ih * scale;
+    var dx = bx + (boxSize - dw) / 2;
+    var dy = by + (boxSize - dh) / 2;
+    ctx.drawImage(logo, dx, dy, dw, dh);
+  };
+  logo.src = b64;
+}
 function dlQR() {
   var w = document.getElementById('qrCode');
   var c = w ? w.querySelector('canvas') : null; if (!c) return;
@@ -1298,7 +1471,8 @@ function dlQR() {
    ============================================================ */
 function openLanding() {
   var ev = currentEv; if (!ev) return;
-  var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
+  var tema = ev.landing_tema || 'chiaro';
+  var url = 'https://eventsfun.com/landing.html?id=' + ev.id + '&tema=' + tema;
   window.open(url, '_blank');
 }
 

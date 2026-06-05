@@ -218,7 +218,11 @@ async function init() {
     var evs = await sbGet('events', { id: evId }, '*');
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
-    if (ev.landing_tema === 'scuro') document.body.classList.add('dark');
+    /* Il parametro ?tema= nell'URL ha la precedenza sul valore salvato su DB --
+       permette all'anteprima di mostrare il tema scelto prima del salvataggio */
+    var temaParam = new URLSearchParams(window.location.search).get('tema');
+    var temaFinale = temaParam || ev.landing_tema || 'chiaro';
+    if (temaFinale === 'scuro') document.body.classList.add('dark');
     regs = await sbGet('registrations', { event_id: evId }, 'id,adulti,bambini,in_lista_attesa');
     document.title = ev.nome + ' — EventsFun';
     render();
