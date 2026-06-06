@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v6.0 Supabase -->
+<!-- EventsFun | Landing Page | v6.1 accompagnatori -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -79,6 +79,12 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
 .gcal-btn svg{flex-shrink:0}
 .gcal-wrap{margin-top:4px}
+/* ACCOMPAGNATORI */
+.acc-wrap{margin-top:4px}
+.acc-sep{border:none;border-top:1.5px dashed #e0ddd8;margin:20px 0 16px}
+.acc-title{font-family:"Syne",sans-serif;font-size:14px;font-weight:700;color:#C9A96E;margin-bottom:14px;letter-spacing:-.2px}
+.acc-block{animation:fadeInAcc .25s ease}
+@keyframes fadeInAcc{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 /* ============================================================
    TEMA SCURO
    ============================================================ */
@@ -115,6 +121,8 @@ body.dark .spinner{border-color:rgba(255,255,255,.1);border-top-color:#C9A96E}
 body.dark .gcal-btn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.8)}
 body.dark .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
 body.dark .ef-cta{color:rgba(245,240,232,.35)}
+body.dark .acc-sep{border-top-color:rgba(255,255,255,.1)}
+body.dark .acc-title{color:#C9A96E}
 </style>
 </head>
 <body>
@@ -262,6 +270,7 @@ function render() {
   if (ev.opt_multipla) {
     extraFields += '<div class="lp-fg"><label class="lp-lbl">Adulti *</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',-1)">−</button><div class="lp-cnt-val" id="cnt_adulti">1</div><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',1)">+</button></div></div>';
     extraFields += '<div class="lp-fg"><label class="lp-lbl">Bambini</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',-1)">−</button><div class="lp-cnt-val" id="cnt_bambini">0</div><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',1)">+</button></div></div>';
+    extraFields += '<div id="accompagnatori-wrap" class="acc-wrap"></div>';
   }
   if (ev.opt_tipo) {
     extraFields += '<div class="lp-fg"><label class="lp-lbl">Tipo iscritto *</label><select id="r_tipo" class="lp-inp"><option value="visitatore">Visitatore</option><option value="espositore">Espositore</option></select></div>';
@@ -339,11 +348,43 @@ function render() {
 }
 
 /* ============================================================
-   COUNTER
+   COUNTER + ACCOMPAGNATORI
    ============================================================ */
 function changeCount(field, delta) {
-  if (field === 'adulti') { adultiCount = Math.max(1, adultiCount + delta); document.getElementById('cnt_adulti').textContent = adultiCount; }
-  else { bambiniCount = Math.max(0, bambiniCount + delta); document.getElementById('cnt_bambini').textContent = bambiniCount; }
+  if (field === 'adulti') {
+    adultiCount = Math.max(1, adultiCount + delta);
+    document.getElementById('cnt_adulti').textContent = adultiCount;
+    updateAccompagnatoriForm();
+  } else {
+    bambiniCount = Math.max(0, bambiniCount + delta);
+    document.getElementById('cnt_bambini').textContent = bambiniCount;
+  }
+}
+
+function updateAccompagnatoriForm() {
+  var wrap = document.getElementById('accompagnatori-wrap');
+  if (!wrap) return;
+  var num = adultiCount - 1;
+  if (num <= 0) { wrap.innerHTML = ''; return; }
+
+  var emailObb = ev.opt_accompagnatori_email_obbligatoria ? ' *' : '';
+  var telObb = ev.opt_accompagnatori_telefono_obbligatorio ? ' *' : '';
+
+  var html = '<hr class="acc-sep">';
+  for (var i = 1; i <= num; i++) {
+    html += '<div class="acc-block" id="acc-block-' + i + '">';
+    html += '<div class="acc-title">Accompagnatore ' + i + '</div>';
+    html += '<div class="lp-grid">';
+    html += '<div class="lp-fg"><label class="lp-lbl">Nome *</label><input id="acc_' + i + '_nome" class="lp-inp" placeholder="Mario"></div>';
+    html += '<div class="lp-fg"><label class="lp-lbl">Cognome *</label><input id="acc_' + i + '_cognome" class="lp-inp" placeholder="Rossi"></div>';
+    html += '</div>';
+    html += '<div class="lp-grid">';
+    html += '<div class="lp-fg"><label class="lp-lbl">Email' + emailObb + '</label><input id="acc_' + i + '_email" class="lp-inp" type="email" placeholder="mario@email.it"></div>';
+    html += '<div class="lp-fg"><label class="lp-lbl">Telefono' + telObb + '</label><input id="acc_' + i + '_tel" class="lp-inp" placeholder="333 0000000"></div>';
+    html += '</div>';
+    html += '</div>';
+  }
+  wrap.innerHTML = html;
 }
 
 /* ============================================================
@@ -355,10 +396,24 @@ async function submitReg() {
   var email = (document.getElementById('r_email').value || '').trim();
   var gdpr = document.getElementById('r_gdpr').checked;
 
-  var alert = document.getElementById('formAlert');
   if (!nome || !cognome || !email) { showAlert('Compila i campi obbligatori: Nome, Cognome ed Email.'); return; }
   if (!email.includes('@')) { showAlert('Inserisci un indirizzo email valido.'); return; }
   if (!gdpr) { showAlert('Devi accettare il trattamento dei dati per procedere.'); return; }
+
+  /* Validazione accompagnatori */
+  var numAcc = ev.opt_multipla ? adultiCount - 1 : 0;
+  var accompagnatori = [];
+  for (var i = 1; i <= numAcc; i++) {
+    var accNome = (document.getElementById('acc_' + i + '_nome').value || '').trim();
+    var accCognome = (document.getElementById('acc_' + i + '_cognome').value || '').trim();
+    var accEmail = (document.getElementById('acc_' + i + '_email').value || '').trim();
+    var accTel = (document.getElementById('acc_' + i + '_tel').value || '').trim();
+    if (!accNome || !accCognome) { showAlert('Compila Nome e Cognome di tutti gli accompagnatori.'); return; }
+    if (ev.opt_accompagnatori_email_obbligatoria && !accEmail) { showAlert('L\'email è obbligatoria per tutti gli accompagnatori.'); return; }
+    if (accEmail && !accEmail.includes('@')) { showAlert('Inserisci un\'email valida per l\'accompagnatore ' + i + '.'); return; }
+    if (ev.opt_accompagnatori_telefono_obbligatorio && !accTel) { showAlert('Il telefono è obbligatorio per tutti gli accompagnatori.'); return; }
+    accompagnatori.push({ nome: accNome, cognome: accCognome, email: accEmail, telefono: accTel });
+  }
 
   var btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Invio in corso...';
@@ -383,7 +438,7 @@ async function submitReg() {
   var rc = document.getElementById('r_cena');
   var rn = document.getElementById('r_newsletter');
 
-  // Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa
+  /* Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa */
   var postiOccupati = ev.opt_cap_persona && ev.opt_multipla
     ? regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
     : regs.length;
@@ -405,18 +460,52 @@ async function submitReg() {
   };
 
   try {
+    /* Salva iscrizione capogruppo */
     var newReg = await sbPost('registrations', regData);
-    // Aggiorna contatore locale iscritti confermati (non lista attesa)
-    if (!capienzaPiena) regs.push({ id: newReg[0] ? newReg[0].id : '' });
-
-    // Email conferma via Edge Function (non bloccante: se fallisce non impedisce l'iscrizione)
     var regId = Array.isArray(newReg) ? (newReg[0] ? newReg[0].id : '') : (newReg ? newReg.id : '');
+    if (!capienzaPiena) regs.push({ id: regId, adulti: regData.adulti, bambini: regData.bambini });
+
+    /* Email conferma capogruppo (non bloccante) */
     if (regId) {
       fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
         method: 'POST',
         headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
         body: JSON.stringify({ registration_id: regId, event_id: ev.id, nome: nome, cognome: cognome, email: email, in_lista_attesa: !!capienzaPiena })
-      }).catch(function(e) { console.warn('Email conferma non inviata:', e); });
+      }).catch(function(e) { console.warn('Email conferma capogruppo non inviata:', e); });
+    }
+
+    /* Salva accompagnatori e invia loro email individuale */
+    for (var j = 0; j < accompagnatori.length; j++) {
+      var acc = accompagnatori[j];
+      var accData = {
+        event_id: ev.id,
+        nome: acc.nome, cognome: acc.cognome,
+        email: acc.email || null,
+        telefono: acc.telefono || null,
+        adulti: 1, bambini: 0,
+        tipo: rt ? rt.value : 'visitatore',
+        pranzo: rp ? rp.checked : false,
+        cena: rc ? rc.checked : false,
+        newsletter: false,
+        extra: {},
+        presente: false,
+        in_lista_attesa: !!capienzaPiena,
+        capogruppo_id: regId || null
+      };
+      try {
+        var accReg = await sbPost('registrations', accData);
+        var accRegId = Array.isArray(accReg) ? (accReg[0] ? accReg[0].id : '') : (accReg ? accReg.id : '');
+        /* Email individuale solo se l'accompagnatore ha un'email valida */
+        if (accRegId && acc.email && acc.email.includes('@')) {
+          fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+            method: 'POST',
+            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ registration_id: accRegId, event_id: ev.id, nome: acc.nome, cognome: acc.cognome, email: acc.email, in_lista_attesa: !!capienzaPiena })
+          }).catch(function(e) { console.warn('Email conferma accompagnatore non inviata:', e); });
+        }
+      } catch(accErr) {
+        console.warn('Errore salvataggio accompagnatore ' + (j + 1) + ':', accErr);
+      }
     }
 
     showSuccess(nome, !!capienzaPiena);
