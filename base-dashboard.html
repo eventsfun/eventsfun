@@ -52,6 +52,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
 .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+@keyframes obFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .loading p{font-size:13px;color:var(--text-muted)}
 /* DASHBOARD */
 .dash{max-width:1020px;margin:0 auto;padding:36px 20px 80px}
@@ -303,6 +304,50 @@ tbody td.xv{color:var(--gold)}
     <input class="pres-search" id="presSearch" placeholder="Cerca per nome o email..." oninput="renderPresenze()">
     <div class="pres-list" id="presList"></div>
   </div>
+</div>
+
+<!-- ============================================================
+     ONBOARDING OVERLAY
+     ============================================================ -->
+<div id="ovOnboarding" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:900;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;max-width:480px;width:100%;padding:36px 32px 28px;position:relative;animation:obFadeIn .3s ease">
+    <div id="ob-step-1">
+      <div style="font-size:44px;text-align:center;margin-bottom:16px">🎉</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:10px;letter-spacing:-.3px">Bentornato su EventsFun!</h2>
+      <p style="font-size:14px;color:var(--text-muted);text-align:center;line-height:1.7;margin-bottom:28px">Sei a un passo dal tuo primo evento.<br>Ti guidiamo in meno di 3 minuti.</p>
+      <button onclick="obStep(2)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">Iniziamo →</button>
+      <div style="text-align:center;margin-top:14px"><button onclick="obSkip()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline">Salta, esploro da solo</button></div>
+    </div>
+    <div id="ob-step-2" style="display:none">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);text-align:center;margin-bottom:20px">Come funziona</div>
+      <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:28px">
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">✏️</div>
+          <div><div style="font-weight:700;font-size:14px;margin-bottom:3px">Crea il tuo evento</div><div style="font-size:13px;color:var(--text-muted);line-height:1.5">Inserisci nome, data, luogo e le opzioni che ti servono. In meno di 2 minuti.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔗</div>
+          <div><div style="font-weight:700;font-size:14px;margin-bottom:3px">Condividi il link</div><div style="font-size:13px;color:var(--text-muted);line-height:1.5">Ottieni subito una pagina pubblica di iscrizione pronta da condividere o stampare come QR.</div></div>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:14px">
+          <div style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">👥</div>
+          <div><div style="font-weight:700;font-size:14px;margin-bottom:3px">Gestisci gli iscritti</div><div style="font-size:13px;color:var(--text-muted);line-height:1.5">Visualizza gli iscritti e segna le presenze -- tutto da qui.</div></div>
+        </div>
+      </div>
+      <button onclick="obStep(3)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">Ho capito, creo il mio evento →</button>
+      <div style="text-align:center;margin-top:14px"><button onclick="obSkip()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline">Salta</button></div>
+    </div>
+    <div id="ob-step-3" style="display:none">
+      <div style="font-size:44px;text-align:center;margin-bottom:16px">🚀</div>
+      <h2 style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;text-align:center;margin-bottom:10px">Perfetto!</h2>
+      <p style="font-size:14px;color:var(--text-muted);text-align:center;line-height:1.7">Apro il modulo di creazione evento...<br>Compila i campi e il gioco è fatto.</p>
+    </div>
+  </div>
+</div>
+<div id="obHelpBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:800;padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
+  <span style="font-size:13px;color:var(--text-muted)">Hai bisogno di aiuto per iniziare?</span>
+  <button onclick="obRestart()" style="padding:7px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Mostrami come fare →</button>
+  <button onclick="document.getElementById('obHelpBanner').style.display='none'" style="background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1">×</button>
 </div>
 
 <!-- MODAL: CREA EVENTO -->
@@ -591,10 +636,46 @@ async function init() {
   setDisp('mainNav', 'flex');
   showView('dash');
   try { renderDash(); } catch(e) { console.error('render error:', e); }
+  maybeShowOnboarding();
 }
 
 function hideLoading() { setDisp('loading', 'none'); }
 function showErr() { showView('error'); }
+
+/* ============================================================
+   ONBOARDING
+   ============================================================ */
+function maybeShowOnboarding() {
+  if (currentEv) return;
+  var ov = document.getElementById('ovOnboarding');
+  if (ov) ov.style.display = 'flex';
+}
+function obStep(n) {
+  [1, 2, 3].forEach(function(i) {
+    var el = document.getElementById('ob-step-' + i);
+    if (el) el.style.display = (i === n) ? 'block' : 'none';
+  });
+  if (n === 3) {
+    setTimeout(function() {
+      var ov = document.getElementById('ovOnboarding');
+      if (ov) ov.style.display = 'none';
+      openCreateEvent();
+    }, 1200);
+  }
+}
+function obSkip() {
+  var ov = document.getElementById('ovOnboarding');
+  if (ov) ov.style.display = 'none';
+  var banner = document.getElementById('obHelpBanner');
+  if (banner) banner.style.display = 'flex';
+}
+function obRestart() {
+  var banner = document.getElementById('obHelpBanner');
+  if (banner) banner.style.display = 'none';
+  obStep(1);
+  var ov = document.getElementById('ovOnboarding');
+  if (ov) ov.style.display = 'flex';
+}
 
 /* Helper sicuro: imposta display solo se l'elemento esiste */
 function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
