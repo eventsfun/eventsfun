@@ -431,6 +431,15 @@ select option{background:#1a1a1a;color:var(--text)}
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
+      <label>URL personalizzato pagina iscrizione
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per generarlo automaticamente dal nome evento. Es. "sagra-della-polenta-2026". Solo lettere, numeri e trattini. Non modificarlo dopo aver condiviso il link.</span></span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
+        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
+        <input id="ev_slug" placeholder="generato-automaticamente" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
+      </div>
+    </div>
+    <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
         <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -578,6 +587,15 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>URL personalizzato pagina iscrizione
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Modifica solo se necessario -- cambiarlo invalida i link già condivisi. Solo lettere, numeri e trattini.</span></span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
+        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
+        <input id="se_slug" placeholder="slug-evento" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
+      </div>
     </div>
     <div class="mf">
       <label>Immagine evento</label>
@@ -1155,7 +1173,7 @@ function renderDash() {
   }
 
   /* Link pubblico */
-  setText('pubLink', hasEv ? 'https://eventsfun.com/landing.html?id=' + ev.id : '--');
+  setText('pubLink', hasEv ? landingUrl(ev) : '--');
 
   /* Tabella iscritti */
   renderTable(ev, confermati, closed);
@@ -1518,6 +1536,32 @@ function resetEvForm() {
   setDisp('o_capienza_pp_row', 'none');
 }
 
+/* ============================================================
+   SLUG UTILS
+   ============================================================ */
+function makeSlug(nome) {
+  /* Converte nome evento in slug URL-friendly: minuscolo, accenti rimossi, spazi->trattini, solo a-z 0-9 - */
+  return nome.toLowerCase()
+    .replace(/[\u00e0\u00e1\u00e2\u00e3\u00e4\u00e5]/g, 'a')
+    .replace(/[\u00e8\u00e9\u00ea\u00eb]/g, 'e')
+    .replace(/[\u00ec\u00ed\u00ee\u00ef]/g, 'i')
+    .replace(/[\u00f2\u00f3\u00f4\u00f5\u00f6]/g, 'o')
+    .replace(/[\u00f9\u00fa\u00fb\u00fc]/g, 'u')
+    .replace(/[\u00f1]/g, 'n')
+    .replace(/[\u00e7]/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s]+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 80);
+}
+function landingUrl(ev) {
+  /* Usa slug se disponibile, altrimenti fallback su id (eventi senza slug o bozze) */
+  if (ev && ev.slug) return 'https://eventsfun.com/landing.html?slug=' + ev.slug;
+  if (ev && ev.id) return 'https://eventsfun.com/landing.html?id=' + ev.id;
+  return '';
+}
+
 async function saveEvent() {
   var nome = getVal('ev_nome').trim();
   var data = getVal('ev_data');
@@ -1535,6 +1579,7 @@ async function saveEvent() {
     qr_testo: evQrTipo === 'testo' ? (getVal('ev_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: evQrTipo === 'logo' ? (evQrLogoB64 || null) : null,
     landing_tema: evTemaState || 'chiaro',
+    slug: getVal('ev_slug').trim() || makeSlug(nome),
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
     attivo: true, bozza: false,
@@ -1582,6 +1627,7 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
+  setVal('se_slug', ev.slug || makeSlug(ev.nome || ''));
   if (ev.qr_logo) {
     seQrTipo = 'logo'; seQrLogoB64 = ev.qr_logo;
     setQrTipo('se', 'logo');
@@ -1635,6 +1681,7 @@ async function saveSettings() {
     qr_testo: seQrTipo === 'testo' ? (getVal('se_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
     landing_tema: seTemaState || 'chiaro',
+    slug: getVal('se_slug').trim() || ev.slug || makeSlug(nome),
     capienza: parseInt(getVal('se_cap')) || null,
     data_iso: getVal('se_data'),
     ora: getVal('se_ora').trim(),
@@ -2115,7 +2162,7 @@ function exportPDF() {
    ============================================================ */
 function openQR() {
   var ev = currentEv; if (!ev) { alert('Crea prima il tuo evento.'); return; }
-  var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
+  var url = landingUrl(ev);
   setText('qrUrl', url);
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
@@ -2206,7 +2253,7 @@ function dlQR() {
 function openLanding() {
   var ev = currentEv; if (!ev) return;
   var tema = ev.landing_tema || 'chiaro';
-  window.open('https://eventsfun.com/landing.html?id=' + ev.id + '&tema=' + tema, '_blank');
+  window.open(landingUrl(ev) + '&tema=' + tema, '_blank');
 }
 
 async function openPreviewFromForm() {
@@ -2277,7 +2324,7 @@ async function openPreviewFromSettings() {
   };
   try {
     await sbPatch('events', ev.id, upd);
-    window.open('https://eventsfun.com/landing.html?id=' + ev.id + '&tema=' + (seTemaState || 'chiaro'), '_blank');
+    window.open(landingUrl(ev) + '&tema=' + (seTemaState || 'chiaro'), '_blank');
   } catch(e) { showToast('Errore anteprima: ' + e.message, 'r'); }
 }
 

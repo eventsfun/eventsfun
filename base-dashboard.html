@@ -328,6 +328,15 @@ tbody td.xv{color:var(--gold)}
       </label>
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
+    <div class="mf">
+      <label>URL personalizzato pagina iscrizione
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per generarlo automaticamente dal nome evento. Solo lettere, numeri e trattini. Non modificarlo dopo aver condiviso il link.</span></span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
+        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
+        <input id="ev_slug" placeholder="generato-automaticamente" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
+      </div>
+    </div>
     <div class="mf"><label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
         <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -382,6 +391,15 @@ tbody td.xv{color:var(--gold)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>URL personalizzato pagina iscrizione
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Modifica solo se necessario -- cambiarlo invalida i link già condivisi. Solo lettere, numeri e trattini.</span></span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
+        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
+        <input id="se_slug" placeholder="slug-evento" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
+      </div>
     </div>
     <div class="mf"><label>Immagine evento</label>
       <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
@@ -682,7 +700,7 @@ function renderDash() {
   /* Public link */
   var lnk = document.getElementById('pubLink');
   lnk.textContent = hasEv
-    ? 'https://eventsfun.com/landing.html?id=' + ev.id
+    ? landingUrl(ev)
     : '—';
 
   /* Table */
@@ -798,6 +816,31 @@ function resetEvForm(mode) {
   setDisp('opasto_sub', 'none');
   setDisp('o_capienza_pp_row', 'none');
 }
+
+/* ============================================================
+   SLUG UTILS
+   ============================================================ */
+function makeSlug(nome) {
+  return nome.toLowerCase()
+    .replace(/[\u00e0\u00e1\u00e2\u00e3\u00e4\u00e5]/g, 'a')
+    .replace(/[\u00e8\u00e9\u00ea\u00eb]/g, 'e')
+    .replace(/[\u00ec\u00ed\u00ee\u00ef]/g, 'i')
+    .replace(/[\u00f2\u00f3\u00f4\u00f5\u00f6]/g, 'o')
+    .replace(/[\u00f9\u00fa\u00fb\u00fc]/g, 'u')
+    .replace(/[\u00f1]/g, 'n')
+    .replace(/[\u00e7]/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/[\s]+/g, '-')
+    .replace(/-+/g, '-')
+    .slice(0, 80);
+}
+function landingUrl(ev) {
+  if (ev && ev.slug) return 'https://eventsfun.com/landing.html?slug=' + ev.slug;
+  if (ev && ev.id) return 'https://eventsfun.com/landing.html?id=' + ev.id;
+  return '';
+}
+
 async function saveEvent() {
   var nome = document.getElementById('ev_nome').value.trim();
   var data = document.getElementById('ev_data').value;
@@ -831,6 +874,7 @@ async function saveEvent() {
     opt_capienza: otogState.capienza,
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
+    slug: document.getElementById('ev_slug').value.trim() || makeSlug(nome),
     activated: false
   };
   try {
@@ -853,6 +897,7 @@ function openEditEvent() {
   document.getElementById('se_luogo').value = ev.luogo || '';
   document.getElementById('se_desc').value = ev.descrizione || '';
   document.getElementById('se_email_contatto').value = ev.email_contatto || '';
+  document.getElementById('se_slug').value = ev.slug || makeSlug(ev.nome || '');
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
@@ -892,7 +937,8 @@ async function saveSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
     sponsors: collectSP('sspList'),
-    custom_fields: collectCF('scfList')
+    custom_fields: collectCF('scfList'),
+    slug: document.getElementById('se_slug').value.trim() || ev.slug || makeSlug(nome)
   };
   try {
     currentEv = await sbPatch('events', ev.id, upd);
@@ -1094,7 +1140,7 @@ function exportCSV() {
    ============================================================ */
 function openQR() {
   var ev = currentEv; if (!ev) { alert('Crea prima il tuo evento.'); return; }
-  var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
+  var url = landingUrl(ev);
   document.getElementById('qrUrl').textContent = url;
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 180, height: 180, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
@@ -1110,7 +1156,7 @@ function dlQR() {
    ============================================================ */
 function openLanding() {
   var ev = currentEv; if (!ev) return;
-  var url = 'https://eventsfun.com/landing.html?id=' + ev.id;
+  var url = landingUrl(ev);
   window.open(url, '_blank');
 }
 

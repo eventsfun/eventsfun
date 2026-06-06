@@ -220,10 +220,18 @@ function gcalBtnHtml(ev) {
    INIT
    ============================================================ */
 async function init() {
-  var evId = new URLSearchParams(window.location.search).get('id');
-  if (!evId) { showError('Link non valido', 'Questo link non contiene un evento valido.'); return; }
+  var params = new URLSearchParams(window.location.search);
+  var evSlug = params.get('slug');
+  var evId = params.get('id');
+  if (!evSlug && !evId) { showError('Link non valido', 'Questo link non contiene un evento valido.'); return; }
   try {
-    var evs = await sbGet('events', { id: evId }, '*');
+    /* Priorita' a slug; fallback su id per retrocompatibilita' con link vecchi */
+    var evs;
+    if (evSlug) {
+      evs = await sbGet('events', { slug: evSlug }, '*');
+    } else {
+      evs = await sbGet('events', { id: evId }, '*');
+    }
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
     /* Il parametro ?tema= nell'URL ha la precedenza sul valore salvato su DB --
@@ -231,7 +239,7 @@ async function init() {
     var temaParam = new URLSearchParams(window.location.search).get('tema');
     var temaFinale = temaParam || ev.landing_tema || 'chiaro';
     if (temaFinale === 'scuro') document.body.classList.add('dark');
-    regs = await sbGet('registrations', { event_id: evId }, 'id,adulti,bambini,in_lista_attesa');
+    regs = await sbGet('registrations', { event_id: ev.id }, 'id,adulti,bambini,in_lista_attesa');
     document.title = ev.nome + ' — EventsFun';
     render();
   } catch(e) {
