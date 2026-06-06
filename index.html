@@ -979,6 +979,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Aggiungi a Google Calendar</div>
           <div class="plan-feat">Campi personalizzati</div>
           <div class="plan-feat">Dati disponibili 30 giorni dopo l'evento</div>
+          <div class="plan-feat">Guida interattiva alla creazione del primo evento</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export CSV</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export PDF lista presenze</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Sponsor con logo e link</div>
@@ -1011,6 +1012,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Tipo iscritto (visitatore/espositore)</div>
           <div class="plan-feat">Dati disponibili 30 giorni dopo l'evento</div>
           <div class="plan-feat">Tema landing chiaro o scuro</div>
+          <div class="plan-feat">Guida interattiva alla creazione del primo evento</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export PDF lista presenze</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Lista d'attesa automatica</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Multi-evento</div>
@@ -1050,6 +1052,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">3 account dashboard</div>
           <div class="plan-feat">Gestione newsletter iscritti</div>
           <div class="plan-feat">Statistiche evento componibili</div>
+          <div class="plan-feat">Guida interattiva alla creazione del primo evento</div>
           <div class="plan-feat">Supporto prioritario</div>
         </div>
         <a id="agenziaBtn" href="https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402" target="_blank" style="display:block;text-align:center;padding:14px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Abbonati →</a>
@@ -1264,6 +1267,17 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
 <!-- FOOTER -->
 <footer>
+  <div style="max-width:960px;margin:0 auto;padding:0 40px">
+    <div style="padding:36px 0 28px;border-bottom:1px solid var(--border);margin-bottom:28px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px">Guide utili</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">
+        <a href="guide/iscrizioni-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Come gestire le iscrizioni a un evento</a>
+        <a href="guide/qr-code-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">QR code per eventi: come crearlo e usarlo</a>
+        <a href="guide/gdpr-iscrizioni-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">GDPR e raccolta dati agli eventi</a>
+        <a href="guide/lista-presenze-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Lista presenze digitale per eventi</a>
+      </div>
+    </div>
+  </div>
   <div class="footer-inner">
     <div class="footer-logo">Events<span>Fun</span></div>
     <div class="footer-links">
@@ -1417,6 +1431,6 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.2</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.5</div>
 </body>
 </html>
