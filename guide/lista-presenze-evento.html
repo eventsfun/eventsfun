@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<!-- EventsFun | Guida | Lista presenze digitale per eventi -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista presenze digitale per eventi: addio ai fogli Excel — EventsFun</title>
+<meta name="description" content="Come gestire le presenze a un evento senza carta e senza Excel: confronto tra metodi, vantaggi della lista digitale, e come funziona il check-in dal telefono.">
+<link rel="canonical" href="https://eventsfun.com/guide/lista-presenze-evento.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="shortcut icon" href="../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Lista presenze digitale per eventi: addio ai fogli Excel",
+  "description": "Come gestire le presenze a un evento senza carta e senza Excel: confronto tra metodi, vantaggi della lista digitale, e come funziona il check-in dal telefono.",
+  "author": { "@type": "Organization", "name": "EventsFun", "url": "https://eventsfun.com" },
+  "publisher": { "@type": "Organization", "name": "EventsFun", "url": "https://eventsfun.com" },
+  "datePublished": "2026-06-06",
+  "dateModified": "2026-06-06",
+  "mainEntityOfPage": { "@type": "WebPage", "@id": "https://eventsfun.com/guide/lista-presenze-evento.html" }
+}
+</script>
+
+<style>
+:root{--gold:#C9A96E;--gold-dark:#8a6e3e;--bg:#0A0A0A;--bg2:#111111;--bg3:#161616;--border:rgba(255,255,255,0.10);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.70);--text-dim:rgba(240,237,232,0.45)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-back{font-size:13px;color:var(--text-dim);text-decoration:none;transition:color .2s}
+.nav-back:hover{color:var(--gold)}
+.page{max-width:760px;margin:0 auto;padding:112px 24px 100px}
+.art-label{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.22);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.art-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:20px}
+.art-sub{font-size:17px;line-height:1.75;color:var(--text-muted);font-weight:300;margin-bottom:36px;max-width:620px}
+.art-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text-dim);padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:52px;flex-wrap:wrap}
+.art-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text-dim)}
+.art-toc{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:52px}
+.art-toc-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+.art-toc ol{padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.art-toc li{font-size:14px}
+.art-toc a{color:var(--text-muted);text-decoration:none;transition:color .2s}
+.art-toc a:hover{color:var(--gold)}
+.art-body h2{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.5px;margin:56px 0 18px;color:var(--text);line-height:1.2}
+.art-body h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin:32px 0 12px;color:var(--text)}
+.art-body p{font-size:15px;line-height:1.8;color:var(--text-muted);margin-bottom:20px}
+.art-body p strong{color:var(--text);font-weight:600}
+.art-body ul,.art-body ol{margin:0 0 22px 20px;display:flex;flex-direction:column;gap:10px}
+.art-body li{font-size:15px;line-height:1.7;color:var(--text-muted)}
+.art-body li strong{color:var(--text);font-weight:600}
+.box{border-radius:12px;padding:22px 26px;margin:32px 0}
+.box-info{background:rgba(110,160,220,0.07);border:1px solid rgba(110,160,220,0.18)}
+.box-warn{background:rgba(201,169,110,0.07);border:1px solid rgba(201,169,110,0.22)}
+.box-ok{background:rgba(110,201,130,0.07);border:1px solid rgba(110,201,130,0.18)}
+.box-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;margin-bottom:10px}
+.box-info .box-title{color:#8ab4d8}
+.box-warn .box-title{color:var(--gold)}
+.box-ok .box-title{color:#7ED99A}
+.box p{font-size:14px;line-height:1.7;color:var(--text-muted);margin-bottom:0}
+.compare{width:100%;border-collapse:collapse;margin:28px 0;font-size:14px}
+.compare th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border)}
+.compare td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--text-muted);vertical-align:top}
+.compare tr:last-child td{border-bottom:none}
+.compare .col-no{color:#e08080}
+.compare .col-yes{color:#7ED99A}
+.compare tr:hover td{background:rgba(255,255,255,0.02)}
+.scenario{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:22px 24px;margin:16px 0}
+.scenario-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px}
+.scenario h4{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.scenario p{font-size:13px;line-height:1.65;color:var(--text-muted);margin:0}
+.art-cta{background:linear-gradient(135deg,rgba(201,169,110,0.1),rgba(201,169,110,0.04));border:1px solid rgba(201,169,110,0.28);border-radius:16px;padding:36px;text-align:center;margin:64px 0 0}
+.art-cta h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.art-cta p{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto}
+.cta-btn{display:inline-block;padding:13px 30px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:-.2px;transition:opacity .2s}
+.cta-btn:hover{opacity:.88}
+.cta-sub{margin-top:14px;font-size:12px;color:var(--text-dim)}
+.related{margin-top:72px;padding-top:48px;border-top:1px solid var(--border)}
+.related-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:20px}
+.related-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.related-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;transition:border-color .2s,transform .2s;display:block}
+.related-card:hover{border-color:rgba(201,169,110,0.3);transform:translateY(-2px)}
+.related-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.related-card h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.35}
+footer{padding:40px 24px;border-top:1px solid var(--border)}
+.footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);text-decoration:none}
+.footer-logo span{color:var(--gold)}
+.footer-copy{font-size:12px;color:var(--text-dim)}
+@media(max-width:640px){nav{padding:0 16px}.page{padding:100px 16px 80px}.related-grid{grid-template-columns:1fr}.art-cta{padding:28px 20px}.compare{font-size:13px}.compare th,.compare td{padding:10px 10px}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://eventsfun.com" class="nav-logo">Events<span>Fun</span></a>
+  <a href="https://eventsfun.com" class="nav-back">← Torna al sito</a>
+</nav>
+
+<div class="page">
+
+  <div class="art-label">Guida pratica</div>
+  <h1 class="art-title">Lista presenze digitale: addio ai fogli Excel</h1>
+  <p class="art-sub">Gestire le presenze con un foglio stampato o un file Excel funziona fino a un certo punto. Ecco cosa cambia con una lista digitale e quando vale davvero la pena usarla.</p>
+  <div class="art-meta">
+    <span>EventsFun</span>
+    <span class="art-meta-dot"></span>
+    <span>Aggiornato: giugno 2026</span>
+    <span class="art-meta-dot"></span>
+    <span>Lettura: 5 minuti</span>
+  </div>
+
+  <div class="art-toc" aria-label="Indice">
+    <div class="art-toc-title">In questa guida</div>
+    <ol>
+      <li><a href="#problema">Il problema con i fogli stampati</a></li>
+      <li><a href="#confronto">Confronto tra i metodi</a></li>
+      <li><a href="#come-funziona">Come funziona un check-in digitale</a></li>
+      <li><a href="#piu-persone">Gestire l'ingresso con più persone contemporaneamente</a></li>
+      <li><a href="#dati">Cosa fare con i dati delle presenze dopo l'evento</a></li>
+      <li><a href="#quando">Quando il foglio stampato va ancora bene</a></li>
+    </ol>
+  </div>
+
+  <div class="art-body">
+
+    <h2 id="problema">Il problema con i fogli stampati</h2>
+
+    <p>Chiunque abbia gestito l'ingresso a un evento di 100 o più persone sa com'è: un foglio A4 con i nomi in ordine alfabetico, una penna, e una coda che si forma mentre si cerca il nome di qualcuno che non si ricorda come si scrive. A fine evento, si ha un foglio con decine di spunte che qualcuno deve trascrivere manualmente per sapere chi era presente e chi no.</p>
+
+    <p>Il foglio stampato ha un problema strutturale: <strong>non si aggiorna</strong>. Se arriva qualcuno che si è iscritto all'ultimo momento via telefono, non è nella lista. Se una persona ha cambiato il cognome, non corrisponde. Se vuoi sapere quante persone sono arrivate nelle prime due ore rispetto alle ultime due, non puoi saperlo.</p>
+
+    <p>Excel sul laptop o sul tablet è un passo avanti, ma presenta altri problemi: non funziona bene su telefono (troppo piccolo, zoom continuo), non permette a più persone di lavorare in parallelo sullo stesso file senza rischio di sovrascritture, e richiede di avere il dispositivo sempre a portata di mano.</p>
+
+    <h2 id="confronto">Confronto tra i metodi</h2>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Metodo</th>
+          <th>Ricerca rapida</th>
+          <th>Più operatori in parallelo</th>
+          <th>Dati in tempo reale</th>
+          <th>Iscrizioni last minute</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Foglio stampato</strong></td>
+          <td class="col-no">No</td>
+          <td class="col-no">No</td>
+          <td class="col-no">No</td>
+          <td class="col-no">No</td>
+        </tr>
+        <tr>
+          <td><strong>Excel / Sheets</strong></td>
+          <td class="col-no">Parziale</td>
+          <td class="col-no">Difficile</td>
+          <td class="col-no">No</td>
+          <td class="col-no">Manuale</td>
+        </tr>
+        <tr>
+          <td><strong>Dashboard digitale</strong></td>
+          <td class="col-yes">Sì</td>
+          <td class="col-yes">Sì</td>
+          <td class="col-yes">Sì</td>
+          <td class="col-yes">Automatico</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 id="come-funziona">Come funziona un check-in digitale</h2>
+
+    <p>Con una lista presenze digitale, chiunque gestisca l'ingresso apre la dashboard dal proprio telefono -- nessun laptop necessario. La lista mostra tutti gli iscritti con nome, cognome ed email. C'è una barra di ricerca in cima: si digita il cognome (o anche solo le prime lettere) e il partecipante compare immediatamente.</p>
+
+    <p>Con un click sul nome si segna la presenza. Il sistema aggiorna il contatore in tempo reale: sai sempre quante persone sono entrate, quante mancano, e puoi filtrare per chi è ancora atteso.</p>
+
+    <p>Se arriva qualcuno che non è nella lista -- perché si è iscritto telefonicamente, o perché ha accompagnato un altro partecipante -- puoi aggiungerlo manualmente in pochi secondi dalla stessa interfaccia, senza interrompere il flusso.</p>
+
+    <div class="box box-ok">
+      <div class="box-title">✓ Il vantaggio meno ovvio</div>
+      <p>Con una lista digitale sai in tempo reale quante persone sono già entrate. Questo è utile non solo per la logistica, ma anche per decisioni pratiche: quando iniziare il programma, se aspettare ancora qualcuno, se la sala è già al limite della capienza.</p>
+    </div>
+
+    <h2 id="piu-persone">Gestire l'ingresso con più persone contemporaneamente</h2>
+
+    <p>Per eventi medio-grandi con un afflusso concentrato in poco tempo -- i classici 15-20 minuti prima dell'inizio -- avere un solo punto di accoglienza crea una coda. La soluzione è aprire più punti di ingresso in parallelo.</p>
+
+    <p>Con una lista stampata o su Excel, due punti di ingresso significano due copie del foglio che poi devono essere riconciliate -- con il rischio di duplicati e di errori. Con una dashboard digitale, ogni operatore usa il proprio telefono e tutte le presenze segnate sono visibili a tutti in tempo reale, senza conflitti.</p>
+
+    <p>Non serve una configurazione speciale: basta che ogni operatore abbia il link della dashboard sul proprio telefono. Le presenze si sincronizzano automaticamente.</p>
+
+    <h2 id="dati">Cosa fare con i dati delle presenze dopo l'evento</h2>
+
+    <p>I dati delle presenze hanno diversi usi pratici nelle settimane successive all'evento.</p>
+
+    <ul>
+      <li><strong>Tasso di presenza effettivo.</strong> Sapere quante persone iscritte si sono presentate davvero è un dato fondamentale per pianificare gli eventi successivi -- catering, spazio, materiali. Se hai sempre un 20% di no-show, puoi prevedere una lista d'attesa o gestire le risorse di conseguenza.</li>
+      <li><strong>Segmentazione per comunicazioni future.</strong> Se vuoi contattare chi era presente per un sondaggio post-evento o per invitarli alla prossima edizione, avere la lista di chi è davvero venuto -- non solo di chi si era iscritto -- è più preciso e più rispettoso verso chi si è iscritto ma non è potuto venire.</li>
+      <li><strong>Rendicontazione.</strong> Per associazioni, enti pubblici o chi riceve fondi per l'organizzazione di eventi, il dato preciso di presenze può essere necessario per la rendicontazione.</li>
+    </ul>
+
+    <p>Con una lista digitale, tutti questi dati sono esportabili in CSV con un click -- senza dover trascrivere manualmente nessun foglio.</p>
+
+    <h2 id="quando">Quando il foglio stampato va ancora bene</h2>
+
+    <p>Essere onesti su questo punto è importante: non tutti gli eventi richiedono una lista presenze digitale. Il foglio stampato funziona ancora bene in alcune situazioni specifiche.</p>
+
+    <div class="scenario">
+      <div class="scenario-label">Va bene il foglio stampato quando</div>
+      <h4>L'evento è piccolo e informale</h4>
+      <p>Sotto i 30-40 partecipanti, con un ingresso non concentrato e senza necessità di dati post-evento, un foglio con i nomi è perfettamente sufficiente.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-label">Va bene il foglio stampato quando</div>
+      <h4>Non c'è connessione dati nel luogo dell'evento</h4>
+      <p>Una dashboard digitale richiede connessione internet -- anche solo dati mobili. Se il luogo non ha copertura, il foglio stampato rimane l'unica opzione affidabile.</p>
+    </div>
+
+    <div class="scenario">
+      <div class="scenario-label">Vale la pena passare al digitale quando</div>
+      <h4>Più di 50-60 partecipanti, o più punti di ingresso</h4>
+      <p>Superata questa soglia, i limiti del foglio stampato diventano evidenti nella pratica. Il tempo risparmiato nella gestione dell'ingresso giustifica ampiamente il cambio di strumento.</p>
+    </div>
+
+    <div class="box box-info">
+      <div class="box-title">ℹ️ Il piano B rimane valido</div>
+      <p>Anche usando una lista digitale, stampare un foglio di riserva con i nomi degli iscritti non è una cattiva idea. Se il telefono si scarica o la connessione cade nel momento peggiore, hai un backup. Non serve aggiornarlo in tempo reale -- basta avere la lista di partenza.</p>
+    </div>
+
+  </div>
+
+  <div class="art-cta">
+    <h3>Check-in digitale incluso in ogni piano</h3>
+    <p>Con EventsFun la lista presenze è sempre aggiornata, cercabile per nome, e gestibile da più telefoni in parallelo. Nessuna configurazione, funziona dal browser.</p>
+    <a href="https://eventsfun.com/demo.html" class="cta-btn">Prova la demo gratuita →</a>
+    <p class="cta-sub">Nessuna registrazione richiesta per la demo</p>
+  </div>
+
+  <div class="related">
+    <div class="related-title">Altre guide</div>
+    <div class="related-grid">
+      <a href="iscrizioni-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Come gestire le iscrizioni a un evento</h4>
+      </a>
+      <a href="qr-code-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>QR code per eventi: come crearlo e usarlo</h4>
+      </a>
+      <a href="gdpr-iscrizioni-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>GDPR e raccolta dati agli eventi: cosa devi sapere</h4>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <a href="https://eventsfun.com" class="footer-logo">Events<span>Fun</span></a>
+    <span class="footer-copy">© 2026 EventsFun — Studio B. di Giorgio Boerci</span>
+  </div>
+</footer>
+
+</body>
+</html>
