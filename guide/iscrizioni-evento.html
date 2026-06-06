@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<!-- EventsFun | Guida | Come gestire le iscrizioni a un evento -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Come gestire le iscrizioni a un evento: la guida pratica — EventsFun</title>
+<meta name="description" content="Tutto quello che devi sapere per raccogliere iscrizioni a un evento in modo semplice e professionale: dal modulo online alla gestione delle presenze, senza fogli Excel.">
+<link rel="canonical" href="https://eventsfun.com/guide/iscrizioni-evento.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="shortcut icon" href="../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<!-- Schema.org Article per AI e motori di ricerca -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Come gestire le iscrizioni a un evento: la guida pratica",
+  "description": "Tutto quello che devi sapere per raccogliere iscrizioni a un evento in modo semplice e professionale: dal modulo online alla gestione delle presenze.",
+  "author": {
+    "@type": "Organization",
+    "name": "EventsFun",
+    "url": "https://eventsfun.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "EventsFun",
+    "url": "https://eventsfun.com",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://eventsfun.com/favicon.svg"
+    }
+  },
+  "datePublished": "2026-06-06",
+  "dateModified": "2026-06-06",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eventsfun.com/guide/iscrizioni-evento.html"
+  }
+}
+</script>
+
+<style>
+:root {
+  --gold: #C9A96E;
+  --gold-dark: #8a6e3e;
+  --bg: #0A0A0A;
+  --bg2: #111111;
+  --bg3: #161616;
+  --border: rgba(255,255,255,0.10);
+  --text: #F5F0E8;
+  --text-muted: rgba(240,237,232,0.70);
+  --text-dim: rgba(240,237,232,0.45);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-back{font-size:13px;color:var(--text-dim);text-decoration:none;transition:color .2s;display:flex;align-items:center;gap:6px}
+.nav-back:hover{color:var(--gold)}
+
+/* LAYOUT */
+.page{max-width:760px;margin:0 auto;padding:112px 24px 100px}
+
+/* HERO ARTICOLO */
+.art-label{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.22);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.art-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:20px;color:var(--text)}
+.art-sub{font-size:17px;line-height:1.75;color:var(--text-muted);font-weight:300;margin-bottom:36px;max-width:620px}
+.art-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text-dim);padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:52px;flex-wrap:wrap}
+.art-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text-dim)}
+
+/* INDICE */
+.toc{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:52px}
+.toc-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+.toc ol{padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.toc li{font-size:14px}
+.toc a{color:var(--text-muted);text-decoration:none;transition:color .2s}
+.toc a:hover{color:var(--gold)}
+
+/* CORPO */
+.art-body h2{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.5px;margin:56px 0 18px;color:var(--text);line-height:1.2}
+.art-body h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin:32px 0 12px;color:var(--text)}
+.art-body p{font-size:15px;line-height:1.8;color:var(--text-muted);margin-bottom:20px}
+.art-body p strong{color:var(--text);font-weight:600}
+.art-body ul,.art-body ol{margin:0 0 22px 20px;display:flex;flex-direction:column;gap:10px}
+.art-body li{font-size:15px;line-height:1.7;color:var(--text-muted)}
+.art-body li strong{color:var(--text);font-weight:600}
+
+/* BOX */
+.box{border-radius:12px;padding:22px 26px;margin:32px 0}
+.box-info{background:rgba(110,160,220,0.07);border:1px solid rgba(110,160,220,0.18)}
+.box-warn{background:rgba(201,169,110,0.07);border:1px solid rgba(201,169,110,0.22)}
+.box-ok{background:rgba(110,201,130,0.07);border:1px solid rgba(110,201,130,0.18)}
+.box-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;margin-bottom:10px}
+.box-info .box-title{color:#8ab4d8}
+.box-warn .box-title{color:var(--gold)}
+.box-ok .box-title{color:#7ED99A}
+.box p{font-size:14px;line-height:1.7;color:var(--text-muted);margin-bottom:0}
+
+/* STEP NUMERATI */
+.steps-visual{display:flex;flex-direction:column;gap:0;margin:32px 0}
+.step-v{display:flex;gap:20px;position:relative}
+.step-v::before{content:'';position:absolute;left:19px;top:44px;bottom:0;width:1px;background:var(--border)}
+.step-v:last-child::before{display:none}
+.step-num-v{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:1px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--gold);flex-shrink:0;margin-top:2px}
+.step-body{padding-bottom:36px;flex:1}
+.step-body h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.step-body p{font-size:14px;line-height:1.7;color:var(--text-muted);margin:0}
+
+/* TABELLA CONFRONTO */
+.compare{width:100%;border-collapse:collapse;margin:28px 0;font-size:14px}
+.compare th{text-align:left;padding:12px 16px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);border-bottom:1px solid var(--border)}
+.compare td{padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.05);color:var(--text-muted);vertical-align:top}
+.compare tr:last-child td{border-bottom:none}
+.compare .col-no{color:#e08080}
+.compare .col-yes{color:#7ED99A}
+.compare tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* CTA FINALE */
+.art-cta{background:linear-gradient(135deg,rgba(201,169,110,0.1),rgba(201,169,110,0.04));border:1px solid rgba(201,169,110,0.28);border-radius:16px;padding:36px;text-align:center;margin:64px 0 0}
+.art-cta h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.art-cta p{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto}
+.cta-btn{display:inline-block;padding:13px 30px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:-.2px;transition:opacity .2s}
+.cta-btn:hover{opacity:.88}
+.cta-sub{margin-top:14px;font-size:12px;color:var(--text-dim)}
+
+/* ALTRI ARTICOLI */
+.related{margin-top:72px;padding-top:48px;border-top:1px solid var(--border)}
+.related-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:20px}
+.related-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.related-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;transition:border-color .2s,transform .2s;display:block}
+.related-card:hover{border-color:rgba(201,169,110,0.3);transform:translateY(-2px)}
+.related-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.related-card h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.35}
+
+/* FOOTER */
+footer{padding:40px 24px;border-top:1px solid var(--border);margin-top:0}
+.footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);text-decoration:none}
+.footer-logo span{color:var(--gold)}
+.footer-copy{font-size:12px;color:var(--text-dim)}
+
+@media(max-width:640px){
+  nav{padding:0 16px}
+  .page{padding:100px 16px 80px}
+  .toc{padding:18px 20px}
+  .related-grid{grid-template-columns:1fr}
+  .art-cta{padding:28px 20px}
+  .compare{font-size:13px}
+  .compare th,.compare td{padding:10px 12px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://eventsfun.com" class="nav-logo">Events<span>Fun</span></a>
+  <a href="https://eventsfun.com" class="nav-back">← Torna al sito</a>
+</nav>
+
+<div class="page">
+
+  <div class="art-label">Guida pratica</div>
+  <h1 class="art-title">Come gestire le iscrizioni a un evento</h1>
+  <p class="art-sub">Dal foglio Excel alla pagina pubblica: tutto quello che devi sapere per raccogliere dati, confermare i partecipanti e gestire le presenze senza complicazioni.</p>
+  <div class="art-meta">
+    <span>EventsFun</span>
+    <span class="art-meta-dot"></span>
+    <span>Aggiornato: giugno 2026</span>
+    <span class="art-meta-dot"></span>
+    <span>Lettura: 6 minuti</span>
+  </div>
+
+  <!-- INDICE -->
+  <nav class="toc" aria-label="Indice">
+    <div class="toc-title">In questa guida</div>
+    <ol>
+      <li><a href="#problemi-comuni">I problemi più comuni con le iscrizioni</a></li>
+      <li><a href="#cosa-serve">Cosa serve per gestire le iscrizioni</a></li>
+      <li><a href="#dati-raccogliere">Quali dati raccogliere dai partecipanti</a></li>
+      <li><a href="#conferma-email">Perché la conferma via email è indispensabile</a></li>
+      <li><a href="#presenze">La gestione delle presenze il giorno dell'evento</a></li>
+      <li><a href="#gdpr">GDPR e privacy: cosa devi sapere</a></li>
+      <li><a href="#strumenti">Quale strumento usare</a></li>
+    </ol>
+  </nav>
+
+  <div class="art-body">
+
+    <h2 id="problemi-comuni">I problemi più comuni con le iscrizioni</h2>
+
+    <p>Chi organizza eventi per la prima volta si trova spesso davanti alla stessa situazione: un foglio di calcolo con nomi e numeri di telefono raccolti via WhatsApp, email arrivate in disordine, e il dubbio di non sapere quante persone presentarsi davvero il giorno dell'evento.</p>
+
+    <p>Il problema non è la mancanza di organizzazione -- è che mancano gli strumenti giusti. Raccogliere iscrizioni in modo efficace richiede tre cose che un foglio Excel da solo non riesce a dare: <strong>una pagina pubblica accessibile da chiunque</strong>, <strong>una conferma automatica per il partecipante</strong>, e <strong>un modo semplice per controllare le presenze sul posto</strong>.</p>
+
+    <p>Questi problemi si ripetono indipendentemente dal tipo di evento: una cena aziendale, una corsa podistica, un convegno professionale, una sagra di paese. La scala cambia, ma la struttura del problema è sempre la stessa.</p>
+
+    <h2 id="cosa-serve">Cosa serve per gestire le iscrizioni</h2>
+
+    <p>Un sistema di iscrizioni efficace è composto da quattro elementi. Ognuno ha un ruolo preciso e non è sostituibile con gli altri.</p>
+
+    <div class="steps-visual">
+      <div class="step-v">
+        <div class="step-num-v">1</div>
+        <div class="step-body">
+          <h3>Una pagina pubblica di iscrizione</h3>
+          <p>È la porta d'ingresso del tuo evento. Deve contenere nome, data, luogo e descrizione, e avere un modulo che il partecipante può compilare direttamente dal telefono. Non deve richiedere download di app né registrazione di account.</p>
+        </div>
+      </div>
+      <div class="step-v">
+        <div class="step-num-v">2</div>
+        <div class="step-body">
+          <h3>Un modulo con i campi che ti servono</h3>
+          <p>Nome e cognome, email, telefono sono la base. In alcuni eventi servono informazioni aggiuntive: se i partecipanti vengono da soli o con accompagnatori, se hanno restrizioni alimentari, se vogliono ricevere comunicazioni future. Il modulo deve poter raccogliere tutto questo senza diventare complicato.</p>
+        </div>
+      </div>
+      <div class="step-v">
+        <div class="step-num-v">3</div>
+        <div class="step-body">
+          <h3>Una conferma automatica via email</h3>
+          <p>Ogni persona che si iscrive deve ricevere una conferma immediata. Senza questo, riceverai chiamate e messaggi per sapere "se la richiesta è andata a buon fine". La conferma deve contenere i dettagli dell'evento e, idealmente, un modo per aggiungerlo al calendario.</p>
+        </div>
+      </div>
+      <div class="step-v">
+        <div class="step-num-v">4</div>
+        <div class="step-body">
+          <h3>Una dashboard per gestire tutto</h3>
+          <p>Vuoi vedere in tempo reale quante persone si sono iscritte, aggiungere partecipanti manualmente se necessario, chiudere le iscrizioni quando la capienza è raggiunta, e il giorno dell'evento segnare chi è arrivato.</p>
+        </div>
+      </div>
+    </div>
+
+    <h2 id="dati-raccogliere">Quali dati raccogliere dai partecipanti</h2>
+
+    <p>La regola generale è: raccogli solo i dati che usi davvero. Ogni campo aggiuntivo riduce il tasso di completamento del modulo -- le persone si fermano quando un form sembra troppo lungo.</p>
+
+    <p>Nella maggior parte degli eventi, bastano quattro informazioni di base:</p>
+
+    <ul>
+      <li><strong>Nome e cognome</strong> -- per la lista presenze e per le comunicazioni</li>
+      <li><strong>Email</strong> -- per la conferma e per eventuali aggiornamenti sull'evento</li>
+      <li><strong>Telefono</strong> -- opzionale, utile solo se prevedi di contattare i partecipanti direttamente</li>
+      <li><strong>Numero di persone</strong> -- se prevedi iscrizioni con accompagnatori</li>
+    </ul>
+
+    <p>Ci sono situazioni in cui servono dati aggiuntivi. Per una cena, sapere se qualcuno ha intolleranze alimentari. Per una conferenza, conoscere il ruolo professionale dei partecipanti. Per una gara sportiva, la categoria di appartenenza. In questi casi, usa campi personalizzati -- ma aggiungili solo se hai davvero bisogno di quell'informazione per organizzare l'evento.</p>
+
+    <div class="box box-warn">
+      <div class="box-title">⚠️ Attenzione ai dati sensibili</div>
+      <p>Informazioni come allergie, disabilità o dati medici sono dati sensibili ai sensi del GDPR e richiedono una gestione più attenta. Se non strettamente necessari, evita di raccoglierli nel modulo di iscrizione.</p>
+    </div>
+
+    <h2 id="conferma-email">Perché la conferma via email è indispensabile</h2>
+
+    <p>La conferma email non è solo un gesto di cortesia -- è parte integrante del processo di iscrizione. Svolge tre funzioni precise.</p>
+
+    <p><strong>Riduce le "non presenze" silenziose.</strong> Quando una persona riceve una conferma scritta con data, ora e luogo, è molto più probabile che si presenti. L'iscrizione diventa un impegno concreto, non solo un click.</p>
+
+    <p><strong>Taglia le richieste di supporto.</strong> Il 90% dei messaggi del tipo "mi sono iscritto, ma non so se è andato a buon fine" si elimina con una conferma immediata. Meno messaggi da gestire, meno tempo perso.</p>
+
+    <p><strong>Dà al partecipante un riferimento.</strong> La conferma contiene tutti i dettagli dell'evento. Il partecipante può ritrovarla nella casella email la mattina dell'evento senza dover cercare il link o ricordare l'indirizzo. Includere un link diretto a Google Calendar riduce ulteriormente le dimenticanze.</p>
+
+    <div class="box box-ok">
+      <div class="box-title">✓ Cosa deve contenere la conferma email</div>
+      <p>Nome dell'evento, data e ora, indirizzo preciso del luogo, nome e contatto dell'organizzatore per eventuali domande, e un pulsante "Aggiungi a Google Calendar". Tieni il testo breve -- la conferma deve essere leggibile in 30 secondi.</p>
+    </div>
+
+    <h2 id="presenze">La gestione delle presenze il giorno dell'evento</h2>
+
+    <p>Il giorno dell'evento devi poter fare una cosa sola in modo veloce: verificare che una persona sia nella lista e segnare che è arrivata. Sembra banale, ma in pratica ci sono tre modi per farlo, con differenze significative.</p>
+
+    <table class="compare">
+      <thead>
+        <tr>
+          <th>Metodo</th>
+          <th>Velocità</th>
+          <th>Problemi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Foglio stampato</strong></td>
+          <td>Lento</td>
+          <td class="col-no">Non si aggiorna, illeggibile se piove, difficile da cercare per cognome</td>
+        </tr>
+        <tr>
+          <td><strong>Foglio Excel aperto</strong></td>
+          <td>Medio</td>
+          <td class="col-no">Richiede un computer, non funziona bene da telefono, non aggiornato in tempo reale</td>
+        </tr>
+        <tr>
+          <td><strong>Dashboard digitale</strong></td>
+          <td class="col-yes">Rapido</td>
+          <td class="col-yes">Ricerca per nome, check-in con un click, funziona da qualsiasi telefono</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>Con una dashboard digitale puoi cercare il nome di un partecipante in meno di tre secondi e segnare la presenza con un click. Se stai gestendo l'ingresso di 200 persone, la differenza è sostanziale -- sia in termini di tempo che di errori.</p>
+
+    <p>Un altro vantaggio spesso sottovalutato: se hai più persone all'ingresso, ognuna può usare il proprio telefono per segnare le presenze in parallelo, senza che i dati vadano in conflitto.</p>
+
+    <h2 id="gdpr">GDPR e privacy: cosa devi sapere</h2>
+
+    <p>Raccogliere dati personali in Italia -- nome, email, telefono -- è soggetto al GDPR. Non è necessario avere un consulente legale per farlo correttamente, ma ci sono alcune regole di base da rispettare.</p>
+
+    <ul>
+      <li><strong>Consenso esplicito al trattamento dei dati.</strong> Il modulo di iscrizione deve contenere una checkbox (non pre-spuntata) con la quale il partecipante accetta il trattamento dei dati personali secondo la tua informativa sulla privacy.</li>
+      <li><strong>Finalità del trattamento.</strong> I dati raccolti possono essere usati solo per le finalità dichiarate -- tipicamente, la gestione delle iscrizioni all'evento. Non puoi usarli per comunicazioni di marketing senza un consenso separato.</li>
+      <li><strong>Consenso alla newsletter separato.</strong> Se vuoi inviare comunicazioni future, devi raccogliere un consenso distinto da quello al trattamento dei dati. Non puoi fare un unico checkbox che copra entrambe le cose.</li>
+      <li><strong>Conservazione dei dati.</strong> Non conservare i dati più del necessario. Per un evento passato, è buona pratica eliminare i dati degli iscritti entro 30-90 giorni dalla data dell'evento.</li>
+    </ul>
+
+    <div class="box box-info">
+      <div class="box-title">ℹ️ Informativa sulla privacy</div>
+      <p>Hai bisogno di un documento di informativa sul trattamento dei dati (art. 13 GDPR) accessibile ai partecipanti. Se non ne hai una, puoi farla preparare da un consulente legale o usare un generatore conforme al GDPR -- ce ne sono diversi pensati per le piccole realtà italiane.</p>
+    </div>
+
+    <h2 id="strumenti">Quale strumento usare</h2>
+
+    <p>Le opzioni disponibili per gestire le iscrizioni a un evento sono fondamentalmente tre, con caratteristiche molto diverse.</p>
+
+    <p><strong>Google Forms + Sheets.</strong> Gratuito e accessibile. Va bene per eventi piccoli e informali dove non serve conferma email automatica, gestione delle presenze digitale, o capienza con lista d'attesa. Il grosso limite è che il partecipante non riceve una conferma immediata e tu devi gestire tutto manualmente.</p>
+
+    <p><strong>Piattaforme di ticketing.</strong> Eventbrite, Eventix e simili. Sono pensate per eventi a pagamento e aggiungono commissioni su ogni biglietto venduto. Per eventi gratuiti o gestiti con iscrizione semplice, sono spesso eccessive in complessità e costo.</p>
+
+    <p><strong>Strumenti dedicati alla gestione iscrizioni.</strong> Come EventsFun, pensato specificamente per organizzatori italiani che vogliono una soluzione completa senza pagare per biglietto venduto. Include pagina pubblica, conferma email automatica, Google Calendar, gestione presenze, QR code, e rispetto del GDPR -- con un costo fisso per evento.</p>
+
+    <p>La scelta dipende principalmente da due variabili: la frequenza con cui organizzi eventi e il livello di professionalità che vuoi dare all'esperienza del partecipante. Per un evento occasionale con meno di 50 persone, Google Forms può bastare. Per qualcosa di più strutturato, o se organizzi eventi con una certa regolarità, uno strumento dedicato ti fa risparmiare ore di lavoro manuale ogni volta.</p>
+
+  </div><!-- /art-body -->
+
+  <!-- CTA -->
+  <div class="art-cta">
+    <h3>Gestisci le iscrizioni con EventsFun</h3>
+    <p>Pagina pubblica, conferma email automatica, QR code e lista presenze digitale. Tutto incluso, senza commissioni per iscritto.</p>
+    <a href="https://eventsfun.com/demo.html" class="cta-btn">Prova la demo gratuita →</a>
+    <p class="cta-sub">Nessuna registrazione richiesta per la demo</p>
+  </div>
+
+  <!-- ARTICOLI CORRELATI -->
+  <div class="related">
+    <div class="related-title">Altre guide</div>
+    <div class="related-grid">
+      <a href="qr-code-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>QR code per eventi: come crearlo e usarlo</h4>
+      </a>
+      <a href="gdpr-iscrizioni-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>GDPR e raccolta dati agli eventi: cosa devi sapere</h4>
+      </a>
+      <a href="lista-presenze-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Lista presenze digitale: addio ai fogli Excel</h4>
+      </a>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<footer>
+  <div class="footer-inner">
+    <a href="https://eventsfun.com" class="footer-logo">Events<span>Fun</span></a>
+    <span class="footer-copy">© 2026 EventsFun — Studio B. di Giorgio Boerci</span>
+  </div>
+</footer>
+
+</body>
+</html>
