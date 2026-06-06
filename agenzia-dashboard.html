@@ -490,6 +490,10 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div>
     </div>
+    <div id="o_acc_opts_row" style="display:none">
+      <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div><div class="opt-sub">Gli accompagnatori devono inserire l'email</div></div><div class="tog" id="otog_acc_email_obb" onclick="otog('acc_email_obb')"><div class="tog-dot"></div></div></div>
+      <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div><div class="opt-sub">Gli accompagnatori devono inserire il telefono</div></div><div class="tog" id="otog_acc_tel_obb" onclick="otog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
+    </div>
     <div id="o_capienza_pp_row" style="display:none" class="opt-row">
       <div>
         <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
@@ -629,6 +633,10 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="opt-row">
       <div><div class="opt-lbl">Iscrizione multipla</div></div>
       <div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div>
+    </div>
+    <div id="s_acc_opts_row" style="display:none">
+      <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div><div class="opt-sub">Gli accompagnatori devono inserire l'email</div></div><div class="tog" id="stog_acc_email_obb" onclick="stog('acc_email_obb')"><div class="tog-dot"></div></div></div>
+      <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div><div class="opt-sub">Gli accompagnatori devono inserire il telefono</div></div><div class="tog" id="stog_acc_tel_obb" onclick="stog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
     </div>
     <div id="s_capienza_pp_row" style="display:none" class="opt-row">
       <div>
@@ -822,8 +830,8 @@ var allEvents = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
-var stogState = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false };
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
 /* Card statistiche personalizzabili: array di 2 elementi, null = vuoto */
@@ -1532,6 +1540,8 @@ async function saveEvent() {
     attivo: true, bozza: false,
     opt_multipla: otogState.multipla,
     opt_cap_persona: otogState.cap_persona,
+    opt_accompagnatori_email_obbligatoria: otogState.acc_email_obb,
+    opt_accompagnatori_telefono_obbligatorio: otogState.acc_tel_obb,
     opt_tipo: otogState.tipo,
     opt_pasto: otogState.pasto,
     opt_pasto_pranzo: !otogState.pasto || document.getElementById('oopt_pranzo').checked,
@@ -1596,13 +1606,14 @@ function openEditEvent() {
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla','cap_persona','tipo','pasto','newsletter','capienza','promo_auto'].forEach(function(k) {
-    var evKey = k === 'promo_auto' ? 'promo_automatica' : 'opt_' + k;
+  ['multipla','cap_persona','acc_email_obb','acc_tel_obb','tipo','pasto','newsletter','capienza','promo_auto'].forEach(function(k) {
+    var evKey = k === 'promo_auto' ? 'promo_automatica' : k === 'acc_email_obb' ? 'opt_accompagnatori_email_obbligatoria' : k === 'acc_tel_obb' ? 'opt_accompagnatori_telefono_obbligatorio' : 'opt_' + k;
     stogState[k] = ev[evKey] !== undefined ? ev[evKey] : (k === 'newsletter');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
   var ss = document.getElementById('spasto_sub'); if (ss) ss.style.display = stogState.pasto ? 'block' : 'none';
   setDisp('s_capienza_pp_row', stogState.multipla ? 'flex' : 'none');
+  setDisp('s_acc_opts_row', stogState.multipla ? 'block' : 'none');
   var sp2 = document.getElementById('sopt_pranzo'); if (sp2) sp2.checked = ev.opt_pasto_pranzo !== false;
   var sc2 = document.getElementById('sopt_cena'); if (sc2) sc2.checked = ev.opt_pasto_cena !== false;
   setHTML('sspList', ''); spIdx.s = 0;
@@ -1632,6 +1643,8 @@ async function saveSettings() {
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
     opt_multipla: stogState.multipla,
     opt_cap_persona: stogState.cap_persona,
+    opt_accompagnatori_email_obbligatoria: stogState.acc_email_obb,
+    opt_accompagnatori_telefono_obbligatorio: stogState.acc_tel_obb,
     opt_tipo: stogState.tipo,
     opt_pasto: stogState.pasto,
     opt_pasto_pranzo: !stogState.pasto || document.getElementById('sopt_pranzo').checked,
@@ -1669,13 +1682,13 @@ function otog(k) {
   otogState[k] = !otogState[k];
   var el = document.getElementById('otog_' + k); if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('opasto_sub'); if (s) s.style.display = otogState[k] ? 'block' : 'none'; }
-  if (k === 'multipla') { setDisp('o_capienza_pp_row', otogState[k] ? 'flex' : 'none'); if (!otogState[k]) { otogState['cap_persona'] = false; var cp = document.getElementById('otog_cap_persona'); if (cp) cp.classList.remove('on'); } }
+  if (k === 'multipla') { setDisp('o_capienza_pp_row', otogState[k] ? 'flex' : 'none'); setDisp('o_acc_opts_row', otogState[k] ? 'block' : 'none'); if (!otogState[k]) { otogState['cap_persona'] = false; otogState['acc_email_obb'] = false; otogState['acc_tel_obb'] = false; var cp = document.getElementById('otog_cap_persona'); if (cp) cp.classList.remove('on'); var ae = document.getElementById('otog_acc_email_obb'); if (ae) ae.classList.remove('on'); var at = document.getElementById('otog_acc_tel_obb'); if (at) at.classList.remove('on'); } }
 }
 function stog(k) {
   stogState[k] = !stogState[k];
   var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('spasto_sub'); if (s) s.style.display = stogState[k] ? 'block' : 'none'; }
-  if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); if (!stogState[k]) { stogState['cap_persona'] = false; var cp = document.getElementById('stog_cap_persona'); if (cp) cp.classList.remove('on'); } }
+  if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); setDisp('s_acc_opts_row', stogState[k] ? 'block' : 'none'); if (!stogState[k]) { stogState['cap_persona'] = false; stogState['acc_email_obb'] = false; stogState['acc_tel_obb'] = false; var cp = document.getElementById('stog_cap_persona'); if (cp) cp.classList.remove('on'); var ae = document.getElementById('stog_acc_email_obb'); if (ae) ae.classList.remove('on'); var at = document.getElementById('stog_acc_tel_obb'); if (at) at.classList.remove('on'); } }
 }
 
 /* ============================================================
@@ -2250,6 +2263,8 @@ async function openPreviewFromSettings() {
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
     opt_multipla: stogState.multipla,
     opt_cap_persona: stogState.cap_persona,
+    opt_accompagnatori_email_obbligatoria: stogState.acc_email_obb,
+    opt_accompagnatori_telefono_obbligatorio: stogState.acc_tel_obb,
     opt_tipo: stogState.tipo,
     opt_pasto: stogState.pasto,
     opt_pasto_pranzo: !stogState.pasto || document.getElementById('sopt_pranzo').checked,
