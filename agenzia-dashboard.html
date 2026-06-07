@@ -903,6 +903,9 @@ var configStatIdx = null;
 var configStatSel = null;
 var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste */
 
+function hideLoading() { setDisp('loading', 'none'); }
+function showErr() { hideLoading(); showView('error'); }
+
 /* ============================================================
    INIT
    ============================================================ */
