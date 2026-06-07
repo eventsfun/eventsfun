@@ -274,28 +274,17 @@ async function loadDashboards(){
     var html='<div class="topbar-user"><p>Bentornato'+(orders[0].nome?', <strong style="color:var(--text)">'+orders[0].nome+'</strong>':'')+'</p><div style="display:flex;gap:8px;align-items:center"><button class="btn-account" onclick="openAccount()">&#128100; Il mio account</button><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
     var anyActive=false;
     for(var i=0;i<orders.length;i++){
-      var order=orders[i];var piano=order.piano||'base';var token=null,ev=null;
+      var order=orders[i];var piano=order.piano||'base';var token=null;
       try{var acts=await sbGet('activations',{order_id:order.id},'token',accessToken);if(acts&&acts.length)token=acts[0].token;}catch(e){}
-      if(token){try{var evs=await sbGet('events',{activation_token:token},'nome,data_iso,attivo',accessToken);if(evs&&evs.length)ev=evs[0];}catch(e){}}
       var dashUrl=token?(DASH_FILE[piano]+'?token='+token):null;
-      var closed=ev?isClosed(ev):false;var statusHtml,infoHtml,actionHtml;
+      var statusHtml,infoHtml,actionHtml;
       if(!token){
         statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Attivazione in corso</span></div>';
         infoHtml='<div class="plan-info">Acquisto registrato. Ricarica tra poco.</div>';actionHtml='';
-      }else if(!ev){
-        anyActive=true;
-        statusHtml='<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pronto per il primo evento</span></div>';
-        infoHtml='<div class="plan-info">Accedi alla dashboard e crea il tuo evento.</div>';
-        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'
-          +(piano==='base'?'<a href="'+PAYMENT_LINKS.upgrade_base_pro+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'');
-      }else if(closed){
-        statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Evento concluso</span></div>';
-        infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+' concluso.</div>';
-        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard" style="background:var(--inp-bg);color:var(--text);border:1px solid var(--border)">Rivedi i dati →</a>';
       }else{
         anyActive=true;
-        statusHtml='<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Evento attivo</span></div>';
-        infoHtml='<div class="plan-info">Evento <strong>'+ev.nome+'</strong> del '+isoToIt(ev.data_iso)+'.</div>';
+        statusHtml='<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Dashboard pronta</span></div>';
+        infoHtml='<div class="plan-info">Accedi alla dashboard per gestire i tuoi eventi.</div>';
         actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'
           +(piano==='base'?'<a href="'+PAYMENT_LINKS.upgrade_base_pro+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'');
       }
