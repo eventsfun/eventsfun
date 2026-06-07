@@ -304,6 +304,8 @@ function render() {
           return '<label class="lp-chk-item"><input type="checkbox" id="rxcb_' + f.id + '_' + o.replace(/\s+/g,'_') + '" value="' + o + '" style="accent-color:#C9A96E"> ' + o + '</label>';
         }).join('')
         + '</div></div>';
+    } else if (f.type === 'textarea') {
+      extraFields += '<div class="lp-fg">' + lbl + '<textarea id="rx_' + f.id + '" class="lp-inp" placeholder="' + (f.placeholder || '') + '" rows="4" style="resize:vertical;font-family:inherit;font-size:14px;line-height:1.5;padding:10px 12px"></textarea></div>';
     } else {
       extraFields += '<div class="lp-fg">' + lbl + '<input id="rx_' + f.id + '" class="lp-inp" placeholder="' + (f.placeholder || '') + '"></div>';
     }

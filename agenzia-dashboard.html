@@ -1860,6 +1860,7 @@ function addCF(prefix, listId, data) {
   d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + escHtml(data && data.label ? data.label : '') + '">'
     + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
+    + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
     + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
     + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
     + '</select>'
@@ -2008,6 +2009,8 @@ function buildExtra(ev, extra) {
             + escHtml(o) + '</label>';
         }).join('')
         + '</div>';
+    } else if (f.type === 'textarea') {
+      html += '<textarea id="rx' + f.id + '" placeholder="' + escHtml(f.placeholder || '') + '" rows="3" style="width:100%;background:var(--input-bg);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box">' + escHtml(val || '') + '</textarea>';
     } else {
       html += '<input id="rx' + f.id + '" placeholder="' + escHtml(f.placeholder || '') + '" value="' + escHtml(val || '') + '">';
     }

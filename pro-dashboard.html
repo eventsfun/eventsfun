@@ -1578,6 +1578,7 @@ function addCF(prefix, listId, data) {
   d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + escHtml(data && data.label ? data.label : '') + '">'
     + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
+    + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
     + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
     + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
     + '</select>'
