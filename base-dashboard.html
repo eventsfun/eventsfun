@@ -1298,7 +1298,7 @@ function addCF(prefix, listId, data) {
   if (type === 'dropdown' || type === 'checkbox') {
     var opts = (data && data.options) ? data.options : [];
     optionsHtml = '<div class="cf-options-area">'
-      + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+      + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni scelta singola' : 'Opzioni scelta multipla') + '</div>'
       + '<div class="cf-opt-list" id="cfopts' + id + '">' + opts.map(function(o) { return buildOptItem(id, o); }).join('') + '</div>'
       + '<button class="cf-add-opt" onclick="addOptItem(\'' + id + '\')">+ Aggiungi opzione</button></div>';
   }
@@ -1306,8 +1306,8 @@ function addCF(prefix, listId, data) {
     + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
     + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
-    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
-    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
+    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Scelta singola (menu)</option>'
+    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Scelta multipla (caselle)</option>'
     + '</select>'
     + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
     + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
@@ -1328,7 +1328,7 @@ function onCFTypeChange(cfId, type) {
   var existing = row.querySelector('.cf-options-area'); if (existing) existing.remove();
   if (type === 'dropdown' || type === 'checkbox') {
     var area = document.createElement('div'); area.className = 'cf-options-area';
-    area.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
+    area.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni scelta singola' : 'Opzioni scelta multipla') + '</div>'
       + '<div class="cf-opt-list" id="cfopts' + cfId + '"></div>'
       + '<button class="cf-add-opt" onclick="addOptItem(\'' + cfId + '\')">+ Aggiungi opzione</button>';
     row.appendChild(area);
