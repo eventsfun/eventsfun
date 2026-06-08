@@ -13,13 +13,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-height:100vh;padding:40px 16px 80px}
+body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-height:100vh;padding:32px 16px 80px}
 .wrap{max-width:520px;margin:0 auto}
-.card{background:#fff;border-radius:16px;padding:32px;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
+.card{background:#fff;border-radius:16px;padding:28px 24px;margin-bottom:16px;box-shadow:0 2px 16px rgba(0,0,0,.06)}
 .ev-date{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:10px}
-.ev-title{font-family:"Syne",sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px}
-.ev-loc{font-size:13px;color:#666;margin-bottom:12px}
-.ev-desc{font-size:13px;color:#666;line-height:1.7}
+.ev-title{font-family:"Syne",sans-serif;font-size:clamp(18px,5vw,26px);font-weight:800;letter-spacing:-.5px;margin-bottom:8px;word-break:break-word;overflow-wrap:break-word;hyphens:auto}
+.ev-loc{font-size:13px;color:#666;margin-bottom:12px;word-break:break-word;overflow-wrap:break-word}
+.ev-desc{font-size:13px;color:#666;line-height:1.7;word-break:break-word;overflow-wrap:break-word}
 .ev-img{width:100%;max-height:220px;object-fit:cover;display:block;border-radius:12px;margin-bottom:20px}
 .cap-bar{background:#fff;border-radius:12px;padding:14px 20px;margin-bottom:16px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
 .cap-row{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:8px}
@@ -45,7 +45,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .spon-wrap{margin-top:32px;padding-top:28px;border-top:1px solid #e8e4de;text-align:center}
 .spon-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:18px}
 .spon-list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.spon-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f8f7f5;border:1px solid #e8e4de;border-radius:10px;text-decoration:none;color:#333;font-size:13px;font-weight:600}
+.spon-item{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#f8f7f5;border:1px solid #e8e4de;border-radius:10px;text-decoration:none;color:#333;font-size:13px;font-weight:600;word-break:break-word;overflow-wrap:break-word}
 .spon-logo{width:28px;height:28px;border-radius:5px;object-fit:contain}
 .ef-footer{margin-top:32px;text-align:center}
 .ef-badge{display:inline-flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none}
@@ -75,6 +75,13 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .lp-chk-item{display:flex;align-items:center;gap:10px;font-size:13px;color:#444;cursor:pointer}
 .lp-chk-item input[type=checkbox]{width:16px;height:16px;accent-color:#C9A96E;cursor:pointer;flex-shrink:0}
 @media(max-width:400px){.lp-grid{grid-template-columns:1fr}}
+@media(max-width:480px){
+  body{padding:20px 12px 60px}
+  .card{padding:20px 16px}
+  .ev-title{letter-spacing:-.3px}
+  .success-box{padding:32px 12px}
+  .err-box{padding:36px 12px}
+}
 .gcal-btn{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 18px;background:#fff;border:1.5px solid #e0ddd8;border-radius:10px;font-size:13px;font-weight:600;color:#333;text-decoration:none;transition:border-color .2s,box-shadow .2s;cursor:pointer}
 .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
 .gcal-btn svg{flex-shrink:0}
