@@ -2470,8 +2470,8 @@ function showView(n) {
   document.getElementById('view-' + n).classList.add('on');
   if (n === 'presenze') renderPresenze();
 }
-function openOv(id) { document.getElementById(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
-function closeOv(id) { document.getElementById(id).classList.remove('on'); document.body.style.overflow = ''; }
+function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
+function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
 function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
 
 /* ============================================================
