@@ -13,6 +13,7 @@
 <title>Dashboard Pro — EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <style>
 :root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);--row-hover:rgba(255,255,255,0.04);}
 body.light{--bg:#f4f3f0;--bg2:#fff;--bg3:#fafaf8;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.06);--text:#1a1a1a;--text-muted:rgba(20,20,20,0.6);--text-dim:rgba(20,20,20,0.4);--inp-bg:rgba(0,0,0,0.04);--inp-border:rgba(0,0,0,0.12);--row-hover:rgba(0,0,0,0.03);}
@@ -272,6 +273,7 @@ tbody td.xv{color:var(--gold)}
           <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
           <span class="pres-stat pres-stat-ass" id="presAss">0 assenti</span>
         </div>
+        <button class="btn-sm btn-sm-gold" id="btnQrScanner" onclick="openQrScanner()" style="display:none">📷 Scanner QR</button>
         <button class="btn-sm" onclick="showView('dash')">← Dashboard</button>
       </div>
     </div>
@@ -433,6 +435,8 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
+    <div class="sec-div">📋 Check-in</div>
+    <div class="opt-row"><div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div><div class="tog" id="otog_qr_checkin" onclick="otog('qr_checkin')"><div class="tog-dot"></div></div></div>
     <div class="sec-div">🤝 Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
       <button class="add-row-btn" onclick="addSP('c','cspList')">+ Aggiungi</button></div>
     <div id="cspList" style="margin-bottom:8px"></div>
@@ -548,6 +552,8 @@ tbody td.xv{color:var(--gold)}
     </div>
     <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div></div>
     <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
+    <div class="sec-div">📋 Check-in</div>
+    <div class="opt-row"><div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div><div class="tog" id="stog_qr_checkin" onclick="stog('qr_checkin')"><div class="tog-dot"></div></div></div>
     <div class="sec-div">🤝 Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
     <div id="sspList" style="margin-bottom:8px"></div>
     <div class="sec-div">📝 Campi aggiuntivi<button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button></div>
@@ -621,6 +627,29 @@ tbody td.xv{color:var(--gold)}
 <div class="toast toast-g" id="toastG"></div>
 <div class="toast toast-r" id="toastR"></div>
 
+<!-- MODAL: QR SCANNER -->
+<div class="ov" id="ovQrScanner" onclick="if(event.target===this)closeQrScanner()" style="display:none">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeQrScanner()">✕</button>
+    <h2>Scanner QR</h2>
+    <p class="modal-sub">Punta la fotocamera sul QR dell'iscritto.</p>
+    <div style="position:relative;width:100%;background:#000;border-radius:10px;overflow:hidden;margin:12px 0">
+      <video id="qrVideo" style="width:100%;display:block;max-height:300px;object-fit:cover" playsinline autoplay muted></video>
+      <canvas id="qrCanvas" style="display:none"></canvas>
+      <div style="position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center">
+        <div style="width:180px;height:180px;border:2px solid var(--gold);border-radius:12px;box-shadow:0 0 0 9999px rgba(0,0,0,0.45)"></div>
+      </div>
+    </div>
+    <div id="qrScanResult" style="display:none;border-radius:10px;padding:16px 18px;margin-bottom:12px;text-align:center">
+      <div id="qrScanIcon" style="font-size:32px;margin-bottom:8px"></div>
+      <div id="qrScanName" style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:4px"></div>
+      <div id="qrScanDetail" style="font-size:12px;color:var(--text-muted)"></div>
+    </div>
+    <div id="qrScanStatus" style="font-size:12px;color:var(--text-dim);text-align:center;padding:8px 0">In attesa di scansione...</div>
+    <button class="btn-full" onclick="closeQrScanner()" style="margin-top:12px">Chiudi scanner</button>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    SUPABASE CONFIG -- sostituisci con la tua chiave anon
@@ -679,8 +708,8 @@ var currentRegs = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false };
-var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
 var LS_THEME = 'ef_theme';
 
 /* ============================================================
@@ -794,6 +823,7 @@ function sanitizeEvent(ev) {
   ev.opt_pasto = !!ev.opt_pasto;
   ev.opt_newsletter = ev.opt_newsletter !== false;
   ev.opt_capienza = !!ev.opt_capienza;
+  ev.opt_qr_checkin = !!ev.opt_qr_checkin;
   return ev;
 }
 
@@ -1080,7 +1110,7 @@ function resetEvForm(mode) {
   setHTML('cspList', '');
   setHTML('ccfList', '');
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false };
+  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
@@ -1148,6 +1178,7 @@ async function saveEvent() {
     opt_pasto_cena: !otogState.pasto || document.getElementById('oopt_cena').checked,
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
+    opt_qr_checkin: otogState.qr_checkin,
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
     activated: false
@@ -1199,7 +1230,7 @@ function openEditEvent() {
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla', 'cap_persona', 'acc_email_obb', 'acc_tel_obb', 'tipo', 'pasto', 'newsletter', 'capienza'].forEach(function(k) {
+  ['multipla', 'cap_persona', 'acc_email_obb', 'acc_tel_obb', 'tipo', 'pasto', 'newsletter', 'capienza', 'qr_checkin'].forEach(function(k) {
     var dbKey = k === 'acc_email_obb' ? 'opt_accompagnatori_email_obbligatoria' : k === 'acc_tel_obb' ? 'opt_accompagnatori_telefono_obbligatorio' : 'opt_' + k;
     stogState[k] = ev[dbKey] !== undefined ? ev[dbKey] : (k === 'newsletter');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
@@ -1238,6 +1269,7 @@ async function saveSettings() {
     opt_pasto_pranzo: !stogState.pasto || document.getElementById('sopt_pranzo').checked,
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
+    opt_qr_checkin: stogState.qr_checkin,
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
   };
@@ -1521,6 +1553,8 @@ function renderPresenze() {
   document.getElementById('presPres').textContent = presenti + ' presenti';
   document.getElementById('presAss').textContent = (regs.length - presenti) + ' assenti';
   document.getElementById('presSub').textContent = ev.nome + ' — ' + regs.length + ' iscritti';
+  var scanBtn = document.getElementById('btnQrScanner');
+  if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosed(ev)) ? 'inline-block' : 'none';
   var list = document.getElementById('presList');
   if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px">Nessun risultato</div>'; return; }
   list.innerHTML = filtered.map(function(r) {
@@ -1663,6 +1697,135 @@ function showView(n) { document.querySelectorAll('.view').forEach(function(v) { 
 function openOv(id) { document.getElementById(id).classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeOv(id) { document.getElementById(id).classList.remove('on'); document.body.style.overflow = ''; }
 function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
+
+/* ============================================================
+   QR SCANNER (check-in fotocamera)
+   ============================================================ */
+var qrScanInterval = null;
+var qrScanCooldown = false;
+
+function openQrScanner() {
+  var ev = currentEv;
+  if (!ev || !ev.opt_qr_checkin) return;
+  openOv('ovQrScanner');
+  setDisp('qrScanResult', 'none');
+  document.getElementById('qrScanStatus').textContent = 'In attesa di scansione...';
+  startCamera();
+}
+
+function closeQrScanner() {
+  stopCamera();
+  closeOv('ovQrScanner');
+}
+
+function startCamera() {
+  var video = document.getElementById('qrVideo');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(function(stream) {
+      video.srcObject = stream;
+      video.play();
+      qrScanInterval = setInterval(scanFrame, 300);
+    })
+    .catch(function(err) {
+      document.getElementById('qrScanStatus').textContent = 'Fotocamera non disponibile: ' + err.message;
+    });
+}
+
+function stopCamera() {
+  if (qrScanInterval) { clearInterval(qrScanInterval); qrScanInterval = null; }
+  var video = document.getElementById('qrVideo');
+  if (video && video.srcObject) {
+    video.srcObject.getTracks().forEach(function(t) { t.stop(); });
+    video.srcObject = null;
+  }
+  qrScanCooldown = false;
+}
+
+function scanFrame() {
+  if (qrScanCooldown) return;
+  var video = document.getElementById('qrVideo');
+  var canvas = document.getElementById('qrCanvas');
+  if (!video || !video.videoWidth) return;
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  try {
+    if (window.jsQR) {
+      var code = jsQR(imageData.data, imageData.width, imageData.height);
+      if (code && code.data) { handleQrData(code.data); return; }
+    }
+    if (window.BarcodeDetector) {
+      var bd = new BarcodeDetector({ formats: ['qr_code'] });
+      bd.detect(canvas).then(function(codes) {
+        if (codes.length) handleQrData(codes[0].rawValue);
+      });
+    }
+  } catch(e) {}
+}
+
+function handleQrData(data) {
+  if (qrScanCooldown) return;
+  qrScanCooldown = true;
+  var ev = currentEv;
+  if (!ev) return;
+  var reg = currentRegs.find(function(r) { return r.id === data; });
+  var result = document.getElementById('qrScanResult');
+  var icon = document.getElementById('qrScanIcon');
+  var nameEl = document.getElementById('qrScanName');
+  var detail = document.getElementById('qrScanDetail');
+  var status = document.getElementById('qrScanStatus');
+
+  if (!reg) {
+    result.style.display = 'block';
+    result.style.background = 'rgba(200,80,80,0.1)';
+    result.style.border = '1px solid rgba(200,80,80,0.3)';
+    icon.textContent = '❌';
+    nameEl.textContent = 'QR non riconosciuto';
+    detail.textContent = 'Questo QR non appartiene a nessun iscritto di questo evento.';
+    status.textContent = '';
+    setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 3000);
+    return;
+  }
+
+  if (reg.presente) {
+    result.style.display = 'block';
+    result.style.background = 'rgba(200,160,60,0.1)';
+    result.style.border = '1px solid rgba(200,160,60,0.3)';
+    icon.textContent = '⚠️';
+    nameEl.textContent = reg.nome + ' ' + reg.cognome;
+    detail.textContent = 'Già segnato come presente.';
+    status.textContent = '';
+    setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 3000);
+    return;
+  }
+
+  sbPatch('registrations', reg.id, { presente: true }).then(function(updated) {
+    var i = currentRegs.findIndex(function(r) { return r.id === reg.id; });
+    if (i >= 0) currentRegs[i] = updated;
+    result.style.display = 'block';
+    result.style.background = 'rgba(110,201,130,0.1)';
+    result.style.border = '1px solid rgba(110,201,130,0.3)';
+    icon.textContent = '✅';
+    nameEl.textContent = reg.nome + ' ' + reg.cognome;
+    detail.textContent = reg.email + (reg.adulti ? ' · ' + reg.adulti + ' adulti' + (reg.bambini ? ' + ' + reg.bambini + ' bambini' : '') : '');
+    status.textContent = '';
+    var pres = currentRegs.filter(function(r) { return r.presente; }).length;
+    document.getElementById('presPres').textContent = pres + ' presenti';
+    document.getElementById('presAss').textContent = (currentRegs.length - pres) + ' assenti';
+    setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 2500);
+  }).catch(function() {
+    result.style.display = 'block';
+    result.style.background = 'rgba(200,80,80,0.1)';
+    result.style.border = '1px solid rgba(200,80,80,0.3)';
+    icon.textContent = '❌';
+    nameEl.textContent = 'Errore di connessione';
+    detail.textContent = 'Riprova tra qualche secondo.';
+    status.textContent = '';
+    setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 3000);
+  });
+}
 
 /* INIT */
 init();
