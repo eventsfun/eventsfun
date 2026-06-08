@@ -903,9 +903,6 @@ var configStatIdx = null;
 var configStatSel = null;
 var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste */
 
-function hideLoading() { setDisp('loading', 'none'); }
-function showErr() { hideLoading(); showView('error'); }
-
 /* ============================================================
    INIT
    ============================================================ */
@@ -1853,7 +1850,7 @@ function addCF(prefix, listId, data) {
     var opts = (data && data.options) ? data.options : [];
     optionsHtml = '<div class="cf-options-area">'
       + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">'
-      + (type === 'dropdown' ? 'Opzioni scelta singola' : 'Opzioni scelta multipla') + '</div>'
+      + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
       + '<div class="cf-opt-list" id="cfopts' + id + '">'
       + opts.map(function(o) { return buildOptItem(id, o); }).join('')
       + '</div>'
@@ -1863,9 +1860,8 @@ function addCF(prefix, listId, data) {
   d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + escHtml(data && data.label ? data.label : '') + '">'
     + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
-    + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
-    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Scelta singola (menu)</option>'
-    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Scelta multipla (caselle)</option>'
+    + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
+    + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
     + '</select>'
     + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
     + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
@@ -1894,7 +1890,7 @@ function onCFTypeChange(cfId, type) {
     var area = document.createElement('div');
     area.className = 'cf-options-area';
     area.innerHTML = '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">'
-      + (type === 'dropdown' ? 'Opzioni scelta singola' : 'Opzioni scelta multipla') + '</div>'
+      + (type === 'dropdown' ? 'Opzioni menu' : 'Opzioni caselle') + '</div>'
       + '<div class="cf-opt-list" id="cfopts' + cfId + '"></div>'
       + '<button class="cf-add-opt" onclick="addOptItem(\'' + cfId + '\')">+ Aggiungi opzione</button>';
     row.appendChild(area);
@@ -2012,8 +2008,6 @@ function buildExtra(ev, extra) {
             + escHtml(o) + '</label>';
         }).join('')
         + '</div>';
-    } else if (f.type === 'textarea') {
-      html += '<textarea id="rx' + f.id + '" placeholder="' + escHtml(f.placeholder || '') + '" rows="3" style="width:100%;background:var(--input-bg);border:1px solid var(--border2);border-radius:6px;padding:8px 10px;color:var(--text);font-family:inherit;font-size:13px;resize:vertical;box-sizing:border-box">' + escHtml(val || '') + '</textarea>';
     } else {
       html += '<input id="rx' + f.id + '" placeholder="' + escHtml(f.placeholder || '') + '" value="' + escHtml(val || '') + '">';
     }
@@ -2267,31 +2261,27 @@ function drawQrOverlay(container, testo) {
   var ctx = canvas.getContext('2d');
   var size = canvas.width;
   if (!size) return;
-  var maxWidth = size * 0.7;
-  var fontSize = Math.min(16, Math.max(8, Math.floor(size / 10)));
+  /* Fascia bianca a tutta larghezza -- altezza ~19% del QR, centrata */
+  var fasciaH = Math.round(size * 0.19);
+  var fasciaY = Math.round((size - fasciaH) / 2);
+  /* Font: parte grande, si riduce per stare dentro la fascia con padding verticale */
+  var padV = Math.round(fasciaH * 0.18);
+  var maxFontH = fasciaH - padV * 2;
+  var fontSize = Math.min(Math.round(maxFontH), Math.round(size / 8));
+  var maxTextW = size * 0.88; /* testo usa 88% della larghezza */
   ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
-  while (ctx.measureText(testo).width > maxWidth && fontSize > 7) {
+  while (ctx.measureText(testo).width > maxTextW && fontSize > 6) {
     fontSize--;
     ctx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
   }
-  var tw = ctx.measureText(testo).width;
-  var padX = Math.max(4, Math.floor(size * 0.04));
-  var padY = Math.max(3, Math.floor(size * 0.03));
-  var bw = tw + padX * 2;
-  var bh = fontSize + padY * 2;
-  var bx = (size - bw) / 2;
-  var by = (size - bh) / 2;
+  /* Disegna fascia bianca piena -- nessun bordo */
   ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.roundRect(bx, by, bw, bh, 3);
-  ctx.fill();
-  ctx.strokeStyle = '#C9A96E';
-  ctx.lineWidth = Math.max(1, size / 120);
-  ctx.stroke();
-  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(0, fasciaY, size, fasciaH);
+  /* Testo nero centrato nella fascia */
+  ctx.fillStyle = '#111111';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(testo, size / 2, size / 2);
+  ctx.fillText(testo, size / 2, fasciaY + fasciaH / 2);
 }
 function drawQrLogoOverlay(container, b64) {
   var canvas = container.querySelector('canvas');
