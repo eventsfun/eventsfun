@@ -478,15 +478,6 @@ select option{background:#1a1a1a;color:var(--text)}
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
-      <label>URL personalizzato pagina iscrizione
-        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per generarlo automaticamente dal nome evento. Es. "sagra-della-polenta-2026". Solo lettere, numeri e trattini. Non modificarlo dopo aver condiviso il link.</span></span>
-      </label>
-      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
-        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
-        <input id="ev_slug" placeholder="generato-automaticamente" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
-      </div>
-    </div>
-    <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
         <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
@@ -639,15 +630,6 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
-    </div>
-    <div class="mf">
-      <label>URL personalizzato pagina iscrizione
-        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Modifica solo se necessario -- cambiarlo invalida i link già condivisi. Solo lettere, numeri e trattini.</span></span>
-      </label>
-      <div style="display:flex;align-items:center;gap:0;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:9px;overflow:hidden">
-        <span style="padding:11px 10px;font-size:11px;color:var(--text-dim);white-space:nowrap;border-right:1px solid var(--inp-border);flex-shrink:0">e.html?slug=</span>
-        <input id="se_slug" placeholder="slug-evento" maxlength="80" style="flex:1;padding:11px 12px;background:transparent;border:none;outline:none;font-family:inherit;font-size:13px;color:var(--text)" oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-')">
-      </div>
     </div>
     <div class="mf">
       <label>Immagine evento</label>
@@ -1693,7 +1675,7 @@ async function saveEvent() {
     qr_testo: evQrTipo === 'testo' ? (getVal('ev_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: evQrTipo === 'logo' ? (evQrLogoB64 || null) : null,
     landing_tema: evTemaState || 'chiaro',
-    slug: getVal('ev_slug').trim() || makeSlug(nome),
+    slug: makeSlug(nome),
     capienza: parseInt(getVal('ev_cap')) || null,
     immagine: (img && img.style.display !== 'none' && img.src && img.src !== window.location.href) ? img.src : null,
     attivo: true, bozza: false,
@@ -1742,7 +1724,6 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
-  setVal('se_slug', ev.slug || makeSlug(ev.nome || ''));
   if (ev.qr_logo) {
     seQrTipo = 'logo'; seQrLogoB64 = ev.qr_logo;
     setQrTipo('se', 'logo');
@@ -1796,7 +1777,7 @@ async function saveSettings() {
     qr_testo: seQrTipo === 'testo' ? (getVal('se_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
     landing_tema: seTemaState || 'chiaro',
-    slug: getVal('se_slug').trim() || ev.slug || makeSlug(nome),
+    slug: ev.slug || makeSlug(nome),
     capienza: parseInt(getVal('se_cap')) || null,
     data_iso: getVal('se_data'),
     ora: getVal('se_ora').trim(),
