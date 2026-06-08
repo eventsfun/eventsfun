@@ -921,6 +921,12 @@ var configStatSel = null;
 var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste */
 
 /* ============================================================
+   LOADING / ERROR HELPERS
+   ============================================================ */
+function hideLoading() { setDisp('loading', 'none'); }
+function showErr() { showView('error'); }
+
+/* ============================================================
    INIT
    ============================================================ */
 async function init() {
