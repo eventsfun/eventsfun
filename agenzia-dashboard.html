@@ -19,6 +19,12 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .nav-r{display:flex;align-items:center;gap:10px}
 .nav-plan{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
 .theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+.nav-links{display:flex;align-items:center;gap:8px}
+.nav-hamburger{display:none;width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);cursor:pointer;font-size:18px;align-items:center;justify-content:center;color:var(--text)}
+.nav-mob-menu{display:none;position:absolute;top:100%;right:12px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:8px;z-index:200;min-width:180px;box-shadow:0 8px 24px rgba(0,0,0,0.3);flex-direction:column;gap:4px}
+.nav-mob-menu.open{display:flex}
+.nav-mob-item{display:block;font-size:13px;color:var(--text-muted);text-decoration:none;padding:9px 14px;border-radius:8px;transition:background .15s;border:none;background:none;cursor:pointer;text-align:left;width:100%;font-family:"DM Sans",sans-serif}
+.nav-mob-item:hover{background:var(--inp-bg);color:var(--text)}
 /* VIEWS */
 .view{display:none}.view.on{display:block}
 /* ERROR */
@@ -226,7 +232,7 @@ select option{background:#1a1a1a;color:var(--text)}
 .stat-cfg-option:hover,.stat-cfg-option.sel{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.06)}
 .stat-cfg-option.sel .stat-cfg-check{opacity:1}
 .stat-cfg-check{width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0A0A0A;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .2s}
-@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}}
+@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
 </style>
 </head>
 <body>
@@ -237,14 +243,23 @@ select option{background:#1a1a1a;color:var(--text)}
   <p>Caricamento in corso...</p>
 </div>
 
-<nav class="nav" style="display:none" id="mainNav">
+<nav class="nav" style="display:none;position:relative" id="mainNav">
   <div class="nav-logo">Events<span>Fun</span></div>
   <div class="nav-r">
     <span class="nav-plan">Agenzia</span>
-    <a id="navNlLink" href="#" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128231; Newsletter</a>
-    <a id="navStatsLink" href="#" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128200; Statistiche</a>
-    <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#8592; Area personale</a>
+    <div class="nav-links">
+      <a id="navNlLink" href="#" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128231; Newsletter</a>
+      <a id="navStatsLink" href="#" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128200; Statistiche</a>
+      <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#8592; Area personale</a>
+    </div>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
+    <button class="nav-hamburger" id="navHamburger" onclick="toggleMobMenu()" aria-label="Menu">☰</button>
+    <div class="nav-mob-menu" id="navMobMenu">
+      <a id="navNlLinkMob" href="#" class="nav-mob-item">&#128231; Newsletter</a>
+      <a id="navStatsLinkMob" href="#" class="nav-mob-item">&#128200; Statistiche</a>
+      <a href="https://eventsfun.com/area-personale.html" class="nav-mob-item">&#8592; Area personale</a>
+      <button class="nav-mob-item" onclick="toggleTheme();toggleMobMenu()">🌙 Tema</button>
+    </div>
   </div>
 </nav>
 
@@ -925,6 +940,17 @@ var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste 
    ============================================================ */
 function hideLoading() { setDisp('loading', 'none'); }
 function showErr() { showView('error'); }
+function toggleMobMenu() {
+  var m = document.getElementById('navMobMenu');
+  if (m) m.classList.toggle('open');
+}
+document.addEventListener('click', function(e) {
+  var menu = document.getElementById('navMobMenu');
+  var btn = document.getElementById('navHamburger');
+  if (menu && btn && !menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.remove('open');
+  }
+});
 
 /* ============================================================
    INIT
@@ -936,8 +962,12 @@ async function init() {
   sessionStorage.setItem('ef_token', TOKEN);
   var navNlLink = document.getElementById('navNlLink');
   if (navNlLink) navNlLink.href = 'newsletter-agenzia.html?token=' + TOKEN;
+  var navNlLinkMob = document.getElementById('navNlLinkMob');
+  if (navNlLinkMob) navNlLinkMob.href = 'newsletter-agenzia.html?token=' + TOKEN;
   var navStatsLink = document.getElementById('navStatsLink');
   if (navStatsLink) navStatsLink.href = 'statistiche-agenzia.html?token=' + TOKEN;
+  var navStatsLinkMob = document.getElementById('navStatsLinkMob');
+  if (navStatsLinkMob) navStatsLinkMob.href = 'statistiche-agenzia.html?token=' + TOKEN;
 
   /* STEP 1: verifica token */
   var rows;

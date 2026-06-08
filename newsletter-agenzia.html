@@ -825,7 +825,8 @@
       );
       const data = await r.json();
       if (!data || data.length === 0) return false;
-      return data[0].stato === 'active' || data[0].activated === true;
+      // Accetta token attivato oppure active -- i token beta manuali possono avere stato variabile
+      return data[0].activated === true || data[0].stato === 'active' || data[0].stato === 'pending';
     } catch { return false; }
   }
 
