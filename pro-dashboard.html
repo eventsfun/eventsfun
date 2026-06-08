@@ -699,9 +699,9 @@ var LS_THEME = 'ef_theme';
    ============================================================ */
 async function init() {
   initTheme();
-  TOKEN = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ef_token');
+  TOKEN = new URLSearchParams(window.location.search).get('token') || localStorage.getItem('ef_token');
   if (!TOKEN) { hideLoading(); showErr(); return; }
-  sessionStorage.setItem('ef_token', TOKEN);
+  localStorage.setItem('ef_token', TOKEN);
   // STEP 1: verifica token (solo questo determina accesso valido)
   var rows;
   try {
@@ -714,6 +714,7 @@ async function init() {
     // problema di connessione: prova comunque a entrare
     PIANO = PIANO || 'base';
   } else if (!rows.length) {
+    localStorage.removeItem('ef_token');
     hideLoading(); showErr(); return;  // token davvero inesistente
   } else {
     PIANO = rows[0].orders ? rows[0].orders.piano : PIANO;

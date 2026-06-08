@@ -957,9 +957,9 @@ document.addEventListener('click', function(e) {
    ============================================================ */
 async function init() {
   initTheme();
-  TOKEN = new URLSearchParams(window.location.search).get('token') || sessionStorage.getItem('ef_token');
+  TOKEN = new URLSearchParams(window.location.search).get('token') || localStorage.getItem('ef_token');
   if (!TOKEN) { hideLoading(); showErr(); return; }
-  sessionStorage.setItem('ef_token', TOKEN);
+  localStorage.setItem('ef_token', TOKEN);
   var navNlLink = document.getElementById('navNlLink');
   if (navNlLink) navNlLink.href = 'newsletter-agenzia.html?token=' + TOKEN;
   var navNlLinkMob = document.getElementById('navNlLinkMob');
@@ -976,6 +976,7 @@ async function init() {
   if (rows === null) {
     PIANO = 'agenzia';
   } else if (!rows.length) {
+    localStorage.removeItem('ef_token');
     hideLoading(); showErr(); return;
   } else {
     PIANO = (rows[0].orders && rows[0].orders.piano) ? rows[0].orders.piano : 'agenzia';
@@ -1012,8 +1013,11 @@ async function init() {
   try {
     var raw = await sbGet('events', { activation_token: TOKEN }, '*');
     var all = (raw || []).map(function(e) { return sanitizeEvent(e); });
-    /* Elimina bozze orfane (anteprima mai confermata) */
-    var bozze = all.filter(function(e) { return e.bozza; });
+    /* Elimina solo bozze orfane create da più di 1 ora (anteprima mai confermata) */
+    var cutoff = new Date(Date.now() - 60 * 60 * 1000);
+    var bozze = all.filter(function(e) {
+      return e.bozza && e.created_at && new Date(e.created_at) < cutoff;
+    });
     bozze.forEach(function(b) { sbDel('events', b.id).catch(function(){}); });
     allEvents = all.filter(function(e) { return !e.bozza; });
   } catch(e) { allEvents = []; }
