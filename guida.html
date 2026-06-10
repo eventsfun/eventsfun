@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.2 -->
+<!-- EventsFun | Guida in-app | v1.3 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -103,7 +103,7 @@ a.term:hover{border-bottom-style:solid}
 
 <header class="top">
   <a href="area-personale.html" class="logo">Events<span>Fun</span></a>
-  <a href="area-personale.html" class="top-link" onclick="if(history.length>1){history.back();return false;}">&#8592; Torna indietro</a>
+  <a href="area-personale.html" class="top-link" id="backBtn" onclick="return efBack();">&#8592; Torna indietro</a>
 </header>
 
 <div class="wrap">
@@ -487,6 +487,20 @@ for(var i=0;i<idxLinks.length;i++){
     });
   },{rootMargin:'-80px 0px -65% 0px'});
   for(var s=0;s<sections.length;s++){obs.observe(sections[s]);}
+})();
+
+// Pulsante Torna indietro: se c'e una pagina precedente (telefono, stessa scheda) torna indietro;
+// altrimenti (pc, scheda nuova) va alla dashboard di provenienza indicata da ?dash=, con ripiego area personale
+function efBack(){
+  if(history.length>1){history.back();return false;}
+  return true;
+}
+(function(){
+  var b=document.getElementById('backBtn');
+  if(!b)return;
+  var dash=new URLSearchParams(location.search).get('dash');
+  var map={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html',demo:'demo.html'};
+  if(dash&&map[dash])b.setAttribute('href',map[dash]);
 })();
 </script>
 
