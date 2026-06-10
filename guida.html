@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<!-- EventsFun | Guida in-app | v1.1 -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guida - EventsFun</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);--row-hover:rgba(255,255,255,0.04);}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;font-weight:300;line-height:1.7;-webkit-font-smoothing:antialiased}
+
+/* HEADER */
+.top{position:fixed;top:0;left:0;right:0;height:60px;background:rgba(10,10,10,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;z-index:100}
+.logo{font-family:"Syne",sans-serif;font-size:20px;font-weight:800;letter-spacing:-0.5px;text-decoration:none;color:var(--text)}
+.logo span{color:var(--gold)}
+.top-link{font-size:13px;color:var(--text-muted);text-decoration:none;padding:8px 14px;border:1px solid var(--border);border-radius:8px;transition:all .2s}
+.top-link:hover{color:var(--gold);border-color:rgba(201,169,110,0.4)}
+
+/* LAYOUT */
+.wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:268px 1fr;gap:48px;padding:88px 24px 90px}
+
+/* SIDEBAR INDICE */
+.side{align-self:start;position:sticky;top:84px}
+.side-toggle{display:none}
+.idx-title{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin-bottom:14px}
+.idx-group{margin-bottom:18px}
+.idx-group-name{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:var(--text-dim);margin-bottom:7px}
+.idx a{display:block;font-size:13.5px;color:var(--text-muted);text-decoration:none;padding:5px 10px;border-radius:7px;border-left:2px solid transparent;transition:all .15s}
+.idx a:hover{color:var(--text);background:var(--row-hover)}
+.idx a.active{color:var(--gold);border-left-color:var(--gold);background:rgba(201,169,110,0.07)}
+
+/* CONTENUTO */
+.content{min-width:0}
+.intro{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:28px 30px;margin-bottom:44px}
+.intro h1{font-family:"Syne",sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px}
+.intro p{color:var(--text-muted);font-size:15px}
+
+section{scroll-margin-top:80px;margin-bottom:52px}
+section h2{font-family:"Syne",sans-serif;font-size:22px;font-weight:700;letter-spacing:-0.3px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border2);display:flex;align-items:center;flex-wrap:wrap;gap:8px}
+section h3{font-family:"Syne",sans-serif;font-size:16px;font-weight:700;margin:26px 0 10px}
+.content p{color:var(--text-muted);font-size:15px;margin-bottom:14px}
+.content p strong,.content li strong{color:var(--text);font-weight:500}
+
+/* PASSI NUMERATI */
+ol.steps{list-style:none;counter-reset:step;margin:8px 0 18px}
+ol.steps li{counter-increment:step;position:relative;padding:4px 0 16px 44px;color:var(--text-muted);font-size:15px}
+ol.steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:28px;height:28px;border-radius:50%;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.35);color:var(--gold);font-family:"Syne",sans-serif;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+ul.dots{margin:0 0 16px 4px;padding:0;list-style:none}
+ul.dots li{position:relative;padding:3px 0 3px 20px;color:var(--text-muted);font-size:15px}
+ul.dots li::before{content:"";position:absolute;left:4px;top:13px;width:6px;height:6px;border-radius:50%;background:var(--gold)}
+
+/* BADGE PIANO */
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;letter-spacing:.3px;font-family:"DM Sans",sans-serif}
+.badge-pro{background:rgba(201,169,110,0.14);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
+.badge-ag{background:rgba(168,130,201,0.14);color:#c4a9e0;border:1px solid rgba(168,130,201,0.32)}
+
+/* BOX NOTE */
+.note{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--text-muted)}
+.note strong{color:var(--text);font-weight:500}
+
+/* TERMINE (link a glossario) */
+a.term{color:var(--gold);text-decoration:none;border-bottom:1px dotted rgba(201,169,110,0.5);cursor:help}
+a.term:hover{border-bottom-style:solid}
+
+/* GLOSSARIO */
+.gloss-item{padding:14px 0;border-bottom:1px solid var(--border2);scroll-margin-top:80px}
+.gloss-item:last-child{border-bottom:none}
+.gloss-item .g-term{font-family:"Syne",sans-serif;font-weight:700;font-size:15px;color:var(--text);margin-bottom:4px}
+.gloss-item .g-def{font-size:14.5px;color:var(--text-muted)}
+
+/* FAQ */
+.faq-item{padding:16px 0;border-bottom:1px solid var(--border2)}
+.faq-item:last-child{border-bottom:none}
+.faq-q{font-weight:500;color:var(--text);font-size:15px;margin-bottom:6px}
+.faq-a{font-size:14.5px;color:var(--text-muted)}
+
+/* MOBILE */
+@media(max-width:860px){
+  .wrap{grid-template-columns:1fr;gap:0;padding:76px 18px 70px}
+  .side{position:static;margin-bottom:28px}
+  .side-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer}
+  .side-toggle .chev{color:var(--gold);transition:transform .2s}
+  .side-toggle.open .chev{transform:rotate(180deg)}
+  .idx-wrap{display:none;margin-top:10px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .idx-wrap.open{display:block}
+  .idx-title{display:none}
+  .intro h1{font-size:23px}
+  section h2{font-size:19px}
+}
+@media(max-width:420px){
+  .top{padding:0 16px}
+  .logo{font-size:18px}
+  .top-link{padding:7px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="area-personale.html" class="logo">Events<span>Fun</span></a>
+  <a href="area-personale.html" class="top-link">Area personale</a>
+</header>
+
+<div class="wrap">
+
+  <!-- INDICE -->
+  <aside class="side">
+    <button class="side-toggle" id="idxToggle" onclick="toggleIdx()">Indice degli argomenti <span class="chev">&#9660;</span></button>
+    <div class="idx-wrap" id="idxWrap">
+      <div class="idx-title">Indice</div>
+      <nav class="idx" id="idx">
+        <div class="idx-group">
+          <div class="idx-group-name">Per iniziare</div>
+          <a href="#dashboard">Cos'e la dashboard</a>
+          <a href="#crea-evento">Creare il tuo primo evento</a>
+          <a href="#modifica-evento">Modificare l'evento dopo</a>
+          <a href="#pagina-iscrizione">La pagina di iscrizione</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Gestire le iscrizioni</div>
+          <a href="#iscritti">Vedere chi si e iscritto</a>
+          <a href="#accompagnatori">Iscrizioni con accompagnatori</a>
+          <a href="#email-automatiche">Le email automatiche</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Il giorno dell'evento</div>
+          <a href="#presenze">Segnare i presenti</a>
+          <a href="#qr-checkin">Il check-in con QR</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Funzioni avanzate</div>
+          <a href="#tipo-pasti">Tipo iscritto e pasti</a>
+          <a href="#sponsor">Sponsor</a>
+          <a href="#tema">Tema della pagina</a>
+          <a href="#qr-personalizzato">QR personalizzato</a>
+          <a href="#export">Esportare i dati</a>
+          <a href="#newsletter">Newsletter</a>
+          <a href="#statistiche">Statistiche</a>
+          <a href="#lista-attesa">Lista d'attesa</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Account e accesso</div>
+          <a href="#account">Area personale e accesso</a>
+          <a href="#dispositivi">Usare da telefono</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Privacy e dati</div>
+          <a href="#privacy">Privacy in parole semplici</a>
+          <a href="#durata-dati">Per quanto restano i dati</a>
+        </div>
+        <div class="idx-group">
+          <div class="idx-group-name">Altro</div>
+          <a href="#glossario">Glossario</a>
+          <a href="#faq">Problemi comuni</a>
+        </div>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- CONTENUTO -->
+  <div class="content">
+
+    <div class="intro">
+      <h1>Guida di EventsFun</h1>
+      <p>Tutto quello che ti serve per usare EventsFun, spiegato passo passo e in parole semplici. Scegli un argomento dall'indice, oppure leggi dall'inizio. Se incontri un termine che non conosci, lo trovi spiegato nel <a href="#glossario" class="term">glossario</a> in fondo.</p>
+    </div>
+
+    <div class="note">
+      <p style="margin:0;color:var(--text-muted)">Questa guida copre tutte le funzioni di EventsFun, di tutti i piani. Le voci con l'etichetta <strong>Pro e Agenzia</strong> o <strong>Solo Agenzia</strong> sono incluse solo in quei piani: se le vedi ma il tuo piano non le ha, e del tutto normale. Quando ti servono, puoi passare a un piano superiore in qualsiasi momento dalla tua <a href="area-personale.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4)">area personale</a>.</p>
+    </div>
+
+    <!-- PER INIZIARE -->
+    <section id="dashboard">
+      <h2>Cos'e la dashboard e come orientarti</h2>
+      <p>La <a href="#g-dashboard" class="term">dashboard</a> e la tua pagina di lavoro: e il pannello da cui crei gli eventi, vedi chi si e iscritto e gestisci tutto. Ci entri dal link che hai ricevuto via email dopo l'acquisto, oppure dalla tua <strong>area personale</strong>.</p>
+      <p>Le tre cose che userai piu spesso sono: il pulsante per <strong>creare un nuovo evento</strong>, l'elenco dei tuoi eventi, e per ogni evento le sezioni <strong>Iscritti</strong> e <strong>Presenze</strong>. Non serve installare nulla: funziona dal browser, anche dal telefono.</p>
+      <div class="note">La prima volta che entri, se non hai ancora eventi, compare una breve guida a passi che ti accompagna nella creazione del primo evento. Puoi richiamarla quando vuoi.</div>
+    </section>
+
+    <section id="crea-evento">
+      <h2>Creare il tuo primo evento</h2>
+      <p>Creare un evento vuol dire preparare la sua <a href="#g-landing" class="term">pagina di iscrizione</a>, cioe la pagina pubblica dove le persone si iscrivono.</p>
+      <ol class="steps">
+        <li>Nella dashboard, premi il pulsante <strong>Crea evento</strong> (o <strong>Nuovo evento</strong>).</li>
+        <li>Compila i dati principali: <strong>nome</strong> dell'evento, <strong>data</strong>, <strong>ora</strong> e <strong>luogo</strong>. Questi quattro sono obbligatori.</li>
+        <li>Aggiungi se vuoi una <strong>descrizione</strong>, un'<strong>immagine</strong> e la <strong>capienza</strong> (il numero massimo di posti).</li>
+        <li>Inserisci l'<strong>email di contatto</strong>: e l'indirizzo a cui arriveranno le eventuali risposte degli iscritti.</li>
+        <li>Attiva le opzioni che ti servono (per esempio l'iscrizione di gruppo o il check-in con QR). Le trovi spiegate nelle sezioni successive.</li>
+        <li>Premi <strong>Salva</strong>. L'evento e creato e la sua pagina di iscrizione e subito online.</li>
+      </ol>
+      <div class="note">L'indirizzo della pagina di iscrizione viene creato in automatico dal nome dell'evento. Non devi sceglierlo tu e non e modificabile: ci pensa il sistema.</div>
+    </section>
+
+    <section id="modifica-evento">
+      <h2>Modificare l'evento e la sua pagina dopo averlo creato</h2>
+      <p>Puoi cambiare quasi tutto anche dopo aver creato l'evento, e le modifiche compaiono subito sulla pagina di iscrizione, senza dover rifare nulla.</p>
+      <ol class="steps">
+        <li>Nella dashboard, trova l'evento che vuoi cambiare.</li>
+        <li>Apri la voce <strong>Impostazioni</strong> dell'evento (l'icona dell'ingranaggio o il pulsante <strong>Modifica</strong>).</li>
+        <li>Cambia cio che ti serve: nome, data, ora, luogo, descrizione, immagine, capienza, oppure attiva e disattiva le opzioni.</li>
+        <li>Premi <strong>Salva</strong>. La pagina di iscrizione si aggiorna automaticamente con i nuovi dati.</li>
+      </ol>
+      <div class="note">L'indirizzo della pagina resta sempre lo stesso anche se cambi il nome dell'evento, cosi i link e i <a href="#g-qr" class="term">QR</a> che hai gia condiviso continuano a funzionare.</div>
+    </section>
+
+    <section id="pagina-iscrizione">
+      <h2>La pagina di iscrizione e come condividerla</h2>
+      <p>La pagina di iscrizione e dove le persone lasciano i loro dati per partecipare. Per portarci la gente hai due strade, e puoi usarle insieme.</p>
+      <h3>Il link</h3>
+      <p>Ogni evento ha un suo <a href="#g-link" class="term">link</a> (un indirizzo web). Lo copi dalla dashboard e lo incolli dove vuoi: messaggi, social, email, sito. Chi lo apre vede la pagina e si iscrive.</p>
+      <h3>Il QR code</h3>
+      <p>Il <a href="#g-qr" class="term">QR code</a> e quel quadratino fatto di puntini: chi lo inquadra con la fotocamera del telefono arriva direttamente alla pagina di iscrizione. Lo scarichi dalla dashboard come immagine e lo metti su locandine, volantini o slide.</p>
+      <div class="note">La pagina di iscrizione si chiude da sola il giorno dopo la data dell'evento, cosi non rischi di ricevere iscrizioni quando l'evento e gia passato.</div>
+    </section>
+
+    <!-- GESTIRE LE ISCRIZIONI -->
+    <section id="iscritti">
+      <h2>Vedere chi si e iscritto</h2>
+      <p>Ogni iscrizione che arriva compare nella sezione <strong>Iscritti</strong> dell'evento, in tempo reale. Per ciascuna persona vedi nome, email e gli altri dati che hai chiesto.</p>
+      <ul class="dots">
+        <li>Puoi <strong>cercare</strong> una persona scrivendo il suo nome o la sua email.</li>
+        <li>Vedi a colpo d'occhio <strong>quanti iscritti</strong> hai e quanti posti restano.</li>
+        <li>Puoi eliminare un'iscrizione sbagliata o di prova.</li>
+      </ul>
+    </section>
+
+    <section id="accompagnatori">
+      <h2>Iscrizioni con accompagnatori</h2>
+      <p>Se attivi l'<strong>iscrizione di gruppo</strong>, una persona puo iscrivere anche altri partecipanti insieme a se (per esempio famiglia o amici). Chi compila il modulo e il <a href="#g-capogruppo" class="term">capogruppo</a>, e indica quante persone porta.</p>
+      <p>Puoi decidere se per ogni accompagnatore vuoi che siano obbligatori l'email o il telefono. Nella sezione iscritti gli accompagnatori compaiono collegati al loro capogruppo.</p>
+      <div class="note">L'email di conferma, e l'eventuale QR di ingresso, arrivano al capogruppo. Gli accompagnatori il giorno dell'evento li segni presenti a mano dalla lista.</div>
+    </section>
+
+    <section id="email-automatiche">
+      <h2>Le email automatiche agli iscritti</h2>
+      <p>EventsFun manda alcune email da solo, senza che tu debba fare niente.</p>
+      <ul class="dots">
+        <li><strong>Email di conferma</strong>: appena una persona si iscrive, riceve un messaggio che conferma l'iscrizione con i dettagli dell'evento.</li>
+        <li><strong>Promemoria</strong>: gli iscritti ricevono un promemoria nei giorni vicini all'evento.</li>
+        <li><strong>Aggiungi a Google Calendar</strong>: nelle email c'e un pulsante che permette all'iscritto di salvare l'evento nel proprio calendario con un clic.</li>
+      </ul>
+      <p>Le risposte degli iscritti a queste email arrivano all'<strong>email di contatto</strong> che hai indicato quando hai creato l'evento.</p>
+    </section>
+
+    <!-- IL GIORNO DELL'EVENTO -->
+    <section id="presenze">
+      <h2>La lista presenze e come segnare i presenti</h2>
+      <p>Il giorno dell'evento usi la sezione <strong>Presenze</strong> per spuntare chi arriva. E pensata per essere usata comodamente anche dal telefono, all'ingresso.</p>
+      <ol class="steps">
+        <li>Apri la sezione <strong>Presenze</strong> dell'evento.</li>
+        <li>Cerca la persona per nome se l'elenco e lungo.</li>
+        <li>Premi <strong>Segna presente</strong> accanto al suo nome. Il conteggio dei presenti si aggiorna subito.</li>
+      </ol>
+    </section>
+
+    <section id="qr-checkin">
+      <h2>Il check-in con QR</h2>
+      <p>Il <a href="#g-checkin" class="term">check-in</a> con QR e un modo piu veloce di segnare i presenti: invece di cercare il nome, inquadri il QR che l'iscritto ha ricevuto via email e il sistema lo segna presente da solo. E una funzione che attivi tu, evento per evento: se preferisci la spunta manuale, lasciala spenta.</p>
+      <h3>Come attivarlo</h3>
+      <p>Quando crei o modifichi l'evento, attiva l'opzione <strong>Check-in con QR</strong>. Da quel momento ogni iscritto riceve nella sua email di conferma un QR personale di ingresso.</p>
+      <h3>Come usarlo il giorno dell'evento</h3>
+      <ol class="steps">
+        <li>Apri la sezione <strong>Presenze</strong> e premi <strong>Scanner QR</strong>.</li>
+        <li>Dai il permesso di usare la fotocamera quando il telefono lo chiede.</li>
+        <li>Inquadra il QR che la persona mostra. Un segnale verde conferma che e stata segnata presente.</li>
+      </ol>
+      <div class="note">Riceve il QR solo il capogruppo. Gli accompagnatori si segnano presenti a mano dalla lista.</div>
+    </section>
+
+    <!-- FUNZIONI AVANZATE -->
+    <section id="tipo-pasti">
+      <h2>Tipo iscritto e pasti <span class="badge badge-pro">Pro e Agenzia</span></h2>
+      <p>Per eventi piu strutturati puoi chiedere all'iscritto altre informazioni al momento dell'iscrizione.</p>
+      <ul class="dots">
+        <li><strong>Tipo iscritto</strong>: distingue per esempio tra visitatore ed espositore.</li>
+        <li><strong>Pasti</strong>: chiede se la persona parteciphera al pranzo, alla cena, o a entrambi.</li>
+      </ul>
+      <p>Attivi queste opzioni dalle impostazioni dell'evento, e le risposte le trovi tra i dati degli iscritti.</p>
+    </section>
+
+    <section id="sponsor">
+      <h2>Sponsor <span class="badge badge-pro">Pro e Agenzia</span></h2>
+      <p>Puoi mostrare i loghi dei tuoi sponsor sulla pagina di iscrizione, ognuno con il suo collegamento al sito. Aggiungi logo e link dalle impostazioni dell'evento.</p>
+    </section>
+
+    <section id="tema">
+      <h2>Tema della pagina <span class="badge badge-pro">Pro e Agenzia</span></h2>
+      <p>La pagina di iscrizione puo avere un aspetto <strong>chiaro</strong> o <strong>scuro</strong>. Scegli quello che si adatta meglio al tuo evento dalle impostazioni.</p>
+    </section>
+
+    <section id="qr-personalizzato">
+      <h2>QR personalizzato <span class="badge badge-pro">Pro e Agenzia</span></h2>
+      <p>Oltre al QR semplice, puoi avere un QR con una <strong>scritta</strong> al centro (per esempio il nome dell'evento) oppure con il tuo <strong>logo</strong>. Lo imposti quando crei o modifichi l'evento, e lo scarichi gia pronto.</p>
+    </section>
+
+    <section id="export">
+      <h2>Esportare i dati <span class="badge badge-pro">CSV: Pro e Agenzia</span> <span class="badge badge-ag">PDF: Agenzia</span></h2>
+      <p>Esportare vuol dire scaricare i dati in un file da tenere o stampare.</p>
+      <ul class="dots">
+        <li><strong>Elenco iscritti in <a href="#g-csv" class="term">CSV</a></strong>: un file che apri con Excel o Fogli Google, utile per conservare o rielaborare i dati.</li>
+        <li><strong>Lista presenze in <a href="#g-pdf" class="term">PDF</a></strong>: un foglio pronto da stampare, comodo da tenere all'ingresso come lista cartacea di riserva.</li>
+      </ul>
+    </section>
+
+    <section id="newsletter">
+      <h2>Newsletter <span class="badge badge-ag">Solo Agenzia</span></h2>
+      <p>La <a href="#g-newsletter" class="term">newsletter</a> ti permette di scrivere un messaggio e inviarlo via email a tutti gli iscritti che hanno dato il consenso a essere ricontattati. La usi per comunicazioni, aggiornamenti o per annunciare nuovi eventi.</p>
+      <ul class="dots">
+        <li>Scrivi oggetto e testo del messaggio.</li>
+        <li>Scegli a chi inviarlo tra i tuoi iscritti.</li>
+        <li>Trovi lo storico degli invii con l'anteprima di cio che hai mandato.</li>
+      </ul>
+    </section>
+
+    <section id="statistiche">
+      <h2>Statistiche <span class="badge badge-ag">Solo Agenzia</span></h2>
+      <p>Le statistiche ti mostrano l'andamento di un evento con numeri e grafici semplici: quante iscrizioni hai raccolto, quante persone si sono presentate, quanti posti restano e altro. Puoi scegliere quali riquadri vedere e disporli come preferisci.</p>
+    </section>
+
+    <section id="lista-attesa">
+      <h2>Lista d'attesa <span class="badge badge-ag">Solo Agenzia</span></h2>
+      <p>Quando un evento raggiunge la capienza massima, le iscrizioni successive finiscono in <a href="#g-attesa" class="term">lista d'attesa</a> invece di essere rifiutate. Se si libera un posto, la gestione automatica ti aiuta a recuperare chi era in attesa.</p>
+    </section>
+
+    <!-- ACCOUNT E ACCESSO -->
+    <section id="account">
+      <h2>Area personale e come accedere</h2>
+      <p>L'<strong>area personale</strong> e la pagina da cui accedi con la tua email e password. Da li raggiungi la dashboard del tuo pacchetto.</p>
+      <ol class="steps">
+        <li>Vai su eventsfun.com/area-personale.html</li>
+        <li>Inserisci email e password.</li>
+        <li>Premi sul pulsante per aprire la tua dashboard.</li>
+      </ol>
+      <div class="note">La password la imposti la prima volta tramite il link ricevuto nell'email di benvenuto. Se la dimentichi, puoi richiederne una nuova dall'area personale.</div>
+    </section>
+
+    <section id="dispositivi">
+      <h2>Usare la dashboard da telefono o altri dispositivi</h2>
+      <p>EventsFun funziona da qualsiasi dispositivo con un browser: computer, tablet e telefono. Non serve scaricare app.</p>
+      <p>La prima volta che apri la dashboard dal link, il dispositivo la ricorda: le volte successive la ritrovi anche senza il link. Per usarla su un altro dispositivo, accedi dall'area personale con email e password.</p>
+    </section>
+
+    <!-- PRIVACY E DATI -->
+    <section id="privacy">
+      <h2>Privacy e dati, in parole semplici</h2>
+      <p>Quando qualcuno si iscrive, lascia dei dati personali (come nome ed email). Il <a href="#g-gdpr" class="term">GDPR</a> e la legge europea che regola come questi dati vanno trattati. In pratica significa raccogliere solo cio che serve, dire alle persone perche lo raccogli, e custodirlo con cura.</p>
+      <p>Sulla pagina di iscrizione gli iscritti vedono e accettano l'informativa, e il consenso a essere ricontattati (per la newsletter) e separato e facoltativo.</p>
+      <div class="note">EventsFun ti da gli strumenti, ma il responsabile dei dati dei tuoi iscritti sei tu come organizzatore. Raccogli solo cio che ti serve davvero.</div>
+    </section>
+
+    <section id="durata-dati">
+      <h2>Per quanto restano i dati</h2>
+      <p>Dipende dal piano.</p>
+      <ul class="dots">
+        <li><strong>Base e Pro</strong>: i dati degli iscritti restano disponibili fino a 30 giorni dopo la data dell'evento, poi vengono eliminati. Conviene esportarli prima se vuoi conservarli.</li>
+        <li><strong>Agenzia</strong> <span class="badge badge-ag">Solo Agenzia</span>: i dati restano sempre disponibili, finche l'abbonamento e attivo.</li>
+      </ul>
+    </section>
+
+    <!-- GLOSSARIO -->
+    <section id="glossario">
+      <h2>Glossario</h2>
+      <p>I termini che potresti incontrare, spiegati in una riga.</p>
+      <div class="gloss-item" id="g-dashboard">
+        <div class="g-term">Dashboard</div>
+        <div class="g-def">La tua pagina di lavoro: il pannello da cui crei e gestisci gli eventi e gli iscritti.</div>
+      </div>
+      <div class="gloss-item" id="g-landing">
+        <div class="g-term">Pagina di iscrizione (landing)</div>
+        <div class="g-def">La pagina pubblica dove le persone si iscrivono al tuo evento.</div>
+      </div>
+      <div class="gloss-item" id="g-link">
+        <div class="g-term">Link</div>
+        <div class="g-def">L'indirizzo web della pagina di iscrizione: lo apri o lo condividi per portare le persone a iscriversi.</div>
+      </div>
+      <div class="gloss-item" id="g-qr">
+        <div class="g-term">QR code</div>
+        <div class="g-def">Il quadratino di puntini che, inquadrato con la fotocamera del telefono, apre direttamente la pagina di iscrizione.</div>
+      </div>
+      <div class="gloss-item" id="g-checkin">
+        <div class="g-term">Check-in</div>
+        <div class="g-def">L'operazione di segnare una persona come presente quando arriva all'evento.</div>
+      </div>
+      <div class="gloss-item" id="g-capogruppo">
+        <div class="g-term">Capogruppo</div>
+        <div class="g-def">La persona che si iscrive e porta con se degli accompagnatori; e quella che riceve l'email di conferma.</div>
+      </div>
+      <div class="gloss-item" id="g-csv">
+        <div class="g-term">CSV</div>
+        <div class="g-def">Un tipo di file con i dati in tabella, che si apre con Excel o Fogli Google.</div>
+      </div>
+      <div class="gloss-item" id="g-pdf">
+        <div class="g-term">PDF</div>
+        <div class="g-def">Un file pronto da stampare o da inviare, che si vede uguale su qualsiasi dispositivo.</div>
+      </div>
+      <div class="gloss-item" id="g-newsletter">
+        <div class="g-term">Newsletter</div>
+        <div class="g-def">Un'email che invii a piu iscritti insieme per comunicazioni o aggiornamenti.</div>
+      </div>
+      <div class="gloss-item" id="g-attesa">
+        <div class="g-term">Lista d'attesa</div>
+        <div class="g-def">Dove finiscono le iscrizioni quando l'evento e pieno, in attesa che si liberi un posto.</div>
+      </div>
+      <div class="gloss-item" id="g-gdpr">
+        <div class="g-term">GDPR</div>
+        <div class="g-def">La legge europea sulla protezione dei dati personali: regola come raccogliere e custodire i dati delle persone.</div>
+      </div>
+    </section>
+
+    <!-- PROBLEMI COMUNI -->
+    <section id="faq">
+      <h2>Problemi comuni</h2>
+      <div class="faq-item">
+        <div class="faq-q">Un iscritto dice di non aver ricevuto l'email di conferma.</div>
+        <div class="faq-a">Quasi sempre e finita nello spam o nella posta indesiderata. Fai controllare li. Verifica anche che l'indirizzo email scritto all'iscrizione fosse corretto.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Il link della pagina di iscrizione non si apre.</div>
+        <div class="faq-a">Controlla di aver copiato il link per intero. Ricorda anche che la pagina si chiude da sola il giorno dopo la data dell'evento.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Lo scanner QR non parte.</div>
+        <div class="faq-a">Serve dare al browser il permesso di usare la fotocamera. Se l'hai negato per sbaglio, riattivalo dalle impostazioni del telefono per il sito, poi riprova.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Apro la dashboard e non vedo i miei eventi.</div>
+        <div class="faq-a">Accedi dall'area personale con la tua email e password: da li apri la dashboard giusta. Se usi un dispositivo nuovo, e il modo corretto per ritrovare tutto.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Ho sbagliato un dato dell'evento.</div>
+        <div class="faq-a">Nessun problema: apri le impostazioni dell'evento, correggi e salva. La pagina di iscrizione si aggiorna da sola.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Non trovo una risposta qui.</div>
+        <div class="faq-a">Scrivici a info@eventsfun.com e ti aiutiamo.</div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+// Toggle indice su mobile
+function toggleIdx(){
+  var w=document.getElementById('idxWrap');
+  var b=document.getElementById('idxToggle');
+  if(!w||!b)return;
+  var open=w.classList.toggle('open');
+  b.classList.toggle('open',open);
+}
+
+// Su mobile, chiudi l'indice quando si sceglie un argomento
+var idxLinks=document.querySelectorAll('#idx a');
+for(var i=0;i<idxLinks.length;i++){
+  idxLinks[i].addEventListener('click',function(){
+    if(window.innerWidth<=860){
+      var w=document.getElementById('idxWrap');
+      var b=document.getElementById('idxToggle');
+      if(w)w.classList.remove('open');
+      if(b)b.classList.remove('open');
+    }
+  });
+}
+
+// Evidenzia nell'indice la sezione che stai leggendo
+(function(){
+  var sections=document.querySelectorAll('section[id]');
+  var map={};
+  for(var j=0;j<idxLinks.length;j++){
+    var href=idxLinks[j].getAttribute('href')||'';
+    if(href.charAt(0)==='#')map[href.slice(1)]=idxLinks[j];
+  }
+  if(!('IntersectionObserver' in window))return;
+  var obs=new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        var link=map[e.target.id];
+        if(!link)return;
+        for(var k=0;k<idxLinks.length;k++){idxLinks[k].classList.remove('active');}
+        link.classList.add('active');
+      }
+    });
+  },{rootMargin:'-80px 0px -65% 0px'});
+  for(var s=0;s<sections.length;s++){obs.observe(sections[s]);}
+})();
+</script>
+
+</body>
+</html>
