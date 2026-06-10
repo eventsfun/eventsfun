@@ -194,7 +194,7 @@ tbody td.xv{color:var(--gold)}
   <div class="nav-logo">Events<span>Fun</span></div>
   <div class="nav-r">
     <span class="nav-plan">Base</span>
-    <a href="https://eventsfun.com/guida.html" target="_blank" rel="noopener" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128214; Guida</a>
+    <a href="https://eventsfun.com/guida.html" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128214; Guida</a>
     <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">← Area personale</a>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
   </div>
