@@ -24,6 +24,7 @@
       --red: #E05555;
       --green: #5BAD6F;
       --yellow: #D4A843;
+      --blue: #8AAAE8;
       --radius: 12px;
       --radius-sm: 8px;
     }
@@ -66,12 +67,13 @@
     .login-box h2 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; margin: 28px 0 24px; }
     .form-group { margin-bottom: 16px; text-align: left; }
     .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-    .form-group input {
+    .form-group input, .form-group textarea, .form-group select {
       width: 100%; padding: 12px 16px; background: var(--bg3); border: 1px solid var(--border2);
       border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 15px;
       outline: none; transition: border-color 0.2s;
     }
-    .form-group input:focus { border-color: var(--gold); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--gold); }
+    .form-group textarea { resize: vertical; min-height: 90px; }
     .btn-primary {
       width: 100%; padding: 13px; background: var(--gold); color: #0A0A0A;
       border: none; border-radius: var(--radius-sm); font-family: 'Syne', sans-serif;
@@ -131,9 +133,10 @@
       border-bottom: 1px solid var(--border2);
       display: flex; align-items: center; justify-content: space-between;
       background: var(--bg);
-      position: sticky; top: 0; z-index: 50;
+      position: sticky; top: 0; z-index: 50; gap: 12px;
     }
     .topbar h1 { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; }
+    .topbar .right { display: flex; align-items: center; gap: 16px; }
     .topbar .meta { font-size: 13px; color: var(--text3); }
     .mobile-menu-btn {
       display: none; background: none; border: 1px solid var(--border2);
@@ -142,15 +145,44 @@
     }
     .content { padding: 32px; }
 
+    /* ---- TEST TOGGLE ---- */
+    .test-toggle { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text2); cursor: pointer; user-select: none; }
+    .test-toggle input { width: 16px; height: 16px; accent-color: var(--gold); cursor: pointer; }
+
     /* ---- CARDS ---- */
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px; margin-bottom: 28px; }
     .stat-card {
       background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius);
       padding: 20px 24px;
     }
     .stat-card .label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 10px; }
     .stat-card .value { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--gold); }
+    .stat-card .value.green { color: var(--green); }
+    .stat-card .value.red { color: var(--red); }
+    .stat-card .value.blue { color: var(--blue); }
+    .stat-card .value.plain { color: var(--text); }
     .stat-card .sub { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+    /* ---- INFO BANNER ---- */
+    .info-banner {
+      background: var(--gold-dim2); border: 1px solid var(--border); border-radius: var(--radius-sm);
+      padding: 12px 16px; font-size: 13px; color: var(--text2); margin-bottom: 24px; line-height: 1.5;
+    }
+
+    /* ---- PANEL LISTS ---- */
+    .panel-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 8px; }
+    .panel {
+      background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px 22px;
+    }
+    .panel h3 { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+    .mini-row {
+      display: flex; align-items: center; justify-content: space-between; gap: 10px;
+      padding: 9px 0; border-bottom: 1px solid var(--border2); font-size: 13px;
+    }
+    .mini-row:last-child { border-bottom: none; }
+    .mini-row .ml { color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .mini-row .mr { color: var(--text3); font-size: 12px; white-space: nowrap; }
+    .panel .empty-mini { font-size: 13px; color: var(--text3); padding: 8px 0; }
 
     /* ---- TABLE ---- */
     .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
@@ -178,10 +210,18 @@
     }
     .badge-base { background: rgba(91,173,111,0.15); color: var(--green); border: 1px solid rgba(91,173,111,0.3); }
     .badge-pro { background: rgba(201,169,110,0.15); color: var(--gold); border: 1px solid rgba(201,169,110,0.3); }
-    .badge-agenzia { background: rgba(100,130,220,0.15); color: #8AAAE8; border: 1px solid rgba(100,130,220,0.3); }
-    .badge-active { background: rgba(91,173,111,0.12); color: var(--green); border: 1px solid rgba(91,173,111,0.25); }
-    .badge-past_due { background: rgba(212,168,67,0.15); color: var(--yellow); border: 1px solid rgba(212,168,67,0.3); }
-    .badge-canceled { background: rgba(224,85,85,0.12); color: var(--red); border: 1px solid rgba(224,85,85,0.25); }
+    .badge-agenzia { background: rgba(100,130,220,0.15); color: var(--blue); border: 1px solid rgba(100,130,220,0.3); }
+    .badge-attivo { background: rgba(91,173,111,0.12); color: var(--green); border: 1px solid rgba(91,173,111,0.25); }
+    .badge-inattivo { background: rgba(224,85,85,0.12); color: var(--red); border: 1px solid rgba(224,85,85,0.25); }
+    .badge-non_attivato { background: rgba(212,168,67,0.15); color: var(--yellow); border: 1px solid rgba(212,168,67,0.3); }
+    .badge-concluso { background: rgba(160,154,144,0.12); color: var(--text2); border: 1px solid rgba(160,154,144,0.25); }
+    .badge-bozza { background: rgba(212,168,67,0.15); color: var(--yellow); border: 1px solid rgba(212,168,67,0.3); }
+    .badge-orfano { background: rgba(224,85,85,0.10); color: var(--red); border: 1px solid rgba(224,85,85,0.22); }
+    .tag-test {
+      display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 5px;
+      font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+      background: var(--bg4); color: var(--text3); border: 1px solid var(--border2); margin-left: 6px;
+    }
     .btn-sm {
       padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;
       cursor: pointer; border: 1px solid var(--border); background: var(--bg3);
@@ -201,19 +241,29 @@
     .section { display: none; }
     .section.active { display: block; }
 
-    /* ---- MONITOR ---- */
+    /* ---- EVENTS GRID ---- */
+    .filter-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-btn {
+      padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 500;
+      cursor: pointer; border: 1px solid var(--border2); background: var(--bg3); color: var(--text2);
+      transition: all 0.15s; font-family: 'DM Sans', sans-serif;
+    }
+    .filter-btn:hover { border-color: var(--gold); color: var(--text); }
+    .filter-btn.active { background: var(--gold-dim); border-color: var(--border); color: var(--gold); font-weight: 600; }
     .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
     .event-card {
       background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 20px;
     }
     .event-card .ev-name { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .event-card .ev-owner { font-size: 12px; color: var(--gold); margin-bottom: 4px; }
     .event-card .ev-meta { font-size: 12px; color: var(--text3); margin-bottom: 12px; }
-    .event-card .ev-stats { display: flex; gap: 16px; }
+    .event-card .ev-stats { display: flex; gap: 16px; margin-bottom: 12px; }
     .event-card .ev-stat { text-align: center; }
-    .event-card .ev-stat .n { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--gold); }
+    .event-card .ev-stat .n { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--gold); }
     .event-card .ev-stat .l { font-size: 11px; color: var(--text3); }
-    .progress-bar { height: 4px; background: var(--bg4); border-radius: 2px; margin-top: 12px; overflow: hidden; }
+    .progress-bar { height: 4px; background: var(--bg4); border-radius: 2px; margin: 10px 0 12px; overflow: hidden; }
     .progress-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--gold), var(--gold2)); transition: width 0.5s ease; }
+    .ev-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
     /* ---- NEWSLETTER ---- */
     .nl-compose {
@@ -273,23 +323,45 @@
     }
     .nl-seg.active .seg-count { background: rgba(201,169,110,0.25); color: var(--gold); }
 
-    /* ---- SUPPORTO ---- */
-    .support-search-area { background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 28px; margin-bottom: 24px; }
-    .support-search-area h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 16px; }
-    .support-search-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .support-search-row input {
-      flex: 1; min-width: 220px; padding: 11px 16px; background: var(--bg3); border: 1px solid var(--border2);
-      border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-      outline: none; transition: border-color 0.2s;
+    /* ---- MODALS ---- */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+      align-items: flex-start; justify-content: center; padding: 40px 20px;
+      overflow-y: auto; backdrop-filter: blur(2px);
     }
-    .support-search-row input:focus { border-color: var(--gold); }
-    .customer-detail {
-      background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--radius); padding: 24px;
+    .modal-overlay.show { display: flex; }
+    #modalA { z-index: 200; }
+    #modalB { z-index: 210; }
+    .modal-card {
+      background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+      width: 100%; max-width: 760px; padding: 28px; margin: auto;
     }
-    .customer-detail h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border2); }
-    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border2); }
+    .modal-head h2 { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .modal-close {
+      background: var(--bg3); border: 1px solid var(--border2); color: var(--text2);
+      width: 34px; height: 34px; border-radius: 8px; cursor: pointer; font-size: 18px; flex-shrink: 0;
+      transition: all 0.15s; line-height: 1;
+    }
+    .modal-close:hover { color: var(--red); border-color: var(--red); }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 20px; }
     .detail-item .dl { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-    .detail-item .dv { font-size: 15px; font-weight: 500; }
+    .detail-item .dv { font-size: 15px; font-weight: 500; word-break: break-word; }
+    .detail-item .dv.mono { font-family: monospace; font-size: 12px; color: var(--text3); }
+    .block-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin: 20px 0 10px; }
+    .token-chip { font-family: monospace; font-size: 12px; background: var(--bg4); padding: 6px 10px; border-radius: 6px; margin-bottom: 6px; color: var(--text2); display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+    .cust-event {
+      background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm);
+      padding: 14px 16px; margin-bottom: 10px;
+    }
+    .cust-event .ce-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+    .cust-event .ce-name { font-weight: 600; font-size: 14px; }
+    .cust-event .ce-meta { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+    .reg-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .reg-stat { background: var(--bg3); border: 1px solid var(--border2); border-radius: var(--radius-sm); padding: 14px 16px; }
+    .reg-stat .rn { font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800; color: var(--gold); }
+    .reg-stat .rl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 1px; margin-top: 2px; }
+    .note-soft { font-size: 12px; color: var(--text3); margin-top: 4px; line-height: 1.5; }
 
     /* ---- MOBILE ---- */
     .sidebar-overlay {
@@ -306,7 +378,11 @@
       .mobile-menu-btn { display: flex; align-items: center; gap: 6px; font-size: 14px; }
       .search-input { width: 100%; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .stat-card { padding: 16px 18px; }
       .stat-card .value { font-size: 26px; }
+      .topbar .meta { display: none; }
+      .modal-overlay { padding: 16px 10px; }
+      .modal-card { padding: 20px 16px; }
     }
     @media (max-width: 480px) {
       .stat-grid { grid-template-columns: 1fr 1fr; }
@@ -338,17 +414,17 @@
     <div class="sidebar-logo">EventsFun <span>Admin Panel</span></div>
     <div class="nav-section">
       <div class="nav-label">Gestione</div>
-      <div class="nav-item active" onclick="showSection('clienti')">
-        <span class="icon">&#128101;</span> Lista Clienti
+      <div class="nav-item active" onclick="showSection('panoramica')">
+        <span class="icon">&#127968;</span> Panoramica
       </div>
-      <div class="nav-item" onclick="showSection('monitor')">
-        <span class="icon">&#128202;</span> Monitoraggio
+      <div class="nav-item" onclick="showSection('clienti')">
+        <span class="icon">&#128101;</span> Clienti
+      </div>
+      <div class="nav-item" onclick="showSection('eventi')">
+        <span class="icon">&#127881;</span> Eventi
       </div>
       <div class="nav-item" onclick="showSection('newsletter')">
         <span class="icon">&#128140;</span> Newsletter
-      </div>
-      <div class="nav-item" onclick="showSection('supporto')">
-        <span class="icon">&#128269;</span> Supporto Cliente
       </div>
     </div>
     <div class="sidebar-footer">
@@ -362,24 +438,57 @@
     <div class="topbar">
       <div style="display:flex;align-items:center;gap:16px;">
         <button class="mobile-menu-btn" onclick="openSidebar()">&#9776; Menu</button>
-        <h1 id="section-title">Lista Clienti</h1>
+        <h1 id="section-title">Panoramica</h1>
       </div>
-      <div class="meta" id="topbar-meta">Caricamento...</div>
+      <div class="right">
+        <label class="test-toggle"><input type="checkbox" id="toggle-test" checked onchange="onToggleTest()" /> Mostra account di test</label>
+        <div class="meta" id="topbar-meta">Caricamento...</div>
+      </div>
     </div>
 
     <div class="content">
 
+      <!-- SEZIONE: PANORAMICA -->
+      <div class="section active" id="sec-panoramica">
+        <div class="info-banner" id="pan-info">Caricamento dati in corso...</div>
+        <div class="stat-grid" id="stats-panoramica">
+          <div class="stat-card"><div class="label">Clienti totali</div><div class="value plain" id="p-cli-tot">--</div></div>
+          <div class="stat-card"><div class="label">Clienti attivi</div><div class="value green" id="p-cli-att">--</div></div>
+          <div class="stat-card"><div class="label">Non piu' attivi</div><div class="value red" id="p-cli-ina">--</div></div>
+          <div class="stat-card"><div class="label">Non attivati</div><div class="value" id="p-cli-non">--</div></div>
+          <div class="stat-card"><div class="label">Eventi attivi</div><div class="value green" id="p-ev-att">--</div></div>
+          <div class="stat-card"><div class="label">Eventi conclusi</div><div class="value plain" id="p-ev-con">--</div></div>
+          <div class="stat-card"><div class="label">Bozze</div><div class="value" id="p-ev-boz">--</div></div>
+          <div class="stat-card"><div class="label">Iscritti totali</div><div class="value blue" id="p-isc-tot">--</div></div>
+          <div class="stat-card"><div class="label">In lista attesa</div><div class="value" id="p-isc-att">--</div></div>
+        </div>
+        <div class="panel-grid">
+          <div class="panel">
+            <h3>&#9888;&#65039; Clienti senza eventi</h3>
+            <div id="pan-senza-eventi"><div class="empty-mini">--</div></div>
+          </div>
+          <div class="panel">
+            <h3>&#128197; Eventi nei prossimi 7 giorni</h3>
+            <div id="pan-in-arrivo"><div class="empty-mini">--</div></div>
+          </div>
+          <div class="panel">
+            <h3>&#128293; Eventi quasi al completo</h3>
+            <div id="pan-quasi-pieni"><div class="empty-mini">--</div></div>
+          </div>
+        </div>
+      </div>
+
       <!-- SEZIONE: CLIENTI -->
-      <div class="section active" id="sec-clienti">
-        <div class="stat-grid" id="stats-clienti">
-          <div class="stat-card"><div class="label">Clienti totali</div><div class="value" id="s-totale">--</div></div>
-          <div class="stat-card"><div class="label">Piano Base</div><div class="value" id="s-base">--</div></div>
-          <div class="stat-card"><div class="label">Piano Pro</div><div class="value" id="s-pro">--</div></div>
-          <div class="stat-card"><div class="label">Piano Agenzia</div><div class="value" id="s-agenzia">--</div></div>
+      <div class="section" id="sec-clienti">
+        <div class="stat-grid">
+          <div class="stat-card"><div class="label">Clienti visibili</div><div class="value plain" id="c-tot">--</div></div>
+          <div class="stat-card"><div class="label">Piano Base</div><div class="value green" id="c-base">--</div></div>
+          <div class="stat-card"><div class="label">Piano Pro</div><div class="value" id="c-pro">--</div></div>
+          <div class="stat-card"><div class="label">Piano Agenzia</div><div class="value blue" id="c-agenzia">--</div></div>
         </div>
         <div class="section-header">
           <div class="section-title">Tutti i clienti</div>
-          <input class="search-input" type="text" id="search-clienti" placeholder="Cerca per email o nome..." oninput="filterClienti()" />
+          <input class="search-input" type="text" id="search-clienti" placeholder="Cerca per email o nome..." oninput="renderClienti()" />
         </div>
         <div class="table-wrap">
           <div class="table-scroll">
@@ -390,28 +499,30 @@
                   <th>Email</th>
                   <th>Piano</th>
                   <th>Stato</th>
-                  <th>Data acquisto</th>
+                  <th>Eventi</th>
+                  <th>Acquisto</th>
                   <th>Azioni</th>
                 </tr>
               </thead>
               <tbody id="clienti-tbody">
-                <tr><td colspan="6" class="loading-row"><span class="spinner"></span></td></tr>
+                <tr><td colspan="7" class="loading-row"><span class="spinner"></span></td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </div>
 
-      <!-- SEZIONE: MONITORAGGIO -->
-      <div class="section" id="sec-monitor">
-        <div class="stat-grid" id="stats-monitor">
-          <div class="stat-card"><div class="label">Eventi attivi</div><div class="value" id="m-eventi">--</div></div>
-          <div class="stat-card"><div class="label">Iscritti totali</div><div class="value" id="m-iscritti">--</div></div>
-          <div class="stat-card"><div class="label">In lista attesa</div><div class="value" id="m-attesa">--</div></div>
-          <div class="stat-card"><div class="label">Bozze</div><div class="value" id="m-bozze">--</div></div>
+      <!-- SEZIONE: EVENTI -->
+      <div class="section" id="sec-eventi">
+        <div class="filter-row" id="eventi-filtri">
+          <button class="filter-btn active" data-f="tutti" onclick="setEventFilter('tutti')">Tutti</button>
+          <button class="filter-btn" data-f="attivo" onclick="setEventFilter('attivo')">Attivi</button>
+          <button class="filter-btn" data-f="concluso" onclick="setEventFilter('concluso')">Conclusi</button>
+          <button class="filter-btn" data-f="bozza" onclick="setEventFilter('bozza')">Bozze</button>
         </div>
         <div class="section-header">
-          <div class="section-title">Eventi attivi</div>
+          <div class="section-title" id="eventi-title">Eventi</div>
+          <input class="search-input" type="text" id="search-eventi" placeholder="Cerca per nome o cliente..." oninput="renderEventi()" />
         </div>
         <div class="events-grid" id="events-grid">
           <div class="loading-row"><span class="spinner"></span></div>
@@ -482,20 +593,17 @@
         </div>
       </div>
 
-      <!-- SEZIONE: SUPPORTO -->
-      <div class="section" id="sec-supporto">
-        <div class="support-search-area">
-          <h3>&#128269; Cerca cliente</h3>
-          <div class="support-search-row">
-            <input type="text" id="support-search" placeholder="Email o nome del cliente..." onkeydown="if(event.key==='Enter') searchCustomer()" />
-            <button class="btn-gold" onclick="searchCustomer()">Cerca</button>
-          </div>
-        </div>
-        <div id="support-result"></div>
-      </div>
-
     </div>
   </div>
+</div>
+
+<!-- MODAL A (scheda cliente) -->
+<div class="modal-overlay" id="modalA" onclick="if(event.target===this)closeModalA()">
+  <div class="modal-card" id="modalA-card"></div>
+</div>
+<!-- MODAL B (iscritti / statistiche / modifica) -->
+<div class="modal-overlay" id="modalB" onclick="if(event.target===this)closeModalB()">
+  <div class="modal-card" id="modalB-card"></div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -504,8 +612,18 @@
   /* ===================== CONFIG ===================== */
   var ADMIN_PWD = "Ef7$vQ2#mK9x";
   var SB_URL = "https://vousendridklswygvqpl.supabase.co";
-  // Nota: questa key viene sostituita con service_role via Supabase -- lascia placeholder
   var SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3OTgxMjU0NiwiZXhwIjoyMDk1Mzg4NTQ2fQ.be9qnbmygHlvnNK_XWCbPngGIr2ba3BzxnroPx4dsKA";
+  var KNOWN_EUR = [0, 29, 69, 79, 588];
+
+  /* ===================== STATE ===================== */
+  var ORDERS = [], ACTS = [], EVENTS = [], REGS = [];
+  var tokenOrder = {};
+  var eventsByOrder = {};
+  var orphanEvents = [];
+  var showTest = true;
+  var DATA_LOADED = false;
+  var eventFilter = "tutti";
+  var currentSchedaOrderId = null;
 
   /* ===================== AUTH ===================== */
   function doLogin() {
@@ -514,7 +632,7 @@
       sessionStorage.setItem("ef_admin", "1");
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
-      loadSection("clienti");
+      loadAll();
     } else {
       document.getElementById("login-error").style.display = "block";
     }
@@ -522,12 +640,11 @@
   document.getElementById("pwd-input").addEventListener("keydown", function(e) {
     if (e.key === "Enter") doLogin();
   });
-  // Controlla sessione al caricamento pagina -- dentro DOMContentLoaded per sicurezza
   document.addEventListener("DOMContentLoaded", function() {
     if (sessionStorage.getItem("ef_admin") === "1") {
       document.getElementById("login-screen").style.display = "none";
       document.getElementById("app").style.display = "block";
-      loadSection("clienti");
+      loadAll();
     }
   });
   function doLogout() {
@@ -550,150 +667,615 @@
 
   /* ===================== SECTIONS ===================== */
   var SECTION_TITLES = {
-    clienti: "Lista Clienti",
-    monitor: "Monitoraggio",
-    newsletter: "Newsletter",
-    supporto: "Supporto Cliente"
+    panoramica: "Panoramica",
+    clienti: "Clienti",
+    eventi: "Eventi",
+    newsletter: "Newsletter"
   };
-  var loadedSections = {};
+  var SECTION_ORDER = ["panoramica", "clienti", "eventi", "newsletter"];
+  var newsletterLoaded = false;
 
   function showSection(name) {
     closeSidebar();
     document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
     document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
     document.getElementById("sec-" + name).classList.add("active");
-    // Evidenzia la voce di menu corrispondente senza dipendere da event.currentTarget
     var navItems = document.querySelectorAll(".nav-item");
-    var sectionOrder = ["clienti", "monitor", "newsletter", "supporto"];
-    var idx = sectionOrder.indexOf(name);
+    var idx = SECTION_ORDER.indexOf(name);
     if (idx >= 0 && navItems[idx]) navItems[idx].classList.add("active");
     document.getElementById("section-title").textContent = SECTION_TITLES[name];
-    if (!loadedSections[name]) loadSection(name);
-  }
-
-  function loadSection(name) {
-    loadedSections[name] = true;
-    if (name === "clienti") loadClienti();
-    else if (name === "monitor") loadMonitor();
-    else if (name === "newsletter") loadNewsletter();
-    else if (name === "supporto") { /* niente da precaricare */ }
+    if (name === "newsletter" && !newsletterLoaded) { newsletterLoaded = true; loadNewsletter(); }
   }
 
   /* ===================== SUPABASE FETCH ===================== */
-  function sbFetch(path) {
-    return fetch(SB_URL + "/rest/v1/" + path, {
-      headers: {
-        "apikey": SB_KEY,
-        "Authorization": "Bearer " + SB_KEY,
-        "Content-Type": "application/json"
-      }
-    }).then(function(r) { return r.json(); });
+  function H() {
+    return { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json" };
   }
+  function sbGet(path) {
+    return fetch(SB_URL + "/rest/v1/" + path, { headers: H() }).then(function(r) { return r.json(); });
+  }
+  function sbPatch(path, body) {
+    var h = H();
+    h["Prefer"] = "return=representation";
+    return fetch(SB_URL + "/rest/v1/" + path, { method: "PATCH", headers: h, body: JSON.stringify(body) })
+      .then(function(r) { return r.json(); });
+  }
+  function arr(x) { return Array.isArray(x) ? x : []; }
 
-  /* ===================== CLIENTI ===================== */
-  var allClienti = [];
-
-  function loadClienti() {
-    sbFetch("orders?select=*&order=created_at.desc").then(function(data) {
-      allClienti = Array.isArray(data) ? data : [];
-      renderClienti(allClienti);
-      updateClientiStats(allClienti);
-      document.getElementById("topbar-meta").textContent = "Aggiornato ora";
+  /* ===================== LOAD ALL ===================== */
+  function loadAll() {
+    Promise.all([
+      sbGet("orders?select=*&order=created_at.desc"),
+      sbGet("activations?select=token,order_id,activated,stato"),
+      sbGet("events?select=*&order=created_at.desc"),
+      sbGet("registrations?select=event_id,in_lista_attesa,presente,adulti,bambini")
+    ]).then(function(res) {
+      ORDERS = arr(res[0]);
+      ACTS = arr(res[1]);
+      EVENTS = arr(res[2]);
+      REGS = arr(res[3]);
+      buildMaps();
+      DATA_LOADED = true;
+      renderPanoramica();
+      renderClienti();
+      renderEventi();
+      document.getElementById("topbar-meta").textContent = "Aggiornato: " + new Date().toLocaleTimeString("it-IT");
     }).catch(function() {
-      document.getElementById("clienti-tbody").innerHTML = "<tr><td colspan='6' class='empty-state'>Errore caricamento dati</td></tr>";
+      showToast("Errore nel caricamento dei dati", "error");
+      document.getElementById("pan-info").textContent = "Errore nel caricamento dei dati. Ricarica la pagina.";
     });
   }
 
-  function updateClientiStats(data) {
-    document.getElementById("s-totale").textContent = data.length;
-    document.getElementById("s-base").textContent = data.filter(function(o) { return o.piano === "base"; }).length;
-    document.getElementById("s-pro").textContent = data.filter(function(o) { return o.piano === "pro"; }).length;
-    document.getElementById("s-agenzia").textContent = data.filter(function(o) { return o.piano === "agenzia"; }).length;
+  function buildMaps() {
+    tokenOrder = {};
+    ACTS.forEach(function(a) { if (a.token) tokenOrder[a.token] = a.order_id; });
+    eventsByOrder = {};
+    orphanEvents = [];
+    EVENTS.forEach(function(e) {
+      var oid = tokenOrder[e.activation_token] || null;
+      if (oid) {
+        if (!eventsByOrder[oid]) eventsByOrder[oid] = [];
+        eventsByOrder[oid].push(e);
+      } else {
+        orphanEvents.push(e);
+      }
+    });
   }
 
-  function renderClienti(data) {
+  /* ===================== HELPERS ===================== */
+  function normEuro(imp) {
+    imp = imp || 0;
+    return imp > 588 ? Math.round(imp / 100) : imp;
+  }
+  function planLabel(p) {
+    p = p || "base";
+    return p.charAt(0).toUpperCase() + p.slice(1);
+  }
+  function isTestOrder(o) {
+    var sid = (o.stripe_id || "").toLowerCase();
+    var em = (o.email || "").toLowerCase();
+    if (!em) return true;
+    if (em.indexOf("@eventsfun.com") >= 0) return true;
+    if (sid.indexOf("test") === 0) return true;
+    return false;
+  }
+  function orderActs(oid) {
+    return ACTS.filter(function(a) { return a.order_id === oid; });
+  }
+  function isActivated(o) {
+    return orderActs(o.id).some(function(a) { return a.activated; });
+  }
+  function statoCliente(o) {
+    var s = o.subscription_status || "active";
+    if (s === "canceled" || s === "past_due") return "inattivo";
+    if (!isActivated(o)) return "non_attivato";
+    return "attivo";
+  }
+  function statoClienteLabel(s) {
+    if (s === "attivo") return "Attivo";
+    if (s === "inattivo") return "Non piu' attivo";
+    if (s === "non_attivato") return "Non attivato";
+    return s;
+  }
+  function couponInfo(o) {
+    var imp = normEuro(o.importo);
+    var sid = (o.stripe_id || "").toLowerCase();
+    if (imp > 0) return null;
+    if (sid.indexOf("beta") === 0) return "Beta / Omaggio";
+    if (sid.indexOf("test") === 0) return "Account di test";
+    if (sid.indexOf("cs_") === 0) return "Coupon 100% (stimato)";
+    return "Omaggio";
+  }
+  function pad2(n) { return String(n).padStart(2, "0"); }
+  function todayISO() {
+    var d = new Date();
+    return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+  }
+  function isoPlus(days) {
+    var d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate());
+  }
+  function eventStatus(e) {
+    if (e.bozza) return "bozza";
+    if (e.data_iso && e.data_iso < todayISO()) return "concluso";
+    return "attivo";
+  }
+  function evStatusLabel(s) {
+    return s === "attivo" ? "Attivo" : s === "concluso" ? "Concluso" : "Bozza";
+  }
+  function ownerOfEvent(e) {
+    var oid = tokenOrder[e.activation_token];
+    if (!oid) return null;
+    var match = ORDERS.filter(function(o) { return o.id === oid; });
+    return match.length ? match[0] : null;
+  }
+  function eventsOfOrder(oid) {
+    return eventsByOrder[oid] || [];
+  }
+  function regsOf(eid) {
+    return REGS.filter(function(r) { return r.event_id === eid; });
+  }
+  function evCounts(eid) {
+    var rs = regsOf(eid);
+    var isc = rs.filter(function(r) { return !r.in_lista_attesa; });
+    var att = rs.filter(function(r) { return r.in_lista_attesa; });
+    var pre = isc.filter(function(r) { return r.presente; });
+    var persone = isc.reduce(function(s, r) { return s + (r.adulti || 0) + (r.bambini || 0); }, 0);
+    return { iscritti: isc.length, attesa: att.length, presenti: pre.length, persone: persone };
+  }
+  function isTestEvent(e) {
+    var o = ownerOfEvent(e);
+    if (!o) return true;
+    return isTestOrder(o);
+  }
+  function visOrders() {
+    return showTest ? ORDERS : ORDERS.filter(function(o) { return !isTestOrder(o); });
+  }
+  function visEvents() {
+    return showTest ? EVENTS : EVENTS.filter(function(e) { return !isTestEvent(e); });
+  }
+  function fmtDate(iso) {
+    if (!iso) return "--";
+    var d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString("it-IT");
+  }
+
+  function onToggleTest() {
+    showTest = document.getElementById("toggle-test").checked;
+    if (!DATA_LOADED) return;
+    renderPanoramica();
+    renderClienti();
+    renderEventi();
+  }
+
+  /* ===================== PANORAMICA ===================== */
+  function renderPanoramica() {
+    if (!DATA_LOADED) return;
+    var orders = visOrders();
+    var evs = visEvents();
+
+    var attivi = orders.filter(function(o) { return statoCliente(o) === "attivo"; }).length;
+    var inattivi = orders.filter(function(o) { return statoCliente(o) === "inattivo"; }).length;
+    var nonAtt = orders.filter(function(o) { return statoCliente(o) === "non_attivato"; }).length;
+
+    var evAtt = evs.filter(function(e) { return eventStatus(e) === "attivo"; });
+    var evCon = evs.filter(function(e) { return eventStatus(e) === "concluso"; });
+    var evBoz = evs.filter(function(e) { return eventStatus(e) === "bozza"; });
+
+    var evIds = {};
+    evs.forEach(function(e) { evIds[e.id] = true; });
+    var regVis = REGS.filter(function(r) { return evIds[r.event_id]; });
+    var iscTot = regVis.filter(function(r) { return !r.in_lista_attesa; }).length;
+    var attTot = regVis.filter(function(r) { return r.in_lista_attesa; }).length;
+
+    setText("p-cli-tot", orders.length);
+    setText("p-cli-att", attivi);
+    setText("p-cli-ina", inattivi);
+    setText("p-cli-non", nonAtt);
+    setText("p-ev-att", evAtt.length);
+    setText("p-ev-con", evCon.length);
+    setText("p-ev-boz", evBoz.length);
+    setText("p-isc-tot", iscTot);
+    setText("p-isc-att", attTot);
+
+    var realCli = ORDERS.filter(function(o) { return !isTestOrder(o); }).length;
+    var orfani = orphanEvents.length;
+    document.getElementById("pan-info").innerHTML =
+      "Vista " + (showTest ? "completa (inclusi gli account di test)" : "solo dati reali (account di test nascosti)") +
+      ". Clienti reali stimati: <b>" + realCli + "</b>. Eventi non associati a un cliente: <b>" + orfani + "</b>. " +
+      "Le cifre di spesa sono normalizzate (euro) e i coupon sono stimati: il dato preciso arrivera' con la sincronizzazione Stripe (Fase 2).";
+
+    // Clienti senza eventi (esclusi i non piu' attivi)
+    var senza = orders.filter(function(o) {
+      return statoCliente(o) !== "inattivo" && eventsOfOrder(o.id).length === 0;
+    });
+    renderMiniList("pan-senza-eventi", senza.map(function(o) {
+      return { l: nomeCliente(o), r: planLabel(o.piano), id: o.id };
+    }), "Tutti i clienti hanno almeno un evento", true);
+
+    // Eventi nei prossimi 7 giorni
+    var t0 = todayISO(), t7 = isoPlus(7);
+    var inArrivo = evAtt.filter(function(e) {
+      return e.data_iso && e.data_iso >= t0 && e.data_iso <= t7;
+    }).sort(function(a, b) { return (a.data_iso || "").localeCompare(b.data_iso || ""); });
+    renderMiniList("pan-in-arrivo", inArrivo.map(function(e) {
+      return { l: e.nome || "Evento", r: fmtDate(e.data_iso), eid: e.id };
+    }), "Nessun evento nei prossimi 7 giorni", false);
+
+    // Eventi quasi pieni (>=80%)
+    var quasi = evAtt.filter(function(e) {
+      var c = evCounts(e.id);
+      return e.capienza && e.capienza > 0 && (c.iscritti / e.capienza) >= 0.8;
+    }).sort(function(a, b) {
+      return (evCounts(b.id).iscritti / b.capienza) - (evCounts(a.id).iscritti / a.capienza);
+    });
+    renderMiniList("pan-quasi-pieni", quasi.map(function(e) {
+      var c = evCounts(e.id);
+      return { l: e.nome || "Evento", r: c.iscritti + "/" + e.capienza, eid: e.id };
+    }), "Nessun evento vicino al completo", false);
+  }
+
+  function renderMiniList(elId, items, emptyMsg, isClient) {
+    var el = document.getElementById(elId);
+    if (!items.length) { el.innerHTML = "<div class='empty-mini'>" + emptyMsg + "</div>"; return; }
+    el.innerHTML = items.slice(0, 8).map(function(it) {
+      var click = isClient ? "openScheda('" + it.id + "')" : (it.eid ? "openStats('" + it.eid + "')" : "");
+      return "<div class='mini-row' style='cursor:pointer;' onclick=\"" + click + "\">" +
+        "<span class='ml'>" + escH(it.l) + "</span><span class='mr'>" + escH(it.r) + "</span></div>";
+    }).join("");
+  }
+
+  function nomeCliente(o) {
+    var n = ((o.nome || "") + " " + (o.cognome || "")).trim();
+    return n || (o.email || "--");
+  }
+  function setText(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = val;
+  }
+
+  /* ===================== CLIENTI ===================== */
+  function renderClienti() {
+    if (!DATA_LOADED) return;
+    var orders = visOrders();
+    setText("c-tot", orders.length);
+    setText("c-base", orders.filter(function(o) { return o.piano === "base"; }).length);
+    setText("c-pro", orders.filter(function(o) { return o.piano === "pro"; }).length);
+    setText("c-agenzia", orders.filter(function(o) { return o.piano === "agenzia"; }).length);
+
+    var q = (document.getElementById("search-clienti").value || "").toLowerCase();
+    var filtered = orders.filter(function(o) {
+      return (o.email || "").toLowerCase().indexOf(q) >= 0 ||
+             nomeCliente(o).toLowerCase().indexOf(q) >= 0;
+    });
+
     var tbody = document.getElementById("clienti-tbody");
-    if (!data.length) {
-      tbody.innerHTML = "<tr><td colspan='6' class='empty-state'>Nessun cliente trovato</td></tr>";
+    if (!filtered.length) {
+      tbody.innerHTML = "<tr><td colspan='7' class='empty-state'>Nessun cliente trovato</td></tr>";
       return;
     }
-    tbody.innerHTML = data.map(function(o) {
-      var nome = (o.nome || "") + " " + (o.cognome || "");
+    tbody.innerHTML = filtered.map(function(o) {
       var piano = o.piano || "base";
-      var stato = o.subscription_status || "active";
-      var data_acq = o.created_at ? new Date(o.created_at).toLocaleDateString("it-IT") : "--";
-      var piano_badge = '<span class="badge badge-' + piano + '">' + piano.charAt(0).toUpperCase() + piano.slice(1) + '</span>';
-      var stato_badge = '<span class="badge badge-' + stato + '">' + statoLabel(stato) + '</span>';
+      var st = statoCliente(o);
+      var nEv = eventsOfOrder(o.id).length;
+      var testTag = isTestOrder(o) ? "<span class='tag-test'>test</span>" : "";
       return "<tr>" +
-        "<td>" + escH(nome.trim() || "--") + "</td>" +
+        "<td>" + escH(nomeCliente(o)) + testTag + "</td>" +
         "<td>" + escH(o.email || "--") + "</td>" +
-        "<td>" + piano_badge + "</td>" +
-        "<td>" + stato_badge + "</td>" +
-        "<td>" + data_acq + "</td>" +
-        "<td><button class='btn-sm' onclick='searchCustomerById(\"" + escH(o.email) + "\")'>Dettaglio</button></td>" +
+        "<td><span class='badge badge-" + piano + "'>" + planLabel(piano) + "</span></td>" +
+        "<td><span class='badge badge-" + st + "'>" + statoClienteLabel(st) + "</span></td>" +
+        "<td>" + nEv + "</td>" +
+        "<td>" + fmtDate(o.created_at) + "</td>" +
+        "<td><button class='btn-sm' onclick=\"openScheda('" + o.id + "')\">Scheda</button></td>" +
         "</tr>";
     }).join("");
   }
 
-  function statoLabel(s) {
-    if (s === "active") return "Attivo";
-    if (s === "past_due") return "Scaduto";
-    if (s === "canceled") return "Cancellato";
-    return s;
+  /* ===================== SCHEDA CLIENTE (MODAL A) ===================== */
+  function openScheda(orderId) {
+    var match = ORDERS.filter(function(o) { return o.id === orderId; });
+    if (!match.length) { showToast("Cliente non trovato", "error"); return; }
+    var o = match[0];
+    currentSchedaOrderId = orderId;
+
+    var piano = o.piano || "base";
+    var st = statoCliente(o);
+    var spesa = normEuro(o.importo);
+    var coup = couponInfo(o);
+    var acts = orderActs(o.id);
+    var evs = eventsOfOrder(o.id);
+    var testTag = isTestOrder(o) ? "<span class='tag-test'>test</span>" : "";
+
+    var tokensHtml = acts.length ? acts.map(function(a) {
+      return "<div class='token-chip'><span>" + escH(a.token) + "</span>" +
+        "<span class='badge badge-" + (a.activated ? "attivo" : "non_attivato") + "'>" +
+        (a.activated ? "Attivato" : "Non attivato") + "</span></div>";
+    }).join("") : "<div class='note-soft'>Nessun token di attivazione collegato</div>";
+
+    var eventiHtml;
+    if (!evs.length) {
+      eventiHtml = "<div class='note-soft'>Questo cliente non ha ancora creato eventi.</div>";
+    } else {
+      eventiHtml = evs.map(function(e) {
+        var c = evCounts(e.id);
+        var s = eventStatus(e);
+        var cap = e.capienza ? e.capienza : "--";
+        return "<div class='cust-event'>" +
+          "<div class='ce-top'><span class='ce-name'>" + escH(e.nome || "Evento senza nome") + "</span>" +
+          "<span class='badge badge-" + s + "'>" + evStatusLabel(s) + "</span></div>" +
+          "<div class='ce-meta'>" + fmtDate(e.data_iso) + " &bull; " + escH(e.luogo || "--") +
+          " &bull; Iscritti " + c.iscritti + "/" + cap + " &bull; Presenti " + c.presenti +
+          (c.attesa ? " &bull; In attesa " + c.attesa : "") + "</div>" +
+          "<div class='ev-actions'>" +
+          "<button class='btn-sm' onclick=\"openIscritti('" + e.id + "')\">&#128101; Iscritti</button>" +
+          "<button class='btn-sm' onclick=\"openStats('" + e.id + "')\">&#128202; Statistiche</button>" +
+          "<button class='btn-sm' onclick=\"openEditEvent('" + e.id + "')\">&#9999;&#65039; Modifica</button>" +
+          "</div></div>";
+      }).join("");
+    }
+
+    var html =
+      "<div class='modal-head'>" +
+        "<h2>" + escH(nomeCliente(o)) + testTag +
+          " <span class='badge badge-" + piano + "'>" + planLabel(piano) + "</span>" +
+          " <span class='badge badge-" + st + "'>" + statoClienteLabel(st) + "</span></h2>" +
+        "<button class='modal-close' onclick='closeModalA()'>&times;</button>" +
+      "</div>" +
+      "<div class='detail-grid'>" +
+        detailItem("Email", escH(o.email || "--")) +
+        detailItem("Spesa", spesa + " euro") +
+        detailItem("Coupon / Omaggio", coup ? escH(coup) : "Nessuno (pagato)") +
+        detailItem("Data acquisto", fmtDate(o.created_at)) +
+        detailItem("Scadenza abbonamento", o.subscription_expires_at ? fmtDate(o.subscription_expires_at) : "--") +
+        detailItem("Newsletter", o.newsletter ? "Si" : "No") +
+        detailItem("Stripe ID", escH(o.stripe_id || "--"), true) +
+        detailItem("Order ID", escH(o.id), true) +
+      "</div>" +
+      "<div class='note-soft'>Dati fiscali (ragione sociale, P.IVA, indirizzo): da sincronizzare con Stripe in un passo successivo. La spesa mostrata e' quella dell'acquisto iniziale; i rinnovi ricorrenti non sono ancora storicizzati.</div>" +
+      "<div class='block-label'>Token di attivazione (" + acts.length + ")</div>" + tokensHtml +
+      "<div class='block-label'>Eventi del cliente (" + evs.length + ")</div>" + eventiHtml;
+
+    document.getElementById("modalA-card").innerHTML = html;
+    document.getElementById("modalA").classList.add("show");
+  }
+  function detailItem(label, value, mono) {
+    return "<div class='detail-item'><div class='dl'>" + label + "</div><div class='dv" +
+      (mono ? " mono" : "") + "'>" + value + "</div></div>";
+  }
+  function closeModalA() {
+    document.getElementById("modalA").classList.remove("show");
+    currentSchedaOrderId = null;
   }
 
-  function filterClienti() {
-    var q = document.getElementById("search-clienti").value.toLowerCase();
-    var filtered = allClienti.filter(function(o) {
-      return (o.email || "").toLowerCase().includes(q) ||
-             ((o.nome || "") + " " + (o.cognome || "")).toLowerCase().includes(q);
-    });
-    renderClienti(filtered);
-  }
-
-  /* ===================== MONITORAGGIO ===================== */
-  function loadMonitor() {
-    Promise.all([
-      sbFetch("events?select=*&order=created_at.desc"),
-      sbFetch("registrations?select=id,in_lista_attesa")
-    ]).then(function(results) {
-      var events = Array.isArray(results[0]) ? results[0] : [];
-      var regs = Array.isArray(results[1]) ? results[1] : [];
-      var attivi = events.filter(function(e) { return e.attivo && !e.bozza; });
-      var bozze = events.filter(function(e) { return e.bozza; });
-      var attesa = regs.filter(function(r) { return r.in_lista_attesa; });
-      document.getElementById("m-eventi").textContent = attivi.length;
-      document.getElementById("m-iscritti").textContent = regs.length - attesa.length;
-      document.getElementById("m-attesa").textContent = attesa.length;
-      document.getElementById("m-bozze").textContent = bozze.length;
-      renderEventCards(attivi, regs);
+  /* ===================== ISCRITTI (MODAL B) ===================== */
+  function openIscritti(eventId) {
+    var ev = eventById(eventId);
+    var titolo = ev ? escH(ev.nome || "Evento") : "Evento";
+    openModalB("<div class='modal-head'><h2>&#128101; Iscritti -- " + titolo + "</h2>" +
+      "<button class='modal-close' onclick='closeModalB()'>&times;</button></div>" +
+      "<div class='loading-row'><span class='spinner'></span></div>");
+    sbGet("registrations?event_id=eq." + eventId + "&order=created_at.asc&select=*").then(function(data) {
+      var regs = arr(data);
+      renderIscritti(titolo, regs);
     }).catch(function() {
-      document.getElementById("events-grid").innerHTML = "<div class='empty-state'>Errore caricamento dati</div>";
+      showToast("Errore caricamento iscritti", "error");
     });
   }
-
-  function renderEventCards(events, regs) {
-    var grid = document.getElementById("events-grid");
-    if (!events.length) {
-      grid.innerHTML = "<div class='empty-state'>Nessun evento attivo al momento</div>";
+  function renderIscritti(titolo, regs) {
+    var body = "<div class='modal-head'><h2>&#128101; Iscritti -- " + titolo + "</h2>" +
+      "<button class='modal-close' onclick='closeModalB()'>&times;</button></div>";
+    if (!regs.length) {
+      body += "<div class='empty-state'>Nessun iscritto per questo evento</div>";
+      document.getElementById("modalB-card").innerHTML = body;
       return;
     }
-    grid.innerHTML = events.map(function(ev) {
-      var evRegs = regs.filter(function(r) { return r.event_id === ev.id && !r.in_lista_attesa; });
-      var evAttesa = regs.filter(function(r) { return r.event_id === ev.id && r.in_lista_attesa; });
-      var cap = ev.capienza || 0;
-      var pct = cap > 0 ? Math.min(100, Math.round((evRegs.length / cap) * 100)) : 0;
-      var data_str = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString("it-IT") : "--";
-      return '<div class="event-card">' +
-        '<div class="ev-name">' + escH(ev.nome || "Evento senza nome") + '</div>' +
-        '<div class="ev-meta">' + escH(ev.luogo || "--") + " &bull; " + data_str + " &bull; " + escH(ev.piano || "--") + '</div>' +
-        '<div class="ev-stats">' +
-          '<div class="ev-stat"><div class="n">' + evRegs.length + '</div><div class="l">Iscritti</div></div>' +
-          '<div class="ev-stat"><div class="n">' + (cap || "--") + '</div><div class="l">Capienza</div></div>' +
-          '<div class="ev-stat"><div class="n">' + evAttesa.length + '</div><div class="l">In attesa</div></div>' +
-        '</div>' +
-        (cap > 0 ? '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' : '') +
-        '</div>';
+    var rows = regs.map(function(r) {
+      var nome = ((r.nome || "") + " " + (r.cognome || "")).trim() || "--";
+      var persone = (r.adulti || 0) + (r.bambini || 0);
+      var stato = r.in_lista_attesa
+        ? "<span class='badge badge-bozza'>In attesa</span>"
+        : (r.presente ? "<span class='badge badge-attivo'>Presente</span>" : "<span class='badge badge-concluso'>Atteso</span>");
+      var acc = r.capogruppo_id ? "<span class='tag-test'>accomp.</span>" : "";
+      return "<tr><td>" + escH(nome) + acc + "</td><td>" + escH(r.email || "--") + "</td>" +
+        "<td>" + escH(r.telefono || "--") + "</td><td>" + persone + "</td>" +
+        "<td>" + escH(r.tipo || "--") + "</td><td>" + stato + "</td>" +
+        "<td>" + fmtDate(r.created_at) + "</td></tr>";
+    }).join("");
+    body += "<div class='table-wrap'><div class='table-scroll'><table><thead><tr>" +
+      "<th>Nome</th><th>Email</th><th>Telefono</th><th>Persone</th><th>Tipo</th><th>Stato</th><th>Data</th>" +
+      "</tr></thead><tbody>" + rows + "</tbody></table></div></div>";
+    document.getElementById("modalB-card").innerHTML = body;
+  }
+
+  /* ===================== STATISTICHE EVENTO (MODAL B) ===================== */
+  function openStats(eventId) {
+    var ev = eventById(eventId);
+    var titolo = ev ? escH(ev.nome || "Evento") : "Evento";
+    openModalB("<div class='modal-head'><h2>&#128202; Statistiche -- " + titolo + "</h2>" +
+      "<button class='modal-close' onclick='closeModalB()'>&times;</button></div>" +
+      "<div class='loading-row'><span class='spinner'></span></div>");
+    sbGet("registrations?event_id=eq." + eventId + "&select=*").then(function(data) {
+      renderStats(ev, titolo, arr(data));
+    }).catch(function() {
+      showToast("Errore caricamento statistiche", "error");
+    });
+  }
+  function renderStats(ev, titolo, regs) {
+    var isc = regs.filter(function(r) { return !r.in_lista_attesa; });
+    var att = regs.filter(function(r) { return r.in_lista_attesa; });
+    var pre = isc.filter(function(r) { return r.presente; });
+    var adulti = isc.reduce(function(s, r) { return s + (r.adulti || 0); }, 0);
+    var bambini = isc.reduce(function(s, r) { return s + (r.bambini || 0); }, 0);
+    var persone = adulti + bambini;
+    var cap = ev && ev.capienza ? ev.capienza : 0;
+    var riemp = cap > 0 ? Math.round((isc.length / cap) * 100) : 0;
+    var presenza = isc.length > 0 ? Math.round((pre.length / isc.length) * 100) : 0;
+
+    function st(n, l) { return "<div class='reg-stat'><div class='rn'>" + n + "</div><div class='rl'>" + l + "</div></div>"; }
+
+    var body = "<div class='modal-head'><h2>&#128202; Statistiche -- " + titolo + "</h2>" +
+      "<button class='modal-close' onclick='closeModalB()'>&times;</button></div>";
+    body += "<div class='reg-stat-grid'>" +
+      st(isc.length, "Iscritti") +
+      st(persone, "Persone totali") +
+      st(pre.length, "Presenti") +
+      st(att.length, "In attesa") +
+      st(adulti, "Adulti") +
+      st(bambini, "Bambini") +
+      st((cap > 0 ? riemp + "%" : "--"), "Riempimento") +
+      st(presenza + "%", "Tasso presenza") +
+      "</div>";
+
+    var meta = [];
+    if (ev) {
+      meta.push("Capienza: " + (cap > 0 ? cap : "illimitata"));
+      meta.push("QR check-in: " + (ev.opt_qr_checkin ? "attivo" : "spento"));
+      meta.push("Iscrizione multipla: " + (ev.opt_multipla ? "attiva" : "spenta"));
+      meta.push("Tema landing: " + (ev.landing_tema || "chiaro"));
+    }
+    body += "<div class='note-soft'>" + meta.join(" &bull; ") + "</div>";
+    document.getElementById("modalB-card").innerHTML = body;
+  }
+
+  /* ===================== MODIFICA EVENTO (MODAL B) ===================== */
+  function openEditEvent(eventId) {
+    var ev = eventById(eventId);
+    if (!ev) { showToast("Evento non trovato", "error"); return; }
+    var body = "<div class='modal-head'><h2>&#9999;&#65039; Modifica evento</h2>" +
+      "<button class='modal-close' onclick='closeModalB()'>&times;</button></div>" +
+      "<div class='form-group'><label>Nome evento</label><input type='text' id='ed-nome' value=\"" + escAttr(ev.nome) + "\" /></div>" +
+      "<div class='detail-grid'>" +
+        "<div class='form-group'><label>Data</label><input type='date' id='ed-data' value=\"" + escAttr(ev.data_iso || "") + "\" /></div>" +
+        "<div class='form-group'><label>Ora</label><input type='text' id='ed-ora' value=\"" + escAttr(ev.ora || "") + "\" /></div>" +
+        "<div class='form-group'><label>Luogo</label><input type='text' id='ed-luogo' value=\"" + escAttr(ev.luogo || "") + "\" /></div>" +
+        "<div class='form-group'><label>Capienza (vuoto = illimitata)</label><input type='number' id='ed-cap' value=\"" + (ev.capienza != null ? ev.capienza : "") + "\" min='0' /></div>" +
+      "</div>" +
+      "<div class='form-group'><label>Descrizione</label><textarea id='ed-desc'>" + escH(ev.descrizione || "") + "</textarea></div>" +
+      "<div class='detail-grid'>" +
+        "<label class='test-toggle'><input type='checkbox' id='ed-attivo' " + (ev.attivo ? "checked" : "") + " /> Evento attivo (landing aperta)</label>" +
+        "<label class='test-toggle'><input type='checkbox' id='ed-qr' " + (ev.opt_qr_checkin ? "checked" : "") + " /> QR check-in attivo</label>" +
+      "</div>" +
+      "<div class='nl-actions'>" +
+        "<button class='btn-gold' onclick=\"saveEvent('" + ev.id + "')\">Salva modifiche</button>" +
+        "<button class='btn-ghost' onclick='closeModalB()'>Annulla</button>" +
+      "</div>" +
+      "<div class='note-soft' style='margin-top:12px;'>Lo slug della pagina di iscrizione non viene modificato. Le modifiche sono immediate sul database.</div>";
+    openModalB(body);
+  }
+
+  function saveEvent(eventId) {
+    var nome = (document.getElementById("ed-nome").value || "").trim();
+    if (!nome) { showToast("Il nome dell'evento e' obbligatorio", "error"); return; }
+    var capRaw = document.getElementById("ed-cap").value;
+    var body = {
+      nome: nome,
+      data_iso: document.getElementById("ed-data").value || null,
+      ora: (document.getElementById("ed-ora").value || "").trim(),
+      luogo: (document.getElementById("ed-luogo").value || "").trim(),
+      descrizione: document.getElementById("ed-desc").value || "",
+      capienza: capRaw === "" ? null : parseInt(capRaw, 10),
+      attivo: document.getElementById("ed-attivo").checked,
+      opt_qr_checkin: document.getElementById("ed-qr").checked
+    };
+    showToast("Salvataggio in corso...", "");
+    sbPatch("events?id=eq." + eventId, body).then(function(res) {
+      var updated = Array.isArray(res) && res.length ? res[0] : null;
+      if (!updated) { showToast("Errore: nessuna risposta dal salvataggio", "error"); return; }
+      updateLocalEvent(updated);
+      buildMaps();
+      renderPanoramica();
+      renderClienti();
+      renderEventi();
+      if (currentSchedaOrderId) openScheda(currentSchedaOrderId);
+      closeModalB();
+      showToast("Evento aggiornato", "success");
+    }).catch(function() {
+      showToast("Errore durante il salvataggio", "error");
+    });
+  }
+
+  function updateLocalEvent(updated) {
+    for (var i = 0; i < EVENTS.length; i++) {
+      if (EVENTS[i].id === updated.id) {
+        for (var k in updated) { if (Object.prototype.hasOwnProperty.call(updated, k)) EVENTS[i][k] = updated[k]; }
+        return;
+      }
+    }
+  }
+  function eventById(id) {
+    var m = EVENTS.filter(function(e) { return e.id === id; });
+    return m.length ? m[0] : null;
+  }
+
+  /* ===================== MODAL B HELPERS ===================== */
+  function openModalB(html) {
+    document.getElementById("modalB-card").innerHTML = html;
+    document.getElementById("modalB").classList.add("show");
+  }
+  function closeModalB() {
+    document.getElementById("modalB").classList.remove("show");
+  }
+
+  /* ===================== EVENTI ===================== */
+  function setEventFilter(f) {
+    eventFilter = f;
+    document.querySelectorAll("#eventi-filtri .filter-btn").forEach(function(b) { b.classList.remove("active"); });
+    var btn = document.querySelector("#eventi-filtri .filter-btn[data-f='" + f + "']");
+    if (btn) btn.classList.add("active");
+    renderEventi();
+  }
+
+  function renderEventi() {
+    if (!DATA_LOADED) return;
+    var evs = visEvents();
+    if (eventFilter !== "tutti") {
+      evs = evs.filter(function(e) { return eventStatus(e) === eventFilter; });
+    }
+    var q = (document.getElementById("search-eventi").value || "").toLowerCase();
+    if (q) {
+      evs = evs.filter(function(e) {
+        var owner = ownerOfEvent(e);
+        var ownerName = owner ? (owner.email || "") + " " + nomeCliente(owner) : "";
+        return (e.nome || "").toLowerCase().indexOf(q) >= 0 || ownerName.toLowerCase().indexOf(q) >= 0;
+      });
+    }
+    document.getElementById("eventi-title").textContent = "Eventi (" + evs.length + ")";
+
+    var grid = document.getElementById("events-grid");
+    if (!evs.length) {
+      grid.innerHTML = "<div class='empty-state'>Nessun evento con questi filtri</div>";
+      return;
+    }
+    grid.innerHTML = evs.map(function(e) {
+      var owner = ownerOfEvent(e);
+      var ownerLine = owner
+        ? "<div class='ev-owner'>" + escH(owner.email || nomeCliente(owner)) + "</div>"
+        : "<div class='ev-owner'><span class='badge badge-orfano'>Non associato</span></div>";
+      var c = evCounts(e.id);
+      var cap = e.capienza || 0;
+      var pct = cap > 0 ? Math.min(100, Math.round((c.iscritti / cap) * 100)) : 0;
+      var s = eventStatus(e);
+      return "<div class='event-card'>" +
+        "<div class='ev-name'>" + escH(e.nome || "Evento senza nome") +
+          " <span class='badge badge-" + s + "'>" + evStatusLabel(s) + "</span></div>" +
+        ownerLine +
+        "<div class='ev-meta'>" + escH(e.luogo || "--") + " &bull; " + fmtDate(e.data_iso) +
+          " &bull; " + escH(e.piano || "--") + "</div>" +
+        "<div class='ev-stats'>" +
+          "<div class='ev-stat'><div class='n'>" + c.iscritti + "</div><div class='l'>Iscritti</div></div>" +
+          "<div class='ev-stat'><div class='n'>" + (cap || "--") + "</div><div class='l'>Capienza</div></div>" +
+          "<div class='ev-stat'><div class='n'>" + c.presenti + "</div><div class='l'>Presenti</div></div>" +
+          "<div class='ev-stat'><div class='n'>" + c.attesa + "</div><div class='l'>In attesa</div></div>" +
+        "</div>" +
+        (cap > 0 ? "<div class='progress-bar'><div class='progress-fill' style='width:" + pct + "%'></div></div>" : "") +
+        "<div class='ev-actions'>" +
+          "<button class='btn-sm' onclick=\"openIscritti('" + e.id + "')\">&#128101; Iscritti</button>" +
+          "<button class='btn-sm' onclick=\"openStats('" + e.id + "')\">&#128202; Statistiche</button>" +
+          "<button class='btn-sm' onclick=\"openEditEvent('" + e.id + "')\">&#9999;&#65039; Modifica</button>" +
+        "</div>" +
+        "</div>";
     }).join("");
   }
 
@@ -705,19 +1287,17 @@
 
   function loadNewsletter() {
     Promise.all([
-      sbFetch("orders?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true"),
-      sbFetch("registrations?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true")
+      sbGet("orders?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true"),
+      sbGet("registrations?select=email,nome,cognome,newsletter,created_at&newsletter=eq.true")
     ]).then(function(results) {
-      nlClienti = (Array.isArray(results[0]) ? results[0] : []).map(function(r) {
+      nlClienti = arr(results[0]).map(function(r) {
         return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Cliente", data: r.created_at };
       });
-      // Iscritti eventi: escludi chi e' gia' cliente (dedup per email)
       var clientiEmails = {};
       nlClienti.forEach(function(r) { if (r.email) clientiEmails[r.email.toLowerCase()] = true; });
-      var eventiRaw = (Array.isArray(results[1]) ? results[1] : []).map(function(r) {
+      var eventiRaw = arr(results[1]).map(function(r) {
         return { email: r.email, nome: r.nome, cognome: r.cognome, fonte: "Evento", data: r.created_at };
       });
-      // Dedup interni agli eventi
       var seenEventi = {};
       nlEventi = [];
       eventiRaw.forEach(function(r) {
@@ -727,12 +1307,12 @@
         }
       });
       allNL = nlClienti.concat(nlEventi);
-      document.getElementById("nl-count").textContent = allNL.length;
-      document.getElementById("nl-clienti").textContent = nlClienti.length;
-      document.getElementById("nl-eventi-count").textContent = nlEventi.length;
-      document.getElementById("seg-count-tutti").textContent = allNL.length;
-      document.getElementById("seg-count-clienti").textContent = nlClienti.length;
-      document.getElementById("seg-count-eventi").textContent = nlEventi.length;
+      setText("nl-count", allNL.length);
+      setText("nl-clienti", nlClienti.length);
+      setText("nl-eventi-count", nlEventi.length);
+      setText("seg-count-tutti", allNL.length);
+      setText("seg-count-clienti", nlClienti.length);
+      setText("seg-count-eventi", nlEventi.length);
       renderNL(getSegmento());
     }).catch(function() {
       document.getElementById("nl-tbody").innerHTML = "<tr><td colspan='4' class='empty-state'>Errore caricamento</td></tr>";
@@ -761,7 +1341,7 @@
     tbody.innerHTML = data.map(function(r) {
       var nome = ((r.nome || "") + " " + (r.cognome || "")).trim() || "--";
       var data_str = r.data ? new Date(r.data).toLocaleDateString("it-IT") : "--";
-      var fonte_color = r.fonte === "Cliente" ? "badge-pro" : "badge-active";
+      var fonte_color = r.fonte === "Cliente" ? "badge-pro" : "badge-attivo";
       return "<tr><td>" + escH(r.email || "--") + "</td><td>" + escH(nome) + "</td><td><span class='badge " + fonte_color + "'>" + r.fonte + "</span></td><td>" + data_str + "</td></tr>";
     }).join("");
   }
@@ -818,78 +1398,20 @@
       }
       showToast("Newsletter inviata: " + (res.sent || 0) + "/" + (res.total || emails.length), fail > 0 ? "error" : "success");
     })
-    .catch(function(err) {
+    .catch(function() {
       result_div.style.color = "var(--red)";
       result_div.textContent = "Errore di connessione alla Edge Function. Riprova.";
       showToast("Errore di connessione", "error");
     });
   }
 
-  /* ===================== SUPPORTO ===================== */
-  function searchCustomer() {
-    var q = document.getElementById("support-search").value.trim().toLowerCase();
-    if (!q) { showToast("Inserisci email o nome del cliente", "error"); return; }
-    Promise.all([
-      sbFetch("orders?select=*&or=(email.ilike.*" + encodeURIComponent(q) + "*,nome.ilike.*" + encodeURIComponent(q) + "*)"),
-      sbFetch("activations?select=*")
-    ]).then(function(results) {
-      var orders = Array.isArray(results[0]) ? results[0] : [];
-      var activations = Array.isArray(results[1]) ? results[1] : [];
-      renderSupportResult(orders, activations);
-    }).catch(function() {
-      document.getElementById("support-result").innerHTML = "<div class='empty-state'>Errore nella ricerca</div>";
-    });
-  }
-
-  function searchCustomerById(email) {
-    showSection({ currentTarget: document.querySelectorAll(".nav-item")[3] }, "supporto");
-    // Navigazione manuale
-    document.querySelectorAll(".section").forEach(function(s) { s.classList.remove("active"); });
-    document.querySelectorAll(".nav-item").forEach(function(n) { n.classList.remove("active"); });
-    document.getElementById("sec-supporto").classList.add("active");
-    document.querySelectorAll(".nav-item")[3].classList.add("active");
-    document.getElementById("section-title").textContent = SECTION_TITLES["supporto"];
-    document.getElementById("support-search").value = email;
-    searchCustomer();
-  }
-
-  function renderSupportResult(orders, activations) {
-    var container = document.getElementById("support-result");
-    if (!orders.length) {
-      container.innerHTML = "<div class='customer-detail'><div class='empty-state'>Nessun cliente trovato con questi criteri</div></div>";
-      return;
-    }
-    container.innerHTML = orders.map(function(o) {
-      var acts = activations.filter(function(a) { return a.order_id === o.id; });
-      var nome = ((o.nome || "") + " " + (o.cognome || "")).trim();
-      var piano = o.piano || "base";
-      var stato = o.subscription_status || "active";
-      var data_acq = o.created_at ? new Date(o.created_at).toLocaleDateString("it-IT") : "--";
-      var scadenza = o.subscription_expires_at ? new Date(o.subscription_expires_at).toLocaleDateString("it-IT") : "--";
-      var tokens_html = acts.length ? acts.map(function(a) {
-        return '<div style="font-family:monospace;font-size:12px;background:var(--bg4);padding:6px 10px;border-radius:6px;margin-bottom:6px;color:var(--text2);">' + escH(a.token) + ' <span class="badge badge-' + (a.activated ? "active" : "past_due") + '">' + (a.activated ? "Attivato" : "Non attivato") + '</span></div>';
-      }).join("") : '<div style="font-size:13px;color:var(--text3);">Nessun token trovato</div>';
-      return '<div class="customer-detail" style="margin-bottom:16px;">' +
-        '<h3>' + escH(nome || "--") + ' <span class="badge badge-' + piano + '" style="margin-left:8px;">' + piano.charAt(0).toUpperCase() + piano.slice(1) + '</span></h3>' +
-        '<div class="detail-grid">' +
-          '<div class="detail-item"><div class="dl">Email</div><div class="dv">' + escH(o.email || "--") + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Stato</div><div class="dv"><span class="badge badge-' + stato + '">' + statoLabel(stato) + '</span></div></div>' +
-          '<div class="detail-item"><div class="dl">Acquisto</div><div class="dv">' + data_acq + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Importo</div><div class="dv">' + (o.importo ? o.importo + " euro" : "--") + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Scadenza sub.</div><div class="dv">' + scadenza + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Stripe ID</div><div class="dv" style="font-family:monospace;font-size:12px;color:var(--text3);">' + escH(o.stripe_id || "--") + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Newsletter</div><div class="dv">' + (o.newsletter ? "Si" : "No") + '</div></div>' +
-          '<div class="detail-item"><div class="dl">Order ID</div><div class="dv" style="font-family:monospace;font-size:12px;color:var(--text3);">' + escH(o.id || "--") + '</div></div>' +
-        '</div>' +
-        '<div style="margin-top:16px;"><div style="font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">Token di attivazione</div>' + tokens_html + '</div>' +
-        '</div>';
-    }).join("");
-  }
-
   /* ===================== UTILS ===================== */
   function escH(str) {
-    if (!str) return "";
-    return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+    if (str === null || str === undefined) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function escAttr(str) {
+    return escH(str).replace(/'/g, "&#39;");
   }
 
   function showToast(msg, type) {
