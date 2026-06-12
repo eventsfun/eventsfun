@@ -172,6 +172,17 @@ var regs = [];
 var adultiCount = 1;
 var bambiniCount = 0;
 
+/* Restituisce le forme della parola in base alla terminologia scelta per l'evento */
+function termWords(t) {
+  var W = {
+    iscrizione:     { imp: 'Iscriviti',  inf: 'iscriverti',   n: 'iscrizione',     N: 'Iscrizione',     np: 'iscrizioni' },
+    prenotazione:   { imp: 'Prenota',    inf: 'prenotare',    n: 'prenotazione',   N: 'Prenotazione',   np: 'prenotazioni' },
+    partecipazione: { imp: 'Partecipa',  inf: 'partecipare',  n: 'partecipazione', N: 'Partecipazione', np: 'partecipazioni' },
+    registrazione:  { imp: 'Registrati', inf: 'registrarti',  n: 'registrazione',  N: 'Registrazione',  np: 'registrazioni' }
+  };
+  return W[t] || W.iscrizione;
+}
+
 function isoToIt(iso) { if (!iso) return '—'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function isClosed(ev) {
   if (!ev || !ev.data_iso) return false;
@@ -208,7 +219,7 @@ function buildGCalLink(ev) {
     action: 'TEMPLATE',
     text: ev.nome,
     dates: startDt + '/' + endDt,
-    details: (ev.descrizione || '') + '\n\nIscrizione gestita con EventsFun -- eventsfun.com',
+    details: (ev.descrizione || '') + '\n\n' + termWords(ev.terminologia).N + ' gestita con EventsFun -- eventsfun.com',
     location: ev.luogo || ''
   });
   return 'https://calendar.google.com/calendar/render?' + params.toString();
@@ -262,6 +273,8 @@ function render() {
   var closed = isClosed(ev) || !ev.attivo;
   var cf = ev.custom_fields || [];
   var sponsors = ev.sponsors || [];
+  var TW = termWords(ev.terminologia);
+  document.title = TW.N + ' evento -- EventsFun';
 
   var imgHtml = ev.immagine ? '<img src="' + ev.immagine + '" class="ev-img" alt="' + ev.nome + '">' : '';
 
@@ -277,7 +290,7 @@ function render() {
       ? '<span style="color:#C9A96E;font-weight:700">Lista d\'attesa disponibile</span>'
       : '<span><strong>' + posti + '</strong> / ' + ev.capienza + '</span>';
     capHtml = '<div class="cap-bar"><div class="cap-row"><span>Posti disponibili</span>' + postiLabel + '</div><div class="cap-track"><div class="cap-fill" style="width:' + pct + '%"></div></div>'
-      + (posti === 0 ? '<p style="font-size:11px;color:#999;margin-top:8px">L\'evento è al completo. Puoi comunque iscriverti: verrai messo in lista d\'attesa.</p>' : '')
+      + (posti === 0 ? '<p style="font-size:11px;color:#999;margin-top:8px">L\'evento è al completo. Puoi comunque ' + TW.inf + ': verrai messo in lista d\'attesa.</p>' : '')
       + '</div>';
   }
 
@@ -324,8 +337,8 @@ function render() {
   var gdprHtml = '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="r_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> Ho letto e accetto l\'<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">informativa sul trattamento dei dati personali</a> *</label>';
 
   var formHtml = closed
-    ? '<div class="closed-box">⛔ Le iscrizioni per questo evento sono chiuse</div>'
-    : '<h2 class="form-title">Iscriviti</h2>'
+    ? '<div class="closed-box">⛔ Le ' + TW.np + ' per questo evento sono chiuse</div>'
+    : '<h2 class="form-title">' + TW.imp + '</h2>'
       + '<div class="alert" id="formAlert"></div>'
       + '<div class="lp-grid">'
       + '<div class="lp-fg"><label class="lp-lbl">Nome *</label><input id="r_nome" class="lp-inp" placeholder="Mario"></div>'
@@ -338,7 +351,7 @@ function render() {
       + extraFields
       + nlHtml
       + gdprHtml
-      + '<button class="submit-btn" id="submitBtn" onclick="submitReg()">Iscriviti →</button>';
+      + '<button class="submit-btn" id="submitBtn" onclick="submitReg()">' + TW.imp + ' →</button>';
 
   var sponsorsHtml = '';
   if (sponsors.length) {
@@ -527,7 +540,7 @@ async function submitReg() {
 
     showSuccess(nome, !!capienzaPiena);
   } catch(e) {
-    btn.disabled = false; btn.textContent = 'Iscriviti →';
+    btn.disabled = false; btn.textContent = termWords(ev.terminologia).imp + ' →';
     showAlert('Si è verificato un errore. Riprova tra qualche secondo.');
   }
 }
@@ -539,11 +552,12 @@ function showAlert(msg) {
 }
 
 function showSuccess(nome, inAttesa) {
+  var TW = termWords(ev.terminologia);
   var titoloTxt = inAttesa ? 'Sei in lista d\'attesa!' : 'Grazie, ' + nome + '!';
   var iconaTxt = inAttesa ? '⏳' : '🎉';
   var testoTxt = inAttesa
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
-    : 'La tua iscrizione a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.';
+    : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.';
   var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:20px;display:flex;justify-content:center">' + gcalBtnHtml(ev) + '</div>' : '';
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
     + '<div class="success-icon">' + iconaTxt + '</div>'

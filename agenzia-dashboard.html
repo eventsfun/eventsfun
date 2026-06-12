@@ -544,6 +544,17 @@ select option{background:#1a1a1a;color:var(--text)}
         <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
       </div>
     </div>
+    <div class="sec-div">🏷️ Terminologia
+      <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
+    </div>
+    <div class="mf"><label>Come si registrano i partecipanti</label>
+      <select id="ev_terminologia">
+        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+      </select>
+    </div>
     <div class="sec-div">
       ⚙️ Opzioni modulo iscrizione
     </div>
@@ -697,6 +708,17 @@ select option{background:#1a1a1a;color:var(--text)}
         <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
         <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
       </div>
+    </div>
+    <div class="sec-div">🏷️ Terminologia
+      <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
+    </div>
+    <div class="mf"><label>Come si registrano i partecipanti</label>
+      <select id="se_terminologia">
+        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+      </select>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
     <div class="opt-row">
@@ -1663,6 +1685,7 @@ function resetEvForm() {
   removeEvImg();
   setHTML('cspList', '');
   setHTML('ccfList', '');
+  var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
   var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
   Object.keys(defaults).forEach(function(k) {
@@ -1732,6 +1755,7 @@ async function saveEvent() {
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
     opt_qr_checkin: otogState.qr_checkin,
+    terminologia: (document.getElementById('ev_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
     activated: false
@@ -1766,6 +1790,7 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
+  setVal('se_terminologia', ev.terminologia || 'iscrizione');
   if (ev.qr_logo) {
     seQrTipo = 'logo'; seQrLogoB64 = ev.qr_logo;
     setQrTipo('se', 'logo');
@@ -1838,6 +1863,7 @@ async function saveSettings() {
     opt_capienza: stogState.capienza,
     promo_automatica: stogState.promo_auto,
     opt_qr_checkin: stogState.qr_checkin,
+    terminologia: (document.getElementById('se_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
   };

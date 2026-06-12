@@ -402,6 +402,17 @@ tbody td.xv{color:var(--gold)}
         <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
       </div>
     </div>
+    <div class="sec-div">🏷️ Terminologia
+      <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
+    </div>
+    <div class="mf"><label>Come si registrano i partecipanti</label>
+      <select id="ev_terminologia">
+        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+      </select>
+    </div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
     <div id="o_acc_opts_row" style="display:none">
       <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div><div class="opt-sub">Gli accompagnatori devono inserire l'email</div></div><div class="tog" id="otog_acc_email_obb" onclick="otog('acc_email_obb')"><div class="tog-dot"></div></div></div>
@@ -509,6 +520,17 @@ tbody td.xv{color:var(--gold)}
         <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
         <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
       </div>
+    </div>
+    <div class="sec-div">🏷️ Terminologia
+      <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
+    </div>
+    <div class="mf"><label>Come si registrano i partecipanti</label>
+      <select id="se_terminologia">
+        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+      </select>
     </div>
     <div class="sec-div">⚙️ Opzioni modulo</div>
     <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div></div><div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div></div>
@@ -1093,6 +1115,7 @@ function resetEvForm(mode) {
   removeEvImg();
   setHTML('cspList', '');
   setHTML('ccfList', '');
+  var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
   var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
   Object.keys(defaults).forEach(function(k) {
@@ -1163,6 +1186,7 @@ async function saveEvent() {
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
     opt_qr_checkin: otogState.qr_checkin,
+    terminologia: (document.getElementById('ev_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
     activated: false
@@ -1187,6 +1211,7 @@ function openEditEvent() {
   document.getElementById('se_luogo').value = ev.luogo || '';
   document.getElementById('se_desc').value = ev.descrizione || '';
   document.getElementById('se_email_contatto').value = ev.email_contatto || '';
+  var seTerm = document.getElementById('se_terminologia'); if (seTerm) seTerm.value = ev.terminologia || 'iscrizione';
   var seQr = document.getElementById('se_qr_testo');
   /* Ripristina tipo overlay QR */
   if (ev.qr_logo) {
@@ -1253,6 +1278,7 @@ async function saveSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
     opt_qr_checkin: stogState.qr_checkin,
+    terminologia: (document.getElementById('se_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
   };
