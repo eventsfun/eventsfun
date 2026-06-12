@@ -2440,6 +2440,7 @@ async function openPreviewFromForm() {
     opt_pasto_cena: !otogState.pasto || document.getElementById('oopt_cena').checked,
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
+    terminologia: (document.getElementById('ev_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
     landing_tema: evTemaState || 'chiaro',
@@ -2479,6 +2480,7 @@ async function openPreviewFromSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter,
     opt_capienza: stogState.capienza,
+    terminologia: (document.getElementById('se_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList'),
     landing_tema: seTemaState || 'chiaro'
