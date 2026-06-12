@@ -58,6 +58,7 @@ ul.dots li::before{content:"";position:absolute;left:4px;top:13px;width:6px;heig
 .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:6px;letter-spacing:.3px;font-family:"DM Sans",sans-serif}
 .badge-pro{background:rgba(201,169,110,0.14);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
 .badge-ag{background:rgba(168,130,201,0.14);color:#c4a9e0;border:1px solid rgba(168,130,201,0.32)}
+.badge-all{background:rgba(126,217,154,0.14);color:var(--green);border:1px solid rgba(126,217,154,0.32)}
 
 /* BOX NOTE */
 .note{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--text-muted)}
@@ -120,6 +121,7 @@ a.term:hover{border-bottom-style:solid}
           <a href="#crea-evento">Creare il tuo primo evento</a>
           <a href="#modifica-evento">Modificare l'evento dopo</a>
           <a href="#pagina-iscrizione">La pagina di iscrizione</a>
+          <a href="#terminologia">La parola: iscrizione o prenotazione</a>
         </div>
         <div class="idx-group">
           <div class="idx-group-name">Gestire le iscrizioni</div>
@@ -216,6 +218,23 @@ a.term:hover{border-bottom-style:solid}
       <h3>Il QR code</h3>
       <p>Il <a href="#g-qr" class="term">QR code</a> e quel quadratino fatto di puntini: chi lo inquadra con la fotocamera del telefono arriva direttamente alla pagina di iscrizione. Lo scarichi dalla dashboard come immagine e lo metti su locandine, volantini o slide.</p>
       <div class="note">La pagina di iscrizione si chiude da sola il giorno dopo la data dell'evento, cosi non rischi di ricevere iscrizioni quando l'evento e gia passato.</div>
+    </section>
+
+    <section id="terminologia">
+      <h2>Scegliere la parola: iscrizione o prenotazione <span class="badge badge-all">Tutti i piani</span></h2>
+      <p>Non tutti gli eventi sono "iscrizioni". Una cena, un tavolo al ristorante o un appuntamento sono <a href="#g-terminologia" class="term">prenotazioni</a>; per un convegno puo essere piu giusto "partecipazione", per un corso "registrazione". Con questa opzione scegli tu la parola adatta, e il sistema la usa in modo coerente dappertutto.</p>
+      <ol class="steps">
+        <li>Mentre crei o modifichi un evento, cerca la sezione <strong>Terminologia</strong>.</li>
+        <li>Nel menu <strong>Come si registrano i partecipanti</strong> scegli tra <strong>Iscrizione</strong>, <strong>Prenotazione</strong>, <strong>Partecipazione</strong> o <strong>Registrazione</strong>.</li>
+        <li>Premi <strong>Salva</strong>. La parola cambia subito ovunque la veda il pubblico.</li>
+      </ol>
+      <p>Cosa cambia di preciso quando scegli, per esempio, <strong>Prenotazione</strong>:</p>
+      <ul class="dots">
+        <li>Sulla pagina pubblica il pulsante diventa <strong>Prenota</strong> al posto di "Iscriviti".</li>
+        <li>Dopo l'invio l'iscritto legge <strong>"La tua prenotazione e confermata"</strong>.</li>
+        <li>L'<a href="#email-automatiche" class="term">email di conferma</a> usa la stessa parola, sia nell'oggetto sia nel testo.</li>
+      </ul>
+      <div class="note">Se non scegli niente resta <strong>Iscrizione</strong>, come prima: gli eventi che hai gia creato non cambiano. La scelta vale per il singolo evento, quindi puoi avere nello stesso account un evento "a iscrizione" e uno "a prenotazione".</div>
     </section>
 
     <!-- GESTIRE LE ISCRIZIONI -->
@@ -373,6 +392,10 @@ a.term:hover{border-bottom-style:solid}
       <div class="gloss-item" id="g-landing">
         <div class="g-term">Pagina di iscrizione (landing)</div>
         <div class="g-def">La pagina pubblica dove le persone si iscrivono al tuo evento.</div>
+      </div>
+      <div class="gloss-item" id="g-terminologia">
+        <div class="g-term">Terminologia (iscrizione, prenotazione...)</div>
+        <div class="g-def">La parola che scegli per il tuo evento e che il pubblico vede sul pulsante e nelle email: iscrizione, prenotazione, partecipazione o registrazione.</div>
       </div>
       <div class="gloss-item" id="g-link">
         <div class="g-term">Link</div>
