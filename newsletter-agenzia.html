@@ -1215,6 +1215,29 @@
   });
 
   // ===== ANTEPRIMA =====
+  // Ricalcola l'altezza dell'iframe anteprima, anche dopo che le immagini si sono caricate
+  function fitPreviewIframe(iframe, maxH) {
+    function adjust() {
+      try {
+        const h = iframe.contentDocument.body.scrollHeight;
+        const target = maxH ? Math.min(h + 40, maxH) : (h + 40);
+        iframe.style.height = target + 'px';
+      } catch (e) {}
+    }
+    adjust();
+    setTimeout(adjust, 100);
+    setTimeout(adjust, 600);
+    setTimeout(adjust, 1500);
+    try {
+      const idoc = iframe.contentDocument || iframe.contentWindow.document;
+      const imgs = idoc.querySelectorAll('img');
+      imgs.forEach(function (im) {
+        im.addEventListener('load', adjust);
+        im.addEventListener('error', adjust);
+      });
+    } catch (e) {}
+  }
+
   function mostraAnteprima() {
     const oggetto = document.getElementById('nl-oggetto').value.trim();
     const mittente = document.getElementById('nl-mittente').value.trim();
@@ -1232,12 +1255,7 @@
     doc.write(html);
     doc.close();
 
-    setTimeout(() => {
-      try {
-        const h = iframe.contentDocument.body.scrollHeight;
-        iframe.style.height = (h + 40) + 'px';
-      } catch {}
-    }, 200);
+    fitPreviewIframe(iframe);
 
     modal.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
@@ -1569,12 +1587,7 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
     doc.open();
     doc.write(log.corpo_html);
     doc.close();
-    setTimeout(() => {
-      try {
-        const h = iframe.contentDocument.body.scrollHeight;
-        iframe.style.height = Math.min(h + 40, 600) + 'px';
-      } catch {}
-    }, 200);
+    fitPreviewIframe(iframe, 600);
   }
 
   function chiudiStoricoModal() {
