@@ -1623,12 +1623,17 @@ window.addEventListener('resize', function(){
           <div class="nl-tb-sep"></div>
           <button class="nl-tb-btn" onclick="nlExecCmd('insertUnorderedList')">&#8226; Lista</button>
           <button class="nl-tb-btn" onclick="nlInsertLink()">&#128279; Link</button>
-          <button class="nl-tb-btn" onclick="nlInsertImage()">&#128444; Immagine</button>
+          <button class="nl-tb-btn" onclick="nlSaveSel();document.getElementById('nlDemoImgFile').click()" title="Carica immagine dal dispositivo">&#128247; Carica img</button>
+          <button class="nl-tb-btn" onclick="nlInsertImage()" title="Inserisci immagine tramite URL">&#128444; Img URL</button>
           <div class="nl-tb-sep"></div>
+          <button class="nl-tb-btn" onclick="document.getElementById('nlDemoAttFile').click()" title="Allega un file">&#128206; Allega</button>
           <button class="nl-tb-btn" onclick="nlExecCmd('removeFormat')">&#10006; Pulisci</button>
         </div>
+        <input type="file" id="nlDemoImgFile" accept="image/*" style="display:none" onchange="nlUploadImage(this)">
+        <input type="file" id="nlDemoAttFile" style="display:none" onchange="nlAddAttachment(this)">
         <div class="nl-editor-area" id="nl-editor" contenteditable="true" role="textbox" aria-multiline="true"></div>
-        <div class="nl-form-hint">Puoi usare grassetto, corsivo, elenchi, link e immagini.</div>
+        <div class="nl-form-hint">Puoi usare grassetto, corsivo, elenchi, link, immagini (caricate o via URL) e allegati.</div>
+        <div id="nlDemoAttList" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap">
         <button class="nl-btn nl-btn-outline" onclick="nlMostraAnteprima()">&#128065; Anteprima</button>
@@ -1891,6 +1896,51 @@ function nlInsertImage() {
   if (ed) ed.focus();
   document.execCommand('insertImage', false, url);
 }
+function nlSaveSel() {
+  var sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) nlSavedSelection = sel.getRangeAt(0).cloneRange();
+}
+function nlUploadImage(input) {
+  var file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { alert('Seleziona un file immagine.'); return; }
+  if (file.size > 1.5 * 1024 * 1024) { alert('Per la demo l\'immagine deve essere sotto 1,5 MB.'); return; }
+  var reader = new FileReader();
+  reader.onload = function() {
+    var ed = document.getElementById('nl-editor');
+    if (ed) ed.focus();
+    if (nlSavedSelection) { var s=window.getSelection(); s.removeAllRanges(); s.addRange(nlSavedSelection); }
+    var img = document.createElement('img');
+    img.src = String(reader.result);
+    img.style.maxWidth = '100%';
+    var sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) { var range=sel.getRangeAt(0); range.deleteContents(); range.insertNode(img); range.collapse(false); }
+    else if (ed) { ed.appendChild(img); }
+  };
+  reader.onerror = function(){ alert('Lettura immagine non riuscita.'); };
+  reader.readAsDataURL(file);
+}
+var nlDemoAttachments = [];
+function nlAddAttachment(input) {
+  var file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { alert('File troppo grande: massimo 5 MB per allegato.'); return; }
+  nlDemoAttachments.push({ filename: file.name, size: file.size });
+  nlRenderAttList();
+}
+function nlRemoveAttachment(idx) { nlDemoAttachments.splice(idx,1); nlRenderAttList(); }
+function nlRenderAttList() {
+  var box = document.getElementById('nlDemoAttList');
+  if (!box) return;
+  if (!nlDemoAttachments.length) { box.innerHTML=''; return; }
+  var chips = nlDemoAttachments.map(function(a,i){
+    var kb = Math.round(a.size/1024);
+    return '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text)">&#128206; '+nlEsc(a.filename)+' <span style="color:var(--text-dim)">('+kb+' KB)</span><span onclick="nlRemoveAttachment('+i+')" title="Rimuovi" style="cursor:pointer;color:var(--text-dim);font-weight:700;margin-left:2px">&#10006;</span></span>';
+  }).join('');
+  box.innerHTML = chips + '<div style="flex-basis:100%;font-size:11px;color:var(--text-dim);margin-top:2px">Nella versione reale gli allegati vengono inviati come file scaricabili nell\'email.</div>';
+}
 
 /* ============================================================
    ANTEPRIMA
@@ -1906,8 +1956,17 @@ function nlMostraAnteprima() {
   modal.style.display = 'block';
   var doc = iframe.contentDocument || iframe.contentWindow.document;
   doc.open(); doc.write(html); doc.close();
-  setTimeout(function(){ try{ var h=iframe.contentDocument.body.scrollHeight; iframe.style.height=(h+40)+'px'; }catch(e){} }, 200);
+  nlFitIframe(iframe);
   modal.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+function nlFitIframe(iframe) {
+  function adjust(){ try{ var h=iframe.contentDocument.body.scrollHeight; iframe.style.height=(h+40)+'px'; }catch(e){} }
+  adjust(); setTimeout(adjust,100); setTimeout(adjust,500); setTimeout(adjust,1200);
+  try {
+    var idoc = iframe.contentDocument || iframe.contentWindow.document;
+    var imgs = idoc.querySelectorAll('img');
+    imgs.forEach(function(im){ im.addEventListener('load',adjust); im.addEventListener('error',adjust); });
+  } catch(e){}
 }
 function nlChiudiAnteprima() {
   var m = document.getElementById('nl-anteprima-modal');
@@ -1982,6 +2041,7 @@ function nlInvia() {
     /* Reset form */
     var o=document.getElementById('nl-oggetto'); if(o)o.value='';
     var ed=document.getElementById('nl-editor'); if(ed)ed.innerHTML='';
+    nlDemoAttachments=[]; nlRenderAttList();
     document.querySelectorAll('#nl-eventi-selector input[type=checkbox]').forEach(function(c){ c.checked=false; });
     nlAggiornaDest();
     if (btn) { btn.disabled=false; btn.innerHTML='&#9654; Invia newsletter'; }
