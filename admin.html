@@ -604,12 +604,17 @@
               <div class="tb-sep"></div>
               <button type="button" class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
               <button type="button" class="tb-btn" onclick="insertLink()" title="Inserisci link">&#128279; Link</button>
-              <button type="button" class="tb-btn" onclick="insertImage()" title="Inserisci immagine">&#128444; Immagine</button>
+              <button type="button" class="tb-btn" onclick="saveSel();document.getElementById('nlImgFile').click()" title="Carica immagine dal dispositivo">&#128247; Carica img</button>
+              <button type="button" class="tb-btn" onclick="insertImage()" title="Inserisci immagine tramite URL pubblico">&#128444; Img URL</button>
               <div class="tb-sep"></div>
+              <button type="button" class="tb-btn" onclick="document.getElementById('nlAttFile').click()" title="Allega un file all'email">&#128206; Allega</button>
               <button type="button" class="tb-btn" onclick="execCmd('removeFormat')" title="Rimuovi formattazione">&#10006; Pulisci</button>
             </div>
+            <input type="file" id="nlImgFile" accept="image/*" style="display:none" onchange="uploadNlImage(this)">
+            <input type="file" id="nlAttFile" style="display:none" onchange="addNlAttachment(this)">
             <div class="editor-area" id="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Corpo email" data-placeholder="Scrivi qui il tuo messaggio..."></div>
-            <div style="font-size:12px;color:var(--text2);margin-top:8px;">Puoi usare grassetto, corsivo, elenchi, link e immagini (le immagini vanno inserite tramite URL pubblico).</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:8px;">Puoi usare grassetto, corsivo, elenchi, link, immagini (caricate o via URL) e allegati.</div>
+            <div id="nlAttList" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
           </div>
           <div class="nl-actions">
             <button class="btn-gold" onclick="sendNewsletter()">&#128140; Invia ai destinatari selezionati</button>
@@ -1444,6 +1449,89 @@
     document.getElementById('editor').focus();
     document.execCommand('insertImage', false, url);
   }
+
+  function saveSel() {
+    var sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) nlSavedSelection = sel.getRangeAt(0).cloneRange();
+  }
+
+  async function uploadNlImage(input) {
+    var file = input.files && input.files[0];
+    input.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Seleziona un file immagine.'); return; }
+    if (file.size > 3 * 1024 * 1024) { alert('Immagine troppo grande: massimo 3 MB.'); return; }
+    var ext = ((file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '')) || 'png';
+    var path = 'img/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    try {
+      var up = await fetch(SB_URL + '/storage/v1/object/newsletter/' + path, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + SB_KEY, 'apikey': SB_KEY, 'Content-Type': file.type },
+        body: file
+      });
+      if (!up.ok) { var t = await up.text(); alert('Caricamento immagine fallito. ' + t); return; }
+      var publicUrl = SB_URL + '/storage/v1/object/public/newsletter/' + path;
+      var editor = document.getElementById('editor');
+      editor.classList.remove('empty');
+      editor.focus();
+      if (nlSavedSelection) { var s = window.getSelection(); s.removeAllRanges(); s.addRange(nlSavedSelection); }
+      var img = document.createElement('img');
+      img.src = publicUrl;
+      img.style.maxWidth = '100%';
+      var sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        var range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(img);
+        range.collapse(false);
+      } else {
+        editor.appendChild(img);
+      }
+    } catch (e) {
+      alert('Errore di rete durante il caricamento dell\'immagine.');
+    }
+  }
+
+  var nlAttachments = [];
+  var NL_ATT_MAX = 5 * 1024 * 1024;
+  var NL_ATT_TOTAL_MAX = 15 * 1024 * 1024;
+
+  function addNlAttachment(input) {
+    var file = input.files && input.files[0];
+    input.value = '';
+    if (!file) return;
+    if (file.size > NL_ATT_MAX) { alert('File troppo grande: massimo 5 MB per allegato.'); return; }
+    var totale = nlAttachments.reduce(function(a, x) { return a + x.size; }, 0) + file.size;
+    if (totale > NL_ATT_TOTAL_MAX) { alert('Allegati troppo pesanti: massimo 15 MB in totale.'); return; }
+    var reader = new FileReader();
+    reader.onload = function() {
+      var base64 = String(reader.result).split(',')[1] || '';
+      nlAttachments.push({ filename: file.name, content: base64, size: file.size });
+      renderNlAttList();
+    };
+    reader.onerror = function() { alert('Lettura del file non riuscita.'); };
+    reader.readAsDataURL(file);
+  }
+
+  function removeNlAttachment(idx) {
+    nlAttachments.splice(idx, 1);
+    renderNlAttList();
+  }
+
+  function renderNlAttList() {
+    var box = document.getElementById('nlAttList');
+    if (!box) return;
+    box.innerHTML = nlAttachments.map(function(a, i) {
+      var kb = Math.round(a.size / 1024);
+      return '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text)">'
+        + '&#128206; ' + escAtt(a.filename) + ' <span style="color:var(--text2)">(' + kb + ' KB)</span>'
+        + '<span onclick="removeNlAttachment(' + i + ')" title="Rimuovi" style="cursor:pointer;color:var(--text2);font-weight:700;margin-left:2px">&#10006;</span></span>';
+    }).join('');
+  }
+
+  function escAtt(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
   (function() {
     var editor = document.getElementById('editor');
     if (!editor) return;
@@ -1485,7 +1573,7 @@
         "Authorization": "Bearer " + SB_KEY,
         "apikey": SB_KEY
       },
-      body: JSON.stringify({ subject: subj, html: body, emails: emails })
+      body: JSON.stringify({ subject: subj, html: body, emails: emails, attachments: nlAttachments.map(function(a) { return { filename: a.filename, content: a.content }; }) })
     })
     .then(function(r) { return r.json(); })
     .then(function(res) {
@@ -1502,6 +1590,8 @@
         result_div.textContent += " Primi errori: " + res.errors.slice(0, 3).join(", ");
       }
       showToast("Newsletter inviata: " + (res.sent || 0) + "/" + (res.total || emails.length), fail > 0 ? "error" : "success");
+      nlAttachments = [];
+      renderNlAttList();
     })
     .catch(function() {
       result_div.style.color = "var(--red)";
