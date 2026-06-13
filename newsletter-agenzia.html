@@ -711,10 +711,14 @@
           <div class="tb-sep"></div>
           <button class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
           <button class="tb-btn" onclick="insertLink()" title="Inserisci link">&#128279; Link</button>
-          <button class="tb-btn" onclick="insertImage()" title="Inserisci immagine">&#128444; Immagine</button>
+          <button class="tb-btn" onclick="saveSel();document.getElementById('nlImgFile').click()" title="Carica immagine dal dispositivo">&#128247; Carica img</button>
+          <button class="tb-btn" onclick="insertImage()" title="Inserisci immagine tramite URL pubblico">&#128444; Img URL</button>
           <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="document.getElementById('nlAttFile').click()" title="Allega un file all'email">&#128206; Allega</button>
           <button class="tb-btn" onclick="execCmd('removeFormat')" title="Rimuovi formattazione">&#10006; Pulisci</button>
         </div>
+        <input type="file" id="nlImgFile" accept="image/*" style="display:none" onchange="uploadNlImage(this)">
+        <input type="file" id="nlAttFile" style="display:none" onchange="addNlAttachment(this)">
         <div
           class="editor-area"
           id="editor"
@@ -724,7 +728,8 @@
           aria-label="Corpo email"
           data-placeholder="Scrivi qui il tuo messaggio..."
         ></div>
-        <div class="form-hint">Puoi usare grassetto, corsivo, elenchi, link e immagini.</div>
+        <div class="form-hint">Puoi usare grassetto, corsivo, elenchi, link, immagini (caricate o via URL) e allegati.</div>
+        <div id="nlAttList" style="margin-top:10px;display:flex;flex-wrap:wrap;gap:8px;"></div>
       </div>
 
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
@@ -1114,6 +1119,90 @@
     document.execCommand('insertImage', false, url);
   }
 
+  function saveSel() {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) savedSelection = sel.getRangeAt(0).cloneRange();
+  }
+
+  async function uploadNlImage(input) {
+    const file = input.files && input.files[0];
+    input.value = '';
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { alert('Seleziona un file immagine.'); return; }
+    if (file.size > 3 * 1024 * 1024) { alert('Immagine troppo grande: massimo 3 MB.'); return; }
+    const ext = ((file.name.split('.').pop() || 'png').toLowerCase().replace(/[^a-z0-9]/g, '')) || 'png';
+    const path = 'img/' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.' + ext;
+    try {
+      const up = await fetch(SUPA_URL + '/storage/v1/object/newsletter/' + path, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + SUPA_ANON, 'apikey': SUPA_ANON, 'Content-Type': file.type },
+        body: file
+      });
+      if (!up.ok) { const t = await up.text(); alert('Caricamento immagine fallito. ' + t); return; }
+      const publicUrl = SUPA_URL + '/storage/v1/object/public/newsletter/' + path;
+      const editor = document.getElementById('editor');
+      editor.classList.remove('empty');
+      editor.focus();
+      if (savedSelection) { const s = window.getSelection(); s.removeAllRanges(); s.addRange(savedSelection); }
+      const img = document.createElement('img');
+      img.src = publicUrl;
+      img.style.maxWidth = '100%';
+      const sel = window.getSelection();
+      if (sel && sel.rangeCount > 0) {
+        const range = sel.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(img);
+        range.collapse(false);
+      } else {
+        editor.appendChild(img);
+      }
+    } catch (e) {
+      alert('Errore di rete durante il caricamento dell\'immagine.');
+    }
+  }
+
+  // ===== ALLEGATI =====
+  let nlAttachments = [];
+  const NL_ATT_MAX = 5 * 1024 * 1024;        // 5 MB per file
+  const NL_ATT_TOTAL_MAX = 15 * 1024 * 1024; // 15 MB totali
+
+  function addNlAttachment(input) {
+    const file = input.files && input.files[0];
+    input.value = '';
+    if (!file) return;
+    if (file.size > NL_ATT_MAX) { alert('File troppo grande: massimo 5 MB per allegato.'); return; }
+    const totale = nlAttachments.reduce(function (a, x) { return a + x.size; }, 0) + file.size;
+    if (totale > NL_ATT_TOTAL_MAX) { alert('Allegati troppo pesanti: massimo 15 MB in totale.'); return; }
+    const reader = new FileReader();
+    reader.onload = function () {
+      const base64 = String(reader.result).split(',')[1] || '';
+      nlAttachments.push({ filename: file.name, content: base64, size: file.size });
+      renderNlAttList();
+    };
+    reader.onerror = function () { alert('Lettura del file non riuscita.'); };
+    reader.readAsDataURL(file);
+  }
+
+  function removeNlAttachment(idx) {
+    nlAttachments.splice(idx, 1);
+    renderNlAttList();
+  }
+
+  function renderNlAttList() {
+    const box = document.getElementById('nlAttList');
+    if (!box) return;
+    box.innerHTML = nlAttachments.map(function (a, i) {
+      const kb = Math.round(a.size / 1024);
+      return '<span style="display:inline-flex;align-items:center;gap:6px;background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text)">'
+        + '&#128206; ' + escAtt(a.filename) + ' <span style="color:var(--text-dim)">(' + kb + ' KB)</span>'
+        + '<span onclick="removeNlAttachment(' + i + ')" title="Rimuovi" style="cursor:pointer;color:var(--text-dim);font-weight:700;margin-left:2px">&#10006;</span></span>';
+    }).join('');
+  }
+
+  function escAtt(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   // Placeholder per editor vuoto
   document.addEventListener('DOMContentLoaded', () => {
     const editor = document.getElementById('editor');
@@ -1241,7 +1330,8 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
           html: htmlEmail,
           emails: emails,
           replyTo: replyto,
-          fromName: mittente
+          fromName: mittente,
+          attachments: nlAttachments.map(function (a) { return { filename: a.filename, content: a.content }; })
         })
       });
 
@@ -1258,6 +1348,8 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
         // Reset form
         document.getElementById('nl-oggetto').value = '';
         document.getElementById('editor').innerHTML = '';
+        nlAttachments = [];
+        renderNlAttList();
         document.querySelectorAll('#eventi-selector input[type="checkbox"]').forEach(c => { c.checked = false; });
         aggiornaDest();
       } else {
