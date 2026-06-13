@@ -593,7 +593,7 @@
 
 <!-- NAVBAR -->
 <nav class="navbar">
-  <a class="navbar-logo" href="#">Events<span>Fun</span></a>
+  <a class="navbar-logo" id="navbarLogo" href="agenzia-dashboard.html" title="Vai alla dashboard">Events<span>Fun</span></a>
   <div class="navbar-actions">
     <a id="nav-dashboard" class="nav-btn" href="agenzia-dashboard.html">
       &#9632; Dashboard
@@ -859,6 +859,8 @@
     document.getElementById('nav-dashboard').href = 'agenzia-dashboard.html?token=' + currentToken;
     const navDashMob = document.getElementById('nav-dashboard-mob');
     if (navDashMob) navDashMob.href = 'agenzia-dashboard.html?token=' + currentToken;
+    const navbarLogo = document.getElementById('navbarLogo');
+    if (navbarLogo) navbarLogo.href = 'agenzia-dashboard.html?token=' + currentToken;
 
     // Mostra app
     document.getElementById('auth-screen').style.display = 'none';
