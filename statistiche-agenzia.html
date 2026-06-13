@@ -20,7 +20,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 
 /* NAV */
 .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;border-bottom:1px solid var(--border);position:sticky;top:0;background:rgba(10,10,10,0.95);backdrop-filter:blur(12px);z-index:100;flex-wrap:wrap;gap:10px}
-.nav-logo{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.5px}
+.nav-logo{font-family:"Syne",sans-serif;font-size:18px;font-weight:800;color:var(--text);letter-spacing:-.5px;text-decoration:none}
 .nav-logo span{color:var(--gold)}
 .nav-r{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .nav-link{font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s}
@@ -120,7 +120,7 @@ canvas{display:block;width:100%!important}
 <body>
 
 <nav class="nav">
-  <div class="nav-logo">Events<span>Fun</span></div>
+  <a class="nav-logo" id="navbarLogo" href="agenzia-dashboard.html" title="Vai alla dashboard">Events<span>Fun</span></a>
   <div class="nav-r">
     <span class="nav-plan">Agenzia</span>
     <a id="navDashLink" href="#" class="nav-link">&#128202; Dashboard</a>
@@ -271,6 +271,8 @@ async function init() {
   /* Nav links */
   document.getElementById('navDashLink').href = 'agenzia-dashboard.html?token=' + TOKEN;
   document.getElementById('navNlLink').href = 'newsletter-agenzia.html?token=' + TOKEN;
+  var navbarLogo = document.getElementById('navbarLogo');
+  if (navbarLogo) navbarLogo.href = 'agenzia-dashboard.html?token=' + TOKEN;
 
   try {
     var evs = await sbGet('events', { activation_token: TOKEN }, 'id,nome,data_iso,ora,attivo,capienza,opt_multipla,opt_cap_persona,opt_tipo,opt_pasto,opt_newsletter,stats_config');
