@@ -276,6 +276,20 @@
       outline: none; resize: vertical; min-height: 120px; transition: border-color 0.2s;
     }
     .nl-compose textarea:focus { border-color: var(--gold); }
+    /* ---- RICH TEXT EDITOR newsletter (come Agenzia) ---- */
+    .editor-toolbar { display: flex; flex-wrap: wrap; gap: 4px; background: var(--bg3); border: 1px solid var(--border2); border-bottom: none; border-radius: var(--radius-sm) var(--radius-sm) 0 0; padding: 8px; }
+    .tb-btn { background: none; border: 1px solid transparent; border-radius: 4px; color: var(--text2); cursor: pointer; font-size: 13px; font-family: 'DM Sans', sans-serif; font-weight: 600; padding: 5px 9px; transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px; }
+    .tb-btn:hover { background: var(--border2); color: var(--text); }
+    .tb-sep { width: 1px; background: var(--border2); margin: 2px 4px; }
+    .editor-area { background: var(--bg3); border: 1px solid var(--border2); border-radius: 0 0 var(--radius-sm) var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.7; min-height: 220px; padding: 14px; outline: none; overflow-y: auto; }
+    .editor-area:focus { border-color: var(--gold); }
+    .editor-area a { color: var(--gold); }
+    .editor-area img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
+    .editor-area.empty:before { content: attr(data-placeholder); color: var(--text2); pointer-events: none; }
+    .link-dialog { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 300; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .link-dialog.open { display: flex; }
+    .link-dialog-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 420px; }
+    .link-dialog-box h3 { font-family: 'Syne', sans-serif; font-size: 16px; color: var(--gold); margin-bottom: 16px; }
     .nl-compose input[type="text"] {
       width: 100%; padding: 11px 16px; background: var(--bg3); border: 1px solid var(--border2);
       border-radius: var(--radius-sm); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
@@ -582,14 +596,44 @@
             <input type="text" id="nl-subject" placeholder="Es: Novita' EventsFun -- Giugno 2026" />
           </div>
           <div class="form-group">
-            <label>Testo email (HTML consentito)</label>
-            <textarea id="nl-body" placeholder="Scrivi il testo della newsletter..."></textarea>
+            <label>Testo email</label>
+            <div class="editor-toolbar">
+              <button type="button" class="tb-btn" onclick="execCmd('bold')" title="Grassetto"><b>B</b></button>
+              <button type="button" class="tb-btn" onclick="execCmd('italic')" title="Corsivo"><i>I</i></button>
+              <button type="button" class="tb-btn" onclick="execCmd('underline')" title="Sottolineato"><u>S</u></button>
+              <div class="tb-sep"></div>
+              <button type="button" class="tb-btn" onclick="execCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
+              <button type="button" class="tb-btn" onclick="insertLink()" title="Inserisci link">&#128279; Link</button>
+              <button type="button" class="tb-btn" onclick="insertImage()" title="Inserisci immagine">&#128444; Immagine</button>
+              <div class="tb-sep"></div>
+              <button type="button" class="tb-btn" onclick="execCmd('removeFormat')" title="Rimuovi formattazione">&#10006; Pulisci</button>
+            </div>
+            <div class="editor-area" id="editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Corpo email" data-placeholder="Scrivi qui il tuo messaggio..."></div>
+            <div style="font-size:12px;color:var(--text2);margin-top:8px;">Puoi usare grassetto, corsivo, elenchi, link e immagini (le immagini vanno inserite tramite URL pubblico).</div>
           </div>
           <div class="nl-actions">
             <button class="btn-gold" onclick="sendNewsletter()">&#128140; Invia ai destinatari selezionati</button>
             <button class="btn-ghost" onclick="previewNewsletter()">&#128065; Anteprima</button>
           </div>
           <div id="nl-send-result" style="margin-top:12px;font-size:13px;display:none;"></div>
+
+          <div class="link-dialog" id="link-dialog">
+            <div class="link-dialog-box">
+              <h3>Inserisci link</h3>
+              <div class="form-group">
+                <label>Testo del link</label>
+                <input type="text" id="link-testo" placeholder="Es: Scopri di piu'" />
+              </div>
+              <div class="form-group">
+                <label>URL</label>
+                <input type="url" id="link-url" placeholder="https://..." />
+              </div>
+              <div style="display:flex;gap:10px;justify-content:flex-end;">
+                <button class="btn-ghost" onclick="chiudiLinkDialog()">Annulla</button>
+                <button class="btn-gold" onclick="confermaLink()">Inserisci</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1351,10 +1395,70 @@
     renderNL(getSegmento().filter(function(r) { return (r.email || "").toLowerCase().includes(q); }));
   }
 
+  // ===== EDITOR newsletter (come Agenzia) =====
+  function execCmd(cmd) {
+    document.getElementById('editor').focus();
+    document.execCommand(cmd, false, null);
+  }
+  var nlSavedSelection = null;
+  function insertLink() {
+    var sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      nlSavedSelection = sel.getRangeAt(0).cloneRange();
+      document.getElementById('link-testo').value = sel.toString() || '';
+    }
+    document.getElementById('link-url').value = '';
+    document.getElementById('link-dialog').classList.add('open');
+    setTimeout(function() { document.getElementById('link-url').focus(); }, 50);
+  }
+  function chiudiLinkDialog() {
+    document.getElementById('link-dialog').classList.remove('open');
+  }
+  function confermaLink() {
+    var testo = document.getElementById('link-testo').value.trim();
+    var url = document.getElementById('link-url').value.trim();
+    if (!url) { alert('Inserisci un URL valido.'); return; }
+    var editor = document.getElementById('editor');
+    editor.focus();
+    if (nlSavedSelection) {
+      var s = window.getSelection();
+      s.removeAllRanges();
+      s.addRange(nlSavedSelection);
+    }
+    var link = document.createElement('a');
+    link.href = url;
+    link.textContent = testo || url;
+    link.target = '_blank';
+    var sel2 = window.getSelection();
+    if (sel2 && sel2.rangeCount > 0) {
+      var range = sel2.getRangeAt(0);
+      range.deleteContents();
+      range.insertNode(link);
+      range.collapse(false);
+    }
+    chiudiLinkDialog();
+  }
+  function insertImage() {
+    var url = prompt('URL immagine (deve essere un link pubblico):');
+    if (!url) return;
+    document.getElementById('editor').focus();
+    document.execCommand('insertImage', false, url);
+  }
+  (function() {
+    var editor = document.getElementById('editor');
+    if (!editor) return;
+    editor.addEventListener('focus', function() { editor.classList.remove('empty'); });
+    editor.addEventListener('blur', function() {
+      if (!editor.textContent.trim()) editor.classList.add('empty');
+    });
+    if (!editor.textContent.trim()) editor.classList.add('empty');
+  })();
+
   function previewNewsletter() {
     var subj = document.getElementById("nl-subject").value.trim();
-    var body = document.getElementById("nl-body").value.trim();
-    if (!subj || !body) { showToast("Inserisci oggetto e testo prima dell'anteprima", "error"); return; }
+    var body = document.getElementById("editor").innerHTML.trim();
+    var bodyText = body.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim();
+    if (!subj || !bodyText) { showToast("Inserisci oggetto e testo prima dell'anteprima", "error"); return; }
     var w = window.open("", "_blank");
     w.document.write('<html><head><title>Anteprima: ' + escH(subj) + '</title></head><body style="font-family:sans-serif;max-width:600px;margin:40px auto;padding:20px;"><h2>' + escH(subj) + '</h2><hr/>' + body + '</body></html>');
     w.document.close();
@@ -1362,8 +1466,9 @@
 
   function sendNewsletter() {
     var subj = document.getElementById("nl-subject").value.trim();
-    var body = document.getElementById("nl-body").value.trim();
-    if (!subj || !body) { showToast("Inserisci oggetto e testo", "error"); return; }
+    var body = document.getElementById("editor").innerHTML.trim();
+    var bodyText = body.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim();
+    if (!subj || !bodyText) { showToast("Inserisci oggetto e testo", "error"); return; }
     var destinatari = getSegmento();
     if (!destinatari.length) { showToast("Nessun iscritto nel gruppo selezionato", "error"); return; }
     var nomiGruppo = { tutti: "tutti gli iscritti", clienti: "i clienti", eventi: "gli iscritti agli eventi" };
