@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<title>Area Personale — EventsFun</title>
+<title>Area Personale -- EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);}
@@ -223,6 +223,7 @@ async function sbGet(table, filters, sel, token){
 var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403',upgrade_base_pro:'https://buy.stripe.com/4gMaEPaoud3qdUA8uo14404'};
 var DASH_FILE={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html'};
 var PLAN_LABEL={base:'Base',pro:'Pro',agenzia:'Agenzia'};
+var PORTAL_URL='https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400';
 var currentEmail='',accessToken='';
 
 function isClosed(ev){if(!ev||!ev.data_iso)return false;var t=new Date();t.setHours(0,0,0,0);var d=new Date(ev.data_iso);d.setHours(0,0,0,0);d.setDate(d.getDate()+1);return t>=d;}
@@ -266,45 +267,123 @@ async function loadDashboards(){
   var area=document.getElementById('resultArea');
   area.innerHTML='<div class="card"><div class="loading"><div class="spinner"></div><p style="font-size:13px;color:var(--text-muted)">Carico le tue dashboard...</p></div></div>';
   try{
-    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,created_at',accessToken);
+    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,created_at',accessToken);
     if(!orders||!orders.length){
       area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
     }
-    var html='<div class="topbar-user"><p>Bentornato'+(orders[0].nome?', <strong style="color:var(--text)">'+orders[0].nome+'</strong>':'')+'</p><div style="display:flex;gap:8px;align-items:center"><button class="btn-account" onclick="openAccount()">&#128100; Il mio account</button><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
-    var anyActive=false;
+    orders.sort(function(a,b){return (b.created_at||'').localeCompare(a.created_at||'');});
+    var nome=orders[0].nome||'';
+    var html='<div class="topbar-user"><p>Bentornato'+(nome?', <strong style="color:var(--text)">'+nome+'</strong>':'')+'</p><div style="display:flex;gap:8px;align-items:center"><button class="btn-account" onclick="openAccount()">&#128100; Il mio account</button><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
+
     for(var i=0;i<orders.length;i++){
       var order=orders[i];var piano=order.piano||'base';var token=null;
       try{var acts=await sbGet('activations',{order_id:order.id},'token',accessToken);if(acts&&acts.length)token=acts[0].token;}catch(e){}
-      var dashUrl=token?(DASH_FILE[piano]+'?token='+token):null;
-      var statusHtml,infoHtml,actionHtml;
       if(!token){
-        statusHtml='<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Attivazione in corso</span></div>';
-        infoHtml='<div class="plan-info">Acquisto registrato. Ricarica tra poco.</div>';actionHtml='';
-      }else{
-        anyActive=true;
-        statusHtml='<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Dashboard pronta</span></div>';
-        infoHtml='<div class="plan-info">Accedi alla dashboard per gestire i tuoi eventi.</div>';
-        actionHtml='<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'
-          +(piano==='base'?'<a href="'+PAYMENT_LINKS.upgrade_base_pro+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'');
+        html+=cardWrap(piano,'<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Attivazione in corso</span></div><div class="plan-info">Acquisto registrato. Ricarica tra poco.</div>');
+        continue;
       }
-      html+='<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+statusHtml+infoHtml+actionHtml+'</div>';
+      var dashUrl=DASH_FILE[piano]+'?token='+token;
+      if(piano==='agenzia'){
+        html+=cardWrap(piano,renderAgenzia(order,dashUrl));
+      }else{
+        var ev=null;
+        try{
+          var evs=await sbGet('events',{activation_token:token},'nome,data_iso,bozza',accessToken);
+          if(evs&&evs.length){evs=evs.filter(function(e){return !e.bozza;});if(evs.length)ev=evs[0];}
+        }catch(e){}
+        html+=cardWrap(piano,renderSingle(piano,dashUrl,ev));
+      }
     }
+
+    var hasActiveAgenzia=orders.some(function(o){return o.piano==='agenzia'&&agenziaState(o)==='active';});
     var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
     hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'; });
-    if(!anyActive&&hasSingleUse){html+=buildUpsell();}
+    if(hasSingleUse&&!hasActiveAgenzia){html+=buildUpsell();}
     area.innerHTML=html;
   }catch(e){
     area.innerHTML='<div class="card"><p style="text-align:center;color:var(--red);font-size:14px">Errore nel caricamento. <button class="link-btn" onclick="loadDashboards()">Riprova</button></p></div>';
   }
 }
 
+function cardWrap(piano,inner){
+  return '<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+inner+'</div>';
+}
+
+function payLink(url){return url+(url.indexOf('?')>=0?'&':'?')+'prefilled_email='+encodeURIComponent(currentEmail);}
+function fmtDate(d){if(!d)return '';var dd=('0'+d.getDate()).slice(-2);var mm=('0'+(d.getMonth()+1)).slice(-2);return dd+'/'+mm+'/'+d.getFullYear();}
+function addDays(iso,n){var d=new Date(iso);d.setHours(0,0,0,0);d.setDate(d.getDate()+n);return d;}
+
+function agenziaState(order){
+  var st=order.subscription_status;
+  if(st==='canceled'||st==='past_due'){
+    var now=new Date();
+    var exp=order.subscription_expires_at?new Date(order.subscription_expires_at):null;
+    if(exp&&now<exp)return 'grace';
+    return 'expired';
+  }
+  return 'active';
+}
+
+function reactivateBlock(){
+  return '<div class="pkg-grid" style="margin-top:14px">'
+    +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_mensile)+'" target="_blank">Riattiva</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_annuale)+'" target="_blank">Riattiva</a></div>'
+    +'</div>';
+}
+
+function renderAgenzia(order,dashUrl){
+  var state=agenziaState(order);
+  if(state==='active'){
+    return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Abbonamento attivo</span></div>'
+      +'<div class="plan-info">Eventi illimitati. Gestisci tutto dalla tua dashboard.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
+      +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento, metodo di pagamento o cambio piano →</a>';
+  }
+  if(state==='grace'){
+    var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
+    return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Abbonamento annullato</span></div>'
+      +'<div class="plan-info">Puoi accedere ancora fino al <strong>'+exp+'</strong>. I tuoi dati restano al sicuro: riattiva per non perderli.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
+      +reactivateBlock();
+  }
+  return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--red)">Abbonamento scaduto</span></div>'
+    +'<div class="plan-info">I tuoi dati sono al sicuro. Riattiva per riaccedere e gestirli.</div>'
+    +'<a href="'+dashUrl+'" class="btn-dashboard">Vedi i tuoi dati →</a>'
+    +reactivateBlock();
+}
+
+function renderSingle(piano,dashUrl,ev){
+  var upg=(piano==='base')?'<a href="'+payLink(PAYMENT_LINKS.upgrade_base_pro)+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'';
+  if(!ev){
+    return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pronto</span></div>'
+      +'<div class="plan-info">Crea il tuo evento per iniziare.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Crea il tuo evento →</a>'+upg;
+  }
+  var nomeEv=ev.nome||'Il tuo evento';
+  var dataEv=ev.data_iso?(' &middot; '+isoToIt(ev.data_iso)):'';
+  if(!isClosed(ev)){
+    return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Evento attivo</span></div>'
+      +'<div class="plan-info"><strong>'+nomeEv+'</strong>'+dataEv+'<br>Gestisci iscritti e presenze dalla dashboard.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'+upg;
+  }
+  var ret=ev.data_iso?addDays(ev.data_iso,30):null;
+  var now=new Date();now.setHours(0,0,0,0);
+  if(ret&&now<=ret){
+    return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Evento concluso</span></div>'
+      +'<div class="plan-info"><strong>'+nomeEv+'</strong>'+dataEv+'<br>I tuoi dati restano disponibili fino al <strong>'+fmtDate(ret)+'</strong>.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Scarica i tuoi dati →</a>';
+  }
+  return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Evento concluso</span></div>'
+    +'<div class="plan-info">Il periodo di disponibilit&agrave; dei dati di questo evento &egrave; terminato.</div>';
+}
+
 function buildUpsell(){
-  return '<div class="upsell"><h3>🎉 Organizza un nuovo evento</h3><p>Il tuo evento è concluso. Pronto per il prossimo?</p><div class="pkg-grid">'
-    +'<div class="pkg"><div class="pkg-name">Evento Base</div><div class="pkg-price">€29</div><a href="'+PAYMENT_LINKS.base+'">Acquista</a></div>'
-    +'<div class="pkg"><div class="pkg-name">Evento Pro</div><div class="pkg-price">€79</div><a href="'+PAYMENT_LINKS.pro+'">Acquista</a></div>'
-    +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+PAYMENT_LINKS.agenzia_mensile+'">Abbonati</a></div>'
-    +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+PAYMENT_LINKS.agenzia_annuale+'">Abbonati</a></div>'
+  return '<div class="upsell"><h3>🎉 Organizza un nuovo evento</h3><p>Pronto per il prossimo? Scegli il pacchetto.</p><div class="pkg-grid">'
+    +'<div class="pkg"><div class="pkg-name">Evento Base</div><div class="pkg-price">€29</div><a href="'+payLink(PAYMENT_LINKS.base)+'" target="_blank">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Evento Pro</div><div class="pkg-price">€79</div><a href="'+payLink(PAYMENT_LINKS.pro)+'" target="_blank">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_mensile)+'" target="_blank">Abbonati</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_annuale)+'" target="_blank">Abbonati</a></div>'
     +'</div></div>';
 }
 
