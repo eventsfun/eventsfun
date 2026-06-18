@@ -267,7 +267,7 @@ async function loadDashboards(){
   var area=document.getElementById('resultArea');
   area.innerHTML='<div class="card"><div class="loading"><div class="spinner"></div><p style="font-size:13px;color:var(--text-muted)">Carico le tue dashboard...</p></div></div>';
   try{
-    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,created_at',accessToken);
+    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,subscription_renews_at,created_at',accessToken);
     if(!orders||!orders.length){
       area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
@@ -335,8 +335,9 @@ function reactivateBlock(){
 function renderAgenzia(order,dashUrl){
   var state=agenziaState(order);
   if(state==='active'){
+    var rinnovo=order.subscription_renews_at?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
     return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Abbonamento attivo</span></div>'
-      +'<div class="plan-info">Eventi illimitati. Gestisci tutto dalla tua dashboard.</div>'
+      +'<div class="plan-info">Eventi illimitati. Gestisci tutto dalla tua dashboard.'+rinnovo+'</div>'
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
       +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento, metodo di pagamento o cambio piano →</a>';
   }
