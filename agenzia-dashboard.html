@@ -309,6 +309,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <button class="btn-sm" id="btnQR" onclick="openQR()" style="display:none">📷 QR Code</button>
         <button class="btn-sm" id="btnLanding" onclick="openLanding()" style="display:none">👁 Anteprima</button>
         <button class="btn-sm" id="btnPresenze" onclick="showView('presenze')" style="display:none">👥 Presenze</button>
+        <button class="btn-sm" id="btnSendLink" onclick="sendParticipationLink()" style="display:none">📧 Invia link</button>
         <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
         <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
         <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
@@ -486,13 +487,45 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
       <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
     </div>
-    <div class="mf"><label>Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
+    <div class="opt-row" style="border-top:1px solid var(--border2);border-bottom:none;padding-top:14px;margin-bottom:6px">
+      <div>
+        <div class="opt-lbl">Evento online</div>
+        <div class="opt-sub">Webinar o videoconferenza -- nessun luogo fisico, il link arriva via email</div>
+      </div>
+      <div class="tog" id="otog_online" onclick="otog('online')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="mf"><label id="ev_luogo_lbl">Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
+    <div id="o_online_fields" style="display:none">
+      <div class="mf">
+        <label>Link di partecipazione <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Il link per collegarsi (Zoom, Meet, Teams...). Non viene mostrato nella pagina pubblica: arriva via email solo agli iscritti, come comunicazione di servizio. Puoi lasciarlo vuoto ora e inviarlo in seguito dalla scheda evento.</span></span>
+        </label>
+        <input id="ev_link_part" placeholder="Es. https://zoom.us/j/123456789">
+      </div>
+      <div class="mf">
+        <label>Quando inviare il link agli iscritti</label>
+        <select id="ev_link_invio">
+          <option value="entrambi">Email di conferma + promemoria</option>
+          <option value="conferma">Solo nell'email di conferma</option>
+          <option value="reminder">Solo nel promemoria</option>
+        </select>
+      </div>
+      <div style="background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.2);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--text-muted);line-height:1.5">
+        Una volta inserito il link, viene inviato automaticamente agli iscritti secondo l'opzione qui sopra. Puoi comunque inviarlo o reinviarlo a mano in qualsiasi momento con il pulsante "📧 Invia link" nella dashboard.
+      </div>
+    </div>
     <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
     <div class="mf">
       <label>Email di contatto per gli iscritti *
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questa email viene mostrata agli iscritti nell'email di conferma come riferimento per domande sull'evento. Usa una casella che controlli regolarmente.</span></span>
       </label>
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Nome mittente delle email
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questo nome appare come mittente delle email che gli iscritti ricevono (es. "Mario Rossi"). L'indirizzo resta info@eventsfun.com. Se lo lasci vuoto useremo il nome del tuo account.</span></span>
+      </label>
+      <input id="ev_mittente" type="text" maxlength="60" placeholder="Es. il tuo nome o quello dell'organizzazione">
     </div>
     <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
@@ -579,14 +612,14 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="otog_cap_persona" onclick="otog('cap_persona')"><div class="tog-dot"></div></div>
     </div>
-    <div class="opt-row">
+    <div class="opt-row" id="o_tipo_row">
       <div>
         <div class="opt-lbl">Tipo iscritto</div>
         <div class="opt-sub">Visitatore / Espositore</div>
       </div>
       <div class="tog" id="otog_tipo" onclick="otog('tipo')"><div class="tog-dot"></div></div>
     </div>
-    <div class="opt-row">
+    <div class="opt-row" id="o_pasto_row">
       <div>
         <div class="opt-lbl">Vuoi prenotare il pasto?</div>
         <div class="opt-sub">Selezione pasto nel modulo</div>
@@ -613,10 +646,12 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div>
     </div>
+    <div id="o_checkin_sect">
     <div class="sec-div">📋 Check-in</div>
     <div class="opt-row">
       <div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div>
       <div class="tog" id="otog_qr_checkin" onclick="otog('qr_checkin')"><div class="tog-dot"></div></div>
+    </div>
     </div>
     <div class="sec-div">
       🤝 Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
@@ -651,13 +686,45 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
       <div class="mf"><label>Ora</label><input id="se_ora"></div>
     </div>
-    <div class="mf"><label>Luogo</label><input id="se_luogo"></div>
+    <div class="opt-row" style="border-top:1px solid var(--border2);border-bottom:none;padding-top:14px;margin-bottom:6px">
+      <div>
+        <div class="opt-lbl">Evento online</div>
+        <div class="opt-sub">Webinar o videoconferenza -- nessun luogo fisico, il link arriva via email</div>
+      </div>
+      <div class="tog" id="stog_online" onclick="stog('online')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="mf"><label id="se_luogo_lbl">Luogo</label><input id="se_luogo"></div>
+    <div id="s_online_fields" style="display:none">
+      <div class="mf">
+        <label>Link di partecipazione <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Il link per collegarsi (Zoom, Meet, Teams...). Non viene mostrato nella pagina pubblica: arriva via email solo agli iscritti, come comunicazione di servizio.</span></span>
+        </label>
+        <input id="se_link_part" placeholder="Es. https://zoom.us/j/123456789">
+      </div>
+      <div class="mf">
+        <label>Quando inviare il link agli iscritti</label>
+        <select id="se_link_invio">
+          <option value="entrambi">Email di conferma + promemoria</option>
+          <option value="conferma">Solo nell'email di conferma</option>
+          <option value="reminder">Solo nel promemoria</option>
+        </select>
+      </div>
+      <div style="background:rgba(201,169,110,0.08);border:1px solid rgba(201,169,110,0.2);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--text-muted);line-height:1.5">
+        Una volta inserito il link, viene inviato automaticamente agli iscritti secondo l'opzione qui sopra. Puoi comunque inviarlo o reinviarlo a mano in qualsiasi momento con il pulsante "📧 Invia link" nella dashboard.
+      </div>
+    </div>
     <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
     <div class="mf">
       <label>Email di contatto per gli iscritti *
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Nome mittente delle email
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questo nome appare come mittente delle email che gli iscritti ricevono (es. "Mario Rossi"). L'indirizzo resta info@eventsfun.com. Se lo lasci vuoto useremo il nome del tuo account.</span></span>
+      </label>
+      <input id="se_mittente" type="text" maxlength="60" placeholder="Es. il tuo nome o quello dell'organizzazione">
     </div>
     <div class="mf">
       <label>Immagine evento</label>
@@ -739,11 +806,11 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="stog_cap_persona" onclick="stog('cap_persona')"><div class="tog-dot"></div></div>
     </div>
-    <div class="opt-row">
+    <div class="opt-row" id="s_tipo_row">
       <div><div class="opt-lbl">Tipo iscritto</div></div>
       <div class="tog" id="stog_tipo" onclick="stog('tipo')"><div class="tog-dot"></div></div>
     </div>
-    <div class="opt-row">
+    <div class="opt-row" id="s_pasto_row">
       <div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div>
       <div class="tog" id="stog_pasto" onclick="stog('pasto')"><div class="tog-dot"></div></div>
     </div>
@@ -771,10 +838,12 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div>
     </div>
+    <div id="s_checkin_sect">
     <div class="sec-div">📋 Check-in</div>
     <div class="opt-row">
       <div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div>
       <div class="tog" id="stog_qr_checkin" onclick="stog('qr_checkin')"><div class="tog-dot"></div></div>
+    </div>
     </div>
     <div class="sec-div">🤝 Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
     <div id="sspList" style="margin-bottom:8px"></div>
@@ -943,14 +1012,15 @@ async function sbDel(table, id) {
    ============================================================ */
 var TOKEN = null;
 var PIANO = 'agenzia';
+var accountName = '';
 var currentEv = null;
 var currentRegs = [];
 var allEvents = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
-var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false, online: false };
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
 /* Card statistiche personalizzabili: array di 2 elementi, null = vuoto */
@@ -995,7 +1065,7 @@ async function init() {
 
   /* STEP 1: verifica token */
   var rows;
-  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at)'); }
+  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,nome,cognome)'); }
   catch(e) { rows = null; }
   if (rows === null) {
     PIANO = 'agenzia';
@@ -1004,6 +1074,7 @@ async function init() {
     hideLoading(); showErr(); return;
   } else {
     PIANO = (rows[0].orders && rows[0].orders.piano) ? rows[0].orders.piano : 'agenzia';
+    if (rows[0].orders) { accountName = ((rows[0].orders.nome || '') + ' ' + (rows[0].orders.cognome || '')).trim(); }
     /* Check stato abbonamento */
     var subStatus = rows[0].orders ? rows[0].orders.subscription_status : null;
     var subExpiresAt = rows[0].orders ? rows[0].orders.subscription_expires_at : null;
@@ -1118,6 +1189,7 @@ function sanitizeEvent(ev) {
   ev.luogo = ev.luogo || '';
   ev.descrizione = ev.descrizione || '';
   ev.email_contatto = ev.email_contatto || '';
+  ev.mittente_nome = ev.mittente_nome || '';
   ev.qr_testo = ev.qr_testo || '';
   ev.qr_logo = ev.qr_logo || null;
   ev.landing_tema = ev.landing_tema || 'chiaro';
@@ -1134,6 +1206,9 @@ function sanitizeEvent(ev) {
   ev.promo_automatica = !!ev.promo_automatica;
   ev.bozza = !!ev.bozza;
   ev.opt_qr_checkin = !!ev.opt_qr_checkin;
+  ev.evento_online = !!ev.evento_online;
+  ev.link_partecipazione = ev.link_partecipazione || null;
+  ev.link_invio = ev.link_invio || 'entrambi';
   return ev;
 }
 
@@ -1295,6 +1370,7 @@ function renderDash() {
   setDisp('btnQR', hasEv ? 'inline-block' : 'none');
   setDisp('btnLanding', hasEv ? 'inline-block' : 'none');
   setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
+  setDisp('btnSendLink', (hasEv && ev.evento_online && ev.link_partecipazione && !closed) ? 'inline-block' : 'none');
   setDisp('btnSettings', hasEv ? 'inline-block' : 'none');
   setDisp('btnCSV', hasEv ? 'inline-block' : 'none');
   setDisp('btnPDF', hasEv ? 'inline-block' : 'none');
@@ -1674,7 +1750,9 @@ function openCreateEvent() {
 }
 
 function resetEvForm() {
-  ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo'].forEach(function(id) { setVal(id, ''); });
+  ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo','ev_link_part'].forEach(function(id) { setVal(id, ''); });
+  var eli = document.getElementById('ev_link_invio'); if (eli) eli.value = 'entrambi';
+  setVal('ev_mittente', accountName);
   updateQrCount('ev_qr_testo','ev_qr_count');
   var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
   evQrTipo = 'nessuno'; evQrLogoB64 = null; setQrTipo('ev', 'nessuno');
@@ -1687,7 +1765,7 @@ function resetEvForm() {
   setHTML('ccfList', '');
   var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false };
+  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
@@ -1695,6 +1773,7 @@ function resetEvForm() {
   });
   setDisp('opasto_sub', 'none');
   setDisp('o_capienza_pp_row', 'none');
+  applyOnlineUI('ev', 'o', false);
 }
 
 /* ============================================================
@@ -1729,13 +1808,14 @@ async function saveEvent() {
   var ora = getVal('ev_ora').trim();
   var luogo = getVal('ev_luogo').trim();
   var emailContatto = getVal('ev_email_contatto').trim();
-  if (!nome || !data || !ora || !luogo) { alert('Compila Nome, Data, Ora e Luogo.'); return; }
+  if (!nome || !data || !ora || !luogo) { alert(otogState.online ? 'Compila Nome, Data, Ora e Piattaforma.' : 'Compila Nome, Data, Ora e Luogo.'); return; }
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
     activation_token: TOKEN, piano: PIANO,
     nome: nome, data_iso: data, ora: ora, luogo: luogo,
     email_contatto: emailContatto,
+    mittente_nome: getVal('ev_mittente').trim() || null,
     descrizione: getVal('ev_desc').trim(),
     qr_testo: evQrTipo === 'testo' ? (getVal('ev_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: evQrTipo === 'logo' ? (evQrLogoB64 || null) : null,
@@ -1755,6 +1835,9 @@ async function saveEvent() {
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
     opt_qr_checkin: otogState.qr_checkin,
+    evento_online: otogState.online,
+    link_partecipazione: otogState.online ? (getVal('ev_link_part').trim() || null) : null,
+    link_invio: otogState.online ? ((document.getElementById('ev_link_invio') || {}).value || 'entrambi') : 'entrambi',
     terminologia: (document.getElementById('ev_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
@@ -1790,6 +1873,7 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
+  setVal('se_mittente', ev.mittente_nome || accountName);
   setVal('se_terminologia', ev.terminologia || 'iscrizione');
   if (ev.qr_logo) {
     seQrTipo = 'logo'; seQrLogoB64 = ev.qr_logo;
@@ -1815,11 +1899,14 @@ function openEditEvent() {
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla','cap_persona','acc_email_obb','acc_tel_obb','tipo','pasto','newsletter','capienza','promo_auto','qr_checkin'].forEach(function(k) {
-    var evKey = k === 'promo_auto' ? 'promo_automatica' : k === 'acc_email_obb' ? 'opt_accompagnatori_email_obbligatoria' : k === 'acc_tel_obb' ? 'opt_accompagnatori_telefono_obbligatorio' : 'opt_' + k;
+  ['multipla','cap_persona','acc_email_obb','acc_tel_obb','tipo','pasto','newsletter','capienza','promo_auto','qr_checkin','online'].forEach(function(k) {
+    var evKey = k === 'promo_auto' ? 'promo_automatica' : k === 'online' ? 'evento_online' : k === 'acc_email_obb' ? 'opt_accompagnatori_email_obbligatoria' : k === 'acc_tel_obb' ? 'opt_accompagnatori_telefono_obbligatorio' : 'opt_' + k;
     stogState[k] = ev[evKey] !== undefined ? ev[evKey] : (k === 'newsletter');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
+  setVal('se_link_part', ev.link_partecipazione || '');
+  var seli = document.getElementById('se_link_invio'); if (seli) seli.value = ev.link_invio || 'entrambi';
+  applyOnlineUI('se', 's', stogState.online);
   var ss = document.getElementById('spasto_sub'); if (ss) ss.style.display = stogState.pasto ? 'block' : 'none';
   setDisp('s_capienza_pp_row', stogState.multipla ? 'flex' : 'none');
   setDisp('s_acc_opts_row', stogState.multipla ? 'block' : 'none');
@@ -1841,6 +1928,7 @@ async function saveSettings() {
   var upd = {
     nome: nome,
     email_contatto: emailContatto,
+    mittente_nome: getVal('se_mittente').trim() || null,
     qr_testo: seQrTipo === 'testo' ? (getVal('se_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
     landing_tema: seTemaState || 'chiaro',
@@ -1863,6 +1951,9 @@ async function saveSettings() {
     opt_capienza: stogState.capienza,
     promo_automatica: stogState.promo_auto,
     opt_qr_checkin: stogState.qr_checkin,
+    evento_online: stogState.online,
+    link_partecipazione: stogState.online ? (getVal('se_link_part').trim() || null) : null,
+    link_invio: stogState.online ? ((document.getElementById('se_link_invio') || {}).value || 'entrambi') : 'entrambi',
     terminologia: (document.getElementById('se_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
@@ -1890,17 +1981,30 @@ async function toggleStatus() {
 /* ============================================================
    TOGGLE OPZIONI FORM
    ============================================================ */
+function applyOnlineUI(inpPfx, rowPfx, on) {
+  var lbl = document.getElementById(inpPfx + '_luogo_lbl');
+  var reqMark = (inpPfx === 'ev') ? ' *' : '';
+  if (lbl) lbl.textContent = (on ? 'Piattaforma' : 'Luogo') + reqMark;
+  var inp = document.getElementById(inpPfx + '_luogo');
+  if (inp) inp.placeholder = on ? 'Es. Zoom, Google Meet, Teams' : 'Es. Villa Reale, Milano';
+  setDisp(rowPfx + '_online_fields', on ? 'block' : 'none');
+  setDisp(rowPfx + '_tipo_row', on ? 'none' : 'flex');
+  setDisp(rowPfx + '_pasto_row', on ? 'none' : 'flex');
+  setDisp(rowPfx + '_checkin_sect', on ? 'none' : 'block');
+}
 function otog(k) {
   otogState[k] = !otogState[k];
   var el = document.getElementById('otog_' + k); if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('opasto_sub'); if (s) s.style.display = otogState[k] ? 'block' : 'none'; }
   if (k === 'multipla') { setDisp('o_capienza_pp_row', otogState[k] ? 'flex' : 'none'); setDisp('o_acc_opts_row', otogState[k] ? 'block' : 'none'); if (!otogState[k]) { otogState['cap_persona'] = false; otogState['acc_email_obb'] = false; otogState['acc_tel_obb'] = false; var cp = document.getElementById('otog_cap_persona'); if (cp) cp.classList.remove('on'); var ae = document.getElementById('otog_acc_email_obb'); if (ae) ae.classList.remove('on'); var at = document.getElementById('otog_acc_tel_obb'); if (at) at.classList.remove('on'); } }
+  if (k === 'online') { applyOnlineUI('ev', 'o', otogState[k]); var li = document.getElementById('ev_luogo'); if (li) li.value = ''; if (otogState[k]) { ['tipo','pasto','qr_checkin'].forEach(function(kk) { otogState[kk] = false; var e = document.getElementById('otog_' + kk); if (e) e.classList.remove('on'); }); setDisp('opasto_sub', 'none'); } }
 }
 function stog(k) {
   stogState[k] = !stogState[k];
   var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   if (k === 'pasto') { var s = document.getElementById('spasto_sub'); if (s) s.style.display = stogState[k] ? 'block' : 'none'; }
   if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); setDisp('s_acc_opts_row', stogState[k] ? 'block' : 'none'); if (!stogState[k]) { stogState['cap_persona'] = false; stogState['acc_email_obb'] = false; stogState['acc_tel_obb'] = false; var cp = document.getElementById('stog_cap_persona'); if (cp) cp.classList.remove('on'); var ae = document.getElementById('stog_acc_email_obb'); if (ae) ae.classList.remove('on'); var at = document.getElementById('stog_acc_tel_obb'); if (at) at.classList.remove('on'); } }
+  if (k === 'online') { applyOnlineUI('se', 's', stogState[k]); var li = document.getElementById('se_luogo'); if (li) li.value = ''; if (stogState[k]) { ['tipo','pasto','qr_checkin'].forEach(function(kk) { stogState[kk] = false; var e = document.getElementById('stog_' + kk); if (e) e.classList.remove('on'); }); setDisp('spasto_sub', 'none'); } }
 }
 
 /* ============================================================
@@ -2208,6 +2312,29 @@ async function promuoviAttesa(id) {
     renderDash();
   } catch(e) { showToast('Errore: ' + e.message, 'r'); }
 }
+async function sendParticipationLink() {
+  var ev = currentEv; if (!ev) return;
+  if (!ev.evento_online || !ev.link_partecipazione) { alert('Questo non è un evento online con link impostato.'); return; }
+  var dest = currentRegs.filter(function(r) { return !r.in_lista_attesa && r.email && r.email.indexOf('@') > -1; });
+  if (!dest.length) { alert('Non ci sono ancora iscritti con email a cui inviare il link.'); return; }
+  if (!confirm('Inviare il link di partecipazione a ' + dest.length + ' iscritti?\nÈ una comunicazione di servizio per questo evento.')) return;
+  var btn = document.getElementById('btnSendLink');
+  if (btn) { btn.disabled = true; btn.textContent = 'Invio in corso...'; }
+  try {
+    var r = await fetch(SB_URL + '/functions/v1/send-participation-link', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event_id: ev.id, token: ev.activation_token || TOKEN })
+    });
+    var data = await r.json();
+    if (!r.ok) { throw new Error(data.error || 'Errore invio'); }
+    showToast('Link inviato a ' + (data.sent || 0) + ' iscritti' + (data.errors ? ' (' + data.errors + ' non riusciti)' : '') + '.', 'g');
+  } catch (e) {
+    showToast('Errore: ' + e.message, 'r');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '📧 Invia link'; }
+  }
+}
 function exportCSV() {
   var ev = currentEv; if (!ev) return;
   var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
@@ -2440,6 +2567,9 @@ async function openPreviewFromForm() {
     opt_pasto_cena: !otogState.pasto || document.getElementById('oopt_cena').checked,
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
+    evento_online: otogState.online,
+    link_partecipazione: otogState.online ? (getVal('ev_link_part').trim() || null) : null,
+    link_invio: otogState.online ? ((document.getElementById('ev_link_invio') || {}).value || 'entrambi') : 'entrambi',
     terminologia: (document.getElementById('ev_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('cspList'),
     custom_fields: collectCF('ccfList'),
@@ -2480,6 +2610,9 @@ async function openPreviewFromSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter,
     opt_capienza: stogState.capienza,
+    evento_online: stogState.online,
+    link_partecipazione: stogState.online ? (getVal('se_link_part').trim() || null) : null,
+    link_invio: stogState.online ? ((document.getElementById('se_link_invio') || {}).value || 'entrambi') : 'entrambi',
     terminologia: (document.getElementById('se_terminologia') || {}).value || 'iscrizione',
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList'),

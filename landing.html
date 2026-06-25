@@ -220,7 +220,7 @@ function buildGCalLink(ev) {
     text: ev.nome,
     dates: startDt + '/' + endDt,
     details: (ev.descrizione || '') + '\n\n' + termWords(ev.terminologia).N + ' gestita con EventsFun -- eventsfun.com',
-    location: ev.luogo || ''
+    location: ev.evento_online ? ('Evento online' + (ev.luogo ? ' - ' + ev.luogo : '')) : (ev.luogo || '')
   });
   return 'https://calendar.google.com/calendar/render?' + params.toString();
 }
@@ -368,7 +368,9 @@ function render() {
     + imgHtml
     + '<div class="ev-date">' + isoToIt(ev.data_iso) + (ev.ora ? ' &middot; ' + ev.ora : '') + '</div>'
     + '<h1 class="ev-title">' + ev.nome + '</h1>'
-    + (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : '')
+    + (ev.evento_online
+        ? '<div class="ev-loc">💻 Evento online' + (ev.luogo ? ' &middot; ' + ev.luogo : '') + '</div>'
+        : (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : ''))
     + (ev.descrizione ? '<p class="ev-desc">' + ev.descrizione + '</p>' : '')
     + '</div>'
     + capHtml
@@ -557,7 +559,7 @@ function showSuccess(nome, inAttesa) {
   var iconaTxt = inAttesa ? '⏳' : '🎉';
   var testoTxt = inAttesa
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
-    : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '') + '.';
+    : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.evento_online ? ' <strong>online</strong>' + (ev.luogo ? ' su <strong>' + ev.luogo + '</strong>' : '') : (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '')) + '.';
   var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:20px;display:flex;justify-content:center">' + gcalBtnHtml(ev) + '</div>' : '';
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
     + '<div class="success-icon">' + iconaTxt + '</div>'
