@@ -1341,10 +1341,17 @@ function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;'
 /* ============================================================
    CALCOLO POSTI (capienza per persona)
    ============================================================ */
+function iscrittoDaNome(r) {
+  if (!r || !r.capogruppo_id) return '';
+  for (var i = 0; i < currentRegs.length; i++) {
+    if (currentRegs[i].id === r.capogruppo_id) return ((currentRegs[i].nome || '') + ' ' + (currentRegs[i].cognome || '')).trim();
+  }
+  return '';
+}
 function calcPostiOccupati(ev, regs) {
   var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
   if (ev && ev.opt_cap_persona && ev.opt_multipla) {
-    return confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+    return confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   }
   return confermati.length;
 }
@@ -1382,7 +1389,7 @@ function renderDash() {
   /* Stats */
   var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
   var inAttesa = regs.filter(function(r) { return !!r.in_lista_attesa; });
-  var totP = confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  var totP = confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   var postiOccupati = hasEv ? calcPostiOccupati(ev, regs) : 0;
   setText('s-regs', hasEv ? confermati.length : '--');
   setText('s-persone', hasEv ? totP : '--');
@@ -1578,14 +1585,14 @@ function renderTable(ev, regs, closed) {
   var cf = ev.custom_fields || [];
   var hM = ev.opt_multipla, hT = ev.opt_tipo, hP = ev.opt_pasto, hN = ev.opt_newsletter !== false;
   var th = '<tr><th>Nome</th><th>Email</th><th>Telefono</th>';
-  if (hM) th += '<th class="xh">Adulti</th><th class="xh">Bambini</th>';
+  if (hM) th += '<th class="xh">Adulti</th><th class="xh">Bambini</th><th class="xh">Iscritto da</th>';
   if (hT) th += '<th class="xh">Tipo</th>';
   if (hP) th += '<th class="xh">Pasto</th>';
   cf.forEach(function(f) { th += '<th class="xh">' + escHtml(f.label) + '</th>'; });
   if (hN) th += '<th class="xh">📧</th>';
   th += '<th>Data</th><th></th></tr>';
   setHTML('tableHead', th);
-  var n = 4 + (hM ? 2 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
+  var n = 4 + (hM ? 3 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
   setText('panel-title', regs.length + ' iscritti');
   setText('panel-sub', ev.capienza ? (Math.max(0, ev.capienza - calcPostiOccupati(ev, currentRegs)) + ' posti disponibili') : 'Iscritti illimitati');
   if (!regs.length) {
@@ -1593,7 +1600,7 @@ function renderTable(ev, regs, closed) {
   } else {
     setHTML('regTable', regs.map(function(r) {
       var xc = '';
-      if (hM) xc += '<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>';
+      if (hM) { xc += r.capogruppo_id ? '<td class="xv">--</td><td class="xv">--</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '--') + '</td>'; }
       if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '--') + '</td>';
       if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '--') + '</td>'; }
       cf.forEach(function(f) {
@@ -2346,7 +2353,7 @@ function exportCSV() {
   var cf = ev.custom_fields || [];
   if (!regs.length) { alert('Nessun iscritto da esportare.'); return; }
   var h = ['Nome','Cognome','Email','Telefono'];
-  if (ev.opt_multipla) { h.push('Adulti'); h.push('Bambini'); }
+  if (ev.opt_multipla) { h.push('Adulti'); h.push('Bambini'); h.push('Iscritto da'); }
   if (ev.opt_tipo) h.push('Tipo');
   if (ev.opt_pasto) { h.push('Pranzo'); h.push('Cena'); }
   cf.forEach(function(f) { h.push(f.label); });
@@ -2354,7 +2361,7 @@ function exportCSV() {
   h.push('Data iscrizione');
   var rows = regs.map(function(r) {
     var row = [r.nome, r.cognome, r.email, r.telefono || ''];
-    if (ev.opt_multipla) { row.push(r.adulti || 1); row.push(r.bambini || 0); }
+    if (ev.opt_multipla) { row.push(r.adulti || 1); row.push(r.bambini || 0); row.push(r.capogruppo_id ? iscrittoDaNome(r) : ''); }
     if (ev.opt_tipo) row.push(r.tipo || 'visitatore');
     if (ev.opt_pasto) { row.push(r.pranzo ? 'Si' : 'No'); row.push(r.cena ? 'Si' : 'No'); }
     cf.forEach(function(f) {
@@ -2385,7 +2392,7 @@ function exportPDF() {
   /* Costruisce le righe della tabella */
   var righe = regs.map(function(r, i) {
     var extra = [];
-    if (ev.opt_multipla) extra.push('Adulti: ' + (r.adulti || 1) + (r.bambini ? ', Bambini: ' + r.bambini : ''));
+    if (ev.opt_multipla) { if (r.capogruppo_id) extra.push('Iscritto da: ' + iscrittoDaNome(r)); else extra.push('Adulti: ' + (r.adulti || 1) + (r.bambini ? ', Bambini: ' + r.bambini : '')); }
     if (ev.opt_tipo && r.tipo) extra.push(r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1));
     if (ev.opt_pasto) {
       var pasti = [];

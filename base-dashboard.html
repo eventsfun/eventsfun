@@ -772,6 +772,13 @@ function obRestart() {
 /* Helper sicuro: imposta display solo se l'elemento esiste */
 function setDisp(id, val) { var el = document.getElementById(id); if (el) el.style.display = val; }
 function escHtml(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function iscrittoDaNome(r) {
+  if (!r || !r.capogruppo_id) return '';
+  for (var i = 0; i < currentRegs.length; i++) {
+    if (currentRegs[i].id === r.capogruppo_id) return ((currentRegs[i].nome || '') + ' ' + (currentRegs[i].cognome || '')).trim();
+  }
+  return '';
+}
 function setHTML(id, val) { var el = document.getElementById(id); if (el) el.innerHTML = val; }
 function setText(id, val) { var el = document.getElementById(id); if (el) el.textContent = val; }
 function setVal(id, val) { var el = document.getElementById(id); if (el) el.value = val; }
@@ -855,9 +862,9 @@ function renderDash() {
   setDisp('btnToggleStatus', canEdit ? 'inline-block' : 'none');
 
   /* Stats */
-  var totP = regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  var totP = regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   var postiOccupati = (ev && ev.opt_cap_persona && ev.opt_multipla)
-    ? regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+    ? regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
     : regs.length;
   document.getElementById('s-regs').textContent = hasEv ? regs.length : '—';
   document.getElementById('s-persone').textContent = hasEv ? totP : '—';
@@ -928,14 +935,14 @@ function renderTable(ev, regs, closed) {
   var cf = ev.custom_fields || [];
   var hM = ev.opt_multipla, hT = ev.opt_tipo, hP = ev.opt_pasto, hN = ev.opt_newsletter !== false;
   var th = '<tr><th>Nome</th><th>Email</th><th>Telefono</th>';
-  if (hM) th += '<th class="xh">Adulti</th><th class="xh">Bambini</th>';
+  if (hM) th += '<th class="xh">Adulti</th><th class="xh">Bambini</th><th class="xh">Iscritto da</th>';
   if (hT) th += '<th class="xh">Tipo</th>';
   if (hP) th += '<th class="xh">Pasto</th>';
   cf.forEach(function(f) { th += '<th class="xh">' + f.label + '</th>'; });
   if (hN) th += '<th class="xh">📧</th>';
   th += '<th>Data</th><th></th></tr>';
   document.getElementById('tableHead').innerHTML = th;
-  var n = 4 + (hM ? 2 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
+  var n = 4 + (hM ? 3 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
   document.getElementById('panel-title').textContent = regs.length + ' iscritti';
   document.getElementById('panel-sub').textContent = ev.capienza ? (ev.capienza - regs.length) + ' posti disponibili' : 'Iscritti illimitati';
   if (!regs.length) {
@@ -943,7 +950,7 @@ function renderTable(ev, regs, closed) {
   } else {
     document.getElementById('regTable').innerHTML = regs.map(function(r) {
       var xc = '';
-      if (hM) xc += '<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>';
+      if (hM) { xc += r.capogruppo_id ? '<td class="xv">--</td><td class="xv">--</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '--') + '</td>'; }
       if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '—') + '</td>';
       if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '—') + '</td>'; }
       cf.forEach(function(f) { xc += '<td class="xv">' + ((r.extra && r.extra[f.id]) ? r.extra[f.id] : '—') + '</td>'; });

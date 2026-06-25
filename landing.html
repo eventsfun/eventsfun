@@ -257,7 +257,7 @@ async function init() {
     var temaParam = new URLSearchParams(window.location.search).get('tema');
     var temaFinale = temaParam || ev.landing_tema || 'chiaro';
     if (temaFinale === 'scuro') document.body.classList.add('dark');
-    regs = await sbGet('registrations', { event_id: ev.id }, 'id,adulti,bambini,in_lista_attesa');
+    regs = await sbGet('registrations', { event_id: ev.id }, 'id,adulti,bambini,in_lista_attesa,capogruppo_id');
     document.title = ev.nome + ' — EventsFun';
     render();
   } catch(e) {
@@ -282,7 +282,7 @@ function render() {
   if (ev.opt_capienza && ev.capienza) {
     var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
     var occupati = ev.opt_cap_persona && ev.opt_multipla
-      ? confermati.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+      ? confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
       : confermati.length;
     var posti = Math.max(0, ev.capienza - occupati);
     var pct = Math.round((occupati / ev.capienza) * 100);
@@ -475,7 +475,7 @@ async function submitReg() {
 
   /* Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa */
   var postiOccupati = ev.opt_cap_persona && ev.opt_multipla
-    ? regs.reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
+    ? regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
     : regs.length;
   var capienzaPiena = ev.capienza && postiOccupati >= ev.capienza;
 
