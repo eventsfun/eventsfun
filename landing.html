@@ -175,10 +175,10 @@ var bambiniCount = 0;
 /* Restituisce le forme della parola in base alla terminologia scelta per l'evento */
 function termWords(t) {
   var W = {
-    iscrizione:     { imp: 'Iscriviti',  inf: 'iscriverti',   n: 'iscrizione',     N: 'Iscrizione',     np: 'iscrizioni' },
-    prenotazione:   { imp: 'Prenota',    inf: 'prenotare',    n: 'prenotazione',   N: 'Prenotazione',   np: 'prenotazioni' },
-    partecipazione: { imp: 'Partecipa',  inf: 'partecipare',  n: 'partecipazione', N: 'Partecipazione', np: 'partecipazioni' },
-    registrazione:  { imp: 'Registrati', inf: 'registrarti',  n: 'registrazione',  N: 'Registrazione',  np: 'registrazioni' }
+    iscrizione:     { imp: 'Iscriviti',  inf: 'iscriverti',   n: 'iscrizione',     N: 'Iscrizione',     np: 'iscrizioni',     ppl: 'Iscritti' },
+    prenotazione:   { imp: 'Prenota',    inf: 'prenotare',    n: 'prenotazione',   N: 'Prenotazione',   np: 'prenotazioni',   ppl: 'Persone' },
+    partecipazione: { imp: 'Partecipa',  inf: 'partecipare',  n: 'partecipazione', N: 'Partecipazione', np: 'partecipazioni', ppl: 'Partecipanti' },
+    registrazione:  { imp: 'Registrati', inf: 'registrarti',  n: 'registrazione',  N: 'Registrazione',  np: 'registrazioni',  ppl: 'Partecipanti' }
   };
   return W[t] || W.iscrizione;
 }
@@ -296,8 +296,11 @@ function render() {
 
   var extraFields = '';
   if (ev.opt_multipla) {
-    extraFields += '<div class="lp-fg"><label class="lp-lbl">Adulti *</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',-1)">−</button><div class="lp-cnt-val" id="cnt_adulti">1</div><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',1)">+</button></div></div>';
-    extraFields += '<div class="lp-fg"><label class="lp-lbl">Bambini</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',-1)">−</button><div class="lp-cnt-val" id="cnt_bambini">0</div><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',1)">+</button></div></div>';
+    var pplLbl = (ev.opt_bambini !== false) ? 'Adulti' : termWords(ev.terminologia).ppl;
+    extraFields += '<div class="lp-fg"><label class="lp-lbl">' + pplLbl + ' *</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',-1)">−</button><div class="lp-cnt-val" id="cnt_adulti">1</div><button type="button" class="lp-cb" onclick="changeCount(\'adulti\',1)">+</button></div></div>';
+    if (ev.opt_bambini !== false) {
+      extraFields += '<div class="lp-fg"><label class="lp-lbl">Bambini</label><div class="lp-cnt"><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',-1)">−</button><div class="lp-cnt-val" id="cnt_bambini">0</div><button type="button" class="lp-cb" onclick="changeCount(\'bambini\',1)">+</button></div></div>';
+    }
     extraFields += '<div id="accompagnatori-wrap" class="acc-wrap"></div>';
   }
   if (ev.opt_tipo) {

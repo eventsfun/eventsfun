@@ -329,7 +329,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: CREA EVENTO -->
-<div class="ov" id="ovCreate" onclick="if(event.target===this)closeOv('ovCreate')">
+<div class="ov" id="ovCreate">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovCreate')">✕</button>
     <h2 id="evModalTitle">Crea il tuo evento</h2>
@@ -450,6 +450,7 @@ tbody td.xv{color:var(--gold)}
     <div id="o_acc_opts_row" style="display:none">
       <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div><div class="opt-sub">Gli accompagnatori devono inserire l'email</div></div><div class="tog" id="otog_acc_email_obb" onclick="otog('acc_email_obb')"><div class="tog-dot"></div></div></div>
       <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div><div class="opt-sub">Gli accompagnatori devono inserire il telefono</div></div><div class="tog" id="otog_acc_tel_obb" onclick="otog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
+      <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore dei bambini. Spegnilo per eventi online o conferenze.</div></div><div class="tog on" id="otog_bambini" onclick="otog('bambini')"><div class="tog-dot"></div></div></div>
     </div>
     <div id="o_capienza_pp_row" style="display:none" class="opt-row">
       <div>
@@ -486,7 +487,7 @@ tbody td.xv{color:var(--gold)}
 </div>
 
 <!-- MODAL: IMPOSTAZIONI -->
-<div class="ov" id="ovSettings" onclick="if(event.target===this)closeOv('ovSettings')">
+<div class="ov" id="ovSettings">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
     <h2>Impostazioni evento</h2>
@@ -604,6 +605,7 @@ tbody td.xv{color:var(--gold)}
     <div id="s_acc_opts_row" style="display:none">
       <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div><div class="opt-sub">Gli accompagnatori devono inserire l'email</div></div><div class="tog" id="stog_acc_email_obb" onclick="stog('acc_email_obb')"><div class="tog-dot"></div></div></div>
       <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div><div class="opt-sub">Gli accompagnatori devono inserire il telefono</div></div><div class="tog" id="stog_acc_tel_obb" onclick="stog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
+      <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore dei bambini. Spegnilo per eventi online o conferenze.</div></div><div class="tog on" id="stog_bambini" onclick="stog('bambini')"><div class="tog-dot"></div></div></div>
     </div>
     <div id="s_capienza_pp_row" style="display:none" class="opt-row">
       <div>
@@ -783,8 +785,8 @@ var currentRegs = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
-var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
 var LS_THEME = 'ef_theme';
 
 /* ============================================================
@@ -897,6 +899,7 @@ function sanitizeEvent(ev) {
   ev.sponsors = Array.isArray(ev.sponsors) ? ev.sponsors : [];
   ev.custom_fields = Array.isArray(ev.custom_fields) ? ev.custom_fields : [];
   ev.opt_multipla = !!ev.opt_multipla;
+  ev.opt_bambini = ev.opt_bambini !== false;
   ev.opt_tipo = !!ev.opt_tipo;
   ev.opt_pasto = !!ev.opt_pasto;
   ev.opt_newsletter = ev.opt_newsletter !== false;
@@ -1195,7 +1198,7 @@ function resetEvForm(mode) {
   setHTML('ccfList', '');
   var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, cap_persona: false, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+  var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
@@ -1257,6 +1260,7 @@ async function saveEvent() {
     attivo: true,
     opt_multipla: otogState.multipla,
     opt_cap_persona: otogState.cap_persona,
+    opt_bambini: otogState.bambini,
     opt_accompagnatori_email_obbligatoria: otogState.acc_email_obb,
     opt_accompagnatori_telefono_obbligatorio: otogState.acc_tel_obb,
     opt_tipo: otogState.tipo,
@@ -1322,9 +1326,9 @@ function openEditEvent() {
   var si = document.getElementById('se_img_preview');
   if (ev.immagine) { si.src = ev.immagine; si.style.display = 'block'; setDisp('seImgPh', 'none'); setDisp('se_img_rm', 'inline'); }
   else { si.src = ''; si.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); }
-  ['multipla', 'cap_persona', 'acc_email_obb', 'acc_tel_obb', 'tipo', 'pasto', 'newsletter', 'capienza', 'qr_checkin', 'online'].forEach(function(k) {
+  ['multipla', 'cap_persona', 'acc_email_obb', 'acc_tel_obb', 'bambini', 'tipo', 'pasto', 'newsletter', 'capienza', 'qr_checkin', 'online'].forEach(function(k) {
     var dbKey = k === 'online' ? 'evento_online' : k === 'acc_email_obb' ? 'opt_accompagnatori_email_obbligatoria' : k === 'acc_tel_obb' ? 'opt_accompagnatori_telefono_obbligatorio' : 'opt_' + k;
-    stogState[k] = ev[dbKey] !== undefined ? ev[dbKey] : (k === 'newsletter');
+    stogState[k] = ev[dbKey] !== undefined ? ev[dbKey] : (k === 'newsletter' || k === 'bambini');
     var el = document.getElementById('stog_' + k); if (el) { if (stogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
   });
   document.getElementById('se_link_part').value = ev.link_partecipazione || '';
@@ -1362,7 +1366,7 @@ async function saveSettings() {
     luogo: document.getElementById('se_luogo').value.trim(),
     descrizione: document.getElementById('se_desc').value.trim(),
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
-    opt_multipla: stogState.multipla, opt_cap_persona: stogState.cap_persona, opt_accompagnatori_email_obbligatoria: stogState.acc_email_obb, opt_accompagnatori_telefono_obbligatorio: stogState.acc_tel_obb, opt_tipo: stogState.tipo, opt_pasto: stogState.pasto,
+    opt_multipla: stogState.multipla, opt_cap_persona: stogState.cap_persona, opt_bambini: stogState.bambini, opt_accompagnatori_email_obbligatoria: stogState.acc_email_obb, opt_accompagnatori_telefono_obbligatorio: stogState.acc_tel_obb, opt_tipo: stogState.tipo, opt_pasto: stogState.pasto,
     opt_pasto_pranzo: !stogState.pasto || document.getElementById('sopt_pranzo').checked,
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
