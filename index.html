@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EventsFun — Gestione iscrizioni per eventi</title>
-<meta name="description" content="Crea la landing page del tuo evento, raccogli iscrizioni e gestisci tutto da un'unica dashboard. Semplice, veloce, professionale.">
+<meta name="description" content="Crea la landing page del tuo evento, raccogli iscrizioni e gestisci tutto da un'unica dashboard. Semplice, veloce, professionale. Funziona anche per eventi online come webinar e dirette.">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -531,6 +531,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <span class="proof-tag">🎭 Agenzie eventi</span>
       <span class="proof-tag">🎸 Concerti & Festival</span>
       <span class="proof-tag">🎓 Conferenze & Workshop</span>
+      <span class="proof-tag">&#128187; Webinar & Eventi online</span>
       <span class="proof-tag">💍 Fiere & Esposizioni</span>
       <span class="proof-tag">🏃 Sport & Running</span>
       <span class="proof-tag">🍽️ Cene di gala</span>
@@ -556,6 +557,11 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <p>Ogni evento ha la sua pagina pubblica con tutti i dettagli, modulo di iscrizione e sezione sponsor brandizzata.</p>
       </div>
       <div class="feat">
+        <div class="feat-icon">&#128187;</div>
+        <h3>Eventi online</h3>
+        <p>Webinar, dirette e call: attivi l'opzione e il link di partecipazione arriva agli iscritti in automatico, nell'email di conferma o nel promemoria.</p>
+      </div>
+      <div class="feat">
         <div class="feat-icon">🔗</div>
         <h3>QR code e link condivisibile</h3>
         <p>Ogni evento ha il suo QR da stampare sulla locandina e un link diretto da usare ovunque — social, sito web, newsletter, WhatsApp, email. Un solo link, tutti i canali.</p>
@@ -577,8 +583,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       </div>
       <div class="feat">
         <div class="feat-icon">📥</div>
-        <h3>Export CSV</h3>
-        <p>Scarica la lista iscritti di ogni evento in un click, con tutti i campi personalizzati inclusi. Compatibile con Excel.</p>
+        <h3>Export CSV e PDF</h3>
+        <p>Scarica la lista iscritti in CSV, compatibile con Excel e con tutti i campi personalizzati, oppure la lista presenze in PDF pronta da stampare per l'ingresso.</p>
       </div>
     </div>
   </div>
@@ -731,6 +737,11 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <p>Hai già un pubblico di iscritti? Inserisci il link dell'evento nella tua newsletter e i tuoi contatti si iscrivono in un click. Nessun tool aggiuntivo, nessuna piattaforma extra.</p>
       </div>
       <div class="case">
+        <span class="case-emoji">&#128187;</span>
+        <h3>Webinar & eventi online</h3>
+        <p>Aziende, formatori e organizzatori di eventi a distanza: raccogli le iscrizioni e invia il link di partecipazione agli iscritti in automatico, con promemoria prima dell'inizio.</p>
+      </div>
+      <div class="case">
         <span class="case-emoji">🎭</span>
         <h3>Agenzie di eventi</h3>
         <p>Gestisci più eventi simultaneamente da un'unica dashboard. Un tool professionale che puoi presentare ai clienti come valore aggiunto.</p>
@@ -872,6 +883,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Dashboard iscritti</div>
           <div class="plan-feat">Lista presenze con check-in</div>
           <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Eventi online (webinar, dirette)</div>
           <div class="plan-feat">Aggiungi a Google Calendar</div>
           <div class="plan-feat">Campi personalizzati</div>
           <div class="plan-feat">Dati disponibili 30 giorni dopo l'evento</div>
@@ -901,6 +913,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Dashboard iscritti</div>
           <div class="plan-feat">Lista presenze con check-in</div>
           <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Eventi online (webinar, dirette)</div>
           <div class="plan-feat">Aggiungi a Google Calendar</div>
           <div class="plan-feat">Export CSV</div>
           <div class="plan-feat">Sponsor con logo e link</div>
@@ -937,6 +950,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Dashboard iscritti</div>
           <div class="plan-feat">Lista presenze con check-in</div>
           <div class="plan-feat">Email conferma agli iscritti</div>
+          <div class="plan-feat">Eventi online (webinar, dirette)</div>
           <div class="plan-feat">Aggiungi a Google Calendar</div>
           <div class="plan-feat">Export CSV</div>
           <div class="plan-feat">Export PDF lista presenze</div>
@@ -1167,6 +1181,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:14px">Guide utili</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px">
         <a href="guide/iscrizioni-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Come gestire le iscrizioni a un evento</a>
+        <a href="guide/iscrizioni-evento-online.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Iscrizioni a un evento online</a>
         <a href="guide/qr-code-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">QR code per eventi: come crearlo e usarlo</a>
         <a href="guide/gdpr-iscrizioni-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">GDPR e raccolta dati agli eventi</a>
         <a href="guide/lista-presenze-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Lista presenze digitale per eventi</a>
