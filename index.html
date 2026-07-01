@@ -164,6 +164,14 @@ h1 em{font-style:normal;color:var(--gold)}
 
 /* ── PRICING ── */
 .pricing{padding:100px 40px;background:var(--bg2);position:relative;z-index:1}
+.ownership{padding:100px 40px;background:var(--bg2);position:relative;z-index:1}
+.ownership-inner{max-width:760px;margin:0 auto;text-align:center}
+.ownership h2{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(26px,3.6vw,40px);line-height:1.18;letter-spacing:-.5px;color:var(--text);margin:14px 0 22px}
+.ownership p{font-size:16px;line-height:1.7;color:var(--text-muted);max-width:620px;margin:0 auto}
+.ownership p strong{color:var(--text);font-weight:600}
+.ownership-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;margin-top:30px}
+.ownership-tags span{font-size:13px;font-weight:600;color:var(--gold);border:1px solid rgba(201,169,110,0.3);border-radius:999px;padding:9px 18px}
+@media(max-width:768px){.ownership{padding:70px 20px}}
 .pricing::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
 .pricing-inner{max-width:800px;margin:0 auto;text-align:center}
 .pricing-header{margin-bottom:56px}
@@ -264,6 +272,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 .vcard-problem-text{text-decoration:line-through;text-decoration-color:rgba(240,237,232,0.25)}
 .vcard-solution{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;color:var(--text);line-height:1.35;letter-spacing:-.3px}
 .vcard-solution em{font-style:normal;color:var(--gold)}
+.vcard-check{color:var(--gold);font-weight:700;margin-right:7px}
 @media(max-width:900px){
   .vcards-grid{grid-template-columns:1fr}
   .vcards{padding:60px 20px}
@@ -395,8 +404,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           </svg>
         </div>
         <div class="vcard-body">
-          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">Fogli Excel con mille righe</span></div>
-          <div class="vcard-solution">Tutti gli iscritti raccolti e ordinati <em>in automatico</em></div>
+          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">Fogli Excel infiniti, iscritti da ordinare a mano</span></div>
+          <div class="vcard-solution"><span class="vcard-check">✓</span>Tutti gli iscritti raccolti e ordinati <em>in automatico</em></div>
         </div>
       </div>
 
@@ -436,8 +445,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           </svg>
         </div>
         <div class="vcard-body">
-          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">"Sono iscritto?" — il telefono non smette</span></div>
-          <div class="vcard-solution">Ogni partecipante riceve <em>conferma immediata</em> via email</div>
+          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">«Sono iscritto?» e il telefono non smette mai di squillare</span></div>
+          <div class="vcard-solution"><span class="vcard-check">✓</span>Ogni iscritto riceve <em>conferma immediata</em> via email</div>
         </div>
       </div>
 
@@ -499,8 +508,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           </svg>
         </div>
         <div class="vcard-body">
-          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">Liste cartacee e penne all'ingresso</span></div>
-          <div class="vcard-solution">Check-in il giorno dell'evento con <em>QR dal telefono</em></div>
+          <div class="vcard-problem"><span>❌</span><span class="vcard-problem-text">Liste cartacee e penna all'ingresso</span></div>
+          <div class="vcard-solution"><span class="vcard-check">✓</span>Check-in in pochi secondi col <em>QR dal telefono</em></div>
         </div>
       </div>
 
@@ -849,6 +858,20 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   </div>
 </section>
 
+<!-- OWNERSHIP -->
+<section class="ownership">
+  <div class="ownership-inner">
+    <div class="section-label">I tuoi iscritti</div>
+    <h2>Quando qualcuno si iscrive al tuo evento, di chi è quel contatto?</h2>
+    <p>Su molte piattaforme gratuite la risposta è: della piattaforma. Chi si iscrive entra nel loro circuito, riceve le loro email, scopre altri eventi. Con EventsFun la risposta è una sola: <strong>è tuo</strong>. I dati dei tuoi iscritti restano solo tuoi, li esporti, li ricontatti, li gestisci come vuoi. Nessuno si mette tra te e il tuo pubblico.</p>
+    <div class="ownership-tags">
+      <span>I contatti sono tuoi</span>
+      <span>Nessun intermediario</span>
+      <span>Li porti via quando vuoi</span>
+    </div>
+  </div>
+</section>
+
 <!-- PRICING -->
 <section class="pricing" id="prezzi">
   <div class="pricing-inner" style="max-width:960px">
@@ -968,6 +991,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       </div>
 
     </div>
+    <p style="max-width:640px;margin:32px auto 0;text-align:center;font-size:15px;line-height:1.65;color:var(--text-muted)">Quando un servizio è gratis, spesso a pagare sono i tuoi dati e il tuo pubblico. <strong style="color:var(--text);font-weight:600">Con EventsFun resti tu il proprietario di tutto quello che raccogli.</strong></p>
     <p style="margin-top:28px;font-size:12px;color:var(--text-dim);text-align:center">Contattaci per esigenze specifiche o volumi elevati.</p>
   </div>
 </section>
