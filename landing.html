@@ -87,6 +87,9 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
 .gcal-btn svg{flex-shrink:0}
 .gcal-wrap{margin-top:4px}
+.wa-btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#25D366;border:1.5px solid #25D366;border-radius:10px;font-size:13px;font-weight:700;color:#fff;text-decoration:none;transition:opacity .2s,box-shadow .2s;cursor:pointer}
+.wa-btn:hover{opacity:.88;box-shadow:0 2px 10px rgba(37,211,102,.3)}
+.wa-btn svg{flex-shrink:0}
 /* ACCOMPAGNATORI */
 .acc-wrap{margin-top:4px}
 .acc-sep{border:none;border-top:1.5px dashed #e0ddd8;margin:20px 0 16px}
@@ -128,6 +131,7 @@ body.dark .loading p{color:rgba(245,240,232,.5)}
 body.dark .spinner{border-color:rgba(255,255,255,.1);border-top-color:#C9A96E}
 body.dark .gcal-btn{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.8)}
 body.dark .gcal-btn:hover{border-color:#C9A96E;box-shadow:0 2px 8px rgba(201,169,110,.15)}
+body.dark .wa-btn{background:#25D366;border-color:#25D366;color:#fff}
 body.dark .ef-cta{color:rgba(245,240,232,.35)}
 body.dark .acc-sep{border-top-color:rgba(255,255,255,.1)}
 body.dark .acc-title{color:#C9A96E}
@@ -233,6 +237,23 @@ function gcalBtnHtml(ev) {
   return '<div class="gcal-wrap"><a href="' + link + '" target="_blank" rel="noopener" class="gcal-btn">'
     + '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="17" rx="2" stroke="#4285F4" stroke-width="2"/><path d="M3 9h18" stroke="#4285F4" stroke-width="2"/><path d="M8 2v4M16 2v4" stroke="#4285F4" stroke-width="2" stroke-linecap="round"/><rect x="7" y="13" width="4" height="3" rx="0.5" fill="#4285F4"/></svg>'
     + 'Aggiungi a Google Calendar</a></div>';
+}
+
+/* URL pubblico dell'evento: priorita' allo slug, fallback su id */
+function eventPublicUrl(ev) {
+  if (ev.slug) return 'https://eventsfun.com/landing.html?slug=' + ev.slug;
+  return 'https://eventsfun.com/landing.html?id=' + ev.id;
+}
+
+/* HTML del bottone condivisione WhatsApp (dopo iscrizione confermata) */
+function waShareBtnHtml(ev) {
+  var msg = 'Mi sono appena iscritto/a a "' + ev.nome + '"'
+    + (ev.data_iso ? ' -- ' + isoToIt(ev.data_iso) : '')
+    + '. Iscriviti anche tu: ' + eventPublicUrl(ev);
+  var link = 'https://wa.me/?text=' + encodeURIComponent(msg);
+  return '<a href="' + link + '" target="_blank" rel="noopener" class="wa-btn">'
+    + '<svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.89L2 22l5.26-1.24A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.15c-1.61 0-3.12-.42-4.43-1.16l-.32-.18-3.12.74.76-3.04-.2-.33A8.1 8.1 0 0 1 3.85 12c0-4.5 3.65-8.15 8.15-8.15S20.15 7.5 20.15 12 16.5 20.15 12 20.15zm4.47-6.1c-.24-.12-1.45-.71-1.67-.8-.22-.08-.39-.12-.55.13-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.97-1.21-.73-.65-1.22-1.45-1.36-1.69-.14-.24-.02-.38.11-.5.11-.11.24-.28.37-.42.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03s.87 2.36 1 2.52c.12.16 1.72 2.62 4.16 3.68.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>'
+    + 'Invita un amico su WhatsApp</a>';
 }
 
 /* ============================================================
@@ -564,7 +585,7 @@ function showSuccess(nome, inAttesa) {
   var testoTxt = inAttesa
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
     : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.evento_online ? ' <strong>online</strong>' + (ev.luogo ? ' su <strong>' + ev.luogo + '</strong>' : '') : (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '')) + '.';
-  var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:20px;display:flex;justify-content:center">' + gcalBtnHtml(ev) + '</div>' : '';
+  var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:24px;display:flex;flex-direction:column;align-items:center">' + waShareBtnHtml(ev) + gcalBtnHtml(ev) + '</div>' : '';
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
     + '<div class="success-icon">' + iconaTxt + '</div>'
     + '<h2>' + titoloTxt + '</h2>'
