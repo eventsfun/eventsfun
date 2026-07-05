@@ -660,6 +660,19 @@ select option{background:#1a1a1a;color:var(--text)}
 </div>
 
 <!-- MODAL: QR -->
+<!-- OVERLAY CONDIVISIONE WHATSAPP (simulazione demo) -->
+<div class="ov" id="ovWaDemo" style="z-index:400" onclick="if(event.target===this)demoWaClose()">
+  <div class="modal sm">
+    <button class="mcls" onclick="demoWaClose()">&#10005;</button>
+    <h2>Condivisione WhatsApp</h2>
+    <p class="modal-sub">Simulazione demo -- nella versione reale si apre WhatsApp con questo messaggio gi&agrave; pronto da inviare a contatti o gruppi.</p>
+    <div style="background:#e5ddd5;border-radius:12px;padding:18px 14px;margin:12px 0 4px">
+      <div id="waDemoBubble" style="background:#DCF8C6;color:#111;border-radius:10px;border-top-right-radius:2px;padding:12px 14px;font-size:13px;line-height:1.6;box-shadow:0 1px 1px rgba(0,0,0,.15);word-break:break-word;overflow-wrap:break-word;max-width:92%;margin-left:auto"></div>
+      <div style="font-size:10px;color:#667;text-align:right;margin-top:6px;padding-right:4px">12:07 <span style="color:#53bdeb">&#10003;&#10003;</span></div>
+    </div>
+  </div>
+</div>
+
 <div class="ov" id="ovQR" onclick="if(event.target===this)closeOv('ovQR')">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovQR')">&#10005;</button>
@@ -949,7 +962,7 @@ function closeEmailSim(){document.getElementById('emailSimOv').classList.remove(
    LANDING VIEW IN-PAGE
    ============================================================ */
 function openLandingView(){var ev=currentEv;if(!ev)return;renderLandingContent(ev,false);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';advanceGuide('landing_opened');}
-function closeLanding(){document.getElementById('landingOv').classList.remove('on');document.body.style.overflow='';currentRegs=currentEv?dbGetRegs(currentEv.id):[];renderDash();}
+function closeLanding(){document.getElementById('landingOv').classList.remove('on');document.body.style.overflow='';currentRegs=currentEv?dbGetRegs(currentEv.id):[];renderDash();if(_lpPendingEmailSim){var p=_lpPendingEmailSim;_lpPendingEmailSim=null;showToast('Iscrizione completata!','g');showEmailSim(p.reg,p.ev,false);advanceGuide('registered');}}
 function openPreviewFromForm(){var nome=getVal('ev_nome').trim(),data=getVal('ev_data'),ora=getVal('ev_ora').trim(),luogo=getVal('ev_luogo').trim();if(!nome||!data||!ora||!luogo){alert('Compila almeno Nome, Data, Ora e Luogo per vedere l\'anteprima.');return;}var img=document.getElementById('ev_img_preview');var ev=sanitizeEvent({id:'preview',nome:nome,data_iso:data,ora:ora,luogo:luogo,email_contatto:getVal('ev_email_contatto').trim(),descrizione:getVal('ev_desc').trim(),capienza:parseInt(getVal('ev_cap'))||null,immagine:(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null,sponsors:collectSP('cspList'),custom_fields:collectCF('ccfList'),opt_multipla:otogState.multipla,evento_online:otogState.online,link_partecipazione:getVal('ev_link').trim(),link_invio:(document.getElementById('ev_link_invio')||{}).value||'entrambi',opt_bambini:otogState.bambini,opt_tipo:otogState.tipo,opt_pasto:otogState.pasto,opt_pasto_pranzo:!otogState.pasto||document.getElementById('oopt_pranzo').checked,opt_pasto_cena:!otogState.pasto||document.getElementById('oopt_cena').checked,opt_newsletter:otogState.newsletter,opt_capienza:otogState.capienza,terminologia:(document.getElementById('ev_terminologia')||{}).value||'iscrizione',landing_tema:evTemaState||'chiaro',attivo:true,bozza:false});renderLandingContent(ev,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
 function openPreviewFromSettings(){var ev=currentEv;if(!ev)return;var si=document.getElementById('se_img_preview');var evP=sanitizeEvent(Object.assign({},ev,{nome:getVal('se_nome').trim()||ev.nome,capienza:parseInt(getVal('se_cap'))||null,data_iso:getVal('se_data'),ora:getVal('se_ora').trim(),luogo:getVal('se_luogo').trim(),descrizione:getVal('se_desc').trim(),immagine:(si&&si.style.display!=='none'&&si.src&&si.src!==window.location.href)?si.src:null,opt_multipla:stogState.multipla,evento_online:stogState.online,link_partecipazione:getVal('se_link').trim(),link_invio:(document.getElementById('se_link_invio')||{}).value||'entrambi',opt_bambini:stogState.bambini,opt_tipo:stogState.tipo,opt_pasto:stogState.pasto,opt_pasto_pranzo:!stogState.pasto||document.getElementById('sopt_pranzo').checked,opt_pasto_cena:!stogState.pasto||document.getElementById('sopt_cena').checked,opt_newsletter:stogState.newsletter,opt_capienza:stogState.capienza,sponsors:collectSP('sspList'),custom_fields:collectCF('scfList'),terminologia:(document.getElementById('se_terminologia')||{}).value||(ev.terminologia||'iscrizione'),landing_tema:seTemaState||'chiaro'}));renderLandingContent(evP,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
 
@@ -1040,10 +1053,79 @@ function lpSubmit(){
   var reg={event_id:ev.id,nome:nome,cognome:cognome,email:email,telefono:rtel?rtel.value.trim():'',adulti:window._lpAdulti||1,bambini:window._lpBambini||0,tipo:rt?rt.value:'visitatore',pranzo:rp?rp.checked:false,cena:rc?rc.checked:false,newsletter:rn?rn.checked:false,extra:extra,presente:false,in_lista_attesa:!!capienzaPiena};
   var newReg=dbCreateReg(reg);
   currentRegs=dbGetRegs(ev.id);
-  closeLanding();
-  showToast(capienzaPiena?'Aggiunto in lista d\'attesa':'Iscrizione completata!','g');
-  showEmailSim(newReg,ev,!!capienzaPiena);
-  advanceGuide('registered');
+  if(capienzaPiena){
+    closeLanding();
+    showToast('Aggiunto in lista d\'attesa','g');
+    showEmailSim(newReg,ev,true);
+    advanceGuide('registered');
+  }else{
+    _lpPendingEmailSim={reg:newReg,ev:ev};
+    demoShowLandingSuccess(newReg,ev);
+    document.getElementById('landingOv').scrollTop=0;
+  }
+}
+
+/* ============================================================
+   SCHERMATA CONFERMA + CONDIVISIONE WHATSAPP (simulazione demo)
+   ============================================================ */
+var _lpPendingEmailSim=null;
+
+/* Link Google Calendar reale (stessa logica della landing di produzione) */
+function demoBuildGCalLink(ev){
+  if(!ev.data_iso)return '';
+  var dateStr=ev.data_iso.replace(/-/g,'');
+  var startDt,endDt;
+  if(ev.ora){
+    var hm=ev.ora.replace(':','');if(hm.length===4)hm=hm+'00';
+    startDt=dateStr+'T'+hm;
+    var startH=parseInt(ev.ora.split(':')[0],10);var startM=parseInt(ev.ora.split(':')[1]||'0',10);
+    var endH=startH+2;if(endH>=24)endH=23;
+    endDt=dateStr+'T'+(endH<10?'0'+endH:''+endH)+(startM<10?'0'+startM:''+startM)+'00';
+  }else{
+    var nextDay=new Date(ev.data_iso);nextDay.setDate(nextDay.getDate()+1);
+    var nd=nextDay.toISOString().split('T')[0].replace(/-/g,'');
+    startDt=dateStr;endDt=nd;
+  }
+  var params=new URLSearchParams({action:'TEMPLATE',text:ev.nome,dates:startDt+'/'+endDt,details:(ev.descrizione||'')+'\n\n'+termWords(ev.terminologia).N+' gestita con EventsFun -- eventsfun.com',location:ev.evento_online?('Evento online'+(ev.luogo?' - '+ev.luogo:'')):(ev.luogo||'')});
+  return 'https://calendar.google.com/calendar/render?'+params.toString();
+}
+
+function demoShowLandingSuccess(reg,ev){
+  var dark=ev.landing_tema==='scuro';
+  var TW=termWords(ev.terminologia);
+  var bg=dark?'#0A0A0A':'#f4f3f0',cardBg=dark?'#111':'#fff',cardBorder=dark?'border:1px solid rgba(255,255,255,.07);':'';
+  var txtMain=dark?'#F5F0E8':'#1a1a1a',txtSub=dark?'rgba(245,240,232,.6)':'#666';
+  /* Messaggio WhatsApp identico alla versione reale */
+  window._lpWaMsg='Mi sono appena iscritto/a a "'+ev.nome+'"'+(ev.data_iso?' -- '+isoToIt(ev.data_iso):'')+'. Iscriviti anche tu: https://eventsfun.com/landing.html?slug='+(ev.slug||ev.id);
+  var gcal=demoBuildGCalLink(ev);
+  var waBtn='<a href="#" onclick="demoWaShare();return false;" style="display:inline-flex;align-items:center;gap:8px;padding:11px 20px;background:#25D366;border:1.5px solid #25D366;border-radius:10px;font-size:13px;font-weight:700;color:#fff;text-decoration:none;cursor:pointer">'
+    +'<svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.89L2 22l5.26-1.24A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.15c-1.61 0-3.12-.42-4.43-1.16l-.32-.18-3.12.74.76-3.04-.2-.33A8.1 8.1 0 0 1 3.85 12c0-4.5 3.65-8.15 8.15-8.15S20.15 7.5 20.15 12 16.5 20.15 12 20.15zm4.47-6.1c-.24-.12-1.45-.71-1.67-.8-.22-.08-.39-.12-.55.13-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.97-1.21-.73-.65-1.22-1.45-1.36-1.69-.14-.24-.02-.38.11-.5.11-.11.24-.28.37-.42.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03s.87 2.36 1 2.52c.12.16 1.72 2.62 4.16 3.68.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>'
+    +'Invita un amico su WhatsApp</a>';
+  var gcalBtn=gcal?'<div style="margin-top:14px"><a href="'+gcal+'" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:'+(dark?'rgba(255,255,255,.05)':'#fff')+';border:1.5px solid '+(dark?'rgba(255,255,255,.12)':'#e0ddd8')+';border-radius:10px;font-size:13px;font-weight:600;color:'+(dark?'rgba(245,240,232,.8)':'#333')+';text-decoration:none;cursor:pointer">'
+    +'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="4" width="18" height="17" rx="2" stroke="#4285F4" stroke-width="2"/><path d="M3 9h18" stroke="#4285F4" stroke-width="2"/><path d="M8 2v4M16 2v4" stroke="#4285F4" stroke-width="2" stroke-linecap="round"/><rect x="7" y="13" width="4" height="3" rx="0.5" fill="#4285F4"/></svg>'
+    +'Aggiungi a Google Calendar</a></div>':'';
+  var html='<div style="font-family:\'DM Sans\',sans-serif;background:'+bg+';color:'+txtMain+';min-height:100vh;padding:40px 16px 80px"><div style="max-width:520px;margin:0 auto">'
+    +'<div style="background:'+cardBg+';border-radius:16px;padding:40px 24px;box-shadow:0 2px 16px rgba(0,0,0,.06);'+cardBorder+'text-align:center">'
+    +'<div style="font-size:56px;margin-bottom:16px">&#127881;</div>'
+    +'<h2 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;margin:0 0 12px;color:'+txtMain+'">Grazie, '+escHtml(reg.nome)+'!</h2>'
+    +'<p style="font-size:14px;line-height:1.7;color:'+txtSub+';margin:0">La tua '+TW.n+' a <strong>'+escHtml(ev.nome)+'</strong> &egrave; confermata.<br>Riceverai una email di conferma a breve.'+(ev.data_iso?'<br>Ci vediamo il <strong>'+isoToIt(ev.data_iso)+'</strong>.':'')+'</p>'
+    +'<div style="margin-top:24px;display:flex;flex-direction:column;align-items:center">'+waBtn+gcalBtn+'</div>'
+    +'</div>'
+    +'<div style="text-align:center;margin-top:20px"><button onclick="closeLanding()" style="background:none;border:1.5px solid '+(dark?'rgba(255,255,255,.2)':'#ccc')+';border-radius:10px;padding:10px 22px;font-size:13px;font-weight:600;color:'+txtSub+';cursor:pointer;font-family:inherit">&larr; Torna alla dashboard</button></div>'
+    +'<div style="text-align:center;margin-top:18px;font-size:11px;color:'+(dark?'rgba(245,240,232,.35)':'#999')+'">Anteprima demo: questo &egrave; esattamente ci&ograve; che vedranno i tuoi iscritti.</div>'
+    +'</div></div>';
+  document.getElementById('landingContent').innerHTML=html;
+}
+
+function demoWaShare(){
+  var b=document.getElementById('waDemoBubble');
+  if(b)b.textContent=window._lpWaMsg||'';
+  openOv('ovWaDemo');
+}
+function demoWaClose(){
+  closeOv('ovWaDemo');
+  /* La landing overlay e' ancora aperta sotto: mantengo il blocco scroll del body */
+  document.body.style.overflow='hidden';
 }
 
 /* ============================================================
