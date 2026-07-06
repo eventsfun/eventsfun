@@ -247,13 +247,14 @@ function eventPublicUrl(ev) {
 
 /* HTML del bottone condivisione WhatsApp (dopo iscrizione confermata) */
 function waShareBtnHtml(ev) {
-  var msg = 'Mi sono appena iscritto/a a "' + ev.nome + '"'
+  var TW = termWords(ev.terminologia);
+  var msg = 'Ho appena confermato la mia ' + TW.n + ' a "' + ev.nome + '"'
     + (ev.data_iso ? ' -- ' + isoToIt(ev.data_iso) : '')
-    + '. Iscriviti anche tu: ' + eventPublicUrl(ev);
+    + '. ' + TW.imp + ' anche tu: ' + eventPublicUrl(ev);
   var link = 'https://wa.me/?text=' + encodeURIComponent(msg);
   return '<a href="' + link + '" target="_blank" rel="noopener" class="wa-btn">'
     + '<svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.77.46 3.44 1.27 4.89L2 22l5.26-1.24A9.94 9.94 0 0 0 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18.15c-1.61 0-3.12-.42-4.43-1.16l-.32-.18-3.12.74.76-3.04-.2-.33A8.1 8.1 0 0 1 3.85 12c0-4.5 3.65-8.15 8.15-8.15S20.15 7.5 20.15 12 16.5 20.15 12 20.15zm4.47-6.1c-.24-.12-1.45-.71-1.67-.8-.22-.08-.39-.12-.55.13-.16.24-.63.79-.77.95-.14.16-.28.18-.53.06-.24-.12-1.03-.38-1.97-1.21-.73-.65-1.22-1.45-1.36-1.69-.14-.24-.02-.38.11-.5.11-.11.24-.28.37-.42.12-.14.16-.24.24-.4.08-.16.04-.31-.02-.43-.06-.12-.55-1.32-.75-1.81-.2-.48-.4-.41-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.85.83-.85 2.03s.87 2.36 1 2.52c.12.16 1.72 2.62 4.16 3.68.58.25 1.03.4 1.39.51.58.19 1.11.16 1.53.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z"/></svg>'
-    + 'Invita un amico su WhatsApp</a>';
+    + 'Condividi su WhatsApp</a>';
 }
 
 /* ============================================================
