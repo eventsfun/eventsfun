@@ -522,6 +522,20 @@ select option{background:#1a1a1a;color:var(--text)}
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
+      <label>Telefono di contatto (facoltativo)
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
+      </label>
+      <input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('ev')">
+    </div>
+    <div id="ev_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+    <div class="opt-row" id="ev_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px">
+      <div>
+        <div class="opt-lbl">Raggiungibile su WhatsApp</div>
+        <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
+      </div>
+      <div class="tog" id="otog_contatto_wa" onclick="otog('contatto_wa')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="mf">
       <label>Nome mittente delle email
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questo nome appare come mittente delle email che gli iscritti ricevono (es. "Mario Rossi"). L'indirizzo resta info@eventsfun.com. Se lo lasci vuoto useremo il nome del tuo account.</span></span>
       </label>
@@ -720,6 +734,20 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Telefono di contatto (facoltativo)
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
+      </label>
+      <input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('se')">
+    </div>
+    <div id="se_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+    <div class="opt-row" id="se_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px">
+      <div>
+        <div class="opt-lbl">Raggiungibile su WhatsApp</div>
+        <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
+      </div>
+      <div class="tog" id="stog_contatto_wa" onclick="stog('contatto_wa')"><div class="tog-dot"></div></div>
     </div>
     <div class="mf">
       <label>Nome mittente delle email
@@ -1021,8 +1049,8 @@ var allEvents = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
-var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false, online: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false, online: false , contatto_wa: false };
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
 /* Card statistiche personalizzabili: array di 2 elementi, null = vuoto */
@@ -1763,6 +1791,8 @@ function resetEvForm() {
   ['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo','ev_link_part'].forEach(function(id) { setVal(id, ''); });
   var eli = document.getElementById('ev_link_invio'); if (eli) eli.value = 'entrambi';
   setVal('ev_mittente', accountName);
+  setVal('ev_tel_contatto', '+39 ');
+  waRowCheck('ev');
   updateQrCount('ev_qr_testo','ev_qr_count');
   var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
   evQrTipo = 'nessuno'; evQrLogoB64 = null; setQrTipo('ev', 'nessuno');
@@ -1775,7 +1805,7 @@ function resetEvForm() {
   setHTML('ccfList', '');
   var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+  var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
@@ -1784,6 +1814,32 @@ function resetEvForm() {
   setDisp('opasto_sub', 'none');
   setDisp('o_capienza_pp_row', 'none');
   applyOnlineUI('ev', 'o', false);
+}
+
+/* Normalizza il telefono di contatto e gestisce la visibilita' del toggle WhatsApp */
+function normTelefono(v) {
+  var t = (v || '').replace(/[^0-9+]/g, '');
+  if (!t) return null;
+  if (t.indexOf('00') === 0) t = '+' + t.slice(2);
+  if (t.charAt(0) !== '+') t = '+39' + t;
+  if (t.replace(/[^0-9]/g, '').length < 5) return null; /* solo prefisso o numero incompleto */
+  return t;
+}
+
+function waRowCheck(p) {
+  var inp = document.getElementById(p + '_tel_contatto');
+  var row = document.getElementById(p + '_wa_row');
+  if (!inp || !row) return;
+  var ok = !!normTelefono(inp.value);
+  row.style.display = ok ? 'flex' : 'none';
+  var hint = document.getElementById(p + '_wa_hint');
+  if (hint) hint.style.display = ok ? 'none' : 'block';
+  if (!ok) {
+    var st = (p === 'ev') ? otogState : stogState;
+    st.contatto_wa = false;
+    var tg = document.getElementById((p === 'ev' ? 'otog' : 'stog') + '_contatto_wa');
+    if (tg) tg.classList.remove('on');
+  }
 }
 
 /* ============================================================
@@ -1825,6 +1881,8 @@ async function saveEvent() {
     activation_token: TOKEN, piano: PIANO,
     nome: nome, data_iso: data, ora: ora, luogo: luogo,
     email_contatto: emailContatto,
+    telefono_contatto: normTelefono(getVal('ev_tel_contatto')),
+    contatto_whatsapp: !!(normTelefono(getVal('ev_tel_contatto')) && otogState.contatto_wa),
     mittente_nome: getVal('ev_mittente').trim() || null,
     descrizione: getVal('ev_desc').trim(),
     qr_testo: evQrTipo === 'testo' ? (getVal('ev_qr_testo').trim().slice(0,18) || null) : null,
@@ -1884,6 +1942,10 @@ function openEditEvent() {
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
+  setVal('se_tel_contatto', ev.telefono_contatto || '+39 ');
+  stogState.contatto_wa = !!ev.contatto_whatsapp;
+  var stwEl = document.getElementById('stog_contatto_wa'); if (stwEl) { if (stogState.contatto_wa) stwEl.classList.add('on'); else stwEl.classList.remove('on'); }
+  waRowCheck('se');
   setVal('se_mittente', ev.mittente_nome || accountName);
   setVal('se_terminologia', ev.terminologia || 'iscrizione');
   if (ev.qr_logo) {
@@ -1939,6 +2001,8 @@ async function saveSettings() {
   var upd = {
     nome: nome,
     email_contatto: emailContatto,
+    telefono_contatto: normTelefono(getVal('se_tel_contatto')),
+    contatto_whatsapp: !!(normTelefono(getVal('se_tel_contatto')) && stogState.contatto_wa),
     mittente_nome: getVal('se_mittente').trim() || null,
     qr_testo: seQrTipo === 'testo' ? (getVal('se_qr_testo').trim().slice(0,18) || null) : null,
     qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
