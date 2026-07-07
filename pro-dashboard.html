@@ -135,6 +135,11 @@ tbody td.xv{color:var(--gold)}
 .check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
 .check-row span{font-size:13px;color:var(--text-muted)}
 .sec-div{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin:20px 0 12px;padding-top:18px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+.tip{position:relative;display:inline-flex;align-items:center;cursor:default}
+.tip-icon{width:16px;height:16px;border-radius:50%;border:1px solid var(--text-dim);color:var(--text-dim);font-size:9px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:help;flex-shrink:0;line-height:1}
+.tip-icon:hover{border-color:var(--gold);color:var(--gold)}
+.tip-box{position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);background:#222;border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:11px;color:var(--text-muted);line-height:1.6;white-space:nowrap;max-width:240px;white-space:normal;width:max-content;max-width:220px;z-index:100;display:none;pointer-events:none;box-shadow:0 4px 20px rgba(0,0,0,0.4);text-transform:none;letter-spacing:normal;font-weight:400;text-align:left}
+.tip-icon:hover + .tip-box,.tip-icon:focus + .tip-box{display:block}
 .opt-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border2)}
 .opt-row:last-child{border-bottom:none;padding-bottom:0}
 .opt-lbl{font-size:13px;color:var(--text)}.opt-sub{font-size:11px;color:var(--text-dim);margin-top:2px}
@@ -378,6 +383,19 @@ tbody td.xv{color:var(--gold)}
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
+      <label>Telefono di contatto (facoltativo)
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
+      </label>
+      <input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567">
+    </div>
+    <div class="opt-row" style="border-bottom:none;padding-top:0;margin:-6px 0 10px">
+      <div>
+        <div class="opt-lbl">Raggiungibile su WhatsApp</div>
+        <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
+      </div>
+      <div class="tog" id="otog_contatto_wa" onclick="otog('contatto_wa')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="mf">
       <label>Nome mittente delle email
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questo nome appare come mittente delle email che gli iscritti ricevono (es. "Mario Rossi"). L'indirizzo resta info@eventsfun.com. Se lo lasci vuoto useremo il nome del tuo account.</span></span>
       </label>
@@ -533,6 +551,19 @@ tbody td.xv{color:var(--gold)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+    </div>
+    <div class="mf">
+      <label>Telefono di contatto (facoltativo)
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
+      </label>
+      <input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567">
+    </div>
+    <div class="opt-row" style="border-bottom:none;padding-top:0;margin:-6px 0 10px">
+      <div>
+        <div class="opt-lbl">Raggiungibile su WhatsApp</div>
+        <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
+      </div>
+      <div class="tog" id="stog_contatto_wa" onclick="stog('contatto_wa')"><div class="tog-dot"></div></div>
     </div>
     <div class="mf">
       <label>Nome mittente delle email
@@ -785,8 +816,8 @@ var currentRegs = [];
 var delPending = null;
 var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
-var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
-var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
+var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
 var LS_THEME = 'ef_theme';
 
 /* ============================================================
@@ -1193,6 +1224,7 @@ function resetEvForm(mode) {
   ['ev_nome', 'ev_ora', 'ev_luogo', 'ev_desc', 'ev_email_contatto', 'ev_qr_testo', 'ev_link_part'].forEach(function(id) { setVal(id, ''); });
   var eli = document.getElementById('ev_link_invio'); if (eli) eli.value = 'entrambi';
   setVal('ev_mittente', accountName);
+  setVal('ev_tel_contatto', '+39 ');
   updateQrCount('ev_qr_testo','ev_qr_count');
   var ep = document.getElementById('ev_qr_preview'); if (ep) ep.style.display = 'none';
   evQrTipo = 'nessuno'; evQrLogoB64 = null; setQrTipo('ev', 'nessuno');
@@ -1205,7 +1237,7 @@ function resetEvForm(mode) {
   setHTML('ccfList', '');
   var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
   spIdx.c = 0; cfIdx.c = 0;
-  var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false };
+  var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
   Object.keys(defaults).forEach(function(k) {
     otogState[k] = defaults[k];
     var el = document.getElementById('otog_' + k);
@@ -1215,6 +1247,16 @@ function resetEvForm(mode) {
   setDisp('o_capienza_pp_row', 'none');
   applyOnlineUI('ev', 'o', false);
 }
+/* Normalizza il telefono di contatto: solo cifre e +, 00 -> +, aggiunge +39 se manca il prefisso */
+function normTelefono(v) {
+  var t = (v || '').replace(/[^0-9+]/g, '');
+  if (!t) return null;
+  if (t.indexOf('00') === 0) t = '+' + t.slice(2);
+  if (t.charAt(0) !== '+') t = '+39' + t;
+  if (t.replace(/[^0-9]/g, '').length < 5) return null; /* solo prefisso o numero incompleto */
+  return t;
+}
+
 /* ============================================================
    SLUG UTILS
    ============================================================ */
@@ -1256,6 +1298,8 @@ async function saveEvent() {
     ora: ora,
     luogo: luogo,
     email_contatto: emailContatto,
+    telefono_contatto: normTelefono(getVal('ev_tel_contatto')),
+    contatto_whatsapp: !!(normTelefono(getVal('ev_tel_contatto')) && otogState.contatto_wa),
     mittente_nome: getVal('ev_mittente').trim() || null,
     descrizione: document.getElementById('ev_desc').value.trim(),
     qr_testo: evQrTipo === 'testo' ? (document.getElementById('ev_qr_testo').value.trim().slice(0,18) || null) : null,
@@ -1305,6 +1349,9 @@ function openEditEvent() {
   document.getElementById('se_luogo').value = ev.luogo || '';
   document.getElementById('se_desc').value = ev.descrizione || '';
   document.getElementById('se_email_contatto').value = ev.email_contatto || '';
+  document.getElementById('se_tel_contatto').value = ev.telefono_contatto || '+39 ';
+  stogState.contatto_wa = !!ev.contatto_whatsapp;
+  var stwEl = document.getElementById('stog_contatto_wa'); if (stwEl) { if (stogState.contatto_wa) stwEl.classList.add('on'); else stwEl.classList.remove('on'); }
   setVal('se_mittente', ev.mittente_nome || accountName);
   var seTerm = document.getElementById('se_terminologia'); if (seTerm) seTerm.value = ev.terminologia || 'iscrizione';
   var seQr = document.getElementById('se_qr_testo');
@@ -1362,6 +1409,8 @@ async function saveSettings() {
   var upd = {
     nome: nome,
     email_contatto: emailContatto,
+    telefono_contatto: normTelefono(getVal('se_tel_contatto')),
+    contatto_whatsapp: !!(normTelefono(getVal('se_tel_contatto')) && stogState.contatto_wa),
     mittente_nome: getVal('se_mittente').trim() || null,
     qr_testo: seQrTipo === 'testo' ? (document.getElementById('se_qr_testo').value.trim().slice(0,18) || null) : null,
     qr_logo: seQrTipo === 'logo' ? (seQrLogoB64 || null) : null,
