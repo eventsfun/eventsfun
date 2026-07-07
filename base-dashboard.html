@@ -396,9 +396,10 @@ tbody td.xv{color:var(--gold)}
       <label>Telefono di contatto (facoltativo)
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
       </label>
-      <input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567">
+      <input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('ev')">
     </div>
-    <div class="opt-row" style="border-bottom:none;padding-top:0;margin:-6px 0 10px">
+    <div id="ev_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+    <div class="opt-row" id="ev_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px">
       <div>
         <div class="opt-lbl">Raggiungibile su WhatsApp</div>
         <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
@@ -512,9 +513,10 @@ tbody td.xv{color:var(--gold)}
       <label>Telefono di contatto (facoltativo)
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
       </label>
-      <input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567">
+      <input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('se')">
     </div>
-    <div class="opt-row" style="border-bottom:none;padding-top:0;margin:-6px 0 10px">
+    <div id="se_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+    <div class="opt-row" id="se_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px">
       <div>
         <div class="opt-lbl">Raggiungibile su WhatsApp</div>
         <div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div>
@@ -1022,6 +1024,7 @@ function resetEvForm(mode) {
   var eli = document.getElementById('ev_link_invio'); if (eli) eli.value = 'entrambi';
   setVal('ev_mittente', accountName);
   setVal('ev_tel_contatto', '+39 ');
+  waRowCheck('ev');
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
   removeEvImg();
@@ -1048,6 +1051,23 @@ function normTelefono(v) {
   if (t.charAt(0) !== '+') t = '+39' + t;
   if (t.replace(/[^0-9]/g, '').length < 5) return null; /* solo prefisso o numero incompleto */
   return t;
+}
+
+/* Mostra il toggle WhatsApp solo se il campo telefono contiene un numero valido */
+function waRowCheck(p) {
+  var inp = document.getElementById(p + '_tel_contatto');
+  var row = document.getElementById(p + '_wa_row');
+  if (!inp || !row) return;
+  var ok = !!normTelefono(inp.value);
+  row.style.display = ok ? 'flex' : 'none';
+  var hint = document.getElementById(p + '_wa_hint');
+  if (hint) hint.style.display = ok ? 'none' : 'block';
+  if (!ok) {
+    var st = (p === 'ev') ? otogState : stogState;
+    st.contatto_wa = false;
+    var tg = document.getElementById((p === 'ev' ? 'otog' : 'stog') + '_contatto_wa');
+    if (tg) tg.classList.remove('on');
+  }
 }
 
 /* ============================================================
@@ -1142,6 +1162,7 @@ function openEditEvent() {
   document.getElementById('se_tel_contatto').value = ev.telefono_contatto || '+39 ';
   stogState.contatto_wa = !!ev.contatto_whatsapp;
   var stwEl = document.getElementById('stog_contatto_wa'); if (stwEl) { if (stogState.contatto_wa) stwEl.classList.add('on'); else stwEl.classList.remove('on'); }
+  waRowCheck('se');
   setVal('se_mittente', ev.mittente_nome || accountName);
   var seTerm = document.getElementById('se_terminologia'); if (seTerm) seTerm.value = ev.terminologia || 'iscrizione';
   var si = document.getElementById('se_img_preview');
