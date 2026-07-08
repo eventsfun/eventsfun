@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<title>Iscrizione evento — EventsFun</title>
+<title>Iscrizione evento -- EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -168,12 +168,47 @@ async function sbPost(table, data) {
   if (!r.ok) throw new Error(await r.text());
   return r.json();
 }
+/* Inserimento senza rilettura: usa return=minimal, cosi' non serve poter leggere la riga appena creata */
+async function sbInsert(table, data) {
+  var r = await fetch(SB_URL + '/rest/v1/' + table, {
+    method: 'POST', headers: Object.assign({}, sbH(), { 'Prefer': 'return=minimal' }), body: JSON.stringify(data)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return true;
+}
+/* Chiamata a funzione DB (canale limitato lato server) */
+async function sbRpc(fn, args) {
+  var r = await fetch(SB_URL + '/rest/v1/rpc/' + fn, {
+    method: 'POST', headers: sbH(), body: JSON.stringify(args || {})
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+/* Conteggio posti dal canale pubblico: SOLO numeri, nessun dato personale */
+async function fetchCapacity(eventId) {
+  var rows = await sbRpc('ef_event_capacity', { p_event_id: eventId });
+  var c = (Array.isArray(rows) ? rows[0] : rows) || {};
+  return {
+    occupati: c.occupati || 0,
+    capienza: (c.capienza === undefined || c.capienza === null) ? null : c.capienza,
+    opt_capienza: !!c.opt_capienza,
+    piena: !!c.piena
+  };
+}
+/* Genera un identificativo univoco lato client (uuid v4) */
+function genId() {
+  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 /* ============================================================
    STATE
    ============================================================ */
 var ev = null;
-var regs = [];
+var cap = { occupati: 0, capienza: null, opt_capienza: false, piena: false };
 var adultiCount = 1;
 var bambiniCount = 0;
 
@@ -188,7 +223,7 @@ function termWords(t) {
   return W[t] || W.iscrizione;
 }
 
-function isoToIt(iso) { if (!iso) return '—'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function isClosed(ev) {
   if (!ev || !ev.data_iso) return false;
   var t = new Date(); t.setHours(0, 0, 0, 0);
@@ -269,9 +304,9 @@ async function init() {
     /* Priorita' a slug; fallback su id per retrocompatibilita' con link vecchi */
     var evs;
     if (evSlug) {
-      evs = await sbGet('events', { slug: evSlug }, '*');
+      evs = await sbGet('events_public', { slug: evSlug }, '*');
     } else {
-      evs = await sbGet('events', { id: evId }, '*');
+      evs = await sbGet('events_public', { id: evId }, '*');
     }
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
@@ -280,8 +315,8 @@ async function init() {
     var temaParam = new URLSearchParams(window.location.search).get('tema');
     var temaFinale = temaParam || ev.landing_tema || 'chiaro';
     if (temaFinale === 'scuro') document.body.classList.add('dark');
-    regs = await sbGet('registrations', { event_id: ev.id }, 'id,adulti,bambini,in_lista_attesa,capogruppo_id');
-    document.title = ev.nome + ' — EventsFun';
+    cap = await fetchCapacity(ev.id);
+    document.title = ev.nome + ' -- EventsFun';
     render();
   } catch(e) {
     showError('Errore di caricamento', 'Non è stato possibile caricare l\'evento. Riprova tra qualche secondo.');
@@ -303,10 +338,7 @@ function render() {
 
   var capHtml = '';
   if (ev.opt_capienza && ev.capienza) {
-    var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
-    var occupati = ev.opt_cap_persona && ev.opt_multipla
-      ? confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
-      : confermati.length;
+    var occupati = cap.occupati;
     var posti = Math.max(0, ev.capienza - occupati);
     var pct = Math.round((occupati / ev.capienza) * 100);
     var postiLabel = posti === 0
@@ -497,12 +529,13 @@ async function submitReg() {
   var rn = document.getElementById('r_newsletter');
 
   /* Lista d'attesa: capienza piena = iscrizione salvata con flag in_lista_attesa */
-  var postiOccupati = ev.opt_cap_persona && ev.opt_multipla
-    ? regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
-    : regs.length;
-  var capienzaPiena = ev.capienza && postiOccupati >= ev.capienza;
+  /* Rilegge la capienza in tempo reale dal canale posti pubblico (solo numeri, nessun dato personale) */
+  var freshCap = await fetchCapacity(ev.id);
+  var capienzaPiena = !!freshCap.piena;
 
+  var regId = genId();
   var regData = {
+    id: regId,
     event_id: ev.id,
     nome: nome, cognome: cognome, email: email,
     telefono: (document.getElementById('r_tel').value || '').trim(),
@@ -518,10 +551,8 @@ async function submitReg() {
   };
 
   try {
-    /* Salva iscrizione capogruppo */
-    var newReg = await sbPost('registrations', regData);
-    var regId = Array.isArray(newReg) ? (newReg[0] ? newReg[0].id : '') : (newReg ? newReg.id : '');
-    if (!capienzaPiena) regs.push({ id: regId, adulti: regData.adulti, bambini: regData.bambini });
+    /* Salva iscrizione capogruppo (id generato lato client: nessuna rilettura necessaria) */
+    await sbInsert('registrations', regData);
 
     /* Email conferma capogruppo (non bloccante) */
     if (regId) {
@@ -535,7 +566,9 @@ async function submitReg() {
     /* Salva accompagnatori e invia loro email individuale */
     for (var j = 0; j < accompagnatori.length; j++) {
       var acc = accompagnatori[j];
+      var accRegId = genId();
       var accData = {
+        id: accRegId,
         event_id: ev.id,
         nome: acc.nome, cognome: acc.cognome,
         email: acc.email || null,
@@ -551,8 +584,7 @@ async function submitReg() {
         capogruppo_id: regId || null
       };
       try {
-        var accReg = await sbPost('registrations', accData);
-        var accRegId = Array.isArray(accReg) ? (accReg[0] ? accReg[0].id : '') : (accReg ? accReg.id : '');
+        await sbInsert('registrations', accData);
         /* Email individuale solo se l'accompagnatore ha un'email valida */
         if (accRegId && acc.email && acc.email.includes('@')) {
           fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
