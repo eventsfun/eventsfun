@@ -58,7 +58,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 
 <div class="hero">
   <h1>Privacy & Termini di Servizio</h1>
-  <p class="last-update">Ultimo aggiornamento: Maggio 2026</p>
+  <p class="last-update">Ultimo aggiornamento: Luglio 2026</p>
 </div>
 
 <nav class="toc-nav">
@@ -111,6 +111,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
       <tr><td>Indirizzo email</td><td>Stripe al momento dell'acquisto</td><td>Invio credenziali e comunicazioni</td></tr>
       <tr><td>Dati di pagamento</td><td>Stripe (non archiviati da EventsFun)</td><td>Elaborazione del pagamento</td></tr>
       <tr><td>Dati dell'evento creato</td><td>Inseriti dall'organizzatore nella dashboard</td><td>Funzionamento del servizio</td></tr>
+      <tr><td>Contatti per gli iscritti (email, telefono)</td><td>Inseriti facoltativamente dall'organizzatore</td><td>Mostrati agli iscritti nelle email dell'evento come riferimento di contatto</td></tr>
     </table>
 
     <h3>B. Partecipanti agli eventi</h3>
@@ -150,7 +151,8 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <table class="data-table">
       <tr><th>Tipo di dato</th><th>Periodo di conservazione</th></tr>
       <tr><td>Dati organizzatore (account, ordini)</td><td>5 anni dalla cessazione del servizio, per obblighi fiscali</td></tr>
-      <tr><td>Dati partecipanti agli eventi</td><td>12 mesi dalla data dell'evento, poi eliminati automaticamente</td></tr>
+      <tr><td>Dati partecipanti agli eventi (piani Base e Pro)</td><td>30 giorni dalla data dell'evento, poi eliminati automaticamente</td></tr>
+      <tr><td>Dati partecipanti agli eventi (piano Agenzia)</td><td>Per tutta la durata dell'abbonamento dell'organizzatore, poi eliminati</td></tr>
       <tr><td>Log di accesso e sicurezza</td><td>90 giorni</td></tr>
       <tr><td>Consensi newsletter</td><td>Fino alla revoca del consenso</td></tr>
     </table>
@@ -197,7 +199,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <p>Il sito EventsFun utilizza esclusivamente cookie tecnici, necessari per il corretto funzionamento del servizio. Non vengono installati cookie di profilazione o di tracciamento di terze parti.</p>
     <table class="data-table">
       <tr><th>Cookie</th><th>Tipo</th><th>Durata</th><th>Finalità</th></tr>
-      <tr><td>ef_token (sessionStorage)</td><td>Tecnico</td><td>Sessione</td><td>Mantenimento della sessione nella dashboard</td></tr>
+      <tr><td>ef_token (localStorage)</td><td>Tecnico</td><td>Persistente</td><td>Accesso alla dashboard senza reinserire il link (rimosso automaticamente se non pi&ugrave; valido)</td></tr>
       <tr><td>ef_theme (localStorage)</td><td>Tecnico</td><td>Persistente</td><td>Preferenza tema chiaro/scuro</td></tr>
     </table>
     <p>Non essendo presenti cookie di profilazione o tracciamento, non è necessaria la visualizzazione del banner cookie ai sensi del Provvedimento del Garante 8 maggio 2014 e delle successive Linee Guida del 2021.</p>
@@ -305,14 +307,14 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <table class="data-table">
       <tr><th>Piano</th><th>Prezzo</th><th>Caratteristiche principali</th></tr>
       <tr><td><strong>Evento Base</strong></td><td>€29,00 una tantum</td><td>1 evento, iscrizioni illimitate, form base</td></tr>
-      <tr><td><strong>Evento Pro</strong></td><td>€79,00 una tantum</td><td>1 evento, 90 giorni attivabili, tutte le funzioni</td></tr>
+      <tr><td><strong>Evento Pro</strong></td><td>€79,00 una tantum</td><td>1 evento, tutte le funzioni avanzate, export CSV</td></tr>
       <tr><td><strong>Agenzia (mensile)</strong></td><td>€69,00/mese</td><td>Eventi illimitati, 3 account, tutte le funzioni</td></tr>
       <tr><td><strong>Agenzia (annuale)</strong></td><td>€588,00/anno</td><td>Come mensile, pagamento anticipato</td></tr>
     </table>
     <p>I prezzi sono da intendersi IVA esclusa (se applicabile). Il pagamento avviene tramite Stripe in modo sicuro.</p>
 
     <h3>3. Durata e cessazione del servizio</h3>
-    <p><strong>Piano Base e Pro:</strong> il servizio è attivo fino al giorno successivo alla data dell'evento inserita nella dashboard. Se l'evento viene rimandato, il Cliente è responsabile di aggiornare la data nelle impostazioni. Il piano Pro include un countdown di 90 giorni attivabile dal Cliente; se l'evento si svolge oltre tale periodo, è disponibile una proroga a pagamento.</p>
+    <p><strong>Piano Base e Pro:</strong> il servizio è attivo fino al giorno successivo alla data dell'evento inserita nella dashboard. Se l'evento viene rimandato, il Cliente è responsabile di aggiornare la data nelle impostazioni. I dati degli iscritti restano consultabili in sola lettura per 30 giorni dopo la data dell'evento, poi vengono eliminati automaticamente.</p>
     <p><strong>Piano Agenzia mensile:</strong> il servizio si rinnova automaticamente ogni mese. La disdetta deve essere comunicata prima del rinnovo scrivendo a info@eventsfun.com; il servizio rimarrà attivo fino alla scadenza del periodo già pagato.</p>
     <p><strong>Piano Agenzia annuale:</strong> il pagamento è anticipato per 12 mesi. In caso di disdetta anticipata, non è previsto rimborso per i mesi non utilizzati.</p>
 
@@ -354,7 +356,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 
 <footer class="footer">
   <p>© 2026 EventsFun — Tutti i diritti riservati</p>
-  <p style="margin-top:6px">Documento soggetto ad aggiornamenti. Versione: Maggio 2026</p>
+  <p style="margin-top:6px">Documento soggetto ad aggiornamenti. Versione: Luglio 2026</p>
 </footer>
 
 </body>
