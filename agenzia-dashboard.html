@@ -1001,7 +1001,7 @@ var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
    SUPABASE API LAYER
    ============================================================ */
 function sbH(extra) {
-  var h = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' };
+  var h = { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'x-ef-token': (TOKEN || '') };
   if (extra) Object.assign(h, extra);
   return h;
 }
