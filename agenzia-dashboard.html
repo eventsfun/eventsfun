@@ -9,8 +9,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
 <style>
-:root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.6);--text-dim:rgba(240,237,232,0.4);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);--row-hover:rgba(255,255,255,0.04);}
-body.light{--bg:#f4f3f0;--bg2:#fff;--bg3:#fafaf8;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.06);--text:#1a1a1a;--text-muted:rgba(20,20,20,0.6);--text-dim:rgba(20,20,20,0.4);--inp-bg:rgba(0,0,0,0.04);--inp-border:rgba(0,0,0,0.12);--row-hover:rgba(0,0,0,0.03);}
+:root{--bg:#0A0A0A;--bg2:#111;--bg3:#161616;--border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.07);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.75);--text-dim:rgba(240,237,232,0.6);--gold:#C9A96E;--gold-dark:#8a6e3e;--green:#7ED99A;--red:#e08080;--inp-bg:rgba(255,255,255,0.07);--inp-border:rgba(255,255,255,0.12);--row-hover:rgba(255,255,255,0.04);}
+body.light{--bg:#f4f3f0;--bg2:#fff;--bg3:#fafaf8;--border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.06);--text:#1a1a1a;--text-muted:rgba(20,20,20,0.75);--text-dim:rgba(20,20,20,0.6);--inp-bg:rgba(0,0,0,0.04);--inp-border:rgba(0,0,0,0.12);--row-hover:rgba(0,0,0,0.03);}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
 /* NAV */
@@ -233,6 +233,18 @@ select option{background:#1a1a1a;color:var(--text)}
 .stat-cfg-option.sel .stat-cfg-check{opacity:1}
 .stat-cfg-check{width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0A0A0A;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .2s}
 @media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
+/* ACCORDION FORM */
+.acc{border:1px solid var(--border2);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--bg2)}
+.acc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
+.acc-head:hover{background:var(--row-hover)}
+.acc-htxt{min-width:0}
+.acc-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:8px}
+.acc-desc{font-size:11.5px;color:var(--text-dim);margin-top:3px;line-height:1.4}
+.acc-chev{color:var(--gold);font-size:13px;transition:transform .2s;flex-shrink:0}
+.acc.open .acc-chev{transform:rotate(180deg)}
+.acc-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.acc-body{display:none;padding:2px 16px 14px}
+.acc.open .acc-body{display:block}
 </style>
 </head>
 <body>
@@ -522,6 +534,24 @@ select option{background:#1a1a1a;color:var(--text)}
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
+      <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
+      <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
+        <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
+        <img id="ev_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
+      </div>
+      <input type="file" id="ev_img_file" accept="image/*" style="display:none" onchange="loadEvImg()">
+      <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">✕ Rimuovi</button>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📞 Contatti e mittente<span class="acc-dot" id="acc_dot_ev_contatti" style="display:none"></span></div>
+          <div class="acc-desc">Telefono, WhatsApp e nome mittente</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf">
       <label>Telefono di contatto (facoltativo)
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
       </label>
@@ -541,56 +571,17 @@ select option{background:#1a1a1a;color:var(--text)}
       </label>
       <input id="ev_mittente" type="text" maxlength="60" placeholder="Es. il tuo nome o quello dell'organizzazione">
     </div>
-    <div class="mf">
-      <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
-      <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
-        <div class="img-ph" id="evImgPh"><span>🖼️</span>Clicca per caricare</div>
-        <img id="ev_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
-      </div>
-      <input type="file" id="ev_img_file" accept="image/*" style="display:none" onchange="loadEvImg()">
-      <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">✕ Rimuovi</button>
-    </div>
-    <div class="mf">
-      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button type="button" id="ev_qr_tipo_nessuno" onclick="setQrTipo('ev','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
-        <button type="button" id="ev_qr_tipo_testo" onclick="setQrTipo('ev','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
-        <button type="button" id="ev_qr_tipo_logo" onclick="setQrTipo('ev','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
-      </div>
-      <div id="ev_qr_testo_wrap" style="display:none">
-        <div style="position:relative">
-          <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px">
-          <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
-        </div>
-      </div>
-      <div id="ev_qr_logo_wrap" style="display:none">
-        <div class="img-upload-area" onclick="document.getElementById('ev_qr_logo_file').click()" style="min-height:80px">
-          <div class="img-ph" id="ev_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
-          <img id="ev_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
-        </div>
-        <input type="file" id="ev_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('ev')">
-        <button type="button" id="ev_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('ev')">✕ Rimuovi logo</button>
-        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
-          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
-        </div>
-      </div>
-      <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center">
-        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
-          <div id="ev_qr_preview_canvas"></div>
-        </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
-    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
-      <div>
-        <div class="opt-lbl">Tema pagina iscrizione</div>
-        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">⚙️ Modulo di iscrizione<span class="acc-dot" id="acc_dot_ev_modulo" style="display:none"></span></div>
+          <div class="acc-desc">Cosa chiedi e come si iscrivono i partecipanti</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button type="button" id="ev_tema_chiaro" onclick="setTema('ev','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
-        <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
-      </div>
-    </div>
+      <div class="acc-body">
     <div class="sec-div">🏷️ Terminologia
       <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
     </div>
@@ -661,18 +652,89 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div>
     </div>
-    <div id="o_checkin_sect">
-    <div class="sec-div">📋 Check-in</div>
+      </div>
+    </div>
+    <div class="acc" id="o_checkin_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📋 Check-in con QR<span class="acc-dot" id="acc_dot_ev_checkin" style="display:none"></span></div>
+          <div class="acc-desc">Segna le presenze con un QR all'ingresso</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
     <div class="opt-row">
       <div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div>
       <div class="tog" id="otog_qr_checkin" onclick="otog('qr_checkin')"><div class="tog-dot"></div></div>
     </div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">🎨 Aspetto della pagina<span class="acc-dot" id="acc_dot_ev_aspetto" style="display:none"></span></div>
+          <div class="acc-desc">Overlay del QR, tema chiaro/scuro e sponsor</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf">
+      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button type="button" id="ev_qr_tipo_nessuno" onclick="setQrTipo('ev','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
+        <button type="button" id="ev_qr_tipo_testo" onclick="setQrTipo('ev','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+        <button type="button" id="ev_qr_tipo_logo" onclick="setQrTipo('ev','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
+      </div>
+      <div id="ev_qr_testo_wrap" style="display:none">
+        <div style="position:relative">
+          <input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px">
+          <span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+        </div>
+      </div>
+      <div id="ev_qr_logo_wrap" style="display:none">
+        <div class="img-upload-area" onclick="document.getElementById('ev_qr_logo_file').click()" style="min-height:80px">
+          <div class="img-ph" id="ev_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
+          <img id="ev_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+        </div>
+        <input type="file" id="ev_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('ev')">
+        <button type="button" id="ev_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('ev')">✕ Rimuovi logo</button>
+        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
+          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
+        </div>
+      </div>
+      <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center">
+        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
+          <div id="ev_qr_preview_canvas"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
+      </div>
+    </div>
+    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+      <div>
+        <div class="opt-lbl">Tema pagina iscrizione</div>
+        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" id="ev_tema_chiaro" onclick="setTema('ev','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
+        <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
+      </div>
     </div>
     <div class="sec-div">
       🤝 Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span>
       <button class="add-row-btn" onclick="addSP('c','cspList')">+ Aggiungi</button>
     </div>
     <div id="cspList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📝 Campi aggiuntivi<span class="acc-dot" id="acc_dot_ev_campi" style="display:none"></span></div>
+          <div class="acc-desc">Domande extra nel modulo d'iscrizione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
     <div class="sec-div">
       📝 Campi aggiuntivi
       <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi domande personalizzate al modulo di iscrizione. Scegli il tipo: testo libero, menu a scelta singola o caselle di spunta multiple.</span></span>
@@ -680,6 +742,8 @@ select option{background:#1a1a1a;color:var(--text)}
       <button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button>
     </div>
     <div id="ccfList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="openPreviewFromForm()">👁 Anteprima landing</button>
       <button class="btn-full" id="evSaveBtn" onclick="saveEvent()" style="flex:2">Crea evento →</button>
@@ -736,6 +800,24 @@ select option{background:#1a1a1a;color:var(--text)}
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
     </div>
     <div class="mf">
+      <label>Immagine evento</label>
+      <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
+        <div class="img-ph" id="seImgPh"><span>🖼️</span>Clicca per caricare</div>
+        <img id="se_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
+      </div>
+      <input type="file" id="se_img_file" accept="image/*" style="display:none" onchange="loadSeImg()">
+      <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">✕ Rimuovi</button>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📞 Contatti e mittente<span class="acc-dot" id="acc_dot_se_contatti" style="display:none"></span></div>
+          <div class="acc-desc">Telefono, WhatsApp e nome mittente</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf">
       <label>Telefono di contatto (facoltativo)
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrato agli iscritti nell'email di conferma, cliccabile per chiamarti dal telefono. Il prefisso internazionale +39 &egrave; gi&agrave; inserito: aggiungi solo il numero.</span></span>
       </label>
@@ -755,56 +837,17 @@ select option{background:#1a1a1a;color:var(--text)}
       </label>
       <input id="se_mittente" type="text" maxlength="60" placeholder="Es. il tuo nome o quello dell'organizzazione">
     </div>
-    <div class="mf">
-      <label>Immagine evento</label>
-      <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()">
-        <div class="img-ph" id="seImgPh"><span>🖼️</span>Clicca per caricare</div>
-        <img id="se_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px">
-      </div>
-      <input type="file" id="se_img_file" accept="image/*" style="display:none" onchange="loadSeImg()">
-      <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">✕ Rimuovi</button>
-    </div>
-    <div class="mf">
-      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button type="button" id="se_qr_tipo_nessuno" onclick="setQrTipo('se','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
-        <button type="button" id="se_qr_tipo_testo" onclick="setQrTipo('se','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
-        <button type="button" id="se_qr_tipo_logo" onclick="setQrTipo('se','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
-      </div>
-      <div id="se_qr_testo_wrap" style="display:none">
-        <div style="position:relative">
-          <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px">
-          <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
-        </div>
-      </div>
-      <div id="se_qr_logo_wrap" style="display:none">
-        <div class="img-upload-area" onclick="document.getElementById('se_qr_logo_file').click()" style="min-height:80px">
-          <div class="img-ph" id="se_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
-          <img id="se_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
-        </div>
-        <input type="file" id="se_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('se')">
-        <button type="button" id="se_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('se')">✕ Rimuovi logo</button>
-        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
-          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
-        </div>
-      </div>
-      <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center">
-        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
-          <div id="se_qr_preview_canvas"></div>
-        </div>
-        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
       </div>
     </div>
-    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
-      <div>
-        <div class="opt-lbl">Tema pagina iscrizione</div>
-        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">⚙️ Modulo di iscrizione<span class="acc-dot" id="acc_dot_se_modulo" style="display:none"></span></div>
+          <div class="acc-desc">Cosa chiedi e come si iscrivono i partecipanti</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
       </div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
-        <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
-      </div>
-    </div>
+      <div class="acc-body">
     <div class="sec-div">🏷️ Terminologia
       <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli come chiamare la registrazione. Cambia la parola sul pulsante della pagina pubblica e nell'email di conferma. Usa "Prenotazione" ad esempio per ristoranti, tavoli o appuntamenti.</span></span>
     </div>
@@ -868,20 +911,93 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div>
     </div>
-    <div id="s_checkin_sect">
-    <div class="sec-div">📋 Check-in</div>
+      </div>
+    </div>
+    <div class="acc" id="s_checkin_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📋 Check-in con QR<span class="acc-dot" id="acc_dot_se_checkin" style="display:none"></span></div>
+          <div class="acc-desc">Segna le presenze con un QR all'ingresso</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
     <div class="opt-row">
       <div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div>
       <div class="tog" id="stog_qr_checkin" onclick="stog('qr_checkin')"><div class="tog-dot"></div></div>
     </div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">🎨 Aspetto della pagina<span class="acc-dot" id="acc_dot_se_aspetto" style="display:none"></span></div>
+          <div class="acc-desc">Overlay del QR, tema chiaro/scuro e sponsor</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf">
+      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+      <div style="display:flex;gap:8px;margin-bottom:12px">
+        <button type="button" id="se_qr_tipo_nessuno" onclick="setQrTipo('se','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">✕ Nessuno</button>
+        <button type="button" id="se_qr_tipo_testo" onclick="setQrTipo('se','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+        <button type="button" id="se_qr_tipo_logo" onclick="setQrTipo('se','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🖼 Logo</button>
+      </div>
+      <div id="se_qr_testo_wrap" style="display:none">
+        <div style="position:relative">
+          <input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px">
+          <span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span>
+        </div>
+      </div>
+      <div id="se_qr_logo_wrap" style="display:none">
+        <div class="img-upload-area" onclick="document.getElementById('se_qr_logo_file').click()" style="min-height:80px">
+          <div class="img-ph" id="se_qr_logo_ph"><span>🖼️</span>Clicca per caricare il logo</div>
+          <img id="se_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+        </div>
+        <input type="file" id="se_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('se')">
+        <button type="button" id="se_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('se')">✕ Rimuovi logo</button>
+        <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">
+          💡 Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.
+        </div>
+      </div>
+      <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center">
+        <div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)">
+          <div id="se_qr_preview_canvas"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div>
+      </div>
+    </div>
+    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+      <div>
+        <div class="opt-lbl">Tema pagina iscrizione</div>
+        <div class="opt-sub">Scegli lo stile visivo della landing page</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">☀️ Chiaro</button>
+        <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">🌙 Scuro</button>
+      </div>
     </div>
     <div class="sec-div">🤝 Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
     <div id="sspList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📝 Campi aggiuntivi<span class="acc-dot" id="acc_dot_se_campi" style="display:none"></span></div>
+          <div class="acc-desc">Domande extra nel modulo d'iscrizione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
     <div class="sec-div">
       📝 Campi aggiuntivi
       <button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button>
     </div>
     <div id="scfList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="openPreviewFromSettings()">👁 Anteprima landing</button>
       <button class="btn-full" onclick="saveSettings()" style="flex:2">Salva modifiche</button>
@@ -1785,6 +1901,8 @@ function openCreateEvent() {
   setText('evModalTitle', allEvents.length > 0 ? 'Crea nuovo evento' : 'Crea il tuo evento');
   setText('evSaveBtn', 'Crea evento →');
   openOv('ovCreate');
+  accResetModal('ovCreate');
+  accSync('ev');
 }
 
 function resetEvForm() {
@@ -1990,6 +2108,8 @@ function openEditEvent() {
   setHTML('scfList', ''); cfIdx.s = 0;
   (ev.custom_fields || []).forEach(function(f) { addCF('s', 'scfList', f); });
   openOv('ovSettings');
+  accResetModal('ovSettings');
+  accSync('se');
 }
 
 async function saveSettings() {
@@ -2082,6 +2202,51 @@ function stog(k) {
   if (k === 'multipla') { setDisp('s_capienza_pp_row', stogState[k] ? 'flex' : 'none'); setDisp('s_acc_opts_row', stogState[k] ? 'block' : 'none'); if (!stogState[k]) { stogState['cap_persona'] = false; stogState['acc_email_obb'] = false; stogState['acc_tel_obb'] = false; var cp = document.getElementById('stog_cap_persona'); if (cp) cp.classList.remove('on'); var ae = document.getElementById('stog_acc_email_obb'); if (ae) ae.classList.remove('on'); var at = document.getElementById('stog_acc_tel_obb'); if (at) at.classList.remove('on'); } }
   if (k === 'online') { applyOnlineUI('se', 's', stogState[k]); var li = document.getElementById('se_luogo'); if (li) li.value = ''; if (stogState[k]) { ['tipo','pasto','qr_checkin'].forEach(function(kk) { stogState[kk] = false; var e = document.getElementById('stog_' + kk); if (e) e.classList.remove('on'); }); setDisp('spasto_sub', 'none'); } }
 }
+
+/* ============================================================
+   ACCORDION FORM (apertura/chiusura + pallino "attive")
+   ============================================================ */
+function accToggle(h) {
+  var a = h.closest ? h.closest('.acc') : null;
+  if (!a) { a = h.parentNode; while (a && !(a.className && (' ' + a.className + ' ').indexOf(' acc ') > -1)) a = a.parentNode; }
+  if (a) a.classList.toggle('open');
+}
+function accResetModal(mid) {
+  var m = document.getElementById(mid); if (!m) return;
+  var l = m.querySelectorAll('.acc');
+  for (var i = 0; i < l.length; i++) l[i].classList.remove('open');
+}
+function accSetDot(id, on) { var d = document.getElementById(id); if (d) d.style.display = on ? 'inline-block' : 'none'; }
+function accVal(id) { var e = document.getElementById(id); return e ? (e.value || '') : ''; }
+function accCount(id) { var e = document.getElementById(id); return e ? e.children.length : 0; }
+function accSync(pfx) {
+  var st = pfx === 'ev' ? otogState : stogState;
+  var qr = pfx === 'ev' ? evQrTipo : seQrTipo;
+  var tema = pfx === 'ev' ? evTemaState : seTemaState;
+  var telDigits = accVal(pfx + '_tel_contatto').replace(/\D/g, '').replace(/^39/, '');
+  var mit = accVal(pfx + '_mittente').trim();
+  var term = accVal(pfx + '_terminologia') || 'iscrizione';
+  var spList = pfx === 'ev' ? 'cspList' : 'sspList';
+  var cfList = pfx === 'ev' ? 'ccfList' : 'scfList';
+  var contatti = telDigits.length > 0 || !!st.contatto_wa || (mit !== '' && mit !== accountName);
+  var modulo = term !== 'iscrizione' || st.multipla || st.tipo || st.pasto || st.cap_persona || st.capienza || (pfx === 'se' && st.promo_auto);
+  var aspetto = (qr && qr !== 'nessuno') || tema === 'scuro' || accCount(spList) > 0;
+  accSetDot('acc_dot_' + pfx + '_contatti', contatti);
+  accSetDot('acc_dot_' + pfx + '_modulo', modulo);
+  accSetDot('acc_dot_' + pfx + '_checkin', !!st.qr_checkin);
+  accSetDot('acc_dot_' + pfx + '_aspetto', aspetto);
+  accSetDot('acc_dot_' + pfx + '_campi', accCount(cfList) > 0);
+}
+function accInit() {
+  [['ovCreate', 'ev'], ['ovSettings', 'se']].forEach(function(p) {
+    var m = document.getElementById(p[0]); if (!m) return;
+    var sync = function() { accSync(p[1]); };
+    m.addEventListener('input', sync);
+    m.addEventListener('change', sync);
+    m.addEventListener('click', function() { setTimeout(sync, 0); });
+  });
+}
+accInit();
 
 /* ============================================================
    IMAGE UPLOAD
