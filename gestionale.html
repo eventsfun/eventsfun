@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Gestionale -- EventsFun</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0A0A;
+  --card:#121212;
+  --card2:#171717;
+  --gold:#C9A96E;
+  --txt:rgb(245,240,232);
+  --muted:rgba(245,240,232,0.75);
+  --dim:rgba(245,240,232,0.6);
+  --line:rgba(245,240,232,0.12);
+  --ok:#4ADE80;
+  --warn:#FBBF24;
+  --bad:#F87171;
+  --info:#7DD3FC;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  background:var(--bg);
+  color:var(--txt);
+  font-family:'DM Sans',system-ui,sans-serif;
+  min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.syne{font-family:'Syne',sans-serif}
+a{color:var(--gold)}
+
+/* ---------- LOGIN ---------- */
+#loginView{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px 16px;
+}
+.login-box{
+  width:100%;
+  max-width:400px;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:32px 24px;
+}
+.login-box h1{font-size:24px;margin-bottom:6px}
+.login-box .sub{color:var(--dim);font-size:14px;margin-bottom:24px}
+.field{margin-bottom:16px}
+.field label{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+  font-weight:500;
+}
+.field input{
+  width:100%;
+  background:#0d0d0d;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:13px 14px;
+  color:var(--txt);
+  font-family:inherit;
+  font-size:16px;
+}
+.field input:focus{outline:none;border-color:var(--gold)}
+.btn{
+  display:inline-block;
+  width:100%;
+  background:var(--gold);
+  color:#0A0A0A;
+  border:none;
+  border-radius:10px;
+  padding:14px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  cursor:pointer;
+  text-align:center;
+  text-decoration:none;
+}
+.btn:disabled{opacity:0.5;cursor:default}
+.btn-ghost{
+  background:transparent;
+  color:var(--gold);
+  border:1px solid var(--gold);
+}
+.msg{
+  margin-top:14px;
+  padding:11px 13px;
+  border-radius:9px;
+  font-size:14px;
+  display:none;
+  line-height:1.45;
+}
+.msg.err{display:block;background:rgba(248,113,113,0.12);color:var(--bad);border:1px solid rgba(248,113,113,0.3)}
+.msg.ok{display:block;background:rgba(74,222,128,0.12);color:var(--ok);border:1px solid rgba(74,222,128,0.3)}
+
+/* ---------- APP ---------- */
+#appView{display:none;padding-bottom:60px}
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:rgba(10,10,10,0.96);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+  padding:14px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.topbar .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
+.topbar .brand span{color:var(--gold)}
+.topbar .who{font-size:12px;color:var(--dim);margin-top:2px}
+.topbar-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+.mini{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--muted);
+  border-radius:8px;
+  padding:8px 11px;
+  font-size:13px;
+  font-family:inherit;
+  cursor:pointer;
+}
+.mini:hover{border-color:var(--gold);color:var(--gold)}
+
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:18px;
+}
+.stat{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px 12px;
+  text-align:center;
+}
+.stat .n{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--gold)}
+.stat .l{font-size:11px;color:var(--dim);margin-top:3px;letter-spacing:0.3px}
+
+.tabs{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:16px;
+}
+.tab-btn{
+  background:var(--card);
+  border:1px solid var(--line);
+  color:var(--muted);
+  border-radius:10px;
+  padding:11px 8px;
+  font-family:'Syne',sans-serif;
+  font-weight:600;
+  font-size:13px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+}
+.tab-btn.on{background:var(--gold);color:#0A0A0A;border-color:var(--gold)}
+.tab-btn .badge{
+  background:rgba(248,113,113,0.9);
+  color:#fff;
+  border-radius:999px;
+  font-size:10px;
+  padding:1px 6px;
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+}
+.tab-btn.on .badge{background:#0A0A0A;color:var(--gold)}
+
+.searchbar{margin-bottom:14px}
+.searchbar input{
+  width:100%;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px 14px;
+  color:var(--txt);
+  font-family:inherit;
+  font-size:15px;
+}
+.searchbar input:focus{outline:none;border-color:var(--gold)}
+
+.item{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:12px;
+}
+.item-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:10px;
+}
+.item-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;word-break:break-word;line-height:1.3}
+.item-sub{font-size:13px;color:var(--dim);margin-top:3px;word-break:break-word}
+
+.pill{
+  display:inline-block;
+  border-radius:999px;
+  padding:3px 10px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.4px;
+  flex-shrink:0;
+  white-space:nowrap;
+}
+.pill.base{background:rgba(125,211,252,0.15);color:var(--info);border:1px solid rgba(125,211,252,0.35)}
+.pill.pro{background:rgba(201,169,110,0.15);color:var(--gold);border:1px solid rgba(201,169,110,0.4)}
+.pill.agenzia{background:rgba(196,181,253,0.15);color:#C4B5FD;border:1px solid rgba(196,181,253,0.35)}
+.pill.ok{background:rgba(74,222,128,0.14);color:var(--ok);border:1px solid rgba(74,222,128,0.32)}
+.pill.warn{background:rgba(251,191,36,0.14);color:var(--warn);border:1px solid rgba(251,191,36,0.32)}
+.pill.bad{background:rgba(248,113,113,0.14);color:var(--bad);border:1px solid rgba(248,113,113,0.32)}
+.pill.neutral{background:rgba(245,240,232,0.08);color:var(--muted);border:1px solid var(--line)}
+
+.rows{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
+  gap:8px;
+  margin:12px 0;
+  padding:12px 0;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.row-k{font-size:11px;color:var(--dim);letter-spacing:0.3px}
+.row-v{font-size:14px;color:var(--txt);margin-top:2px;font-weight:500;word-break:break-word}
+
+.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.act{
+  flex:1 1 auto;
+  min-width:140px;
+  background:transparent;
+  border:1px solid var(--gold);
+  color:var(--gold);
+  border-radius:9px;
+  padding:10px 12px;
+  font-size:13px;
+  font-weight:700;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer;
+  text-align:center;
+  text-decoration:none;
+  display:inline-block;
+}
+.act.sec{border-color:var(--line);color:var(--muted)}
+.act:hover{background:rgba(201,169,110,0.1)}
+
+.tok{
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+  font-size:11px;
+  color:var(--dim);
+  word-break:break-all;
+  background:#0d0d0d;
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:6px 8px;
+  margin-top:6px;
+}
+
+.empty{
+  text-align:center;
+  padding:40px 20px;
+  color:var(--dim);
+  font-size:14px;
+}
+.loading{text-align:center;padding:50px 20px;color:var(--muted)}
+
+.note{
+  background:rgba(251,191,36,0.08);
+  border:1px solid rgba(251,191,36,0.25);
+  border-radius:10px;
+  padding:12px 14px;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+  margin-bottom:16px;
+}
+.note b{color:var(--warn)}
+
+.sec-title{
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:15px;
+  margin:20px 0 10px;
+  color:var(--txt);
+}
+.sec-title:first-child{margin-top:0}
+
+@media(max-width:600px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .wrap{padding:14px 12px}
+  .item{padding:14px}
+  .act{min-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginView">
+  <div class="login-box">
+    <h1>Gestionale <span style="color:#C9A96E">EventsFun</span></h1>
+    <p class="sub">Area riservata. Accedi con le tue credenziali.</p>
+    <div class="field">
+      <label for="lg_email">Email</label>
+      <input type="email" id="lg_email" autocomplete="username" inputmode="email" placeholder="tua@email.it">
+    </div>
+    <div class="field">
+      <label for="lg_pw">Password</label>
+      <input type="password" id="lg_pw" autocomplete="current-password" placeholder="La tua password">
+    </div>
+    <button class="btn" id="lg_btn">Accedi</button>
+    <div class="msg" id="lg_msg"></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="appView">
+  <div class="topbar">
+    <div>
+      <div class="brand">Gestionale <span>EventsFun</span></div>
+      <div class="who" id="who"></div>
+    </div>
+    <div class="topbar-actions">
+      <button class="mini" id="btnRefresh">Aggiorna</button>
+      <button class="mini" id="btnLogout">Esci</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div id="loadingBox" class="loading">Caricamento dati...</div>
+
+    <div id="content" style="display:none">
+      <div class="stats">
+        <div class="stat"><div class="n" id="st_clienti">0</div><div class="l">CLIENTI</div></div>
+        <div class="stat"><div class="n" id="st_eventi">0</div><div class="l">EVENTI</div></div>
+        <div class="stat"><div class="n" id="st_iscritti">0</div><div class="l">ISCRITTI</div></div>
+        <div class="stat"><div class="n" id="st_incasso">0</div><div class="l">INCASSATO</div></div>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn on" data-tab="clienti">Clienti</button>
+        <button class="tab-btn" data-tab="eventi">Eventi</button>
+        <button class="tab-btn" data-tab="controllo">Da controllare <span class="badge" id="badgeCtrl" style="display:none">0</span></button>
+      </div>
+
+      <div class="searchbar" id="searchWrap">
+        <input type="text" id="q" placeholder="Cerca per nome, email o evento...">
+      </div>
+
+      <div id="tab_clienti"></div>
+      <div id="tab_eventi" style="display:none"></div>
+      <div id="tab_controllo" style="display:none"></div>
+    </div>
+
+    <div class="msg" id="app_msg"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+  'use strict';
+
+  var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
+  var SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epS1oiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
+  var FN_URL = SB_URL + '/functions/v1/gestionale-api';
+
+  var sb = window.supabase.createClient(SB_URL, SB_ANON);
+
+  var DATI = null;
+  var TAB = 'clienti';
+
+  // ---------- utilita' ----------
+  function $(id){ return document.getElementById(id); }
+
+  function esc(s){
+    if(s === null || s === undefined) return '';
+    return String(s)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+  }
+
+  function euro(cent){
+    var n = Number(cent || 0) / 100;
+    return n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' euro';
+  }
+
+  function dataIt(iso){
+    if(!iso) return '--';
+    var p = String(iso).slice(0,10).split('-');
+    if(p.length !== 3) return String(iso);
+    return p[2] + '/' + p[1] + '/' + p[0];
+  }
+
+  function oggiIso(){
+    var d = new Date();
+    var m = String(d.getMonth()+1).padStart(2,'0');
+    var g = String(d.getDate()).padStart(2,'0');
+    return d.getFullYear() + '-' + m + '-' + g;
+  }
+
+  function dashUrl(piano, token){
+    var p = String(piano || '').toLowerCase();
+    var file = 'base-dashboard.html';
+    if(p === 'pro') file = 'pro-dashboard.html';
+    else if(p === 'agenzia') file = 'agenzia-dashboard.html';
+    return file + '?token=' + encodeURIComponent(token);
+  }
+
+  function landingUrl(ev){
+    if(ev.slug) return 'landing.html?slug=' + encodeURIComponent(ev.slug);
+    return 'landing.html?id=' + encodeURIComponent(ev.id);
+  }
+
+  function pianoPill(piano){
+    var p = String(piano || '').toLowerCase();
+    var cls = (p === 'pro' || p === 'agenzia' || p === 'base') ? p : 'neutral';
+    return '<span class="pill ' + cls + '">' + esc((piano || 'n.d.').toUpperCase()) + '</span>';
+  }
+
+  function statoCliente(c){
+    var p = String(c.piano || '').toLowerCase();
+    if(p !== 'agenzia'){
+      return '<span class="pill neutral">Pagamento unico</span>';
+    }
+    var s = String(c.subscription_status || '').toLowerCase();
+    if(s === 'active')   return '<span class="pill ok">Abbonamento attivo</span>';
+    if(s === 'past_due') return '<span class="pill bad">Insoluto</span>';
+    if(s === 'canceled' || s === 'cancelled') return '<span class="pill bad">Disdetto</span>';
+    if(s === 'trialing') return '<span class="pill warn">In prova</span>';
+    if(!s) return '<span class="pill neutral">Stato non indicato</span>';
+    return '<span class="pill neutral">' + esc(s) + '</span>';
+  }
+
+  function statoEvento(ev){
+    if(ev.bozza) return '<span class="pill warn">Bozza</span>';
+    if(ev.data_iso && String(ev.data_iso) < oggiIso()) return '<span class="pill neutral">Concluso</span>';
+    if(ev.attivo === false) return '<span class="pill bad">Chiuso</span>';
+    return '<span class="pill ok">Attivo</span>';
+  }
+
+  function mostraMsg(el, testo, tipo){
+    el.className = 'msg ' + (tipo || 'err');
+    el.textContent = testo;
+  }
+
+  function nascondiMsg(el){
+    el.className = 'msg';
+    el.textContent = '';
+  }
+
+  // ---------- login ----------
+  async function accedi(){
+    var email = $('lg_email').value.trim();
+    var pw = $('lg_pw').value;
+    var msg = $('lg_msg');
+    nascondiMsg(msg);
+
+    if(!email || !pw){
+      mostraMsg(msg, 'Inserisci email e password.', 'err');
+      return;
+    }
+
+    $('lg_btn').disabled = true;
+    $('lg_btn').textContent = 'Accesso in corso...';
+
+    try{
+      var res = await sb.auth.signInWithPassword({ email: email, password: pw });
+      if(res.error){
+        mostraMsg(msg, 'Email o password non corretti.', 'err');
+        $('lg_btn').disabled = false;
+        $('lg_btn').textContent = 'Accedi';
+        return;
+      }
+      await avvia();
+    }catch(e){
+      mostraMsg(msg, 'Errore di collegamento. Riprova.', 'err');
+      $('lg_btn').disabled = false;
+      $('lg_btn').textContent = 'Accedi';
+    }
+  }
+
+  async function esci(){
+    try{ await sb.auth.signOut(); }catch(e){}
+    location.reload();
+  }
+
+  // ---------- chiamata al portiere ----------
+  async function chiedi(azione){
+    var s = await sb.auth.getSession();
+    var token = s && s.data && s.data.session ? s.data.session.access_token : null;
+    if(!token) throw new Error('NO_SESSION');
+
+    var r = await fetch(FN_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
+      body: JSON.stringify({ action: azione })
+    });
+
+    var j = null;
+    try{ j = await r.json(); }catch(e){ j = null; }
+
+    if(!r.ok){
+      var err = new Error((j && j.error) ? j.error : ('Errore ' + r.status));
+      err.status = r.status;
+      throw err;
+    }
+    return j;
+  }
+
+  // ---------- avvio ----------
+  async function avvia(){
+    $('loginView').style.display = 'none';
+    $('appView').style.display = 'block';
+    await carica();
+  }
+
+  async function carica(){
+    $('loadingBox').style.display = 'block';
+    $('content').style.display = 'none';
+    nascondiMsg($('app_msg'));
+
+    try{
+      var res = await chiedi('snapshot');
+      DATI = res.dati;
+      var me = res.me || {};
+      $('who').textContent = (me.nome || me.email || '') + ' -- ' + (me.ruolo || '');
+      disegna();
+      $('loadingBox').style.display = 'none';
+      $('content').style.display = 'block';
+    }catch(e){
+      $('loadingBox').style.display = 'none';
+      if(e.status === 403){
+        mostraMsg($('app_msg'), 'Questo account non e\' autorizzato ad accedere al gestionale.', 'err');
+      }else if(e.status === 401 || e.message === 'NO_SESSION'){
+        try{ await sb.auth.signOut(); }catch(e2){}
+        $('appView').style.display = 'none';
+        $('loginView').style.display = 'flex';
+        $('lg_btn').disabled = false;
+        $('lg_btn').textContent = 'Accedi';
+        mostraMsg($('lg_msg'), 'Sessione scaduta. Accedi di nuovo.', 'err');
+      }else{
+        mostraMsg($('app_msg'), 'Errore nel caricamento: ' + e.message, 'err');
+      }
+    }
+  }
+
+  // ---------- disegno ----------
+  function disegna(){
+    if(!DATI) return;
+    var t = DATI.totali || {};
+    $('st_clienti').textContent = t.clienti || 0;
+    $('st_eventi').textContent = t.eventi || 0;
+    $('st_iscritti').textContent = t.iscritti || 0;
+    $('st_incasso').textContent = Math.round(Number(t.incassato_centesimi || 0) / 100) + ' e';
+
+    var an = DATI.anomalie || {};
+    var nAn = (an.eventi_orfani || []).length + (an.ordini_senza_email || []).length;
+    var badge = $('badgeCtrl');
+    if(nAn > 0){
+      badge.style.display = 'inline-block';
+      badge.textContent = nAn;
+    }else{
+      badge.style.display = 'none';
+    }
+
+    disegnaClienti();
+    disegnaEventi();
+    disegnaControllo();
+  }
+
+  function filtro(){
+    return $('q').value.trim().toLowerCase();
+  }
+
+  function disegnaClienti(){
+    var q = filtro();
+    var lista = (DATI.clienti || []).filter(function(c){
+      if(!q) return true;
+      var s = [c.email, c.nome, c.cognome, c.piano].join(' ').toLowerCase();
+      return s.indexOf(q) !== -1;
+    });
+
+    if(lista.length === 0){
+      $('tab_clienti').innerHTML = '<div class="empty">Nessun cliente trovato.</div>';
+      return;
+    }
+
+    var h = '';
+    lista.forEach(function(c){
+      var nomeCompleto = [c.nome, c.cognome].filter(Boolean).join(' ');
+      var titolo = nomeCompleto || c.email || 'Cliente senza nome';
+      var tokens = c.token || [];
+
+      h += '<div class="item">';
+      h += '<div class="item-head"><div>';
+      h += '<div class="item-title">' + esc(titolo) + '</div>';
+      h += '<div class="item-sub">' + (c.email ? esc(c.email) : '<span style="color:#F87171">email mancante</span>') + '</div>';
+      h += '</div>' + pianoPill(c.piano) + '</div>';
+
+      h += '<div style="display:flex;flex-wrap:wrap;gap:6px">' + statoCliente(c) + '</div>';
+
+      h += '<div class="rows">';
+      h += '<div><div class="row-k">PAGATO</div><div class="row-v">' + euro(c.importo) + '</div></div>';
+      h += '<div><div class="row-k">CLIENTE DAL</div><div class="row-v">' + dataIt(c.created_at) + '</div></div>';
+      h += '<div><div class="row-k">EVENTI</div><div class="row-v">' + (c.n_eventi || 0) + '</div></div>';
+      h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (c.n_iscritti || 0) + '</div></div>';
+      if(c.subscription_renews_at){
+        h += '<div><div class="row-k">RINNOVO</div><div class="row-v">' + dataIt(c.subscription_renews_at) + '</div></div>';
+      }else if(c.subscription_expires_at){
+        h += '<div><div class="row-k">SCADENZA</div><div class="row-v">' + dataIt(c.subscription_expires_at) + '</div></div>';
+      }
+      h += '</div>';
+
+      h += '<div class="acts">';
+      tokens.forEach(function(tk, i){
+        var etichetta = tokens.length > 1 ? ('Apri dashboard ' + (i+1)) : 'Apri dashboard';
+        h += '<a class="act" target="_blank" rel="noopener" href="' + esc(dashUrl(c.piano, tk.token)) + '">' + etichetta + '</a>';
+      });
+      if(tokens.length === 0){
+        h += '<span class="act sec" style="cursor:default">Nessun accesso collegato</span>';
+      }
+      h += '</div>';
+
+      h += '</div>';
+    });
+
+    $('tab_clienti').innerHTML = h;
+  }
+
+  function disegnaEventi(){
+    var q = filtro();
+    var lista = (DATI.eventi || []).filter(function(e){
+      if(!q) return true;
+      var s = [e.nome, e.luogo, e.cliente_email, e.cliente_nome, e.cliente_cognome, e.slug].join(' ').toLowerCase();
+      return s.indexOf(q) !== -1;
+    });
+
+    if(lista.length === 0){
+      $('tab_eventi').innerHTML = '<div class="empty">Nessun evento trovato.</div>';
+      return;
+    }
+
+    var clientiById = {};
+    (DATI.clienti || []).forEach(function(c){ clientiById[c.id] = c; });
+
+    var h = '';
+    lista.forEach(function(e){
+      var cli = e.cliente_id ? clientiById[e.cliente_id] : null;
+      var pianoEv = e.piano || (cli ? cli.piano : null);
+      var orgNome = cli ? ([cli.nome, cli.cognome].filter(Boolean).join(' ') || cli.email) : null;
+
+      h += '<div class="item">';
+      h += '<div class="item-head"><div>';
+      h += '<div class="item-title">' + esc(e.nome || 'Evento senza nome') + '</div>';
+      h += '<div class="item-sub">' + dataIt(e.data_iso) + (e.ora ? ' alle ' + esc(e.ora) : '') +
+           (e.evento_online ? ' -- online' : (e.luogo ? ' -- ' + esc(e.luogo) : '')) + '</div>';
+      h += '</div>' + pianoPill(pianoEv) + '</div>';
+
+      h += '<div style="display:flex;flex-wrap:wrap;gap:6px">' + statoEvento(e) + '</div>';
+
+      h += '<div class="rows">';
+      h += '<div><div class="row-k">ORGANIZZATORE</div><div class="row-v">' +
+           (orgNome ? esc(orgNome) : '<span style="color:#FBBF24">non collegato</span>') + '</div></div>';
+      h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) +
+           (e.capienza ? ' / ' + e.capienza : '') + '</div></div>';
+      if(e.n_attesa > 0){
+        h += '<div><div class="row-k">IN ATTESA</div><div class="row-v">' + e.n_attesa + '</div></div>';
+      }
+      h += '<div><div class="row-k">PRESENTI</div><div class="row-v">' + (e.n_presenti || 0) + '</div></div>';
+      h += '</div>';
+
+      h += '<div class="acts">';
+      h += '<a class="act" target="_blank" rel="noopener" href="' + esc(dashUrl(pianoEv, e.activation_token)) + '">Apri come organizzatore</a>';
+      h += '<a class="act sec" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '">Vedi pagina pubblica</a>';
+      h += '</div>';
+
+      h += '</div>';
+    });
+
+    $('tab_eventi').innerHTML = h;
+  }
+
+  function disegnaControllo(){
+    var an = DATI.anomalie || {};
+    var orfani = an.eventi_orfani || [];
+    var senzaMail = an.ordini_senza_email || [];
+
+    var h = '';
+
+    h += '<div class="note">Questa schermata raccoglie le cose che non tornano. ' +
+         '<b>Non sono errori del sito</b>: sono situazioni da guardare e decidere cosa farne.</div>';
+
+    h += '<div class="sec-title">Ordini senza email (' + senzaMail.length + ')</div>';
+    if(senzaMail.length === 0){
+      h += '<div class="empty">Nessuno. Tutti gli ordini hanno un contatto.</div>';
+    }else{
+      senzaMail.forEach(function(o){
+        h += '<div class="item">';
+        h += '<div class="item-head"><div>';
+        h += '<div class="item-title">Pagamento senza contatto</div>';
+        h += '<div class="item-sub">Ricevuto il ' + dataIt(o.created_at) + ' -- nessun accesso e\' stato creato</div>';
+        h += '</div>' + pianoPill(o.piano) + '</div>';
+        h += '<div class="rows">';
+        h += '<div><div class="row-k">IMPORTO</div><div class="row-v">' + euro(o.importo) + '</div></div>';
+        h += '<div><div class="row-k">RIFERIMENTO STRIPE</div><div class="row-v" style="font-size:12px">' + esc(o.stripe_id || '--') + '</div></div>';
+        h += '</div>';
+        h += '<div style="font-size:13px;color:rgba(245,240,232,0.75);line-height:1.5">Se era una persona vera, ha pagato e non ha ricevuto nulla. Cerca il riferimento Stripe qui sopra nel tuo pannello Stripe per risalire a chi era.</div>';
+        h += '</div>';
+      });
+    }
+
+    h += '<div class="sec-title">Eventi senza cliente (' + orfani.length + ')</div>';
+    if(orfani.length === 0){
+      h += '<div class="empty">Nessuno. Tutti gli eventi sono collegati a un cliente.</div>';
+    }else{
+      h += '<div class="note" style="background:rgba(245,240,232,0.04);border-color:rgba(245,240,232,0.12)">' +
+           'Sono eventi il cui accesso non esiste piu\' nell\'archivio. Quasi sempre sono residui di prove vecchie.</div>';
+      orfani.forEach(function(e){
+        h += '<div class="item">';
+        h += '<div class="item-head"><div>';
+        h += '<div class="item-title">' + esc(e.nome || 'Evento senza nome') + '</div>';
+        h += '<div class="item-sub">Data evento: ' + dataIt(e.data_iso) + ' -- creato il ' + dataIt(e.created_at) + '</div>';
+        h += '</div><span class="pill warn">Orfano</span></div>';
+        h += '<div class="rows">';
+        h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) + '</div></div>';
+        h += '</div>';
+        h += '<div class="row-k">ACCESSO COLLEGATO (non esiste piu\')</div>';
+        h += '<div class="tok">' + esc(e.activation_token) + '</div>';
+        h += '</div>';
+      });
+    }
+
+    $('tab_controllo').innerHTML = h;
+  }
+
+  // ---------- tab ----------
+  function apriTab(nome){
+    TAB = nome;
+    var btns = document.querySelectorAll('.tab-btn');
+    for(var i=0;i<btns.length;i++){
+      btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === nome);
+    }
+    $('tab_clienti').style.display   = (nome === 'clienti')   ? 'block' : 'none';
+    $('tab_eventi').style.display    = (nome === 'eventi')    ? 'block' : 'none';
+    $('tab_controllo').style.display = (nome === 'controllo') ? 'block' : 'none';
+    $('searchWrap').style.display    = (nome === 'controllo') ? 'none'  : 'block';
+  }
+
+  // ---------- eventi UI ----------
+  document.addEventListener('DOMContentLoaded', function(){
+    $('lg_btn').addEventListener('click', accedi);
+    $('lg_pw').addEventListener('keydown', function(ev){ if(ev.key === 'Enter') accedi(); });
+    $('lg_email').addEventListener('keydown', function(ev){ if(ev.key === 'Enter') $('lg_pw').focus(); });
+    $('btnLogout').addEventListener('click', esci);
+    $('btnRefresh').addEventListener('click', carica);
+
+    var btns = document.querySelectorAll('.tab-btn');
+    for(var i=0;i<btns.length;i++){
+      btns[i].addEventListener('click', function(){
+        apriTab(this.getAttribute('data-tab'));
+      });
+    }
+
+    $('q').addEventListener('input', function(){
+      if(!DATI) return;
+      disegnaClienti();
+      disegnaEventi();
+    });
+
+    // sessione gia' attiva?
+    sb.auth.getSession().then(function(s){
+      if(s && s.data && s.data.session){
+        avvia();
+      }
+    }).catch(function(){});
+  });
+
+})();
+</script>
+</body>
+</html>
