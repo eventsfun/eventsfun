@@ -87,11 +87,6 @@ a{color:var(--gold)}
   text-decoration:none;
 }
 .btn:disabled{opacity:0.5;cursor:default}
-.btn-ghost{
-  background:transparent;
-  color:var(--gold);
-  border:1px solid var(--gold);
-}
 .msg{
   margin-top:14px;
   padding:11px 13px;
@@ -205,6 +200,8 @@ a{color:var(--gold)}
   padding:16px;
   margin-bottom:12px;
 }
+.item.clic{cursor:pointer}
+.item.clic:hover{border-color:rgba(201,169,110,0.5)}
 .item-head{
   display:flex;
   justify-content:space-between;
@@ -301,16 +298,152 @@ a{color:var(--gold)}
   font-family:'Syne',sans-serif;
   font-weight:700;
   font-size:15px;
-  margin:20px 0 10px;
+  margin:22px 0 10px;
   color:var(--txt);
+  display:flex;
+  align-items:center;
+  gap:8px;
 }
-.sec-title:first-child{margin-top:0}
+.sec-title .cnt{
+  font-family:'DM Sans',sans-serif;
+  font-size:12px;
+  color:var(--dim);
+  font-weight:400;
+}
+
+/* ---------- SCHEDA CLIENTE ---------- */
+.back{
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--muted);
+  border-radius:9px;
+  padding:9px 14px;
+  font-size:13px;
+  font-family:inherit;
+  cursor:pointer;
+  margin-bottom:16px;
+}
+.back:hover{border-color:var(--gold);color:var(--gold)}
+
+.scheda-hd{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:18px 16px;
+  margin-bottom:6px;
+}
+.scheda-hd h2{font-size:20px;word-break:break-word;line-height:1.25}
+.scheda-hd .em{color:var(--muted);font-size:14px;margin-top:4px;word-break:break-word}
+.scheda-hd .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+
+.dati{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:2px;
+  background:var(--line);
+  border:1px solid var(--line);
+  border-radius:12px;
+  overflow:hidden;
+  margin-bottom:6px;
+}
+.dato{background:var(--card);padding:12px 14px}
+.dato .k{font-size:11px;color:var(--dim);letter-spacing:0.3px}
+.dato .v{font-size:14px;margin-top:3px;font-weight:500;word-break:break-word}
+
+.pag{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+}
+.pag .sx .t{font-weight:700;font-size:14px}
+.pag .sx .d{font-size:12px;color:var(--dim);margin-top:2px}
+.pag .dx{
+  font-family:'Syne',sans-serif;
+  font-weight:800;
+  font-size:16px;
+  color:var(--gold);
+  white-space:nowrap;
+}
+.pag .dx.zero{color:var(--dim)}
+
+.nota-box{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:14px;
+  margin-bottom:10px;
+}
+.nota-box textarea{
+  width:100%;
+  background:#0d0d0d;
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px 12px;
+  color:var(--txt);
+  font-family:inherit;
+  font-size:15px;
+  resize:vertical;
+  min-height:80px;
+}
+.nota-box textarea:focus{outline:none;border-color:var(--gold)}
+.nota-box .sotto{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
+.nota-box .cnt-car{font-size:12px;color:var(--dim)}
+.btn-sm{
+  background:var(--gold);
+  color:#0A0A0A;
+  border:none;
+  border-radius:9px;
+  padding:10px 18px;
+  font-family:'Syne',sans-serif;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+}
+.btn-sm:disabled{opacity:0.5;cursor:default}
+
+.nota-riga{
+  background:var(--card2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px 14px;
+  margin-bottom:8px;
+}
+.nota-riga .testo{font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+.nota-riga .meta{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+  font-size:11px;
+  color:var(--dim);
+}
+.del-nota{
+  background:transparent;
+  border:1px solid rgba(248,113,113,0.4);
+  color:var(--bad);
+  border-radius:7px;
+  padding:4px 10px;
+  font-size:11px;
+  font-family:inherit;
+  cursor:pointer;
+  flex-shrink:0;
+}
+.del-nota:hover{background:rgba(248,113,113,0.12)}
 
 @media(max-width:600px){
   .stats{grid-template-columns:repeat(2,1fr)}
   .wrap{padding:14px 12px}
   .item{padding:14px}
   .act{min-width:100%}
+  .pag{flex-direction:column;align-items:flex-start;gap:6px}
+  .pag .dx{align-self:flex-end}
 }
 </style>
 </head>
@@ -350,6 +483,7 @@ a{color:var(--gold)}
   <div class="wrap">
     <div id="loadingBox" class="loading">Caricamento dati...</div>
 
+    <!-- ---- elenco ---- -->
     <div id="content" style="display:none">
       <div class="stats">
         <div class="stat"><div class="n" id="st_clienti">0</div><div class="l">CLIENTI</div></div>
@@ -373,6 +507,12 @@ a{color:var(--gold)}
       <div id="tab_controllo" style="display:none"></div>
     </div>
 
+    <!-- ---- scheda cliente ---- -->
+    <div id="schedaView" style="display:none">
+      <button class="back" id="btnBack">Torna all'elenco</button>
+      <div id="schedaBody"></div>
+    </div>
+
     <div class="msg" id="app_msg"></div>
   </div>
 </div>
@@ -389,6 +529,7 @@ a{color:var(--gold)}
   var sb = window.supabase.createClient(SB_URL, SB_ANON);
 
   var DATI = null;
+  var SCHEDA = null;
   var TAB = 'clienti';
 
   // ---------- utilita' ----------
@@ -411,6 +552,17 @@ a{color:var(--gold)}
     var p = String(iso).slice(0,10).split('-');
     if(p.length !== 3) return String(iso);
     return p[2] + '/' + p[1] + '/' + p[0];
+  }
+
+  function dataOraIt(iso){
+    if(!iso) return '--';
+    var d = new Date(iso);
+    if(isNaN(d.getTime())) return dataIt(iso);
+    var gg = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var hh = String(d.getHours()).padStart(2,'0');
+    var mi = String(d.getMinutes()).padStart(2,'0');
+    return gg + '/' + mm + '/' + d.getFullYear() + ' alle ' + hh + ':' + mi;
   }
 
   function oggiIso(){
@@ -507,10 +659,17 @@ a{color:var(--gold)}
   }
 
   // ---------- chiamata al portiere ----------
-  async function chiedi(azione){
+  async function chiedi(azione, extra){
     var s = await sb.auth.getSession();
     var token = s && s.data && s.data.session ? s.data.session.access_token : null;
     if(!token) throw new Error('NO_SESSION');
+
+    var payload = { action: azione };
+    if(extra){
+      for(var k in extra){
+        if(Object.prototype.hasOwnProperty.call(extra, k)) payload[k] = extra[k];
+      }
+    }
 
     var r = await fetch(FN_URL, {
       method: 'POST',
@@ -518,7 +677,7 @@ a{color:var(--gold)}
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
-      body: JSON.stringify({ action: azione })
+      body: JSON.stringify(payload)
     });
 
     var j = null;
@@ -532,6 +691,23 @@ a{color:var(--gold)}
     return j;
   }
 
+  function gestisciErrore(e){
+    if(e.status === 403){
+      mostraMsg($('app_msg'), 'Questo account non e\' autorizzato ad accedere al gestionale.', 'err');
+      return true;
+    }
+    if(e.status === 401 || e.message === 'NO_SESSION'){
+      sb.auth.signOut().catch(function(){});
+      $('appView').style.display = 'none';
+      $('loginView').style.display = 'flex';
+      $('lg_btn').disabled = false;
+      $('lg_btn').textContent = 'Accedi';
+      mostraMsg($('lg_msg'), 'Sessione scaduta. Accedi di nuovo.', 'err');
+      return true;
+    }
+    return false;
+  }
+
   // ---------- avvio ----------
   async function avvia(){
     $('loginView').style.display = 'none';
@@ -540,6 +716,7 @@ a{color:var(--gold)}
   }
 
   async function carica(){
+    mostraElenco();
     $('loadingBox').style.display = 'block';
     $('content').style.display = 'none';
     nascondiMsg($('app_msg'));
@@ -554,22 +731,13 @@ a{color:var(--gold)}
       $('content').style.display = 'block';
     }catch(e){
       $('loadingBox').style.display = 'none';
-      if(e.status === 403){
-        mostraMsg($('app_msg'), 'Questo account non e\' autorizzato ad accedere al gestionale.', 'err');
-      }else if(e.status === 401 || e.message === 'NO_SESSION'){
-        try{ await sb.auth.signOut(); }catch(e2){}
-        $('appView').style.display = 'none';
-        $('loginView').style.display = 'flex';
-        $('lg_btn').disabled = false;
-        $('lg_btn').textContent = 'Accedi';
-        mostraMsg($('lg_msg'), 'Sessione scaduta. Accedi di nuovo.', 'err');
-      }else{
+      if(!gestisciErrore(e)){
         mostraMsg($('app_msg'), 'Errore nel caricamento: ' + e.message, 'err');
       }
     }
   }
 
-  // ---------- disegno ----------
+  // ---------- disegno elenco ----------
   function disegna(){
     if(!DATI) return;
     var t = DATI.totali || {};
@@ -616,7 +784,7 @@ a{color:var(--gold)}
       var titolo = nomeCompleto || c.email || 'Cliente senza nome';
       var tokens = c.token || [];
 
-      h += '<div class="item">';
+      h += '<div class="item clic" data-cliente="' + esc(c.id) + '">';
       h += '<div class="item-head"><div>';
       h += '<div class="item-title">' + esc(titolo) + '</div>';
       h += '<div class="item-sub">' + (c.email ? esc(c.email) : '<span style="color:#F87171">email mancante</span>') + '</div>';
@@ -629,21 +797,14 @@ a{color:var(--gold)}
       h += '<div><div class="row-k">CLIENTE DAL</div><div class="row-v">' + dataIt(c.created_at) + '</div></div>';
       h += '<div><div class="row-k">EVENTI</div><div class="row-v">' + (c.n_eventi || 0) + '</div></div>';
       h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (c.n_iscritti || 0) + '</div></div>';
-      if(c.subscription_renews_at){
-        h += '<div><div class="row-k">RINNOVO</div><div class="row-v">' + dataIt(c.subscription_renews_at) + '</div></div>';
-      }else if(c.subscription_expires_at){
-        h += '<div><div class="row-k">SCADENZA</div><div class="row-v">' + dataIt(c.subscription_expires_at) + '</div></div>';
-      }
       h += '</div>';
 
       h += '<div class="acts">';
+      h += '<span class="act">Apri scheda cliente</span>';
       tokens.forEach(function(tk, i){
-        var etichetta = tokens.length > 1 ? ('Apri dashboard ' + (i+1)) : 'Apri dashboard';
-        h += '<a class="act" target="_blank" rel="noopener" href="' + esc(dashUrl(c.piano, tk.token)) + '">' + etichetta + '</a>';
+        var etichetta = tokens.length > 1 ? ('Dashboard ' + (i+1)) : 'Dashboard';
+        h += '<a class="act sec" target="_blank" rel="noopener" data-stop="1" href="' + esc(dashUrl(c.piano, tk.token)) + '">' + etichetta + '</a>';
       });
-      if(tokens.length === 0){
-        h += '<span class="act sec" style="cursor:default">Nessun accesso collegato</span>';
-      }
       h += '</div>';
 
       h += '</div>';
@@ -715,7 +876,7 @@ a{color:var(--gold)}
     h += '<div class="note">Questa schermata raccoglie le cose che non tornano. ' +
          '<b>Non sono errori del sito</b>: sono situazioni da guardare e decidere cosa farne.</div>';
 
-    h += '<div class="sec-title">Ordini senza email (' + senzaMail.length + ')</div>';
+    h += '<div class="sec-title">Ordini senza email <span class="cnt">(' + senzaMail.length + ')</span></div>';
     if(senzaMail.length === 0){
       h += '<div class="empty">Nessuno. Tutti gli ordini hanno un contatto.</div>';
     }else{
@@ -734,7 +895,7 @@ a{color:var(--gold)}
       });
     }
 
-    h += '<div class="sec-title">Eventi senza cliente (' + orfani.length + ')</div>';
+    h += '<div class="sec-title">Eventi senza cliente <span class="cnt">(' + orfani.length + ')</span></div>';
     if(orfani.length === 0){
       h += '<div class="empty">Nessuno. Tutti gli eventi sono collegati a un cliente.</div>';
     }else{
@@ -758,6 +919,203 @@ a{color:var(--gold)}
     $('tab_controllo').innerHTML = h;
   }
 
+  // ---------- scheda cliente ----------
+  function mostraElenco(){
+    $('schedaView').style.display = 'none';
+    $('content').style.display = DATI ? 'block' : 'none';
+    SCHEDA = null;
+  }
+
+  async function apriCliente(orderId){
+    nascondiMsg($('app_msg'));
+    $('content').style.display = 'none';
+    $('schedaView').style.display = 'block';
+    $('schedaBody').innerHTML = '<div class="loading">Caricamento scheda...</div>';
+    window.scrollTo(0, 0);
+
+    try{
+      var res = await chiedi('cliente', { order_id: orderId });
+      SCHEDA = res.dati;
+      disegnaScheda();
+    }catch(e){
+      if(!gestisciErrore(e)){
+        $('schedaBody').innerHTML = '<div class="empty">Errore nel caricamento della scheda: ' + esc(e.message) + '</div>';
+      }
+    }
+  }
+
+  function disegnaScheda(){
+    if(!SCHEDA || !SCHEDA.cliente){
+      $('schedaBody').innerHTML = '<div class="empty">Scheda non disponibile.</div>';
+      return;
+    }
+    var c = SCHEDA.cliente;
+    var pagamenti = SCHEDA.pagamenti || [];
+    var accessi = SCHEDA.accessi || [];
+    var eventi = SCHEDA.eventi || [];
+    var note = SCHEDA.note || [];
+
+    var nomeCompleto = [c.nome, c.cognome].filter(Boolean).join(' ');
+    var titolo = nomeCompleto || c.email || 'Cliente senza nome';
+    var h = '';
+
+    // intestazione
+    h += '<div class="scheda-hd">';
+    h += '<h2>' + esc(titolo) + '</h2>';
+    h += '<div class="em">' + (c.email ? esc(c.email) : '<span style="color:#F87171">email mancante</span>') + '</div>';
+    h += '<div class="pills">' + pianoPill(c.piano) + statoCliente(c) + '</div>';
+    h += '</div>';
+
+    // dati principali
+    h += '<div class="dati">';
+    h += '<div class="dato"><div class="k">CLIENTE DAL</div><div class="v">' + dataIt(c.created_at) + '</div></div>';
+    h += '<div class="dato"><div class="k">TOTALE INCASSATO</div><div class="v">' + euro(SCHEDA.totale_pagato) + '</div></div>';
+    h += '<div class="dato"><div class="k">EVENTI</div><div class="v">' + eventi.length + '</div></div>';
+    h += '<div class="dato"><div class="k">NEWSLETTER</div><div class="v">' + (c.newsletter ? 'Si' : 'No') + '</div></div>';
+
+    if(String(c.piano || '').toLowerCase() === 'agenzia'){
+      if(c.subscription_renews_at){
+        h += '<div class="dato"><div class="k">SI RINNOVA IL</div><div class="v">' + dataIt(c.subscription_renews_at) + '</div></div>';
+      }
+      if(c.subscription_expires_at){
+        h += '<div class="dato"><div class="k">ACCESSO FINO AL</div><div class="v" style="color:#FBBF24">' + dataIt(c.subscription_expires_at) + '</div></div>';
+      }
+    }
+    h += '</div>';
+
+    // pagamenti
+    h += '<div class="sec-title">Pagamenti <span class="cnt">(' + pagamenti.length + ')</span></div>';
+    if(pagamenti.length === 0){
+      h += '<div class="empty">Nessun pagamento registrato.</div>';
+    }else{
+      pagamenti.forEach(function(p){
+        var etichetta = p.tipo === 'rinnovo' ? 'Rinnovo' : (p.tipo === 'manuale' ? 'Inserito a mano' : 'Acquisto');
+        h += '<div class="pag">';
+        h += '<div class="sx"><div class="t">' + esc(etichetta) + '</div>';
+        h += '<div class="d">' + dataIt(p.pagato_il) + (p.descrizione ? ' -- ' + esc(p.descrizione) : '') + '</div></div>';
+        h += '<div class="dx' + (Number(p.importo) === 0 ? ' zero' : '') + '">' + euro(p.importo) + '</div>';
+        h += '</div>';
+      });
+    }
+
+    // accessi
+    h += '<div class="sec-title">Accessi <span class="cnt">(' + accessi.length + ')</span></div>';
+    accessi.forEach(function(a){
+      var chiuso = String(a.stato || '') === 'closed';
+      h += '<div class="item" style="margin-bottom:8px">';
+      h += '<div class="item-head"><div>';
+      h += '<div class="item-title" style="font-size:14px">' + (chiuso ? 'Accesso chiuso' : 'Accesso attivo') + '</div>';
+      h += '<div class="item-sub">' + (a.n_eventi || 0) + ' eventi -- creato il ' + dataIt(a.created_at) + '</div>';
+      h += '</div>';
+      h += chiuso ? '<span class="pill neutral">CHIUSO</span>' : '<span class="pill ok">ATTIVO</span>';
+      h += '</div>';
+      h += '<div class="tok">' + esc(a.token) + '</div>';
+      if(!chiuso){
+        h += '<div class="acts"><a class="act" target="_blank" rel="noopener" href="' +
+             esc(dashUrl(c.piano, a.token)) + '">Apri come organizzatore</a></div>';
+      }
+      h += '</div>';
+    });
+
+    // eventi
+    h += '<div class="sec-title">Eventi <span class="cnt">(' + eventi.length + ')</span></div>';
+    if(eventi.length === 0){
+      h += '<div class="empty">Nessun evento creato.</div>';
+    }else{
+      eventi.forEach(function(e){
+        h += '<div class="item" style="margin-bottom:8px">';
+        h += '<div class="item-head"><div>';
+        h += '<div class="item-title" style="font-size:15px">' + esc(e.nome || 'Evento senza nome') + '</div>';
+        h += '<div class="item-sub">' + dataIt(e.data_iso) +
+             (e.evento_online ? ' -- online' : (e.luogo ? ' -- ' + esc(e.luogo) : '')) + '</div>';
+        h += '</div>' + statoEvento(e) + '</div>';
+        h += '<div class="rows">';
+        h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) +
+             (e.capienza ? ' / ' + e.capienza : '') + '</div></div>';
+        h += '<div><div class="row-k">PRESENTI</div><div class="row-v">' + (e.n_presenti || 0) + '</div></div>';
+        h += '</div>';
+        h += '<div class="acts"><a class="act sec" target="_blank" rel="noopener" href="' +
+             esc(landingUrl(e)) + '">Vedi pagina pubblica</a></div>';
+        h += '</div>';
+      });
+    }
+
+    // note
+    h += '<div class="sec-title">Note interne <span class="cnt">(' + note.length + ')</span></div>';
+    h += '<div class="nota-box">';
+    h += '<textarea id="nota_txt" maxlength="5000" placeholder="Scrivi una nota su questo cliente. La vedi solo tu."></textarea>';
+    h += '<div class="sotto"><span class="cnt-car" id="nota_cnt">0 / 5000</span>';
+    h += '<button class="btn-sm" id="nota_btn">Salva nota</button></div>';
+    h += '<div class="msg" id="nota_msg"></div>';
+    h += '</div>';
+
+    if(note.length === 0){
+      h += '<div class="empty">Nessuna nota. Le note sono private e il cliente non le vede mai.</div>';
+    }else{
+      note.forEach(function(n){
+        h += '<div class="nota-riga">';
+        h += '<div class="testo">' + esc(n.testo) + '</div>';
+        h += '<div class="meta"><span>' + esc(n.autore || '') + ' -- ' + dataOraIt(n.created_at) + '</span>';
+        h += '<button class="del-nota" data-nota="' + esc(n.id) + '">Elimina</button></div>';
+        h += '</div>';
+      });
+    }
+
+    $('schedaBody').innerHTML = h;
+
+    // collego i comandi della scheda
+    var txt = $('nota_txt');
+    txt.addEventListener('input', function(){
+      $('nota_cnt').textContent = txt.value.length + ' / 5000';
+    });
+    $('nota_btn').addEventListener('click', salvaNota);
+
+    var dels = document.querySelectorAll('.del-nota');
+    for(var i=0;i<dels.length;i++){
+      dels[i].addEventListener('click', function(){
+        eliminaNota(this.getAttribute('data-nota'));
+      });
+    }
+  }
+
+  async function salvaNota(){
+    var txt = $('nota_txt');
+    var msg = $('nota_msg');
+    var testo = txt.value.trim();
+    nascondiMsg(msg);
+
+    if(!testo){
+      mostraMsg(msg, 'Scrivi qualcosa prima di salvare.', 'err');
+      return;
+    }
+
+    $('nota_btn').disabled = true;
+    $('nota_btn').textContent = 'Salvataggio...';
+
+    try{
+      await chiedi('nota_aggiungi', { order_id: SCHEDA.cliente.id, testo: testo });
+      await apriCliente(SCHEDA.cliente.id);
+    }catch(e){
+      $('nota_btn').disabled = false;
+      $('nota_btn').textContent = 'Salva nota';
+      if(!gestisciErrore(e)){
+        mostraMsg(msg, 'Nota non salvata: ' + e.message, 'err');
+      }
+    }
+  }
+
+  async function eliminaNota(id){
+    if(!window.confirm('Eliminare questa nota? L\'operazione non si puo\' annullare.')) return;
+    try{
+      await chiedi('nota_elimina', { nota_id: id });
+      await apriCliente(SCHEDA.cliente.id);
+    }catch(e){
+      if(!gestisciErrore(e)){
+        mostraMsg($('app_msg'), 'Nota non eliminata: ' + e.message, 'err');
+      }
+    }
+  }
+
   // ---------- tab ----------
   function apriTab(nome){
     TAB = nome;
@@ -778,6 +1136,7 @@ a{color:var(--gold)}
     $('lg_email').addEventListener('keydown', function(ev){ if(ev.key === 'Enter') $('lg_pw').focus(); });
     $('btnLogout').addEventListener('click', esci);
     $('btnRefresh').addEventListener('click', carica);
+    $('btnBack').addEventListener('click', mostraElenco);
 
     var btns = document.querySelectorAll('.tab-btn');
     for(var i=0;i<btns.length;i++){
@@ -790,6 +1149,15 @@ a{color:var(--gold)}
       if(!DATI) return;
       disegnaClienti();
       disegnaEventi();
+    });
+
+    // click su una card cliente -> apre la scheda
+    $('tab_clienti').addEventListener('click', function(ev){
+      var link = ev.target.closest('a[data-stop]');
+      if(link) return;
+      var card = ev.target.closest('[data-cliente]');
+      if(!card) return;
+      apriCliente(card.getAttribute('data-cliente'));
     });
 
     // sessione gia' attiva?
