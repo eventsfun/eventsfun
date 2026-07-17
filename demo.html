@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v1.0 localStorage -->
+<!-- EventsFun | Demo Locale | v1.3 localStorage + accordion form -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -181,6 +181,18 @@ select option{background:#1a1a1a;color:var(--text)}
 .check-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
 .check-row span{font-size:13px;color:var(--text-muted)}
 .sec-div{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin:20px 0 12px;padding-top:18px;border-top:1px solid var(--border2);display:flex;align-items:center;justify-content:space-between}
+/* ACCORDION FORM */
+.acc{border:1px solid var(--border2);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--bg2)}
+.acc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
+.acc-head:hover{background:var(--row-hover)}
+.acc-htxt{min-width:0}
+.acc-title{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text);display:flex;align-items:center;gap:8px}
+.acc-desc{font-size:11.5px;color:var(--text-dim);margin-top:3px;line-height:1.4}
+.acc-chev{color:var(--gold);font-size:13px;transition:transform .2s;flex-shrink:0}
+.acc.open .acc-chev{transform:rotate(180deg)}
+.acc-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.acc-body{display:none;padding:2px 16px 14px}
+.acc.open .acc-body{display:block}
 .opt-row{display:flex;align-items:flex-start;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border2)}
 .opt-row:last-child{border-bottom:none;padding-bottom:0}
 .opt-lbl{font-size:13px;color:var(--text)}.opt-sub{font-size:11px;color:var(--text-dim);margin-top:2px}
@@ -474,10 +486,6 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
     <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
     <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it"></div>
-    <div class="mf"><label>Telefono di contatto (facoltativo)</label><input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('ev')"></div>
-    <div id="ev_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
-    <div class="opt-row" id="ev_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px"><div><div class="opt-lbl">Raggiungibile su WhatsApp</div><div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div></div><div class="tog" id="otog_contatto_wa" onclick="otog('contatto_wa')"><div class="tog-dot"></div></div></div>
-    <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="ev_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
     <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
@@ -487,61 +495,120 @@ select option{background:#1a1a1a;color:var(--text)}
       <input type="file" id="ev_img_file" accept="image/*" style="display:none" onchange="loadEvImg()">
       <button type="button" id="ev_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeEvImg()">&#10005; Rimuovi</button>
     </div>
-    <div class="mf">
-      <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- testo o logo al centro del QR)</span></label>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button type="button" id="ev_qr_tipo_nessuno" onclick="setQrTipo('ev','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#10005; Nessuno</button>
-        <button type="button" id="ev_qr_tipo_testo" onclick="setQrTipo('ev','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
-        <button type="button" id="ev_qr_tipo_logo" onclick="setQrTipo('ev','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#128444; Logo</button>
-      </div>
-      <div id="ev_qr_testo_wrap" style="display:none">
-        <div style="position:relative"><input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px"><span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span></div>
-      </div>
-      <div id="ev_qr_logo_wrap" style="display:none">
-        <div class="img-upload-area" onclick="document.getElementById('ev_qr_logo_file').click()" style="min-height:80px">
-          <div class="img-ph" id="ev_qr_logo_ph"><span>&#128444;&#65039;</span>Clicca per caricare il logo</div>
-          <img id="ev_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128222; Contatti e mittente<span class="acc-dot" id="acc_dot_ev_contatti" style="display:none"></span></div>
+          <div class="acc-desc">Telefono, WhatsApp e nome mittente</div>
         </div>
-        <input type="file" id="ev_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('ev')">
-        <button type="button" id="ev_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('ev')">&#10005; Rimuovi logo</button>
+        <div class="acc-chev">&#9662;</div>
       </div>
-      <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center"><div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)"><div id="ev_qr_preview_canvas"></div></div></div>
-    </div>
-    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
-      <div><div class="opt-lbl">Tema pagina iscrizione</div><div class="opt-sub">Stile visivo della landing page</div></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button type="button" id="ev_tema_chiaro" onclick="setTema('ev','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#9728;&#65039; Chiaro</button>
-        <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#127769; Scuro</button>
+      <div class="acc-body">
+        <div class="mf"><label>Telefono di contatto (facoltativo)</label><input id="ev_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('ev')"></div>
+        <div id="ev_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+        <div class="opt-row" id="ev_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px"><div><div class="opt-lbl">Raggiungibile su WhatsApp</div><div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div></div><div class="tog" id="otog_contatto_wa" onclick="otog('contatto_wa')"><div class="tog-dot"></div></div></div>
+        <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="ev_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
       </div>
     </div>
-    <div class="sec-div">&#127991;&#65039; Terminologia</div>
-    <div class="mf"><label>Come si registrano i partecipanti</label>
-      <select id="ev_terminologia">
-        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
-        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
-        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
-        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
-      </select>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#9881;&#65039; Modulo di iscrizione<span class="acc-dot" id="acc_dot_ev_modulo" style="display:none"></span></div>
+          <div class="acc-desc">Cosa chiedi e come si iscrivono i partecipanti</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="sec-div">&#127991;&#65039; Terminologia</div>
+        <div class="mf"><label>Come si registrano i partecipanti</label>
+          <select id="ev_terminologia">
+            <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+            <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+            <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+            <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+          </select>
+        </div>
+        <div class="sec-div">&#9881;&#65039; Opzioni modulo iscrizione</div>
+        <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
+        <div id="o_acc_opts_row" style="display:none">
+          <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div></div><div class="tog" id="otog_acc_email_obb" onclick="otog('acc_email_obb')"><div class="tog-dot"></div></div></div>
+          <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div></div><div class="tog" id="otog_acc_tel_obb" onclick="otog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
+          <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore bambini nel modulo</div></div><div class="tog on" id="otog_bambini" onclick="otog('bambini')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div id="o_capienza_pp_row" style="display:none" class="opt-row"><div><div class="opt-lbl">Capienza per persona</div><div class="opt-sub">I posti scalano per persona, non per iscrizione</div></div><div class="tog" id="otog_cap_persona" onclick="otog('cap_persona')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" id="o_row_tipo"><div><div class="opt-lbl">Tipo iscritto</div><div class="opt-sub">Visitatore / Espositore</div></div><div class="tog" id="otog_tipo" onclick="otog('tipo')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" id="o_row_pasto"><div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div><div class="tog" id="otog_pasto" onclick="otog('pasto')"><div class="tog-dot"></div></div></div>
+        <div id="opasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px"><div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Mostra nel modulo:</div><div style="display:flex;gap:16px"><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_cena" checked style="accent-color:var(--gold)"> Cena</label></div></div>
+        <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
+      </div>
     </div>
-    <div class="sec-div">&#9881;&#65039; Opzioni modulo iscrizione</div>
-    <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div><div class="opt-sub">Adulti + bambini in una sola iscrizione</div></div><div class="tog" id="otog_multipla" onclick="otog('multipla')"><div class="tog-dot"></div></div></div>
-    <div id="o_acc_opts_row" style="display:none">
-      <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div></div><div class="tog" id="otog_acc_email_obb" onclick="otog('acc_email_obb')"><div class="tog-dot"></div></div></div>
-      <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div></div><div class="tog" id="otog_acc_tel_obb" onclick="otog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
-      <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore bambini nel modulo</div></div><div class="tog on" id="otog_bambini" onclick="otog('bambini')"><div class="tog-dot"></div></div></div>
+    <div class="acc" id="o_checkin_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128203; Check-in con QR<span class="acc-dot" id="acc_dot_ev_checkin" style="display:none"></span></div>
+          <div class="acc-desc">Segna le presenze con un QR all'ingresso</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="opt-row"><div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div><div class="tog" id="otog_qr_checkin" onclick="otog('qr_checkin')"><div class="tog-dot"></div></div></div>
+      </div>
     </div>
-    <div id="o_capienza_pp_row" style="display:none" class="opt-row"><div><div class="opt-lbl">Capienza per persona</div><div class="opt-sub">I posti scalano per persona, non per iscrizione</div></div><div class="tog" id="otog_cap_persona" onclick="otog('cap_persona')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" id="o_row_tipo"><div><div class="opt-lbl">Tipo iscritto</div><div class="opt-sub">Visitatore / Espositore</div></div><div class="tog" id="otog_tipo" onclick="otog('tipo')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" id="o_row_pasto"><div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div><div class="tog" id="otog_pasto" onclick="otog('pasto')"><div class="tog-dot"></div></div></div>
-    <div id="opasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px"><div style="font-size:11px;color:var(--text-dim);margin-bottom:8px">Mostra nel modulo:</div><div style="display:flex;gap:16px"><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="oopt_cena" checked style="accent-color:var(--gold)"> Cena</label></div></div>
-    <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog on" id="otog_newsletter" onclick="otog('newsletter')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
-    <div class="sec-div" id="o_secdiv_qr">&#9989; Check-in</div>
-    <div class="opt-row" id="o_row_qr" style="border-bottom:none"><div><div class="opt-lbl">Check-in con QR code</div><div class="opt-sub">Ogni iscritto riceve un QR personale nell'email -- scansionabile all'ingresso</div></div><div class="tog" id="otog_qr_checkin" onclick="otog('qr_checkin')"><div class="tog-dot"></div></div></div>
-    <div class="sec-div">&#129309; Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span><button class="add-row-btn" onclick="addSP('c','cspList')">+ Aggiungi</button></div>
-    <div id="cspList" style="margin-bottom:8px"></div>
-    <div class="sec-div">&#128221; Campi aggiuntivi <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span><button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button></div>
-    <div id="ccfList" style="margin-bottom:8px"></div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#127912; Aspetto della pagina<span class="acc-dot" id="acc_dot_ev_aspetto" style="display:none"></span></div>
+          <div class="acc-desc">Overlay del QR, tema chiaro/scuro e sponsor</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button type="button" id="ev_qr_tipo_nessuno" onclick="setQrTipo('ev','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#10005; Nessuno</button>
+            <button type="button" id="ev_qr_tipo_testo" onclick="setQrTipo('ev','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+            <button type="button" id="ev_qr_tipo_logo" onclick="setQrTipo('ev','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#128444; Logo</button>
+          </div>
+          <div id="ev_qr_testo_wrap" style="display:none">
+            <div style="position:relative"><input id="ev_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('ev_qr_testo','ev_qr_count');updateQrPreview('ev_qr_testo','ev_qr_preview')" style="padding-right:48px"><span id="ev_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span></div>
+          </div>
+          <div id="ev_qr_logo_wrap" style="display:none">
+            <div class="img-upload-area" onclick="document.getElementById('ev_qr_logo_file').click()" style="min-height:80px">
+              <div class="img-ph" id="ev_qr_logo_ph"><span>&#128444;&#65039;</span>Clicca per caricare il logo</div>
+              <img id="ev_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain">
+            </div>
+            <input type="file" id="ev_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('ev')">
+            <button type="button" id="ev_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('ev')">&#10005; Rimuovi logo</button>
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">&#128161; Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.</div>
+          </div>
+          <div id="ev_qr_preview" style="display:none;margin-top:12px;text-align:center"><div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)"><div id="ev_qr_preview_canvas"></div></div><div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div></div>
+        </div>
+        <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+          <div><div class="opt-lbl">Tema pagina iscrizione</div><div class="opt-sub">Scegli lo stile visivo della landing page</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button type="button" id="ev_tema_chiaro" onclick="setTema('ev','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#9728;&#65039; Chiaro</button>
+            <button type="button" id="ev_tema_scuro" onclick="setTema('ev','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#127769; Scuro</button>
+          </div>
+        </div>
+        <div class="sec-div">&#129309; Sponsor <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span><button class="add-row-btn" onclick="addSP('c','cspList')">+ Aggiungi</button></div>
+        <div id="cspList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128221; Campi aggiuntivi<span class="acc-dot" id="acc_dot_ev_campi" style="display:none"></span></div>
+          <div class="acc-desc">Domande extra nel modulo d'iscrizione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="sec-div">&#128221; Campi aggiuntivi <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span><button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button></div>
+        <div id="ccfList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="openPreviewFromForm()">&#128065; Anteprima landing</button>
       <button class="btn-full" id="evSaveBtn" onclick="saveEvent()" style="flex:2">Crea evento &rarr;</button>
@@ -571,67 +638,122 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
     <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
     <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it"></div>
-    <div class="mf"><label>Telefono di contatto (facoltativo)</label><input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('se')"></div>
-    <div id="se_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
-    <div class="opt-row" id="se_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px"><div><div class="opt-lbl">Raggiungibile su WhatsApp</div><div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div></div><div class="tog" id="stog_contatto_wa" onclick="stog('contatto_wa')"><div class="tog-dot"></div></div></div>
-    <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="se_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
     <div class="mf">
       <label>Immagine evento</label>
       <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()"><div class="img-ph" id="seImgPh"><span>&#128444;&#65039;</span>Clicca per caricare</div><img id="se_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px"></div>
       <input type="file" id="se_img_file" accept="image/*" style="display:none" onchange="loadSeImg()">
       <button type="button" id="se_img_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeSeImg()">&#10005; Rimuovi</button>
     </div>
-    <div class="mf">
-      <label>Overlay QR</label>
-      <div style="display:flex;gap:8px;margin-bottom:12px">
-        <button type="button" id="se_qr_tipo_nessuno" onclick="setQrTipo('se','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#10005; Nessuno</button>
-        <button type="button" id="se_qr_tipo_testo" onclick="setQrTipo('se','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
-        <button type="button" id="se_qr_tipo_logo" onclick="setQrTipo('se','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#128444; Logo</button>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128222; Contatti e mittente<span class="acc-dot" id="acc_dot_se_contatti" style="display:none"></span></div>
+          <div class="acc-desc">Telefono, WhatsApp e nome mittente</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
       </div>
-      <div id="se_qr_testo_wrap" style="display:none"><div style="position:relative"><input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px"><span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span></div></div>
-      <div id="se_qr_logo_wrap" style="display:none">
-        <div class="img-upload-area" onclick="document.getElementById('se_qr_logo_file').click()" style="min-height:80px"><div class="img-ph" id="se_qr_logo_ph"><span>&#128444;&#65039;</span>Clicca per caricare il logo</div><img id="se_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain"></div>
-        <input type="file" id="se_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('se')">
-        <button type="button" id="se_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('se')">&#10005; Rimuovi logo</button>
-      </div>
-      <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center"><div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)"><div id="se_qr_preview_canvas"></div></div></div>
-    </div>
-    <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
-      <div><div class="opt-lbl">Tema pagina iscrizione</div></div>
-      <div style="display:flex;gap:8px;align-items:center">
-        <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#9728;&#65039; Chiaro</button>
-        <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#127769; Scuro</button>
+      <div class="acc-body">
+        <div class="mf"><label>Telefono di contatto (facoltativo)</label><input id="se_tel_contatto" type="tel" value="+39 " placeholder="+39 333 1234567" oninput="waRowCheck('se')"></div>
+        <div id="se_wa_hint" style="font-size:11px;color:var(--text-dim);margin:-8px 0 14px;line-height:1.5">&#128172; Inserendo il numero potrai attivare il contatto WhatsApp per gli iscritti</div>
+        <div class="opt-row" id="se_wa_row" style="display:none;border-bottom:none;padding-top:0;margin:-6px 0 10px"><div><div class="opt-lbl">Raggiungibile su WhatsApp</div><div class="opt-sub">Nell'email di conferma gli iscritti vedranno anche "Scrivici su WhatsApp"</div></div><div class="tog" id="stog_contatto_wa" onclick="stog('contatto_wa')"><div class="tog-dot"></div></div></div>
+        <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="se_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
       </div>
     </div>
-    <div class="sec-div">&#127991;&#65039; Terminologia</div>
-    <div class="mf"><label>Come si registrano i partecipanti</label>
-      <select id="se_terminologia">
-        <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
-        <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
-        <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
-        <option value="registrazione">Registrazione (pulsante "Registrati")</option>
-      </select>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#9881;&#65039; Modulo di iscrizione<span class="acc-dot" id="acc_dot_se_modulo" style="display:none"></span></div>
+          <div class="acc-desc">Cosa chiedi e come si iscrivono i partecipanti</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="sec-div">&#127991;&#65039; Terminologia</div>
+        <div class="mf"><label>Come si registrano i partecipanti</label>
+          <select id="se_terminologia">
+            <option value="iscrizione">Iscrizione (pulsante "Iscriviti")</option>
+            <option value="prenotazione">Prenotazione (pulsante "Prenota")</option>
+            <option value="partecipazione">Partecipazione (pulsante "Partecipa")</option>
+            <option value="registrazione">Registrazione (pulsante "Registrati")</option>
+          </select>
+        </div>
+        <div class="sec-div">&#9881;&#65039; Opzioni modulo</div>
+        <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div></div><div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div></div>
+        <div id="s_acc_opts_row" style="display:none">
+          <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div></div><div class="tog" id="stog_acc_email_obb" onclick="stog('acc_email_obb')"><div class="tog-dot"></div></div></div>
+          <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div></div><div class="tog" id="stog_acc_tel_obb" onclick="stog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
+          <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore bambini nel modulo</div></div><div class="tog on" id="stog_bambini" onclick="stog('bambini')"><div class="tog-dot"></div></div></div>
+        </div>
+        <div id="s_capienza_pp_row" style="display:none" class="opt-row"><div><div class="opt-lbl">Capienza per persona</div></div><div class="tog" id="stog_cap_persona" onclick="stog('cap_persona')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" id="s_row_tipo"><div><div class="opt-lbl">Tipo iscritto</div></div><div class="tog" id="stog_tipo" onclick="stog('tipo')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" id="s_row_pasto"><div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div><div class="tog" id="stog_pasto" onclick="stog('pasto')"><div class="tog-dot"></div></div></div>
+        <div id="spasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px"><div style="display:flex;gap:16px"><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_cena" checked style="accent-color:var(--gold)"> Cena</label></div></div>
+        <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
+        <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Gestione automatica lista d'attesa</div><div class="opt-sub">Elimini un confermato? Il primo in attesa avanza in automatico</div></div><div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div></div>
+      </div>
     </div>
-    <div class="sec-div">&#9881;&#65039; Opzioni modulo</div>
-    <div class="opt-row"><div><div class="opt-lbl">Iscrizione multipla</div></div><div class="tog" id="stog_multipla" onclick="stog('multipla')"><div class="tog-dot"></div></div></div>
-    <div id="s_acc_opts_row" style="display:none">
-      <div class="opt-row"><div><div class="opt-lbl">Email accompagnatori obbligatoria</div></div><div class="tog" id="stog_acc_email_obb" onclick="stog('acc_email_obb')"><div class="tog-dot"></div></div></div>
-      <div class="opt-row"><div><div class="opt-lbl">Telefono accompagnatori obbligatorio</div></div><div class="tog" id="stog_acc_tel_obb" onclick="stog('acc_tel_obb')"><div class="tog-dot"></div></div></div>
-      <div class="opt-row"><div><div class="opt-lbl">Ammetti bambini</div><div class="opt-sub">Mostra il contatore bambini nel modulo</div></div><div class="tog on" id="stog_bambini" onclick="stog('bambini')"><div class="tog-dot"></div></div></div>
+    <div class="acc" id="s_checkin_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128203; Check-in con QR<span class="acc-dot" id="acc_dot_se_checkin" style="display:none"></span></div>
+          <div class="acc-desc">Segna le presenze con un QR all'ingresso</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="opt-row"><div><div class="opt-lbl">Abilita check-in con QR code</div><div class="opt-sub">Gli iscritti ricevono un QR personale nell'email di conferma. Puoi scansionarlo all'ingresso per segnare la presenza.</div></div><div class="tog" id="stog_qr_checkin" onclick="stog('qr_checkin')"><div class="tog-dot"></div></div></div>
+      </div>
     </div>
-    <div id="s_capienza_pp_row" style="display:none" class="opt-row"><div><div class="opt-lbl">Capienza per persona</div></div><div class="tog" id="stog_cap_persona" onclick="stog('cap_persona')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" id="s_row_tipo"><div><div class="opt-lbl">Tipo iscritto</div></div><div class="tog" id="stog_tipo" onclick="stog('tipo')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" id="s_row_pasto"><div><div class="opt-lbl">Vuoi prenotare il pasto?</div></div><div class="tog" id="stog_pasto" onclick="stog('pasto')"><div class="tog-dot"></div></div></div>
-    <div id="spasto_sub" style="display:none;padding:10px 14px 4px;background:var(--inp-bg);border-radius:0 0 8px 8px;margin-bottom:4px"><div style="display:flex;gap:16px"><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_pranzo" checked style="accent-color:var(--gold)"> Pranzo</label><label style="display:flex;align-items:center;gap:7px;font-size:13px;cursor:pointer"><input type="checkbox" id="sopt_cena" checked style="accent-color:var(--gold)"> Cena</label></div></div>
-    <div class="opt-row"><div><div class="opt-lbl">Consenso newsletter</div></div><div class="tog" id="stog_newsletter" onclick="stog('newsletter')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
-    <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Gestione automatica lista d'attesa</div><div class="opt-sub">Elimini un confermato? Il primo in attesa avanza in automatico</div></div><div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div></div>
-    <div class="sec-div" id="s_secdiv_qr">&#9989; Check-in</div>
-    <div class="opt-row" id="s_row_qr" style="border-bottom:none"><div><div class="opt-lbl">Check-in con QR code</div><div class="opt-sub">Ogni iscritto riceve un QR personale nell'email -- scansionabile all'ingresso</div></div><div class="tog" id="stog_qr_checkin" onclick="stog('qr_checkin')"><div class="tog-dot"></div></div></div>
-    <div class="sec-div">&#129309; Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
-    <div id="sspList" style="margin-bottom:8px"></div>
-    <div class="sec-div">&#128221; Campi aggiuntivi<button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button></div>
-    <div id="scfList" style="margin-bottom:8px"></div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#127912; Aspetto della pagina<span class="acc-dot" id="acc_dot_se_aspetto" style="display:none"></span></div>
+          <div class="acc-desc">Overlay del QR, tema chiaro/scuro e sponsor</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Overlay QR <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale -- appare al centro del QR)</span></label>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <button type="button" id="se_qr_tipo_nessuno" onclick="setQrTipo('se','nessuno')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#10005; Nessuno</button>
+            <button type="button" id="se_qr_tipo_testo" onclick="setQrTipo('se','testo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">T Testo</button>
+            <button type="button" id="se_qr_tipo_logo" onclick="setQrTipo('se','logo')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#128444; Logo</button>
+          </div>
+          <div id="se_qr_testo_wrap" style="display:none"><div style="position:relative"><input id="se_qr_testo" maxlength="18" placeholder="Es. GALA 2026" oninput="updateQrCount('se_qr_testo','se_qr_count');updateQrPreview('se_qr_testo','se_qr_preview')" style="padding-right:48px"><span id="se_qr_count" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-dim);pointer-events:none">18</span></div></div>
+          <div id="se_qr_logo_wrap" style="display:none">
+            <div class="img-upload-area" onclick="document.getElementById('se_qr_logo_file').click()" style="min-height:80px"><div class="img-ph" id="se_qr_logo_ph"><span>&#128444;&#65039;</span>Clicca per caricare il logo</div><img id="se_qr_logo_preview" src="" alt="" style="display:none;max-height:80px;max-width:160px;border-radius:6px;object-fit:contain"></div>
+            <input type="file" id="se_qr_logo_file" accept="image/*" style="display:none" onchange="loadQrLogo('se')">
+            <button type="button" id="se_qr_logo_rm" style="display:none;margin-top:6px;font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;font-family:inherit" onclick="removeQrLogo('se')">&#10005; Rimuovi logo</button>
+            <div style="margin-top:8px;padding:8px 12px;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:7px;font-size:11px;color:var(--text-dim);line-height:1.6">&#128161; Per risultati migliori usa un logo semplice su sfondo trasparente o bianco. Loghi con molti dettagli o testo piccolo potrebbero risultare poco leggibili.</div>
+          </div>
+          <div id="se_qr_preview" style="display:none;margin-top:12px;text-align:center"><div style="display:inline-block;background:#fff;border-radius:8px;padding:10px;box-shadow:0 2px 12px rgba(0,0,0,0.3)"><div id="se_qr_preview_canvas"></div></div><div style="font-size:10px;color:var(--text-dim);margin-top:6px">Anteprima visiva -- il QR definitivo viene generato dopo il salvataggio</div></div>
+        </div>
+        <div class="opt-row" style="border-bottom:none;margin-bottom:8px">
+          <div><div class="opt-lbl">Tema pagina iscrizione</div><div class="opt-sub">Scegli lo stile visivo della landing page</div></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button type="button" id="se_tema_chiaro" onclick="setTema('se','chiaro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid var(--gold);background:var(--gold);color:#0A0A0A;transition:all .2s">&#9728;&#65039; Chiaro</button>
+            <button type="button" id="se_tema_scuro" onclick="setTema('se','scuro')" style="padding:5px 12px;border-radius:6px;font-size:11px;font-weight:700;font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.15);background:transparent;color:var(--text-muted);transition:all .2s">&#127769; Scuro</button>
+          </div>
+        </div>
+        <div class="sec-div">&#129309; Sponsor<button class="add-row-btn" onclick="addSP('s','sspList')">+ Aggiungi</button></div>
+        <div id="sspList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
+    <div class="acc">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#128221; Campi aggiuntivi<span class="acc-dot" id="acc_dot_se_campi" style="display:none"></span></div>
+          <div class="acc-desc">Domande extra nel modulo d'iscrizione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="sec-div">&#128221; Campi aggiuntivi<button class="add-row-btn" onclick="addCF('s','scfList')">+ Aggiungi</button></div>
+        <div id="scfList" style="margin-bottom:8px"></div>
+      </div>
+    </div>
     <div class="modal-footer">
       <button class="btn-outline" onclick="openPreviewFromSettings()">&#128065; Anteprima landing</button>
       <button class="btn-full" onclick="saveSettings()" style="flex:2">Salva modifiche</button>
@@ -901,7 +1023,7 @@ function updateQrPreview(inputId,previewId){var inp=document.getElementById(inpu
 /* ============================================================
    CREATE / EDIT EVENT
    ============================================================ */
-function openCreateEvent(){resetEvForm();setText('evModalTitle',allEvents.length>0?'Crea nuovo evento':'Crea il tuo evento');var sb=document.getElementById('evSaveBtn');if(sb)sb.textContent='Crea evento →';openOv('ovCreate');}
+function openCreateEvent(){resetEvForm();setText('evModalTitle',allEvents.length>0?'Crea nuovo evento':'Crea il tuo evento');var sb=document.getElementById('evSaveBtn');if(sb)sb.textContent='Crea evento →';openOv('ovCreate');accResetModal('ovCreate');accSync('ev');}
 /* Normalizza il telefono di contatto e gestisce la visibilita' del toggle WhatsApp */
 function normTelefono(v) {
   var t = (v || '').replace(/[^0-9+]/g, '');
@@ -942,14 +1064,59 @@ function openEditEvent(){var ev=currentEv;if(!ev)return;setVal('se_nome',ev.nome
   ['multipla','cap_persona','acc_email_obb','acc_tel_obb','tipo','pasto','newsletter','capienza','promo_auto','qr_checkin','bambini','online'].forEach(function(k){var evKey=k==='promo_auto'?'promo_automatica':k==='acc_email_obb'?'opt_accompagnatori_email_obbligatoria':k==='acc_tel_obb'?'opt_accompagnatori_telefono_obbligatorio':k==='qr_checkin'?'opt_qr_checkin':k==='bambini'?'opt_bambini':k==='online'?'evento_online':'opt_'+k;stogState[k]=ev[evKey]!==undefined?ev[evKey]:(k==='newsletter'||k==='bambini');var el=document.getElementById('stog_'+k);if(el){if(stogState[k])el.classList.add('on');else el.classList.remove('on');}});
   var ss=document.getElementById('spasto_sub');if(ss)ss.style.display=stogState.pasto?'block':'none';setDisp('s_capienza_pp_row',stogState.multipla?'flex':'none');setDisp('s_acc_opts_row',stogState.multipla?'block':'none');setOnlineUI('se',stogState.online);
   var sp2=document.getElementById('sopt_pranzo');if(sp2)sp2.checked=ev.opt_pasto_pranzo!==false;var sc2=document.getElementById('sopt_cena');if(sc2)sc2.checked=ev.opt_pasto_cena!==false;
-  setHTML('sspList','');spIdx.s=0;(ev.sponsors||[]).forEach(function(s){addSP('s','sspList',s);});setHTML('scfList','');cfIdx.s=0;(ev.custom_fields||[]).forEach(function(f){addCF('s','scfList',f);});openOv('ovSettings');}
+  setHTML('sspList','');spIdx.s=0;(ev.sponsors||[]).forEach(function(s){addSP('s','sspList',s);});setHTML('scfList','');cfIdx.s=0;(ev.custom_fields||[]).forEach(function(f){addCF('s','scfList',f);});openOv('ovSettings');accResetModal('ovSettings');accSync('se');}
 
 function saveSettings(){var ev=currentEv;if(!ev)return;var nome=getVal('se_nome').trim();if(!nome){alert('Nome obbligatorio.');return;}var emailContatto=getVal('se_email_contatto').trim();if(!emailContatto){alert('Inserisci l\'email di contatto.');return;}var si=document.getElementById('se_img_preview');var upd={nome:nome,email_contatto:emailContatto,telefono_contatto:normTelefono(getVal('se_tel_contatto')),contatto_whatsapp:!!(normTelefono(getVal('se_tel_contatto'))&&stogState.contatto_wa),qr_testo:seQrTipo==='testo'?(getVal('se_qr_testo').trim().slice(0,18)||null):null,qr_logo:seQrTipo==='logo'?(seQrLogoB64||null):null,landing_tema:seTemaState||'chiaro',slug:ev.slug||makeSlug(nome),capienza:parseInt(getVal('se_cap'))||null,data_iso:getVal('se_data'),ora:getVal('se_ora').trim(),luogo:getVal('se_luogo').trim(),descrizione:getVal('se_desc').trim(),immagine:(si&&si.style.display!=='none'&&si.src&&si.src!==window.location.href)?si.src:null,opt_multipla:stogState.multipla,opt_cap_persona:stogState.cap_persona,opt_accompagnatori_email_obbligatoria:stogState.acc_email_obb,opt_accompagnatori_telefono_obbligatorio:stogState.acc_tel_obb,opt_tipo:stogState.tipo,opt_pasto:stogState.pasto,opt_pasto_pranzo:!stogState.pasto||document.getElementById('sopt_pranzo').checked,opt_pasto_cena:!stogState.pasto||document.getElementById('sopt_cena').checked,opt_newsletter:stogState.newsletter,opt_capienza:stogState.capienza,promo_automatica:stogState.promo_auto,opt_qr_checkin:stogState.qr_checkin,opt_bambini:stogState.bambini,evento_online:stogState.online,link_partecipazione:getVal('se_link').trim(),link_invio:(document.getElementById('se_link_invio')||{}).value||'entrambi',mittente_nome:getVal('se_mittente').trim()||null,terminologia:(document.getElementById('se_terminologia')||{}).value||'iscrizione',sponsors:collectSP('sspList'),custom_fields:collectCF('scfList')};
   var updated=sanitizeEvent(dbUpdateEvent(ev.id,upd));currentEv=updated;var idx=allEvents.findIndex(function(e){return e.id===ev.id;});if(idx>=0)allEvents[idx]=currentEv;closeOv('ovSettings');renderDash();showToast('Salvato','g');}
 
 function toggleStatus(){var ev=currentEv;if(!ev)return;var updated=sanitizeEvent(dbUpdateEvent(ev.id,{attivo:!ev.attivo}));currentEv=updated;var idx=allEvents.findIndex(function(e){return e.id===ev.id;});if(idx>=0)allEvents[idx]=currentEv;renderDash();showToast(currentEv.attivo?'Iscrizioni aperte':'Iscrizioni chiuse',currentEv.attivo?'g':'r');}
 
-function setOnlineUI(p,on){var lbl=document.getElementById(p+'_luogo_lbl');if(lbl)lbl.textContent=on?'Piattaforma':(p==='ev'?'Luogo *':'Luogo');var inp=document.getElementById(p+'_luogo');if(inp)inp.placeholder=on?'Es. Zoom, Google Meet, YouTube Live':(p==='ev'?'Es. Villa Reale, Milano':'');var pfx=p==='ev'?'o':'s';setDisp(pfx+'_online_box',on?'block':'none');['_row_tipo','_row_pasto','_row_qr','_secdiv_qr'].forEach(function(s){var e=document.getElementById(pfx+s);if(e)e.style.display=on?'none':'';});var st=p==='ev'?otogState:stogState;var ps=document.getElementById(p==='ev'?'opasto_sub':'spasto_sub');if(ps)ps.style.display=on?'none':(st.pasto?'block':'none');}
+/* ============================================================
+   ACCORDION FORM (apertura/chiusura + pallino "attive")
+   ============================================================ */
+function accToggle(h) {
+  var a = h.closest ? h.closest('.acc') : null;
+  if (!a) { a = h.parentNode; while (a && !(a.className && (' ' + a.className + ' ').indexOf(' acc ') > -1)) a = a.parentNode; }
+  if (a) a.classList.toggle('open');
+}
+function accResetModal(mid) {
+  var m = document.getElementById(mid); if (!m) return;
+  var l = m.querySelectorAll('.acc');
+  for (var i = 0; i < l.length; i++) l[i].classList.remove('open');
+}
+function accSetDot(id, on) { var d = document.getElementById(id); if (d) d.style.display = on ? 'inline-block' : 'none'; }
+function accVal(id) { var e = document.getElementById(id); return e ? (e.value || '') : ''; }
+function accCount(id) { var e = document.getElementById(id); return e ? e.children.length : 0; }
+function accSync(pfx) {
+  var st = pfx === 'ev' ? otogState : stogState;
+  var qr = pfx === 'ev' ? evQrTipo : seQrTipo;
+  var tema = pfx === 'ev' ? evTemaState : seTemaState;
+  var telDigits = accVal(pfx + '_tel_contatto').replace(/\D/g, '').replace(/^39/, '');
+  var mit = accVal(pfx + '_mittente').trim();
+  var term = accVal(pfx + '_terminologia') || 'iscrizione';
+  var spList = pfx === 'ev' ? 'cspList' : 'sspList';
+  var cfList = pfx === 'ev' ? 'ccfList' : 'scfList';
+  var contatti = telDigits.length > 0 || !!st.contatto_wa || mit !== '';
+  var modulo = term !== 'iscrizione' || st.multipla || st.tipo || st.pasto || st.cap_persona || st.capienza || (pfx === 'se' && st.promo_auto);
+  var aspetto = (qr && qr !== 'nessuno') || tema === 'scuro' || accCount(spList) > 0;
+  accSetDot('acc_dot_' + pfx + '_contatti', contatti);
+  accSetDot('acc_dot_' + pfx + '_modulo', modulo);
+  accSetDot('acc_dot_' + pfx + '_checkin', !!st.qr_checkin);
+  accSetDot('acc_dot_' + pfx + '_aspetto', aspetto);
+  accSetDot('acc_dot_' + pfx + '_campi', accCount(cfList) > 0);
+}
+function accInit() {
+  [['ovCreate', 'ev'], ['ovSettings', 'se']].forEach(function(p) {
+    var m = document.getElementById(p[0]); if (!m) return;
+    var sync = function() { accSync(p[1]); };
+    m.addEventListener('input', sync);
+    m.addEventListener('change', sync);
+    m.addEventListener('click', function() { setTimeout(sync, 0); });
+  });
+}
+accInit();
+
+function setOnlineUI(p,on){var lbl=document.getElementById(p+'_luogo_lbl');if(lbl)lbl.textContent=on?'Piattaforma':(p==='ev'?'Luogo *':'Luogo');var inp=document.getElementById(p+'_luogo');if(inp)inp.placeholder=on?'Es. Zoom, Google Meet, YouTube Live':(p==='ev'?'Es. Villa Reale, Milano':'');var pfx=p==='ev'?'o':'s';setDisp(pfx+'_online_box',on?'block':'none');['_row_tipo','_row_pasto'].forEach(function(s){var e=document.getElementById(pfx+s);if(e)e.style.display=on?'none':'flex';});setDisp(pfx+'_checkin_sect',on?'none':'block');var st=p==='ev'?otogState:stogState;var ps=document.getElementById(p==='ev'?'opasto_sub':'spasto_sub');if(ps)ps.style.display=on?'none':(st.pasto?'block':'none');}
 function otog(k){otogState[k]=!otogState[k];var el=document.getElementById('otog_'+k);if(el){if(otogState[k])el.classList.add('on');else el.classList.remove('on');}if(k==='pasto'){var s=document.getElementById('opasto_sub');if(s)s.style.display=otogState[k]?'block':'none';}if(k==='multipla'){setDisp('o_capienza_pp_row',otogState[k]?'flex':'none');setDisp('o_acc_opts_row',otogState[k]?'block':'none');if(!otogState[k]){['cap_persona','acc_email_obb','acc_tel_obb'].forEach(function(kk){otogState[kk]=false;var e=document.getElementById('otog_'+kk);if(e)e.classList.remove('on');});}}if(k==='online'){setOnlineUI('ev',otogState.online);}}
 function stog(k){stogState[k]=!stogState[k];var el=document.getElementById('stog_'+k);if(el){if(stogState[k])el.classList.add('on');else el.classList.remove('on');}if(k==='pasto'){var s=document.getElementById('spasto_sub');if(s)s.style.display=stogState[k]?'block':'none';}if(k==='multipla'){setDisp('s_capienza_pp_row',stogState[k]?'flex':'none');setDisp('s_acc_opts_row',stogState[k]?'block':'none');if(!stogState[k]){['cap_persona','acc_email_obb','acc_tel_obb'].forEach(function(kk){stogState[kk]=false;var e=document.getElementById('stog_'+kk);if(e)e.classList.remove('on');});}}if(k==='online'){setOnlineUI('se',stogState.online);}}
 
@@ -1237,7 +1404,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.2 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.3 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW
