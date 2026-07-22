@@ -490,6 +490,24 @@ a{color:var(--gold)}
 .nl-count{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;align-items:baseline;gap:8px;margin-top:8px}
 .nl-count .n{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--gold)}
 .nl-count .l{font-size:13px;color:var(--muted)}
+.nl-lista{margin-top:10px}
+.nl-lista-vuota{font-size:13px;color:var(--dim);padding:8px 2px}
+.nl-lista-tit{font-size:11px;color:var(--dim);letter-spacing:0.3px;text-transform:uppercase;margin:4px 0 8px}
+.nl-dest{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer}
+.nl-dest input{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
+.nl-dest-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.nl-dest-nome{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nl-dest-mail{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nl-badges{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
+.nl-badge{font-size:10px;font-weight:700;letter-spacing:0.3px;color:var(--gold);background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.4);border-radius:6px;padding:2px 6px}
+.nl-stor{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
+.nl-stor-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.nl-stor-ogg{font-weight:600;font-size:14px}
+.nl-stor-data{font-size:12px;color:var(--dim);white-space:nowrap;flex-shrink:0}
+.nl-stor-meta{font-size:12px;color:var(--muted);margin-top:4px}
+.nl-stor-det{margin-top:8px}
+.nl-stor-det summary{font-size:12px;color:var(--gold);cursor:pointer}
+.nl-stor-corpo{margin-top:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--txt);white-space:pre-wrap;word-break:break-word}
 
 .nota-riga{
   background:var(--card2);
@@ -619,6 +637,7 @@ a{color:var(--gold)}
   var SCHEDA = null;
   var TAB = 'clienti';
   var FILTRO_EV = 'attivi';   // 'attivi' | 'terminati' | 'tutti'
+  var FILTRO_CLI = 'tutti';   // 'tutti' | 'base' | 'pro' | 'agenzia'
 
   // ---------- utilita' ----------
   function $(id){ return document.getElementById(id); }
@@ -893,18 +912,45 @@ a{color:var(--gold)}
 
   function disegnaClienti(){
     var q = filtro();
-    var lista = (DATI.clienti || []).filter(function(c){
+    var base = (DATI.clienti || []).filter(function(c){
       if(!q) return true;
       var s = [c.email, c.nome, c.cognome, c.piano].join(' ').toLowerCase();
       return s.indexOf(q) !== -1;
     });
 
+    // conteggi per i chip (calcolati sul risultato della ricerca corrente)
+    var nBase = 0, nPro = 0, nAg = 0;
+    base.forEach(function(c){
+      var p = String(c.piano || '').toLowerCase();
+      if(p === 'base') nBase++;
+      else if(p === 'pro') nPro++;
+      else if(p === 'agenzia') nAg++;
+    });
+    var nTot = base.length;
+
+    function chip(val, etichetta, cnt){
+      return '<button class="ev-chip' + (FILTRO_CLI === val ? ' on' : '') + '" data-fcli="' + val + '">' +
+             etichetta + '<span class="cnt2">' + cnt + '</span></button>';
+    }
+    var barra = '<div class="ev-filtro">' +
+      chip('tutti', 'Tutti', nTot) +
+      chip('base', 'Base', nBase) +
+      chip('pro', 'Pro', nPro) +
+      chip('agenzia', 'Agenzia', nAg) +
+      '</div>';
+
+    // lista filtrata per tipologia selezionata
+    var lista = base.filter(function(c){
+      if(FILTRO_CLI === 'tutti') return true;
+      return String(c.piano || '').toLowerCase() === FILTRO_CLI;
+    });
+
     if(lista.length === 0){
-      $('tab_clienti').innerHTML = '<div class="empty">Nessun cliente trovato.</div>';
+      $('tab_clienti').innerHTML = barra + '<div class="empty">Nessun cliente in questa vista.</div>';
       return;
     }
 
-    var h = '';
+    var h = barra;
     lista.forEach(function(c){
       var nomeCompleto = [c.nome, c.cognome].filter(Boolean).join(' ');
       var titolo = nomeCompleto || c.email || 'Cliente senza nome';
@@ -1443,6 +1489,16 @@ a{color:var(--gold)}
     { code: 'venditori',       label: 'Venditori' }
   ];
   var nlSeq = 0;
+  var nlDest = [];        // destinatari risolti: [{email, nome, segmenti}]
+  var nlEsclusi = {};     // email escluse -> true (persistono tra i ricalcoli)
+
+  function nlSegBreve(code){
+    if(code === 'clienti_base') return 'Base';
+    if(code === 'clienti_pro') return 'Pro';
+    if(code === 'clienti_agenzia') return 'Agenzia';
+    if(code === 'venditori') return 'Venditore';
+    return code;
+  }
 
   function disegnaNewsletter(){
     var box = $('tab_newsletter');
@@ -1460,6 +1516,7 @@ a{color:var(--gold)}
     });
     h += '<label class="nl-consenso"><input type="checkbox" id="nl_consenso"> Invia solo ai clienti che hanno dato il consenso newsletter</label>';
     h += '<div class="attr-hint">Il consenso vale solo per i clienti. I venditori vengono sempre inclusi.</div>';
+    h += '<div id="nl_lista" class="nl-lista"></div>';
     h += '<div class="nl-count"><span class="n" id="nl_tot">0</span><span class="l">destinatari selezionati</span></div>';
     h += '</div>';
 
@@ -1477,16 +1534,23 @@ a{color:var(--gold)}
     h += '<div class="msg" id="nl_msg"></div>';
     h += '</div>';
 
+    // Storico invii
+    h += '<div class="attr-box">';
+    h += '<div class="sec-title" style="margin-top:0">Storico invii</div>';
+    h += '<div id="nl_storico"><div class="vuoto">Caricamento...</div></div>';
+    h += '</div>';
+
     box.innerHTML = h;
 
     var checks = box.querySelectorAll('.nl-seg');
-    for(var i=0;i<checks.length;i++){ checks[i].addEventListener('change', aggiornaConteggioNl); }
+    for(var i=0;i<checks.length;i++){ checks[i].addEventListener('change', aggiornaListaNl); }
     var cons = $('nl_consenso');
-    if(cons) cons.addEventListener('change', aggiornaConteggioNl);
+    if(cons) cons.addEventListener('change', aggiornaListaNl);
     var btn = $('nl_invia_btn');
     if(btn) btn.addEventListener('click', inviaNewsletter);
 
-    aggiornaConteggioNl();
+    aggiornaListaNl();
+    caricaStorico();
   }
 
   function letturaSegmentiNl(){
@@ -1496,24 +1560,73 @@ a{color:var(--gold)}
     return out;
   }
 
-  async function aggiornaConteggioNl(){
+  // Ricalcola il totale (destinatari non esclusi) e aggiorna il contatore.
+  function aggiornaTotaleNl(){
+    var n = 0;
+    nlDest.forEach(function(d){ if(!nlEsclusi[d.email]) n++; });
+    var tot = $('nl_tot');
+    if(tot) tot.textContent = n;
+  }
+
+  // Disegna l'elenco nominativo dei destinatari con le spunte per escludere.
+  function renderDestinatariNl(){
+    var cont = $('nl_lista');
+    if(!cont) return;
+    if(nlDest.length === 0){
+      cont.innerHTML = '<div class="nl-lista-vuota">Seleziona un gruppo per vedere chi ricevera la newsletter.</div>';
+      aggiornaTotaleNl();
+      return;
+    }
+    var h = '<div class="nl-lista-tit">Chi ricevera (togli la spunta per escludere)</div>';
+    nlDest.forEach(function(d){
+      var nome = d.nome || d.email;
+      var badges = '';
+      (d.segmenti || []).forEach(function(sc){ badges += '<span class="nl-badge">' + esc(nlSegBreve(sc)) + '</span>'; });
+      var checked = nlEsclusi[d.email] ? '' : ' checked';
+      h += '<label class="nl-dest">';
+      h += '<input type="checkbox" class="nl-desti" data-email="' + esc(d.email) + '"' + checked + '>';
+      h += '<span class="nl-dest-info"><span class="nl-dest-nome">' + esc(nome) + '</span><span class="nl-dest-mail">' + esc(d.email) + '</span></span>';
+      h += '<span class="nl-badges">' + badges + '</span>';
+      h += '</label>';
+    });
+    cont.innerHTML = h;
+
+    var chks = cont.querySelectorAll('.nl-desti');
+    for(var i=0;i<chks.length;i++){
+      chks[i].addEventListener('change', function(){
+        var em = this.getAttribute('data-email');
+        if(this.checked){ delete nlEsclusi[em]; }
+        else { nlEsclusi[em] = true; }
+        aggiornaTotaleNl();
+      });
+    }
+    aggiornaTotaleNl();
+  }
+
+  async function aggiornaListaNl(){
     var segmenti = letturaSegmentiNl();
     var soloConsenso = $('nl_consenso') ? $('nl_consenso').checked : false;
     var mySeq = ++nlSeq;
     try{
-      var res = await chiedi('newsletter_conteggio', { segmenti: segmenti, solo_consenso: soloConsenso });
+      var res = await chiedi('newsletter_lista', { segmenti: segmenti, solo_consenso: soloConsenso });
       if(mySeq !== nlSeq) return; // una risposta piu' recente ha gia' aggiornato la UI
       var per = res.per_segmento || {};
       NL_SEG.forEach(function(s){
         var el = $('nln_' + s.code);
         if(el) el.textContent = (per[s.code] != null ? per[s.code] : 0);
       });
-      var tot = $('nl_tot');
-      if(tot) tot.textContent = res.totale || 0;
+      nlDest = res.destinatari || [];
+      // mantieni le esclusioni solo per chi e' ancora presente nella lista
+      var presenti = {};
+      nlDest.forEach(function(d){ presenti[d.email] = true; });
+      Object.keys(nlEsclusi).forEach(function(em){ if(!presenti[em]) delete nlEsclusi[em]; });
+      renderDestinatariNl();
     }catch(e){
       if(mySeq !== nlSeq) return;
       if(!gestisciErrore(e)){
         NL_SEG.forEach(function(s){ var el = $('nln_' + s.code); if(el) el.textContent = '--'; });
+        nlDest = [];
+        renderDestinatariNl();
       }
     }
   }
@@ -1523,6 +1636,35 @@ a{color:var(--gold)}
     var e = esc(txt);
     e = e.replace(/(https?:\/\/[^\s<]+)/g, function(u){ return '<a href="' + u + '">' + u + '</a>'; });
     return e.replace(/\r\n|\r|\n/g, '<br>');
+  }
+
+  async function caricaStorico(){
+    var cont = $('nl_storico');
+    if(!cont) return;
+    try{
+      var res = await chiedi('newsletter_storico', {});
+      var storico = res.storico || [];
+      if(storico.length === 0){ cont.innerHTML = '<div class="vuoto">Nessun invio registrato.</div>'; return; }
+      var h = '';
+      storico.forEach(function(s){
+        var segs = (s.segmenti || []).map(function(sc){ return nlSegBreve(sc); }).join(', ');
+        var meta = (segs || 'nessun gruppo') + ' -- ' + (s.inviate || 0) + ' inviate su ' + (s.totale || 0);
+        if(s.fallite){ meta += ', ' + s.fallite + ' non riuscite'; }
+        if(s.esclusi){ meta += ', ' + s.esclusi + ' esclusi'; }
+        h += '<div class="nl-stor">';
+        h += '<div class="nl-stor-top"><div class="nl-stor-ogg">' + esc(s.oggetto || '(senza oggetto)') + '</div><div class="nl-stor-data">' + dataOraIt(s.created_at) + '</div></div>';
+        h += '<div class="nl-stor-meta">' + esc(meta) + '</div>';
+        if(s.corpo){
+          h += '<details class="nl-stor-det"><summary>Vedi testo</summary><div class="nl-stor-corpo">' + esc(s.corpo) + '</div></details>';
+        }
+        h += '</div>';
+      });
+      cont.innerHTML = h;
+    }catch(e){
+      if(!gestisciErrore(e)){
+        cont.innerHTML = '<div class="vuoto">Impossibile caricare lo storico.</div>';
+      }
+    }
   }
 
   async function inviaNewsletter(){
@@ -1541,8 +1683,10 @@ a{color:var(--gold)}
     if(!corpo){ mostraMsg(msg, 'Scrivi il testo del messaggio.', 'err'); return; }
 
     var totTxt = $('nl_tot') ? $('nl_tot').textContent : '?';
-    if(totTxt === '0'){ mostraMsg(msg, 'Nessun destinatario nei gruppi scelti.', 'err'); return; }
+    if(totTxt === '0'){ mostraMsg(msg, 'Nessun destinatario selezionato.', 'err'); return; }
     if(!window.confirm('Stai per inviare a ' + totTxt + ' destinatari. Procedere?')) return;
+
+    var esclusi = Object.keys(nlEsclusi);
 
     var btn = $('nl_invia_btn');
     btn.disabled = true;
@@ -1555,7 +1699,9 @@ a{color:var(--gold)}
         oggetto: oggetto,
         from_name: fromName,
         reply_to: replyTo,
-        html: nlTestoAHtml(corpo)
+        html: nlTestoAHtml(corpo),
+        corpo: corpo,
+        esclusi: esclusi
       });
       btn.disabled = false;
       btn.textContent = 'Invia newsletter';
@@ -1566,6 +1712,7 @@ a{color:var(--gold)}
         if($('nl_oggetto')) $('nl_oggetto').value = '';
         if($('nl_corpo')) $('nl_corpo').value = '';
       }
+      caricaStorico();
     }catch(e){
       btn.disabled = false;
       btn.textContent = 'Invia newsletter';
@@ -1604,6 +1751,16 @@ a{color:var(--gold)}
       var card = ev.target.closest('[data-cliente]');
       if(!card) return;
       apriCliente(card.getAttribute('data-cliente'));
+    });
+
+    // click sui chip del filtro clienti (tutti / base / pro / agenzia)
+    $('tab_clienti').addEventListener('click', function(ev){
+      var chip = ev.target.closest('[data-fcli]');
+      if(!chip) return;
+      var val = chip.getAttribute('data-fcli');
+      if(val === FILTRO_CLI) return;
+      FILTRO_CLI = val;
+      disegnaClienti();
     });
 
     // click sui chip del filtro eventi (attivi / terminati / tutti)
