@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<title>Dashboard Base — EventsFun</title>
+<title>Dashboard Base -- EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -234,7 +234,7 @@ tbody td.xv{color:var(--gold)}
     <div class="dash-header">
       <div class="dash-header-left">
         <h1 id="dash-title">Dashboard Base</h1>
-        <p id="dash-sub">Nessun evento creato — clicca su "Crea evento" per iniziare</p>
+        <p id="dash-sub">Nessun evento creato -- clicca su "Crea evento" per iniziare</p>
       </div>
       <div class="dash-btns">
         <button class="btn-sm btn-sm-green" id="btnAddReg" onclick="openAddReg()" style="display:none">+ Aggiungi iscritto</button>
@@ -755,7 +755,7 @@ tbody td.xv{color:var(--gold)}
    Trovala su: Supabase → Settings → API → anon public
    ============================================================ */
 var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
-var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epS1oiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
+var SB_KEY = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
 
 /* ============================================================
    SUPABASE API LAYER
@@ -976,7 +976,7 @@ function renderDash() {
   document.getElementById('dash-title').textContent = ev ? ev.nome : 'Dashboard Base';
   document.getElementById('dash-sub').textContent = ev
     ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : ''))
-    : 'Nessun evento creato — clicca su "Crea evento" per iniziare';
+    : 'Nessun evento creato -- clicca su "Crea evento" per iniziare';
 
   /* Pulsanti */
   setDisp('btnAddReg', canEdit ? 'inline-block' : 'none');
@@ -1569,7 +1569,7 @@ function renderPresenze() {
   var presenti = regs.filter(function(r) { return r.presente; }).length;
   document.getElementById('presPres').textContent = presenti + ' presenti';
   document.getElementById('presAss').textContent = (regs.length - presenti) + ' assenti';
-  document.getElementById('presSub').textContent = ev.nome + ' — ' + regs.length + ' iscritti';
+  document.getElementById('presSub').textContent = ev.nome + ' -- ' + regs.length + ' iscritti';
   // Mostra pulsante scanner solo se opt_qr_checkin attivo
   var scanBtn = document.getElementById('btnQrScanner');
   if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosed(ev)) ? 'inline-block' : 'none';
