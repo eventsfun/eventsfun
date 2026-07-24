@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
-<title>Statistiche — EventsFun</title>
+<title>Statistiche -- EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -190,7 +190,7 @@ canvas{display:block;width:100%!important}
    CONFIG
    ============================================================ */
 var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
-var SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZvdXNlbmRyaWRrbHN3eWd2cXBsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk4MTI1NDYsImV4cCI6MjA5NTM4ODU0Nn0.uuSWQ51epS1oiqSLC_GUeeroEzTiMbTAGe7rwMineoc';
+var SB_KEY = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
 var TOKEN = new URLSearchParams(window.location.search).get('token') || '';
 
 function sbH() { return { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json', 'x-ef-token': (TOKEN || '') }; }
@@ -294,7 +294,7 @@ function populateSelect() {
     var opt = document.createElement('option');
     opt.value = ev.id;
     var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT') : '--';
-    opt.textContent = ev.nome + ' — ' + dataStr;
+    opt.textContent = ev.nome + ' -- ' + dataStr;
     sel.appendChild(opt);
   });
 }
