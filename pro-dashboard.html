@@ -839,13 +839,13 @@ async function init() {
     rows = null;
   }
   if (rows === null) {
-    // problema di connessione: prova comunque a entrare
-    PIANO = PIANO || 'base';
+    // problema di connessione: prova comunque a entrare col piano di questa dashboard
+    PIANO = 'pro';
   } else if (!rows.length) {
     localStorage.removeItem('ef_token');
     hideLoading(); showErr(); return;  // token davvero inesistente
   } else {
-    PIANO = rows[0].orders ? rows[0].orders.piano : PIANO;
+    PIANO = rows[0].orders ? rows[0].orders.piano : 'pro';
     if (rows[0].orders) { accountName = ((rows[0].orders.nome || '') + ' ' + (rows[0].orders.cognome || '')).trim(); }
   }
 
