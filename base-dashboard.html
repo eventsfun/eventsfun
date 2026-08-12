@@ -861,6 +861,30 @@ async function init() {
 function hideLoading() { setDisp('loading', 'none'); }
 function showErr() { showView('error'); }
 
+/* Traduce gli errori tecnici (spesso JSON grezzo) in messaggi leggibili per l'organizzatore.
+   Se il messaggio e' gia' umano (non tecnico) lo mostra com'e'; altrimenti un fallback generico. */
+function friendlyError(e) {
+  var raw = (e && e.message != null) ? String(e.message) : '';
+  var parsed = null;
+  try { parsed = JSON.parse(raw); } catch (_ignore) {}
+  var code = (parsed && parsed.code) ? String(parsed.code) : '';
+  var msg = (parsed && parsed.message) ? String(parsed.message) : raw;
+  var m = msg.toLowerCase();
+  if (code === '23505' || m.indexOf('duplicate key') !== -1) {
+    if (m.indexOf('slug') !== -1) return 'Esiste gia\' un evento con un indirizzo simile. Cambia leggermente il nome e riprova.';
+    return 'Questo dato risulta gia\' presente. Controlla e riprova.';
+  }
+  if (code === '23503' || m.indexOf('foreign key') !== -1) return 'Riferimento non valido. Ricarica la pagina e riprova.';
+  if (code === '23514' || m.indexOf('check constraint') !== -1 || m.indexOf('violates check') !== -1) return 'Alcuni dati non sono validi. Controlla i campi e riprova.';
+  if (code === '23502' || m.indexOf('null value') !== -1 || m.indexOf('not-null') !== -1) return 'Manca un dato obbligatorio. Controlla i campi e riprova.';
+  if (code === '42501' || m.indexOf('row-level security') !== -1 || m.indexOf('permission denied') !== -1) return 'Non hai i permessi per questa operazione. Prova a ricaricare la pagina.';
+  if (m.indexOf('jwt') !== -1 || (m.indexOf('token') !== -1 && m.indexOf('expired') !== -1)) return 'Sessione scaduta. Ricarica la pagina per continuare.';
+  if (m.indexOf('failed to fetch') !== -1 || m.indexOf('networkerror') !== -1 || m.indexOf('load failed') !== -1 || m.indexOf('network request failed') !== -1) return 'Connessione assente o instabile. Riprova tra poco.';
+  var tecnico = !!parsed || raw.charAt(0) === '{' || m.indexOf('violates') !== -1 || m.indexOf('constraint') !== -1 || m.indexOf('pgrst') !== -1 || m.indexOf('supabase') !== -1;
+  if (!tecnico && raw.trim() && raw.length <= 160) return raw.trim();
+  return 'Qualcosa e\' andato storto. Riprova, e se il problema resta ricarica la pagina.';
+}
+
 /* ============================================================
    ONBOARDING
    ============================================================ */
@@ -1243,7 +1267,7 @@ async function saveEvent() {
     renderDash();
     showToast('Evento creato!', 'g');
     setTimeout(function() { openQR(); }, 400);
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
+  } catch(e) { showToast(friendlyError(e), 'r'); }
 }
 
 function openEditEvent() {
@@ -1318,7 +1342,7 @@ async function saveSettings() {
   try {
     currentEv = await sbPatch('events', ev.id, upd);
     closeOv('ovSettings'); renderDash(); showToast('Salvato', 'g');
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
+  } catch(e) { showToast(friendlyError(e), 'r'); }
 }
 
 /* STATUS */
@@ -1468,7 +1492,7 @@ async function saveReg() {
       showToast('Iscritto aggiunto', 'g');
     }
     closeOv('ovReg'); renderDash();
-  } catch(e) { showToast('Errore: ' + e.message, 'r'); }
+  } catch(e) { showToast(friendlyError(e), 'r'); }
 }
 function openDel(id, name) { delPending = id; document.getElementById('delName').textContent = name; openOv('ovDel'); }
 async function confirmDel() {
@@ -1498,7 +1522,7 @@ async function sendParticipationLink() {
     if (!r.ok) { throw new Error(data.error || 'Errore invio'); }
     showToast('Link inviato a ' + (data.sent || 0) + ' iscritti' + (data.errors ? ' (' + data.errors + ' non riusciti)' : '') + '.', 'g');
   } catch (e) {
-    showToast('Errore: ' + e.message, 'r');
+    showToast(friendlyError(e), 'r');
   } finally {
     if (btn) { btn.disabled = false; btn.textContent = '📧 Invia link'; }
   }
