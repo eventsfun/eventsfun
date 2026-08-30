@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EventsFun — Gestione iscrizioni per eventi</title>
+<title>EventsFun - Gestione iscrizioni per eventi</title>
 <meta name="description" content="Crea la landing page del tuo evento, raccogli iscrizioni e gestisci tutto da un'unica dashboard. Semplice, veloce, professionale. Funziona anche per eventi online come webinar e dirette.">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
 <style>
@@ -40,6 +40,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:68px;d
 
 /* ── HERO ── */
 .hero{min-height:100vh;display:flex;align-items:center;justify-content:center;position:relative;padding:120px 40px 80px;overflow:hidden}
+.hero-photo{position:absolute;inset:0;background-image:url('hero-bg.webp');background-size:cover;background-position:center top}
+.hero-photo::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(10,10,10,0.50) 0%,rgba(10,10,10,0.80) 45%,rgba(10,10,10,0.97) 78%,#0A0A0A 100%)}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(201,169,110,0.12) 0%,transparent 60%)}
 .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:60px 60px;mask-image:radial-gradient(ellipse 80% 70% at 50% 0%,black,transparent)}
 .hero-content{max-width:800px;text-align:center;position:relative;z-index:1}
@@ -241,6 +243,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   nav{padding:0 16px}
   .nav-links{display:none}
   .hero{padding:100px 20px 60px}
+  .hero-photo{background-image:url('hero-bg-mobile.webp')}
   .features{padding:80px 20px}
   .feat-grid{grid-template-columns:1fr}
   .features-header{grid-template-columns:1fr}
@@ -339,13 +342,14 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
 <!-- HERO -->
 <section class="hero">
+  <div class="hero-photo"></div>
   <div class="hero-bg"></div>
   <div class="hero-grid"></div>
   <div style="position:relative;z-index:1;width:100%;max-width:1000px">
     <div class="hero-content fade-up">
       <div class="hero-badge">Gestione eventi semplificata</div>
       <h1>Le iscrizioni al tuo evento,<br><em>senza complicazioni</em></h1>
-      <p class="hero-sub">Crea la pagina del tuo evento in pochi minuti. Raggiungi i partecipanti come vuoi — QR code sulla locandina, link sui social, bottone sul sito, o direttamente nella tua newsletter.</p>
+      <p class="hero-sub">Crea la pagina del tuo evento in pochi minuti. Raggiungi i partecipanti come vuoi - QR code sulla locandina, link sui social, bottone sul sito, o direttamente nella tua newsletter.</p>
       <p style="font-size:13px;color:var(--text-dim);margin:-24px auto 0;max-width:560px">I dati dei tuoi iscritti restano solo tuoi. Nessun marketplace, nessun intermediario. <a href="#tuoi-dati" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4);padding-bottom:1px">Scopri perché &darr;</a></p>
 
     </div>
@@ -525,7 +529,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   <div class="demo-cta-inner fade-up">
     <div class="demo-cta-label">Il prodotto</div>
     <h2 class="demo-cta-title">Vuoi vedere come funziona davvero?</h2>
-    <p class="demo-cta-sub">La demo è interattiva e completa -- crea un evento, raccoglie iscrizioni, gestisce il check-in. Esattamente come nella versione reale.</p>
+    <p class="demo-cta-sub">La demo è interattiva e completa - crea un evento, raccoglie iscrizioni, gestisce il check-in. Esattamente come nella versione reale.</p>
     <div class="demo-cta-btns">
       <a href="demo.html" class="btn-primary">Prova la demo gratuita →</a>
       <a href="#come-funziona" class="btn-secondary">Come funziona</a>
@@ -576,12 +580,12 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="feat">
         <div class="feat-icon">🔗</div>
         <h3>QR code e link condivisibile</h3>
-        <p>Ogni evento ha il suo QR da stampare sulla locandina e un link diretto da usare ovunque — social, sito web, newsletter, WhatsApp, email. E dopo l'iscrizione, ogni partecipante può invitare i suoi amici su WhatsApp con un tocco: il passaparola lavora per te.</p>
+        <p>Ogni evento ha il suo QR da stampare sulla locandina e un link diretto da usare ovunque - social, sito web, newsletter, WhatsApp, email. E dopo l'iscrizione, ogni partecipante può invitare i suoi amici su WhatsApp con un tocco: il passaparola lavora per te.</p>
       </div>
       <div class="feat">
         <div class="feat-icon">📋</div>
         <h3>Campi personalizzati</h3>
-        <p>Ogni evento può raccogliere dati diversi: azienda, settore, LinkedIn, taglia t-shirt — qualunque cosa serva.</p>
+        <p>Ogni evento può raccogliere dati diversi: azienda, settore, LinkedIn, taglia t-shirt - qualunque cosa serva.</p>
       </div>
       <div class="feat">
         <div class="feat-icon">📊</div>
@@ -591,7 +595,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="feat">
         <div class="feat-icon">🤝</div>
         <h3>Gestione sponsor</h3>
-        <p>Inserisci logo e link degli sponsor su ogni evento. Visibilità garantita a chi finanzia — valore aggiunto da vendere.</p>
+        <p>Inserisci logo e link degli sponsor su ogni evento. Visibilità garantita a chi finanzia - valore aggiunto da vendere.</p>
       </div>
       <div class="feat">
         <div class="feat-icon">📥</div>
@@ -608,7 +612,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     <div class="how-header fade-up">
       <div class="section-label">Il processo</div>
       <h2 class="section-title">Come funziona,<br>passo dopo passo</h2>
-      <p class="section-sub">Dal momento in cui crei l'evento a quando accogli i partecipanti — tutto automatico.</p>
+      <p class="section-sub">Dal momento in cui crei l'evento a quando accogli i partecipanti - tutto automatico.</p>
     </div>
 
     <div class="fade-up" style="transition-delay:.1s;margin-top:56px;display:grid;grid-template-columns:1fr 1fr;gap:24px;max-width:860px;margin-left:auto;margin-right:auto">
@@ -761,7 +765,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="case">
         <span class="case-emoji">🎓</span>
         <h3>Conferenze & Workshop</h3>
-        <p>Raccogli dati specifici per ogni partecipante — azienda, ruolo, settore — e organizza l'accoglienza in modo professionale.</p>
+        <p>Raccogli dati specifici per ogni partecipante - azienda, ruolo, settore - e organizza l'accoglienza in modo professionale.</p>
       </div>
       <div class="case">
         <span class="case-emoji">🏆</span>
@@ -782,7 +786,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="section-label">Newsletter</div>
       <div style="font-size:11px;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-dim);font-weight:600;margin-bottom:14px">Solo piano Agenzia</div>
       <h2 class="section-title">Parla direttamente<br>con i tuoi iscritti.</h2>
-      <p class="section-sub" style="max-width:420px;margin-bottom:40px">Hai già raccolto i contatti. Usali. Invia comunicazioni mirate agli iscritti di ogni evento -- senza uscire dalla dashboard, senza strumenti esterni.</p>
+      <p class="section-sub" style="max-width:420px;margin-bottom:40px">Hai già raccolto i contatti. Usali. Invia comunicazioni mirate agli iscritti di ogni evento - senza uscire dalla dashboard, senza strumenti esterni.</p>
 
       <div class="nl-benefits">
         <div class="nl-benefit">
@@ -796,7 +800,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="nl-benefit-icon">&#9993;</div>
           <div>
             <div class="nl-benefit-title">Il tuo nome, la tua email</div>
-            <div class="nl-benefit-desc">Il mittente sei tu. Le risposte arrivano a te. I tuoi iscritti non sanno che usi EventsFun -- vedono solo il tuo brand.</div>
+            <div class="nl-benefit-desc">Il mittente sei tu. Le risposte arrivano a te. I tuoi iscritti non sanno che usi EventsFun - vedono solo il tuo brand.</div>
           </div>
         </div>
         <div class="nl-benefit">
@@ -841,11 +845,11 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
             </div>
             <div class="nl-composer-row">
               <span class="nl-composer-label">Oggetto</span>
-              <span class="nl-composer-val">Grazie per esserci stati -- ci vediamo l'anno prossimo!</span>
+              <span class="nl-composer-val">Grazie per esserci stati - ci vediamo l'anno prossimo!</span>
             </div>
             <div class="nl-composer-msg">
               <p>Cari amici,</p>
-              <p>quest'anno eravate in <strong>247</strong> -- il record di sempre. Grazie di cuore per la partecipazione e il calore che ci avete donato.</p>
+              <p>quest'anno eravate in <strong>247</strong> - il record di sempre. Grazie di cuore per la partecipazione e il calore che ci avete donato.</p>
               <p>L'edizione 2026 è già in programma. Restate sintonizzati.</p>
               <p style="margin-top:12px">A presto,<br><strong>Pro Loco Valpadana</strong></p>
             </div>
@@ -1008,7 +1012,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <div style="font-family:'Syne',sans-serif;font-size:44px;font-weight:800;letter-spacing:-2px;color:var(--text);line-height:1;margin-bottom:4px">
           <span id="proPrice">€69</span><span style="font-size:16px;font-weight:400;letter-spacing:0;color:var(--text-muted)" id="proPeriod"> / mese</span>
         </div>
-        <div id="proAnnualNote" style="display:none;font-size:11px;color:#7ED99A;margin-bottom:4px">€588 / anno -- risparmi 2 mesi rispetto al mensile</div>
+        <div id="proAnnualNote" style="display:none;font-size:11px;color:#7ED99A;margin-bottom:4px">€588 / anno - risparmi 2 mesi rispetto al mensile</div>
         <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px" id="proConvenienza">Organizzi più di 1 evento al mese? Il Pro si ripaga già al secondo.</div>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,0.08);line-height:1.65">Per chi gestisce più eventi ogni mese. Tutto incluso, eventi e iscritti illimitati.</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
@@ -1072,7 +1076,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Come ricevo l'accesso dopo il pagamento?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Immediatamente dopo il pagamento ricevi una email con il link per impostare la tua password. Da quel momento puoi accedere alla tua area personale e alla dashboard -- nessuna installazione, funziona direttamente nel browser.</div>
+        <div class="faq-a">Immediatamente dopo il pagamento ricevi una email con il link per impostare la tua password. Da quel momento puoi accedere alla tua area personale e alla dashboard - nessuna installazione, funziona direttamente nel browser.</div>
       </div>
 
       <div class="faq-item">
@@ -1080,7 +1084,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Per quanto tempo posso usare il pacchetto Base o Pro?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">I pacchetti Base e Pro sono validi per un singolo evento. La pagina pubblica si chiude automaticamente il giorno dopo la data dell'evento -- non devi fare nulla. Dopo la chiusura puoi continuare ad accedere ai dati degli iscritti per 30 giorni, poi vengono eliminati.</div>
+        <div class="faq-a">I pacchetti Base e Pro sono validi per un singolo evento. La pagina pubblica si chiude automaticamente il giorno dopo la data dell'evento - non devi fare nulla. Dopo la chiusura puoi continuare ad accedere ai dati degli iscritti per 30 giorni, poi vengono eliminati.</div>
       </div>
 
       <div class="faq-item">
@@ -1088,7 +1092,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Cosa succede dopo la data dell'evento?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">La pagina pubblica va offline automaticamente il giorno dopo. I dati degli iscritti restano disponibili nella tua dashboard per 30 giorni -- puoi scaricarli in CSV o PDF in qualsiasi momento. Passati i 30 giorni i dati vengono eliminati definitivamente.</div>
+        <div class="faq-a">La pagina pubblica va offline automaticamente il giorno dopo. I dati degli iscritti restano disponibili nella tua dashboard per 30 giorni - puoi scaricarli in CSV o PDF in qualsiasi momento. Passati i 30 giorni i dati vengono eliminati definitivamente.</div>
       </div>
 
       <div class="faq-item">
@@ -1104,7 +1108,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Il partecipante deve scaricare un'app per iscriversi?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">No. Il partecipante può scansionare il QR con la fotocamera del telefono, oppure cliccare direttamente sul link ricevuto via social, email o newsletter. In entrambi i casi si apre una pagina web nel browser — nessuna app, nessun account, nessun download.</div>
+        <div class="faq-a">No. Il partecipante può scansionare il QR con la fotocamera del telefono, oppure cliccare direttamente sul link ricevuto via social, email o newsletter. In entrambi i casi si apre una pagina web nel browser - nessuna app, nessun account, nessun download.</div>
       </div>
 
       <div class="faq-item">
@@ -1112,7 +1116,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Quanti iscritti posso raccogliere?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Con Evento Base il limite è la capienza che imposti tu per l'evento (es. 100 posti). Con Evento Pro e Agenzia gli iscritti sono illimitati — raccoglie iscrizioni finché non chiudi l'evento.</div>
+        <div class="faq-a">Con Evento Base il limite è la capienza che imposti tu per l'evento (es. 100 posti). Con Evento Pro e Agenzia gli iscritti sono illimitati - raccoglie iscrizioni finché non chiudi l'evento.</div>
       </div>
 
       <div class="faq-item">
@@ -1120,7 +1124,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Posso inserire l'immagine o la locandina del mio evento sulla pagina?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Sì, in tutti i piani. Durante la creazione dell'evento puoi caricare una qualsiasi immagine -- locandina, logo, foto -- che viene mostrata direttamente sulla pagina pubblica di iscrizione. È il modo più immediato per dare identità visiva al tuo evento.</div>
+        <div class="faq-a">Sì, in tutti i piani. Durante la creazione dell'evento puoi caricare una qualsiasi immagine - locandina, logo, foto - che viene mostrata direttamente sulla pagina pubblica di iscrizione. È il modo più immediato per dare identità visiva al tuo evento.</div>
       </div>
 
       <div class="faq-item">
@@ -1128,7 +1132,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Posso usare EventsFun per più eventi diversi?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Evento Base ed Evento Pro sono per un singolo evento ciascuno. Se organizzi più eventi l'anno, il piano Agenzia a €69/mese ti conviene già dal secondo evento — hai tutto illimitato.</div>
+        <div class="faq-a">Evento Base ed Evento Pro sono per un singolo evento ciascuno. Se organizzi più eventi l'anno, il piano Agenzia a €69/mese ti conviene già dal secondo evento - hai tutto illimitato.</div>
       </div>
 
       <div class="faq-item">
@@ -1159,7 +1163,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
     <div style="text-align:center;margin-top:48px;padding:24px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,0.02)">
       <div style="font-size:14px;font-weight:500;margin-bottom:6px">Non hai trovato risposta?</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Scrivici nella sezione contatti qui sotto — rispondiamo entro 24 ore.</p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Scrivici nella sezione contatti qui sotto - rispondiamo entro 24 ore.</p>
       <a href="#contatti" style="display:inline-block;padding:10px 24px;border-radius:8px;border:1px solid rgba(201,169,110,0.3);color:var(--gold);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(201,169,110,0.08)'" onmouseout="this.style.background='transparent'">Scrivici →</a>
     </div>
 
@@ -1172,7 +1176,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     <div class="demo-header fade-up">
       <div class="section-label">Contatti</div>
       <h2 class="section-title">Hai domande?</h2>
-      <p class="section-sub" style="margin:12px auto 0">Per informazioni, personalizzazioni o casi particolari — scrivici. Rispondiamo entro 24 ore.</p>
+      <p class="section-sub" style="margin:12px auto 0">Per informazioni, personalizzazioni o casi particolari - scrivici. Rispondiamo entro 24 ore.</p>
     </div>
     <div class="demo-form fade-up" style="transition-delay:.1s" id="demoForm">
       <div class="form-row">
@@ -1200,10 +1204,10 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <label>Piano di interesse</label>
           <select id="f_piano">
             <option value="">Seleziona...</option>
-            <option>Evento Base — €29</option>
-            <option>Evento Pro — €79</option>
-            <option>Agenzia — €69/mese</option>
-            <option>Agenzia — €588/anno (2 mesi gratis)</option>
+            <option>Evento Base - €29</option>
+            <option>Evento Pro - €79</option>
+            <option>Agenzia - €69/mese</option>
+            <option>Agenzia - €588/anno (2 mesi gratis)</option>
             <option>Non so ancora, voglio informazioni</option>
           </select>
         </div>
