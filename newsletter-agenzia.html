@@ -636,6 +636,9 @@
     <button class="tab-btn" onclick="switchTab('invia')">
       &#9654; Invia newsletter
     </button>
+    <button class="tab-btn" onclick="switchTab('programma')">
+      &#9200; Programma invio
+    </button>
     <button class="tab-btn" onclick="switchTab('gestione')">
       &#9998; Gestione
     </button>
@@ -754,6 +757,137 @@
     </div>
   </div>
 
+  <!-- TAB: PROGRAMMA INVIO -->
+  <div class="tab-content" id="tab-programma">
+
+    <!-- Elenco programmate -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Newsletter programmate</div>
+        <button class="btn btn-outline btn-sm" onclick="caricaProgrammate()">&#8635; Aggiorna</button>
+      </div>
+      <div id="prog-list-loading" class="loading-row">
+        <div class="spinner"></div> Caricamento...
+      </div>
+      <div id="prog-list" style="display:none;"></div>
+      <div id="prog-list-empty" class="empty-state" style="display:none;">
+        <div class="icon">&#9200;</div>
+        <p>Nessuna newsletter programmata al momento.</p>
+      </div>
+    </div>
+
+    <!-- Form nuova / modifica -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="prog-form-title">Nuova newsletter programmata</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Evento *</label>
+        <select class="form-select" id="prog-evento" onchange="progCaricaPartecipanti()"></select>
+        <div class="form-hint">I destinatari saranno i partecipanti confermati di questo evento.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Oggetto email *</label>
+        <input class="form-input" type="text" id="prog-oggetto" placeholder="Es: Materiale del corso" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nome mittente *</label>
+        <input class="form-input" type="text" id="prog-mittente" placeholder="Es: Mario Rossi / Associazione XYZ" />
+        <div class="form-hint">L'invio avviene tramite EventsFun, ma il reply-to sara' il tuo indirizzo.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email reply-to *</label>
+        <input class="form-input" type="email" id="prog-replyto" placeholder="tua@email.it" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Testo email *</label>
+        <div class="editor-toolbar">
+          <button class="tb-btn" onclick="progCmd('bold')" title="Grassetto"><b>B</b></button>
+          <button class="tb-btn" onclick="progCmd('italic')" title="Corsivo"><i>I</i></button>
+          <button class="tb-btn" onclick="progCmd('underline')" title="Sottolineato"><u>S</u></button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="progCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
+        </div>
+        <div
+          class="editor-area"
+          id="prog-editor"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          aria-label="Corpo email programmata"
+          data-placeholder="Scrivi qui il tuo messaggio..."
+        ></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Materiale allegato (facoltativo)</label>
+        <input type="file" id="prog-file" style="display:none" onchange="progScegliFile(this)">
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('prog-file').click()">&#128206; Scegli file</button>
+        <div id="prog-file-info" style="margin-top:10px;display:none;"></div>
+        <div class="form-hint">Massimo 50 MB per file. I file leggeri possono andare anche come allegato, i pesanti solo come link.</div>
+      </div>
+
+      <div id="prog-materiale-opts" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Come inviare il materiale</label>
+          <select class="form-select" id="prog-modalita">
+            <option value="entrambi">Link di download + allegato</option>
+            <option value="link">Solo link di download</option>
+            <option value="allegato">Solo allegato</option>
+          </select>
+          <div class="form-hint" id="prog-modalita-hint"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Per quanti giorni resta scaricabile il materiale</label>
+          <select class="form-select" id="prog-scadenza">
+            <option value="7">7 giorni</option>
+            <option value="15">15 giorni</option>
+            <option value="30" selected>30 giorni</option>
+          </select>
+          <div class="form-hint">Il conteggio parte dalla data di invio. Scaduto il termine, il materiale si cancella da solo.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Data e ora di invio *</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input class="form-input" type="date" id="prog-data" style="max-width:200px;" />
+          <input class="form-input" type="time" id="prog-ora" style="max-width:140px;" />
+        </div>
+        <div class="form-hint">L'invio parte in automatico entro circa 15 minuti dall'orario scelto.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Destinatari (partecipanti dell'evento)</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button class="btn btn-outline btn-sm" onclick="progSelTutti(true)">Seleziona tutti</button>
+          <button class="btn btn-outline btn-sm" onclick="progSelTutti(false)">Deseleziona tutti</button>
+          <button class="btn btn-outline btn-sm" onclick="progDeselNonConsenso()">Deseleziona chi non ha il consenso</button>
+        </div>
+        <div class="dest-counter">
+          <span class="num" id="prog-dest-count">0</span>
+          <div>
+            <div class="label">destinatari selezionati</div>
+            <div class="form-hint" style="margin-top:0;">Di default sono inclusi tutti. Deseleziona chi non deve ricevere il materiale.</div>
+          </div>
+        </div>
+        <div id="prog-partecipanti" style="margin-top:12px;max-height:340px;overflow-y:auto;"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" id="prog-annulla-edit" style="display:none;" onclick="progResetForm()">Annulla modifica</button>
+        <button class="btn btn-gold" id="prog-salva" onclick="progSalva()">&#9200; Programma invio</button>
+      </div>
+
+      <div id="alert-prog" class="alert" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
   <!-- TAB: GESTIONE CANCELLAZIONI -->
   <div class="tab-content" id="tab-gestione">
     <div class="card">
@@ -831,6 +965,7 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   // ===== CONFIG =====
   const SUPA_URL = 'https://vousendridklswygvqpl.supabase.co';
@@ -944,6 +1079,8 @@
     renderLista();
     renderSelectorInvia();
     renderGestione();
+    renderProgEventi();
+    caricaProgrammate();
   }
 
 
@@ -1609,12 +1746,13 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
 
   function switchTab(name) {
     document.querySelectorAll('.tab-btn').forEach((b, i) => {
-      const names = ['lista', 'invia', 'gestione', 'storico'];
+      const names = ['lista', 'invia', 'programma', 'gestione', 'storico'];
       b.classList.toggle('active', names[i] === name);
     });
     document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
     if (name === 'storico') renderStorico();
+    if (name === 'programma') caricaProgrammate();
   }
 
   // ===== UTILS =====
@@ -1628,6 +1766,373 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
     el.textContent = msg;
     if (type !== 'info') setTimeout(() => { el.classList.remove('show'); }, 6000);
   }
+
+  // ===== PROGRAMMA INVIO =====
+  const PROG_SAFE_ATTACH = 7 * 1024 * 1024; // 7 MB reali: oltre, l'allegato rimbalza su Gmail/Outlook
+  const PROG_UPLOAD_FN = SUPA_URL + '/functions/v1/materiale-signed-upload';
+  const PROG_BUCKET = 'materiali-newsletter';
+  let progFile = null;            // nuovo file selezionato (oggetto File)
+  let progPartecipanti = [];      // { id, nome, cognome, email, newsletter, selected }
+  let progEditId = null;          // id se si sta modificando una programmata
+  let progEditMateriale = null;   // materiale gia' caricato in modifica { path, nome, size, mime }
+
+  function renderProgEventi() {
+    const sel = document.getElementById('prog-evento');
+    if (!sel) return;
+    const opts = ['<option value="">Seleziona un evento...</option>'];
+    allEvents.forEach(function (ev) {
+      const dataStr = ev.data_iso ? new Date(ev.data_iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }) : '';
+      opts.push('<option value="' + ev.id + '">' + escHtml(ev.nome || 'Evento') + (dataStr ? ' - ' + dataStr : '') + '</option>');
+    });
+    sel.innerHTML = opts.join('');
+  }
+
+  function progCmd(cmd) {
+    document.getElementById('prog-editor').focus();
+    document.execCommand(cmd, false, null);
+  }
+
+  function progScegliFile(input) {
+    const file = input.files && input.files[0];
+    input.value = '';
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) { alert('File troppo grande: massimo 50 MB.'); return; }
+    progFile = file;
+    progEditMateriale = null; // un nuovo file sostituisce l'eventuale materiale in modifica
+    mostraInfoFile(file.name, file.size, false);
+  }
+
+  function mostraInfoFile(nome, size, esistente) {
+    const box = document.getElementById('prog-file-info');
+    const opts = document.getElementById('prog-materiale-opts');
+    const mb = size / (1024 * 1024);
+    const mbStr = mb < 0.1 ? (Math.round(size / 1024) + ' KB') : (mb.toFixed(1) + ' MB');
+    const pesante = size > PROG_SAFE_ATTACH;
+    const colore = pesante ? 'var(--warn)' : 'var(--success)';
+    const semaforo = pesante ? '&#9888; pesante' : '&#10003; leggero';
+    box.style.display = 'block';
+    box.innerHTML = '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:10px 12px;">'
+      + '<span style="font-size:13px;color:var(--text)">&#128206; ' + escAtt(nome) + '</span>'
+      + '<span style="font-size:12px;color:var(--text-dim)">' + mbStr + '</span>'
+      + '<span style="font-size:12px;color:' + colore + ';font-weight:600;">' + semaforo + '</span>'
+      + (esistente ? '<span style="font-size:11px;color:var(--text-muted)">(gia\' caricato)</span>' : '')
+      + '<span onclick="progRimuoviFile()" title="Rimuovi" style="cursor:pointer;color:var(--text-dim);font-weight:700;margin-left:auto;">&#10006;</span>'
+      + '</div>';
+    opts.style.display = 'block';
+    aggiornaVincoliModalita(pesante);
+  }
+
+  function aggiornaVincoliModalita(pesante) {
+    const modSel = document.getElementById('prog-modalita');
+    const hint = document.getElementById('prog-modalita-hint');
+    const optAlleg = modSel.querySelector('option[value="allegato"]');
+    const optEntr = modSel.querySelector('option[value="entrambi"]');
+    if (pesante) {
+      optAlleg.disabled = true;
+      optEntr.disabled = true;
+      modSel.value = 'link';
+      hint.innerHTML = '<span style="color:var(--warn)">File oltre 7 MB: puo\' andare solo come link di download (come allegato rimbalzerebbe su Gmail o Outlook).</span>';
+    } else {
+      optAlleg.disabled = false;
+      optEntr.disabled = false;
+      hint.innerHTML = '<span style="color:var(--text-dim)">Sotto i 7 MB il file puo\' andare sia come allegato sia come link.</span>';
+    }
+  }
+
+  function progRimuoviFile() {
+    progFile = null;
+    progEditMateriale = null;
+    const box = document.getElementById('prog-file-info');
+    box.style.display = 'none';
+    box.innerHTML = '';
+    document.getElementById('prog-materiale-opts').style.display = 'none';
+  }
+
+  async function progCaricaPartecipanti() {
+    const evId = document.getElementById('prog-evento').value;
+    const box = document.getElementById('prog-partecipanti');
+    if (!evId) { progPartecipanti = []; box.innerHTML = ''; progAggiornaCount(); return; }
+    box.innerHTML = '<div class="loading-row"><div class="spinner"></div> Caricamento partecipanti...</div>';
+    try {
+      const r = await fetch(
+        SUPA_URL + '/rest/v1/registrations?event_id=eq.' + evId + '&in_lista_attesa=eq.false&select=id,nome,cognome,email,newsletter&order=created_at.asc',
+        { headers: supaHeaders() }
+      );
+      const regs = await r.json() || [];
+      progPartecipanti = (Array.isArray(regs) ? regs : []).filter(function (x) { return x.email && x.email.indexOf('@') >= 0; }).map(function (x) {
+        return { id: x.id, nome: x.nome || '', cognome: x.cognome || '', email: x.email, newsletter: x.newsletter === true, selected: true };
+      });
+      renderProgPartecipanti();
+    } catch (e) {
+      box.innerHTML = '<div style="color:var(--danger);font-size:13px;">Errore nel caricamento dei partecipanti.</div>';
+    }
+  }
+
+  function renderProgPartecipanti() {
+    const box = document.getElementById('prog-partecipanti');
+    if (progPartecipanti.length === 0) {
+      box.innerHTML = '<div style="color:var(--text-muted);font-size:13px;padding:8px;">Nessun partecipante confermato per questo evento.</div>';
+      progAggiornaCount();
+      return;
+    }
+    box.innerHTML = progPartecipanti.map(function (p) {
+      const badge = p.newsletter
+        ? '<span class="badge badge-green">&#10003; consenso</span>'
+        : '<span class="badge badge-gray">no consenso</span>';
+      return '<label class="iscritto-row" style="cursor:pointer;">'
+        + '<input type="checkbox" ' + (p.selected ? 'checked' : '') + ' onchange="progToggle(\'' + p.id + '\')" style="margin-right:10px;" />'
+        + '<div class="iscritto-info" style="flex:1;min-width:0;">'
+        + '<div class="iscritto-nome">' + escHtml(p.nome) + ' ' + escHtml(p.cognome) + '</div>'
+        + '<div class="iscritto-email">' + escHtml(p.email) + '</div>'
+        + '</div>' + badge + '</label>';
+    }).join('');
+    progAggiornaCount();
+  }
+
+  function progToggle(id) {
+    const p = progPartecipanti.find(function (x) { return x.id === id; });
+    if (p) p.selected = !p.selected;
+    progAggiornaCount();
+  }
+
+  function progSelTutti(v) {
+    progPartecipanti.forEach(function (p) { p.selected = v; });
+    renderProgPartecipanti();
+  }
+
+  function progDeselNonConsenso() {
+    progPartecipanti.forEach(function (p) { if (!p.newsletter) p.selected = false; });
+    renderProgPartecipanti();
+  }
+
+  function progAggiornaCount() {
+    const n = progPartecipanti.filter(function (p) { return p.selected; }).length;
+    const el = document.getElementById('prog-dest-count');
+    if (el) el.textContent = n;
+  }
+
+  async function progUpload(file, evId) {
+    const r = await fetch(PROG_UPLOAD_FN, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + SUPA_ANON, 'apikey': SUPA_ANON },
+      body: JSON.stringify({ token: currentToken, event_id: evId, filename: file.name })
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d && d.error ? d.error : 'permesso di caricamento non ottenuto');
+    if (window.supabase && window.supabase.createClient) {
+      const sb = window.supabase.createClient(SUPA_URL, SUPA_ANON);
+      const up = await sb.storage.from(PROG_BUCKET).uploadToSignedUrl(d.path, d.token, file, { contentType: file.type || undefined });
+      if (up.error) throw new Error('Caricamento file fallito: ' + up.error.message);
+    } else {
+      const put = await fetch(d.signedUrl, { method: 'PUT', headers: { 'Content-Type': file.type || 'application/octet-stream' }, body: file });
+      if (!put.ok) throw new Error('Caricamento file fallito (' + put.status + ')');
+    }
+    return { path: d.path, nome: file.name, size: file.size, mime: file.type || null };
+  }
+
+  async function progSalva() {
+    const alertEl = document.getElementById('alert-prog');
+    const evId = document.getElementById('prog-evento').value;
+    const oggetto = document.getElementById('prog-oggetto').value.trim();
+    const mittente = document.getElementById('prog-mittente').value.trim();
+    const replyto = document.getElementById('prog-replyto').value.trim();
+    const corpo = document.getElementById('prog-editor').innerHTML.trim();
+    const dataV = document.getElementById('prog-data').value;
+    const oraV = document.getElementById('prog-ora').value;
+    const modalita = document.getElementById('prog-modalita').value;
+    const scadenza = parseInt(document.getElementById('prog-scadenza').value, 10) || 30;
+
+    if (!evId) return showAlert(alertEl, 'error', 'Seleziona l\'evento.');
+    if (!oggetto) return showAlert(alertEl, 'error', 'Inserisci l\'oggetto dell\'email.');
+    if (!mittente) return showAlert(alertEl, 'error', 'Inserisci il nome del mittente.');
+    if (!replyto || replyto.indexOf('@') < 0) return showAlert(alertEl, 'error', 'Inserisci un\'email di risposta valida.');
+    const corpoTesto = corpo.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim();
+    if (!corpoTesto) return showAlert(alertEl, 'error', 'Scrivi il testo dell\'email.');
+    if (!dataV || !oraV) return showAlert(alertEl, 'error', 'Imposta data e ora di invio.');
+
+    const quando = new Date(dataV + 'T' + oraV);
+    if (isNaN(quando.getTime())) return showAlert(alertEl, 'error', 'Data od ora non valide.');
+    if (quando.getTime() <= Date.now()) return showAlert(alertEl, 'error', 'La data di invio deve essere nel futuro.');
+
+    const selezionati = progPartecipanti.filter(function (p) { return p.selected; });
+    if (selezionati.length === 0) return showAlert(alertEl, 'error', 'Seleziona almeno un destinatario.');
+    const esclusi = progPartecipanti.filter(function (p) { return !p.selected; }).map(function (p) { return p.id; });
+
+    const btn = document.getElementById('prog-salva');
+    btn.disabled = true;
+    btn.textContent = progEditId ? 'Salvataggio...' : 'Programmazione...';
+    showAlert(alertEl, 'info', 'Salvataggio in corso, non chiudere la pagina...');
+
+    try {
+      let materiale = progEditMateriale; // in modifica mantiene il precedente se non ne carico uno nuovo
+      if (progFile) {
+        showAlert(alertEl, 'info', 'Caricamento del materiale in corso...');
+        materiale = await progUpload(progFile, evId);
+      }
+
+      const payload = {
+        event_id: evId,
+        oggetto: oggetto,
+        corpo_html: corpo,
+        scheduled_at: quando.toISOString(),
+        mittente_nome: mittente,
+        reply_to: replyto,
+        modalita: materiale ? modalita : 'link',
+        scadenza_giorni: scadenza,
+        esclusi: esclusi,
+        stato: 'programmata',
+        materiale_path: materiale ? materiale.path : null,
+        materiale_nome: materiale ? materiale.nome : null,
+        materiale_peso_bytes: materiale ? materiale.size : null,
+        materiale_mime: materiale ? materiale.mime : null
+      };
+
+      let resp;
+      if (progEditId) {
+        resp = await fetch(SUPA_URL + '/rest/v1/newsletter_programmate?id=eq.' + progEditId, {
+          method: 'PATCH', headers: supaHeaders({ 'Prefer': 'return=representation' }), body: JSON.stringify(payload)
+        });
+      } else {
+        resp = await fetch(SUPA_URL + '/rest/v1/newsletter_programmate', {
+          method: 'POST', headers: supaHeaders({ 'Prefer': 'return=representation' }), body: JSON.stringify(payload)
+        });
+      }
+      if (!resp.ok) { const t = await resp.text(); throw new Error(t || ('HTTP ' + resp.status)); }
+
+      showAlert(alertEl, 'success', progEditId ? 'Newsletter programmata aggiornata.' : 'Newsletter programmata! Partira\' in automatico entro circa 15 minuti dall\'orario scelto.');
+      progResetForm();
+      caricaProgrammate();
+    } catch (e) {
+      showAlert(alertEl, 'error', 'Errore: ' + (e && e.message ? e.message : e));
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = progEditId ? '&#128190; Salva modifiche' : '&#9200; Programma invio';
+    }
+  }
+
+  function progResetForm() {
+    progEditId = null;
+    progFile = null;
+    progEditMateriale = null;
+    progPartecipanti = [];
+    const ids = ['prog-evento', 'prog-oggetto', 'prog-mittente', 'prog-replyto', 'prog-data', 'prog-ora'];
+    ids.forEach(function (i) { const el = document.getElementById(i); if (el) el.value = ''; });
+    document.getElementById('prog-editor').innerHTML = '';
+    document.getElementById('prog-scadenza').value = '30';
+    document.getElementById('prog-modalita').value = 'entrambi';
+    document.getElementById('prog-partecipanti').innerHTML = '';
+    progRimuoviFile();
+    progAggiornaCount();
+    document.getElementById('prog-form-title').textContent = 'Nuova newsletter programmata';
+    document.getElementById('prog-annulla-edit').style.display = 'none';
+    const b = document.getElementById('prog-salva'); if (b) b.innerHTML = '&#9200; Programma invio';
+  }
+
+  async function caricaProgrammate() {
+    const loading = document.getElementById('prog-list-loading');
+    const list = document.getElementById('prog-list');
+    const empty = document.getElementById('prog-list-empty');
+    if (!loading || !list || !empty) return;
+    loading.style.display = 'block';
+    list.style.display = 'none';
+    empty.style.display = 'none';
+    try {
+      const r = await fetch(
+        SUPA_URL + '/rest/v1/newsletter_programmate?stato=eq.programmata&select=id,event_id,oggetto,scheduled_at,materiale_nome,materiale_peso_bytes,modalita,scadenza_giorni,esclusi&order=scheduled_at.asc',
+        { headers: supaHeaders() }
+      );
+      const rows = await r.json();
+      loading.style.display = 'none';
+      if (!Array.isArray(rows) || rows.length === 0) { empty.style.display = 'block'; return; }
+      list.style.display = 'block';
+      list.innerHTML = rows.map(function (n) {
+        const ev = allEvents.find(function (e) { return e.id === n.event_id; });
+        const evNome = ev ? ev.nome : 'Evento';
+        const dt = new Date(n.scheduled_at);
+        const quando = dt.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' }) + ' alle ' + dt.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+        const nEsclusi = Array.isArray(n.esclusi) ? n.esclusi.length : 0;
+        const mat = n.materiale_nome ? ('&#128206; ' + escHtml(n.materiale_nome) + ' (scade dopo ' + (n.scadenza_giorni || 30) + ' gg)') : 'Nessun allegato';
+        return '<div class="evento-card" style="margin-bottom:10px;">'
+          + '<div style="padding:14px 16px;">'
+          + '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start;">'
+          + '<div style="min-width:0;flex:1;">'
+          + '<div class="evento-nome">' + escHtml(n.oggetto || '(senza oggetto)') + '</div>'
+          + '<div class="evento-meta">' + escHtml(evNome) + ' &bull; ' + quando + '</div>'
+          + '<div style="font-size:12px;color:var(--text-dim);margin-top:6px;">' + mat + (nEsclusi ? ' &bull; ' + nEsclusi + ' esclusi' : '') + '</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:8px;flex-shrink:0;">'
+          + '<button class="btn btn-outline btn-sm" onclick="progModifica(\'' + n.id + '\')">Modifica</button>'
+          + '<button class="btn btn-outline btn-sm" onclick="progAnnulla(\'' + n.id + '\')">Annulla</button>'
+          + '</div></div></div></div>';
+      }).join('');
+    } catch (e) {
+      loading.style.display = 'none';
+      empty.style.display = 'block';
+    }
+  }
+
+  async function progModifica(id) {
+    const alertEl = document.getElementById('alert-prog');
+    try {
+      const r = await fetch(SUPA_URL + '/rest/v1/newsletter_programmate?id=eq.' + id + '&select=*', { headers: supaHeaders() });
+      const rows = await r.json();
+      const n = rows && rows[0];
+      if (!n) return showAlert(alertEl, 'error', 'Newsletter non trovata.');
+      progResetForm();
+      progEditId = n.id;
+      document.getElementById('prog-evento').value = n.event_id;
+      document.getElementById('prog-oggetto').value = n.oggetto || '';
+      document.getElementById('prog-mittente').value = n.mittente_nome || '';
+      document.getElementById('prog-replyto').value = n.reply_to || '';
+      document.getElementById('prog-editor').innerHTML = n.corpo_html || '';
+      const dt = new Date(n.scheduled_at);
+      const yyyy = dt.getFullYear();
+      const mm = ('0' + (dt.getMonth() + 1)).slice(-2);
+      const dd = ('0' + dt.getDate()).slice(-2);
+      document.getElementById('prog-data').value = yyyy + '-' + mm + '-' + dd;
+      document.getElementById('prog-ora').value = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
+      document.getElementById('prog-scadenza').value = String(n.scadenza_giorni || 30);
+      document.getElementById('prog-modalita').value = n.modalita || 'entrambi';
+      if (n.materiale_path) {
+        progEditMateriale = { path: n.materiale_path, nome: n.materiale_nome, size: n.materiale_peso_bytes || 0, mime: n.materiale_mime || null };
+        mostraInfoFile(n.materiale_nome || 'materiale', n.materiale_peso_bytes || 0, true);
+      }
+      document.getElementById('prog-form-title').textContent = 'Modifica newsletter programmata';
+      document.getElementById('prog-annulla-edit').style.display = 'inline-flex';
+      document.getElementById('prog-salva').innerHTML = '&#128190; Salva modifiche';
+      await progCaricaPartecipanti();
+      const esclusi = Array.isArray(n.esclusi) ? n.esclusi.map(String) : [];
+      progPartecipanti.forEach(function (p) { if (esclusi.indexOf(String(p.id)) >= 0) p.selected = false; });
+      renderProgPartecipanti();
+      const tab = document.getElementById('tab-programma');
+      if (tab && tab.scrollIntoView) tab.scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {
+      showAlert(alertEl, 'error', 'Errore nel caricamento: ' + (e && e.message ? e.message : e));
+    }
+  }
+
+  async function progAnnulla(id) {
+    if (!confirm('Annullare questa newsletter programmata? Il materiale eventualmente caricato verra\' rimosso.')) return;
+    const alertEl = document.getElementById('alert-prog');
+    try {
+      const r = await fetch(SUPA_URL + '/rest/v1/newsletter_programmate?id=eq.' + id, { method: 'DELETE', headers: supaHeaders() });
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      showAlert(alertEl, 'success', 'Newsletter programmata annullata.');
+      if (progEditId === id) progResetForm();
+      caricaProgrammate();
+    } catch (e) {
+      showAlert(alertEl, 'error', 'Errore: ' + (e && e.message ? e.message : e));
+    }
+  }
+
+  // Placeholder editor programma
+  document.addEventListener('DOMContentLoaded', function () {
+    const ed = document.getElementById('prog-editor');
+    if (!ed) return;
+    ed.addEventListener('focus', function () { ed.classList.remove('empty'); });
+    ed.addEventListener('blur', function () { if (!ed.textContent.trim()) ed.classList.add('empty'); });
+    ed.classList.add('empty');
+  });
 </script>
 </body>
 </html>
