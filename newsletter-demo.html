@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Newsletter Demo -- EventsFun</title>
+  <title>Newsletter Demo - EventsFun</title>
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -36,6 +36,12 @@
     .navbar-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .nav-btn { background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 6px 14px; border-radius: var(--radius-sm); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s; white-space: nowrap; }
     .nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-hamburger { display: none; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text); font-size: 18px; cursor: pointer; align-items: center; justify-content: center; }
+    .nav-mob-menu { display: none; position: absolute; top: 60px; right: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 8px; z-index: 200; min-width: 190px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); flex-direction: column; gap: 4px; }
+    .nav-mob-menu.open { display: flex; }
+    .nav-mob-item { display: block; font-size: 13px; color: var(--text-dim); text-decoration: none; padding: 9px 14px; border-radius: 8px; transition: background 0.15s; }
+    .nav-mob-item:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+    .editor-area[data-placeholder]:empty:before { content: attr(data-placeholder); color: var(--text-muted); }
 
     /* LAYOUT */
     .page-header { padding: 32px 24px 0; max-width: 1100px; margin: 0 auto; }
@@ -164,9 +170,12 @@
     .demo-msg-go { flex: 2; padding: 12px; border-radius: 8px; border: none; background: linear-gradient(135deg,var(--gold),#8a6e3e); color: #0A0A0A; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; display: flex; align-items: center; justify-content: center; }
 
     @media (max-width: 600px) {
-      .navbar { padding: 0 14px; }
+      .navbar { padding: 0 14px; position: relative; }
+      .navbar-actions { display: none; }
+      .nav-hamburger { display: flex; }
       .page-header { padding: 20px 14px 0; }
-      .tabs { padding: 16px 14px 0; }
+      .tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 12px 14px 0; overflow-x: visible; }
+      .tab-btn { padding: 10px 8px; font-size: 12px; justify-content: center; }
       .tab-content { padding: 20px 14px; }
       .card { padding: 14px; }
       .page-title { font-size: 20px; }
@@ -205,6 +214,11 @@
     <a class="nav-btn" href="demo.html">&#9632; Dashboard</a>
     <a class="nav-btn" href="https://eventsfun.com/#prezzi">&#9632; Area personale</a>
   </div>
+  <button class="nav-hamburger" id="navHamburger" onclick="toggleMobMenu()" aria-label="Menu">&#9776;</button>
+  <div class="nav-mob-menu" id="navMobMenu">
+    <a class="nav-mob-item" href="demo.html">&#9632; Dashboard</a>
+    <a class="nav-mob-item" href="https://eventsfun.com/#prezzi">&#9632; Area personale</a>
+  </div>
 </nav>
 
 <!-- MAIN APP -->
@@ -221,6 +235,7 @@
       <span class="tab-badge" id="badge-lista">22</span>
     </button>
     <button class="tab-btn" onclick="switchTab('invia')">&#9654; Invia newsletter</button>
+    <button class="tab-btn" onclick="switchTab('programma')">&#9200; Programma invio</button>
     <button class="tab-btn" onclick="switchTab('gestione')">&#9998; Gestione</button>
     <button class="tab-btn" onclick="switchTab('storico')">&#128196; Storico invii</button>
   </div>
@@ -301,6 +316,124 @@
     </div>
   </div>
 
+  <!-- TAB: PROGRAMMA INVIO -->
+  <div class="tab-content" id="tab-programma">
+
+    <!-- Elenco programmate -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Newsletter programmate</div>
+        <button class="btn btn-outline btn-sm" onclick="renderProgList()">&#8635; Aggiorna</button>
+      </div>
+      <div id="prog-list"></div>
+      <div id="prog-list-empty" class="empty-state" style="display:none;">
+        <div class="icon">&#9200;</div>
+        <p>Nessuna newsletter programmata al momento.</p>
+      </div>
+    </div>
+
+    <!-- Form nuova / modifica -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title" id="prog-form-title">Nuova newsletter programmata</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Evento *</label>
+        <select class="form-select" id="prog-evento" onchange="progCaricaPartecipanti()"></select>
+        <div class="form-hint">I destinatari saranno i partecipanti di questo evento.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Oggetto email *</label>
+        <input class="form-input" type="text" id="prog-oggetto" placeholder="Es: Materiale del corso" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Nome mittente *</label>
+        <input class="form-input" type="text" id="prog-mittente" placeholder="Es: Mario Rossi / Associazione XYZ" />
+        <div class="form-hint">Apparira' come nome mittente nell'email. Il reply-to sara' il tuo indirizzo.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Email reply-to *</label>
+        <input class="form-input" type="email" id="prog-replyto" placeholder="tua@email.it" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Testo email *</label>
+        <div class="editor-toolbar">
+          <button class="tb-btn" onclick="progCmd('bold')" title="Grassetto"><b>B</b></button>
+          <button class="tb-btn" onclick="progCmd('italic')" title="Corsivo"><i>I</i></button>
+          <button class="tb-btn" onclick="progCmd('underline')" title="Sottolineato"><u>S</u></button>
+          <div class="tb-sep"></div>
+          <button class="tb-btn" onclick="progCmd('insertUnorderedList')" title="Elenco">&#8226; Lista</button>
+        </div>
+        <div class="editor-area" id="prog-editor" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Corpo email programmata" data-placeholder="Scrivi qui il tuo messaggio..."></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Materiale allegato (facoltativo)</label>
+        <input type="file" id="prog-file" style="display:none" onchange="progScegliFile(this)">
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('prog-file').click()">&#128206; Scegli file</button>
+        <div id="prog-file-info" style="margin-top:10px;display:none;"></div>
+        <div class="form-hint">Massimo 50 MB per file. Nella demo il file non viene caricato davvero.</div>
+      </div>
+
+      <div id="prog-materiale-opts" style="display:none;">
+        <div class="form-group">
+          <label class="form-label">Come inviare il materiale</label>
+          <select class="form-select" id="prog-modalita">
+            <option value="entrambi">Link di download + allegato</option>
+            <option value="link">Solo link di download</option>
+            <option value="allegato">Solo allegato</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Per quanti giorni resta scaricabile il materiale</label>
+          <select class="form-select" id="prog-scadenza">
+            <option value="7">7 giorni</option>
+            <option value="15">15 giorni</option>
+            <option value="30" selected>30 giorni</option>
+          </select>
+          <div class="form-hint">Il conteggio parte dalla data di invio. Scaduto il termine, il materiale si cancella da solo.</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Data e ora di invio *</label>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input class="form-input" type="date" id="prog-data" style="max-width:200px;" />
+          <input class="form-input" type="time" id="prog-ora" style="max-width:140px;" />
+        </div>
+        <div class="form-hint">L'invio parte in automatico entro circa 15 minuti dall'orario scelto.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Destinatari (partecipanti dell'evento)</label>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;">
+          <button class="btn btn-outline btn-sm" onclick="progSelTutti(true)">Seleziona tutti</button>
+          <button class="btn btn-outline btn-sm" onclick="progSelTutti(false)">Deseleziona tutti</button>
+        </div>
+        <div class="dest-counter">
+          <span class="num" id="prog-dest-count">0</span>
+          <div>
+            <div class="label">destinatari selezionati</div>
+            <div class="form-hint" style="margin-top:0;">Di default sono inclusi tutti. Deseleziona chi non deve ricevere il materiale.</div>
+          </div>
+        </div>
+        <div id="prog-partecipanti" style="margin-top:12px;max-height:340px;overflow-y:auto;"></div>
+      </div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn btn-outline" id="prog-annulla-edit" style="display:none;" onclick="progResetForm()">Annulla modifica</button>
+        <button class="btn btn-gold" id="prog-salva" onclick="progSalva()">&#9200; Programma invio</button>
+      </div>
+
+      <div id="alert-prog" class="alert" style="margin-top:16px;"></div>
+    </div>
+  </div>
+
   <!-- TAB: GESTIONE -->
   <div class="tab-content" id="tab-gestione">
     <div class="card">
@@ -361,72 +494,72 @@
 <script>
 // ===== DATI DEMO =====
 var DEMO_EVENTS = [
-  { id: 'demo-ev-001', nome: 'Convegno HR & People Management 2026', data_iso: '2026-09-18', luogo: 'MiCo -- Milano Convention Centre' },
-  { id: 'demo-ev-002', nome: 'Workshop Fotografia di Paesaggio', data_iso: '2026-07-12', luogo: 'Cortina d\'Ampezzo (BL)' },
-  { id: 'demo-ev-003', nome: 'Cena di Gala -- Associazione Imprenditori Nord', data_iso: '2026-04-10', luogo: 'Villa Reale di Monza' }
+  { id: 'demo-ev-001', nome: 'Convegno HR & People Management 2026', data_iso: '2026-09-18', luogo: 'Centro Congressi Esempio, Milano' },
+  { id: 'demo-ev-002', nome: 'Workshop Fotografia di Paesaggio', data_iso: '2026-07-12', luogo: 'Rifugio Esempio, Dolomiti (BL)' },
+  { id: 'demo-ev-003', nome: 'Cena di Gala - Associazione Imprenditori Nord', data_iso: '2026-04-10', luogo: 'Villa Esempio, Monza' }
 ];
 
 var DEMO_NL = {
   'demo-ev-001': [
-    { id:'n001', nome:'Giulia', cognome:'Ferrari', email:'g.ferrari@hrgroup.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n002', nome:'Sara', cognome:'Conti', email:'sara.conti@welfareacademy.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n003', nome:'Luca', cognome:'Marino', email:'l.marino@consulenzahr.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n004', nome:'Anna', cognome:'Ricci', email:'a.ricci@impresafuturo.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n005', nome:'Francesca', cognome:'Lombardi', email:'f.lombardi@people360.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n006', nome:'Roberto', cognome:'Esposito', email:'r.esposito@talentfirst.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
-    { id:'n007', nome:'Chiara', cognome:'De Luca', email:'c.deluca@hrinnovation.it', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' }
+    { id:'n001', nome:'Giulia', cognome:'Ferrari', email:'g.ferrari@hrgroup.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n002', nome:'Sara', cognome:'Conti', email:'sara.conti@welfareacademy.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n003', nome:'Luca', cognome:'Marino', email:'l.marino@consulenzahr.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n004', nome:'Anna', cognome:'Ricci', email:'a.ricci@impresafuturo.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n005', nome:'Francesca', cognome:'Lombardi', email:'f.lombardi@people360.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n006', nome:'Roberto', cognome:'Esposito', email:'r.esposito@talentfirst.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' },
+    { id:'n007', nome:'Chiara', cognome:'De Luca', email:'c.deluca@hrinnovation.example', event_id:'demo-ev-001', evento_nome:'Convegno HR & People Management 2026' }
   ],
   'demo-ev-002': [
-    { id:'n008', nome:'Matteo', cognome:'Gallo', email:'m.gallo@foto.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
-    { id:'n009', nome:'Elena', cognome:'Moretti', email:'elena.moretti@gmail.com', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
-    { id:'n010', nome:'Valentina', cognome:'Costa', email:'v.costa@naturaclick.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
-    { id:'n011', nome:'Simone', cognome:'Ferrara', email:'simone.ferrara@libero.it', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' }
+    { id:'n008', nome:'Matteo', cognome:'Gallo', email:'m.gallo@foto.example', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n009', nome:'Elena', cognome:'Moretti', email:'elena.moretti@posta.example', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n010', nome:'Valentina', cognome:'Costa', email:'v.costa@naturaclick.example', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' },
+    { id:'n011', nome:'Simone', cognome:'Ferrara', email:'simone.ferrara@posta.example', event_id:'demo-ev-002', evento_nome:'Workshop Fotografia di Paesaggio' }
   ],
   'demo-ev-003': [
-    { id:'n012', nome:'Giovanni', cognome:'Rizzo', email:'g.rizzo@rizzoimprese.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n013', nome:'Maria', cognome:'Colombo', email:'m.colombo@confindustria.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n014', nome:'Stefano', cognome:'Bruno', email:'s.bruno@brunogroup.com', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n015', nome:'Laura', cognome:'Gentile', email:'l.gentile@imprendinord.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n016', nome:'Carlo', cognome:'Fontana', email:'c.fontana@fontanapartners.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n017', nome:'Beatrice', cognome:'Marini', email:'b.marini@ainord.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n018', nome:'Giorgio', cognome:'Ferrero', email:'g.ferrero@ferrerogroup.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n019', nome:'Claudia', cognome:'Martini', email:'c.martini@gruppoalpino.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n020', nome:'Daniele', cognome:'Vitali', email:'d.vitali@vitaliinvest.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n021', nome:'Paola', cognome:'Serra', email:'p.serra@nord-holding.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' },
-    { id:'n022', nome:'Alberto', cognome:'Negri', email:'a.negri@negrieassociati.it', event_id:'demo-ev-003', evento_nome:'Cena di Gala -- Associazione Imprenditori Nord' }
+    { id:'n012', nome:'Giovanni', cognome:'Rizzo', email:'g.rizzo@rizzoimprese.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n013', nome:'Maria', cognome:'Colombo', email:'m.colombo@assoimprese.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n014', nome:'Stefano', cognome:'Bruno', email:'s.bruno@brunogroup.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n015', nome:'Laura', cognome:'Gentile', email:'l.gentile@imprendinord.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n016', nome:'Carlo', cognome:'Fontana', email:'c.fontana@fontanapartners.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n017', nome:'Beatrice', cognome:'Marini', email:'b.marini@ainord.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n018', nome:'Giorgio', cognome:'Ferrero', email:'g.ferrero@nordgroup.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n019', nome:'Claudia', cognome:'Martini', email:'c.martini@gruppoalpino.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n020', nome:'Daniele', cognome:'Vitali', email:'d.vitali@vitaliinvest.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n021', nome:'Paola', cognome:'Serra', email:'p.serra@nordholding.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' },
+    { id:'n022', nome:'Alberto', cognome:'Negri', email:'a.negri@negrieassociati.example', event_id:'demo-ev-003', evento_nome:'Cena di Gala - Associazione Imprenditori Nord' }
   ]
 };
 
 var DEMO_STORICO = [
   {
     id: 's001',
-    oggetto: 'Programma definitivo -- Convegno HR 2026',
+    oggetto: 'Programma definitivo - Convegno HR 2026',
     mittente: 'Segreteria Convegno HR',
-    reply_to: 'info@hrconvegno.it',
+    reply_to: 'info@hrconvegno.example',
     destinatari: 7,
     eventi_nomi: 'Convegno HR & People Management 2026',
     created_at: '2026-08-15T10:32:00Z',
-    corpo_html: buildEmailHtml('Segreteria Convegno HR', '<p>Cari partecipanti,</p><p>siamo lieti di condividere il <strong>programma definitivo</strong> del Convegno HR & People Management 2026.</p><p>La giornata si aprira\' alle 9:00 con i saluti istituzionali, seguita da tre sessioni plenarie e tavole rotonde nel pomeriggio.</p><p>Vi ricordiamo che il pranzo e\' incluso per chi ha selezionato questa opzione.</p><p>A presto!<br>La Segreteria</p>', 'Programma definitivo -- Convegno HR 2026')
+    corpo_html: buildEmailHtml('Segreteria Convegno HR', '<p>Cari partecipanti,</p><p>siamo lieti di condividere il <strong>programma definitivo</strong> del Convegno HR & People Management 2026.</p><p>La giornata si aprira\' alle 9:00 con i saluti istituzionali, seguita da tre sessioni plenarie e tavole rotonde nel pomeriggio.</p><p>Vi ricordiamo che il pranzo e\' incluso per chi ha selezionato questa opzione.</p><p>A presto!<br>La Segreteria</p>', 'Programma definitivo - Convegno HR 2026')
   },
   {
     id: 's002',
-    oggetto: 'Come prepararsi al Workshop -- Attrezzatura consigliata',
+    oggetto: 'Come prepararsi al Workshop - Attrezzatura consigliata',
     mittente: 'Studio FotoDolomiti',
-    reply_to: 'workshop@fotodolomiti.it',
+    reply_to: 'workshop@fotodolomiti.example',
     destinatari: 4,
     eventi_nomi: 'Workshop Fotografia di Paesaggio',
     created_at: '2026-07-01T09:15:00Z',
-    corpo_html: buildEmailHtml('Studio FotoDolomiti', '<p>Cari partecipanti al Workshop,</p><p>mancano solo <strong>11 giorni</strong> al nostro appuntamento nelle Dolomiti!</p><p>Ecco cosa portare:</p><ul><li>La vostra fotocamera con batterie cariche e schede vuote</li><li>Obiettivo grandangolare (consigliato)</li><li>Abbigliamento a strati (le mattine in quota sono fresche)</li><li>Zaino con acqua e snack per le uscite sul campo</li></ul><p>Vi aspettiamo!<br>Lo Staff di FotoDolomiti</p>', 'Come prepararsi al Workshop -- Attrezzatura consigliata')
+    corpo_html: buildEmailHtml('Studio FotoDolomiti', '<p>Cari partecipanti al Workshop,</p><p>mancano solo <strong>11 giorni</strong> al nostro appuntamento nelle Dolomiti!</p><p>Ecco cosa portare:</p><ul><li>La vostra fotocamera con batterie cariche e schede vuote</li><li>Obiettivo grandangolare (consigliato)</li><li>Abbigliamento a strati (le mattine in quota sono fresche)</li><li>Zaino con acqua e snack per le uscite sul campo</li></ul><p>Vi aspettiamo!<br>Lo Staff di FotoDolomiti</p>', 'Come prepararsi al Workshop - Attrezzatura consigliata')
   },
   {
     id: 's003',
-    oggetto: 'Conferma partecipazione e dettagli serata -- Gala Imprenditori Nord',
+    oggetto: 'Conferma partecipazione e dettagli serata - Gala Imprenditori Nord',
     mittente: 'Associazione Imprenditori Nord',
-    reply_to: 'segreteria@ainord.it',
+    reply_to: 'segreteria@ainord.example',
     destinatari: 11,
-    eventi_nomi: 'Cena di Gala -- Associazione Imprenditori Nord',
+    eventi_nomi: 'Cena di Gala - Associazione Imprenditori Nord',
     created_at: '2026-04-01T14:00:00Z',
-    corpo_html: buildEmailHtml('Associazione Imprenditori Nord', '<p>Gentili Soci,</p><p>la nostra Cena di Gala annuale si avvicina. Vi inviamo in allegato il programma della serata e i dettagli logistici.</p><p><strong>Dove parcheggiare:</strong> parcheggio riservato ai soci disponibile all\'ingresso principale di Villa Reale.</p><p><strong>Dress code:</strong> Elegante</p><p><strong>Inizio:</strong> ore 20:00, aperitivo di benvenuto nel giardino storico.</p><p>Siamo lieti di accogliervi in questa serata dedicata al networking e alla celebrazione dei traguardi comuni.</p><p>Con stima,<br>La Segreteria dell\'Associazione</p>', 'Conferma partecipazione e dettagli serata -- Gala Imprenditori Nord')
+    corpo_html: buildEmailHtml('Associazione Imprenditori Nord', '<p>Gentili Soci,</p><p>la nostra Cena di Gala annuale si avvicina. Vi inviamo in allegato il programma della serata e i dettagli logistici.</p><p><strong>Dove parcheggiare:</strong> parcheggio riservato ai soci disponibile all\'ingresso principale di Villa Esempio.</p><p><strong>Dress code:</strong> Elegante</p><p><strong>Inizio:</strong> ore 20:00, aperitivo di benvenuto nel giardino storico.</p><p>Siamo lieti di accogliervi in questa serata dedicata al networking e alla celebrazione dei traguardi comuni.</p><p>Con stima,<br>La Segreteria dell\'Associazione</p>', 'Conferma partecipazione e dettagli serata - Gala Imprenditori Nord')
   }
 ];
 
@@ -463,7 +596,7 @@ function escHtml(str) {
   return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function isoToIt(iso) {
-  if (!iso) return '--';
+  if (!iso) return '-';
   return new Date(iso + 'T00:00:00').toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' });
 }
 function isoToShort(iso) {
@@ -527,7 +660,7 @@ function renderSelectorInvia() {
       + '<input type="checkbox" value="' + ev.id + '" onchange="aggiornaDest()" ' + (count === 0 ? 'disabled' : '') + ' />'
       + '<div>'
       + '<div class="check-nome">' + escHtml(ev.nome) + '</div>'
-      + '<div class="check-count">' + isoToShort(ev.data_iso) + ' -- ' + count + ' iscritti newsletter</div>'
+      + '<div class="check-count">' + isoToShort(ev.data_iso) + ' - ' + count + ' iscritti newsletter</div>'
       + '</div>'
       + '<span class="check-spacer"></span>'
       + (count === 0
@@ -704,7 +837,7 @@ function rimuoviNl(regId, eventId) {
   document.getElementById('badge-lista').textContent = totale;
   renderSelectorInvia();
   aggiornaDest();
-  showAlert(alertEl, 'success', 'Iscritto rimosso dalla newsletter (demo -- non salvato).');
+  showAlert(alertEl, 'success', 'Iscritto rimosso dalla newsletter (demo - non salvato).');
   alertEl.classList.add('show');
   setTimeout(function() { alertEl.classList.remove('show'); }, 4000);
 }
@@ -751,15 +884,249 @@ function apriAnteprimaLog(idx) {
 }
 function chiudiStoricoModal() { document.getElementById('storico-modal').style.display = 'none'; }
 
+// ===== MENU MOBILE =====
+function toggleMobMenu() {
+  var m = document.getElementById('navMobMenu');
+  if (m) m.classList.toggle('open');
+}
+
+// ===== DATI DEMO PROGRAMMATE =====
+var DEMO_PROGRAMMATE = [
+  {
+    id: 'p001',
+    event_id: 'demo-ev-001',
+    oggetto: 'Slide e materiale del convegno',
+    mittente: 'Segreteria Convegno HR',
+    reply_to: 'info@hrconvegno.example',
+    corpo_html: '<p>Cari partecipanti,</p><p>in allegato trovate le <strong>slide</strong> e il materiale del convegno. Buona lettura!</p>',
+    scheduled_at: '2026-12-15T09:00:00',
+    materiale_nome: 'Slide-convegno-esempio.pdf',
+    materiale_peso: 2400000,
+    scadenza_giorni: 30,
+    modalita: 'entrambi',
+    esclusi: []
+  }
+];
+
+var progList = JSON.parse(JSON.stringify(DEMO_PROGRAMMATE));
+var progPartecipanti = [];
+var progEditId = null;
+
+function fmtBytes(b) {
+  if (b === null || b === undefined) return '';
+  if (b < 1024) return b + ' B';
+  if (b < 1048576) return (b / 1024).toFixed(0) + ' KB';
+  return (b / 1048576).toFixed(1) + ' MB';
+}
+
+// ===== TAB PROGRAMMA =====
+function renderProgramma() {
+  var sel = document.getElementById('prog-evento');
+  if (sel && !sel.options.length) {
+    sel.innerHTML = '<option value="">Seleziona un evento...</option>'
+      + DEMO_EVENTS.map(function(ev) {
+          return '<option value="' + ev.id + '">' + escHtml(ev.nome) + '</option>';
+        }).join('');
+  }
+  renderProgList();
+  renderProgPartecipanti();
+}
+
+function renderProgList() {
+  var list = document.getElementById('prog-list');
+  var empty = document.getElementById('prog-list-empty');
+  if (!list || !empty) return;
+  if (!progList.length) { list.style.display = 'none'; empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  list.style.display = 'block';
+  list.innerHTML = progList.map(function(n) {
+    var ev = DEMO_EVENTS.find(function(e) { return e.id === n.event_id; });
+    var evNome = ev ? ev.nome : 'Evento';
+    var dt = new Date(n.scheduled_at);
+    var quando = dt.toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })
+      + ' alle ' + dt.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+    var nEsclusi = Array.isArray(n.esclusi) ? n.esclusi.length : 0;
+    var mat = n.materiale_nome
+      ? ('&#128206; ' + escHtml(n.materiale_nome) + ' (scade dopo ' + (n.scadenza_giorni || 30) + ' gg)')
+      : 'Nessun allegato';
+    return '<div class="evento-card" style="margin-bottom:10px;">'
+      + '<div style="padding:14px 16px;">'
+      + '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start;">'
+      + '<div style="min-width:0;flex:1;">'
+      + '<div class="evento-nome">' + escHtml(n.oggetto || '(senza oggetto)') + '</div>'
+      + '<div class="evento-meta">' + escHtml(evNome) + ' &bull; ' + quando + '</div>'
+      + '<div style="font-size:12px;color:var(--text-dim);margin-top:6px;">' + mat + (nEsclusi ? ' &bull; ' + nEsclusi + ' esclusi' : '') + '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:8px;flex-shrink:0;">'
+      + '<button class="btn btn-outline btn-sm" onclick="progModifica(\'' + n.id + '\')">Modifica</button>'
+      + '<button class="btn btn-outline btn-sm" onclick="progAnnulla(\'' + n.id + '\')">Annulla</button>'
+      + '</div></div></div></div>';
+  }).join('');
+}
+
+function progCmd(cmd) {
+  document.getElementById('prog-editor').focus();
+  document.execCommand(cmd, false, null);
+}
+
+function progCaricaPartecipanti() {
+  var evId = document.getElementById('prog-evento').value;
+  if (!evId) { progPartecipanti = []; renderProgPartecipanti(); return; }
+  var rows = nlData[evId] || [];
+  progPartecipanti = rows.map(function(r) {
+    return { id: r.id, nome: r.nome, cognome: r.cognome, email: r.email, selected: true };
+  });
+  renderProgPartecipanti();
+}
+
+function renderProgPartecipanti() {
+  var box = document.getElementById('prog-partecipanti');
+  if (!box) return;
+  if (!progPartecipanti.length) {
+    box.innerHTML = '<div class="form-hint">Seleziona un evento per vedere i partecipanti.</div>';
+    progAggiornaCount();
+    return;
+  }
+  box.innerHTML = progPartecipanti.map(function(p) {
+    return '<label class="iscritto-row" style="cursor:pointer;">'
+      + '<div class="iscritto-info">'
+      + '<div class="iscritto-nome">' + escHtml(p.nome + ' ' + p.cognome) + '</div>'
+      + '<div class="iscritto-email">' + escHtml(p.email) + '</div>'
+      + '</div>'
+      + '<input type="checkbox" ' + (p.selected ? 'checked' : '') + ' onchange="progToggle(\'' + p.id + '\', this.checked)" style="accent-color:var(--gold);width:16px;height:16px;cursor:pointer;flex-shrink:0;" />'
+      + '</label>';
+  }).join('');
+  progAggiornaCount();
+}
+
+function progToggle(pid, checked) {
+  var p = progPartecipanti.find(function(x) { return x.id === pid; });
+  if (p) p.selected = checked;
+  progAggiornaCount();
+}
+
+function progSelTutti(val) {
+  progPartecipanti.forEach(function(p) { p.selected = val; });
+  renderProgPartecipanti();
+}
+
+function progAggiornaCount() {
+  var n = progPartecipanti.filter(function(p) { return p.selected; }).length;
+  var el = document.getElementById('prog-dest-count');
+  if (el) el.textContent = n;
+}
+
+function progScegliFile(input) {
+  var info = document.getElementById('prog-file-info');
+  var opts = document.getElementById('prog-materiale-opts');
+  if (!input.files || !input.files.length) { info.style.display = 'none'; opts.style.display = 'none'; return; }
+  var f = input.files[0];
+  info.style.display = 'block';
+  info.innerHTML = '<div style="display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">'
+    + '<span>&#128206;</span>'
+    + '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + escHtml(f.name) + '</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);">' + fmtBytes(f.size) + '</div></div>'
+    + '<button class="btn btn-danger btn-sm" onclick="progRimuoviFile()">&#10006;</button>'
+    + '</div>';
+  opts.style.display = 'block';
+}
+
+function progRimuoviFile() {
+  var input = document.getElementById('prog-file');
+  if (input) input.value = '';
+  document.getElementById('prog-file-info').style.display = 'none';
+  document.getElementById('prog-materiale-opts').style.display = 'none';
+}
+
+function progResetForm() {
+  progEditId = null;
+  var ids = ['prog-evento', 'prog-oggetto', 'prog-mittente', 'prog-replyto', 'prog-data', 'prog-ora'];
+  ids.forEach(function(i) { var el = document.getElementById(i); if (el) el.value = ''; });
+  document.getElementById('prog-editor').innerHTML = '';
+  document.getElementById('prog-scadenza').value = '30';
+  document.getElementById('prog-modalita').value = 'entrambi';
+  progPartecipanti = [];
+  renderProgPartecipanti();
+  progRimuoviFile();
+  document.getElementById('prog-form-title').textContent = 'Nuova newsletter programmata';
+  document.getElementById('prog-annulla-edit').style.display = 'none';
+  var b = document.getElementById('prog-salva'); if (b) b.innerHTML = '&#9200; Programma invio';
+}
+
+function progModifica(id) {
+  var n = progList.find(function(x) { return x.id === id; });
+  if (!n) return;
+  progResetForm();
+  progEditId = n.id;
+  document.getElementById('prog-evento').value = n.event_id;
+  document.getElementById('prog-oggetto').value = n.oggetto || '';
+  document.getElementById('prog-mittente').value = n.mittente || '';
+  document.getElementById('prog-replyto').value = n.reply_to || '';
+  document.getElementById('prog-editor').innerHTML = n.corpo_html || '';
+  var dt = new Date(n.scheduled_at);
+  var yyyy = dt.getFullYear();
+  var mm = ('0' + (dt.getMonth() + 1)).slice(-2);
+  var dd = ('0' + dt.getDate()).slice(-2);
+  document.getElementById('prog-data').value = yyyy + '-' + mm + '-' + dd;
+  document.getElementById('prog-ora').value = ('0' + dt.getHours()).slice(-2) + ':' + ('0' + dt.getMinutes()).slice(-2);
+  document.getElementById('prog-scadenza').value = String(n.scadenza_giorni || 30);
+  document.getElementById('prog-modalita').value = n.modalita || 'entrambi';
+  if (n.materiale_nome) {
+    var info = document.getElementById('prog-file-info');
+    info.style.display = 'block';
+    info.innerHTML = '<div style="display:flex;align-items:center;gap:10px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;">'
+      + '<span>&#128206;</span>'
+      + '<div style="flex:1;min-width:0;"><div style="font-size:13px;color:var(--text);">' + escHtml(n.materiale_nome) + '</div>'
+      + '<div style="font-size:12px;color:var(--text-muted);">' + fmtBytes(n.materiale_peso || 0) + '</div></div></div>';
+    document.getElementById('prog-materiale-opts').style.display = 'block';
+  }
+  document.getElementById('prog-form-title').textContent = 'Modifica newsletter programmata';
+  document.getElementById('prog-annulla-edit').style.display = 'inline-flex';
+  document.getElementById('prog-salva').innerHTML = '&#128190; Salva modifiche';
+  progCaricaPartecipanti();
+  var esclusi = Array.isArray(n.esclusi) ? n.esclusi.map(String) : [];
+  progPartecipanti.forEach(function(p) { if (esclusi.indexOf(String(p.id)) >= 0) p.selected = false; });
+  renderProgPartecipanti();
+  var tab = document.getElementById('tab-programma');
+  if (tab && tab.scrollIntoView) tab.scrollIntoView({ behavior: 'smooth' });
+}
+
+function progAnnulla(id) {
+  demoBlock();
+}
+
+function progSalva() {
+  var alertEl = document.getElementById('alert-prog');
+  var evId = document.getElementById('prog-evento').value;
+  var oggetto = document.getElementById('prog-oggetto').value.trim();
+  var mittente = document.getElementById('prog-mittente').value.trim();
+  var replyto = document.getElementById('prog-replyto').value.trim();
+  var corpo = document.getElementById('prog-editor').innerHTML.replace(/<br\s*\/?>/gi, '').replace(/<[^>]+>/g, '').trim();
+  var dataV = document.getElementById('prog-data').value;
+  var oraV = document.getElementById('prog-ora').value;
+  if (!evId) return showAlert(alertEl, 'error', 'Seleziona l\'evento.');
+  if (!oggetto) return showAlert(alertEl, 'error', 'Inserisci l\'oggetto dell\'email.');
+  if (!mittente) return showAlert(alertEl, 'error', 'Inserisci il nome del mittente.');
+  if (!replyto || !replyto.includes('@')) return showAlert(alertEl, 'error', 'Inserisci un\'email di risposta valida.');
+  if (!corpo) return showAlert(alertEl, 'error', 'Scrivi il testo dell\'email.');
+  if (!dataV || !oraV) return showAlert(alertEl, 'error', 'Imposta data e ora di invio.');
+  var quando = new Date(dataV + 'T' + oraV);
+  if (isNaN(quando.getTime())) return showAlert(alertEl, 'error', 'Data od ora non valide.');
+  if (quando.getTime() <= Date.now()) return showAlert(alertEl, 'error', 'La data di invio deve essere nel futuro.');
+  if (!progPartecipanti.filter(function(p) { return p.selected; }).length) return showAlert(alertEl, 'error', 'Seleziona almeno un destinatario.');
+  demoBlock();
+}
+
 // ===== TABS =====
 function switchTab(name) {
-  var names = ['lista','invia','gestione','storico'];
+  var names = ['lista','invia','programma','gestione','storico'];
   document.querySelectorAll('.tab-btn').forEach(function(b, i) {
     b.classList.toggle('active', names[i] === name);
   });
   document.querySelectorAll('.tab-content').forEach(function(tc) { tc.classList.remove('active'); });
   document.getElementById('tab-' + name).classList.add('active');
   if (name === 'storico') renderStorico();
+  if (name === 'programma') renderProgramma();
 }
 </script>
 </body>
