@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v6.1 accompagnatori -->
+<!-- EventsFun | Landing Page | v7.0 richiesta informazioni -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -135,6 +135,48 @@ body.dark .wa-btn{background:#25D366;border-color:#25D366;color:#fff}
 body.dark .ef-cta{color:rgba(245,240,232,.6)}
 body.dark .acc-sep{border-top-color:rgba(255,255,255,.1)}
 body.dark .acc-title{color:#C9A96E}
+/* ============================================================
+   RICHIESTA INFORMAZIONI (modalita' info / entrambe)
+   ============================================================ */
+.ev-desc a,.info-txt a{color:#8a6e3e;text-decoration:underline;word-break:break-all}
+.info-blk{margin-top:18px}
+.card>.info-blk:first-child{margin-top:0}
+.info-txt{font-size:14px;color:#444;line-height:1.7;white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word}
+.info-fig{margin-left:0;margin-right:0}
+.info-fig a{display:block}
+.info-fig img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #eee}
+.info-fig figcaption{font-size:12px;color:#777;text-align:center;margin-top:8px;line-height:1.5;word-break:break-word}
+.info-sub{font-size:13px;color:#666;line-height:1.6;margin-bottom:18px}
+.tabbar{position:-webkit-sticky;position:sticky;top:0;z-index:30;display:flex;gap:8px;padding:10px 0;margin:0 0 12px;background:#f4f3f0}
+.tab-btn{flex:1;min-height:46px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:11px;background:#fff;font-family:"Syne",sans-serif;font-size:14px;font-weight:700;color:#666;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.tab-btn.active{background:#1a1a1a;border-color:#1a1a1a;color:#F5F0E8}
+.tab-btn:focus-visible{outline:2px solid #C9A96E;outline-offset:2px}
+.ch-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+.ch-opt{flex:1;min-width:88px;position:relative;cursor:pointer}
+.ch-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.ch-opt span{display:block;text-align:center;padding:11px 6px;border:1.5px solid #e0ddd8;border-radius:9px;background:#fafaf8;font-size:13px;font-weight:600;color:#555;transition:border-color .2s,background .2s}
+.ch-opt input:checked+span{border-color:#C9A96E;background:rgba(201,169,110,.13);color:#1a1a1a}
+.ch-opt input:focus-visible+span{outline:2px solid #C9A96E;outline-offset:2px}
+.info-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.info-cta p{font-size:14px;font-weight:600;color:#1a1a1a}
+.tab-link-btn{display:inline-block;padding:11px 20px;background:transparent;border:1.5px solid #C9A96E;border-radius:10px;font-size:13px;font-weight:700;color:#8a6e3e;cursor:pointer;font-family:inherit;transition:background .2s}
+.tab-link-btn:hover{background:rgba(201,169,110,.12)}
+.ok-cta{margin-top:24px}
+.ok-cta p{font-size:13px;color:#666;margin:0 auto 10px}
+body.dark .ev-desc a,body.dark .info-txt a{color:#C9A96E}
+body.dark .info-txt{color:rgba(245,240,232,.78)}
+body.dark .info-fig img{border-color:rgba(255,255,255,.08)}
+body.dark .info-fig figcaption{color:rgba(245,240,232,.55)}
+body.dark .info-sub{color:rgba(245,240,232,.6)}
+body.dark .tabbar{background:#0A0A0A}
+body.dark .tab-btn{background:#111;border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.7)}
+body.dark .tab-btn.active{background:#C9A96E;border-color:#C9A96E;color:#0A0A0A}
+body.dark .ch-opt span{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.75)}
+body.dark .ch-opt input:checked+span{border-color:#C9A96E;background:rgba(201,169,110,.16);color:#F5F0E8}
+body.dark .info-cta p{color:#F5F0E8}
+body.dark .tab-link-btn{color:#C9A96E}
+body.dark .ok-cta p{color:rgba(245,240,232,.6)}
+@media(max-width:480px){.tab-btn{font-size:13px}.ch-opt{min-width:0}.ch-opt span{padding:11px 4px;font-size:12.5px}}
 </style>
 </head>
 <body>
@@ -211,6 +253,144 @@ var ev = null;
 var cap = { occupati: 0, capienza: null, opt_capienza: false, piena: false };
 var adultiCount = 1;
 var bambiniCount = 0;
+
+/* ============================================================
+   RICHIESTA INFORMAZIONI -- testi nuovi raccolti in un punto solo
+   (pronti per il futuro multilingua)
+   ============================================================ */
+var TXT_INFO = {
+  titoloPagina: 'Informazioni evento - EventsFun',
+  tabInfo: 'Informazioni',
+  titoloInfo: 'Richiedi informazioni',
+  titoloEntrambe: 'Hai domande? Lasciaci i tuoi dati',
+  sottotitolo: 'Lascia i tuoi recapiti: l\'organizzatore ti ricontatterà nel modo che preferisci.',
+  lblNome: 'Nome e cognome',
+  lblCanale: 'Come preferisci essere ricontattato?',
+  chTelefono: 'Telefono',
+  chWhatsapp: 'WhatsApp',
+  chEmail: 'Email',
+  lblTel: 'Telefono',
+  lblEmail: 'Email',
+  lblMsg: 'Messaggio (facoltativo)',
+  phMsg: 'Scrivi qui la tua domanda',
+  consensoPre: 'Ho letto e accetto l\'',
+  consensoLink: 'informativa sul trattamento dei dati personali',
+  btnInvia: 'Invia richiesta',
+  invio: 'Invio in corso...',
+  chiuso: 'Le richieste di informazioni per questo evento sono chiuse',
+  richiamoIscr: 'Vuoi partecipare all\'evento?',
+  vuoiAnche: 'Vuoi anche {azione}?',
+  rivedi: 'Rivedi le informazioni',
+  errNome: 'Inserisci il tuo nome.',
+  errTel: 'Inserisci il numero di telefono: serve per ricontattarti con una telefonata o su WhatsApp.',
+  errTelVal: 'Inserisci un numero di telefono valido.',
+  errEmail: 'Inserisci la tua email.',
+  errEmailVal: 'Inserisci un indirizzo email valido.',
+  errConsenso: 'Devi accettare il trattamento dei dati per procedere.',
+  errInvio: 'Si è verificato un errore. Riprova tra qualche secondo.',
+  okTitolo: 'Grazie, {nome}!',
+  okTesto: 'La tua richiesta per <strong>{evento}</strong> è arrivata all\'organizzatore.<br>Ti ricontatteremo al più presto {canale}.',
+  okCanale: { telefono: 'con una telefonata', whatsapp: 'su WhatsApp', email: 'via email' },
+  footerInfo: 'I dati di questa richiesta sono raccolti e gestiti esclusivamente dall\'organizzatore dell\'evento. Nessun marketplace, nessun uso da parte di terzi.',
+  footerEntrambe: 'I dati che invii sono raccolti e gestiti esclusivamente dall\'organizzatore dell\'evento. Nessun marketplace, nessun uso da parte di terzi.'
+};
+
+/* Modalita' dell'evento: iscrizioni (come sempre) / info / entrambe */
+function modalitaEvento() {
+  var m = ev && ev.modalita;
+  return (m === 'info' || m === 'entrambe') ? m : 'iscrizioni';
+}
+
+/* Scheda che si apre per prima: il link ?vista= vince sulla scelta dell'organizzatore */
+function schedaIniziale() {
+  var v = new URLSearchParams(window.location.search).get('vista');
+  if (v === 'info' || v === 'iscrizione') return v;
+  return (ev && ev.landing_scheda_iniziale === 'iscrizione') ? 'iscrizione' : 'info';
+}
+
+/* Mette in sicurezza un testo prima di inserirlo nella pagina */
+function esc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+/* Testo in sicurezza + indirizzi http/https resi cliccabili (nuova scheda) */
+function autoLink(testo) {
+  var s = String(testo == null ? '' : testo);
+  var re = /https?:\/\/[^\s<>"']+/g;
+  var out = '', last = 0, m;
+  while ((m = re.exec(s)) !== null) {
+    var url = m[0], coda = '';
+    var mm = url.match(/[.,;:!?)\]]+$/);
+    if (mm) { coda = mm[0]; url = url.slice(0, url.length - coda.length); }
+    out += esc(s.slice(last, m.index));
+    if (url.length > 10) {
+      out += '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(url) + '</a>';
+    } else {
+      out += esc(url);
+    }
+    out += esc(coda);
+    last = m.index + m[0].length;
+  }
+  return out + esc(s.slice(last));
+}
+
+/* Immagini dei blocchi: percorso nello spazio info-immagini */
+function percorsoValido(p) {
+  return typeof p === 'string' && /^[A-Za-z0-9][A-Za-z0-9._\/-]{0,300}$/.test(p) && p.indexOf('..') === -1;
+}
+function urlImmagine(p) {
+  return SB_URL + '/storage/v1/object/public/info-immagini/' + p.split('/').map(encodeURIComponent).join('/');
+}
+
+/* Blocchi liberi della pagina informativa (testo / immagine), nell'ordine scelto */
+function blocchiHtml() {
+  var lista = Array.isArray(ev.info_blocchi) ? ev.info_blocchi : [];
+  var out = '';
+  lista.forEach(function(b) {
+    if (!b || typeof b !== 'object') return;
+    if (b.tipo === 'testo' && b.testo && String(b.testo).trim()) {
+      out += '<div class="info-blk info-txt">' + autoLink(b.testo) + '</div>';
+    } else if (b.tipo === 'immagine' && percorsoValido(b.path)) {
+      var url = urlImmagine(b.path);
+      var did = b.didascalia ? String(b.didascalia) : '';
+      out += '<figure class="info-blk info-fig"><a href="' + url + '" target="_blank" rel="noopener">'
+        + '<img src="' + url + '" alt="' + esc(did || ev.nome) + '" loading="lazy"></a>'
+        + (did ? '<figcaption>' + esc(did) + '</figcaption>' : '')
+        + '</figure>';
+    }
+  });
+  return out;
+}
+
+/* Scorre la pagina per mostrare un elemento, tenendo conto della barra schede ferma in alto */
+function scrollAElemento(el) {
+  if (!el) return;
+  var bar = document.querySelector('.tabbar');
+  var off = (bar ? bar.offsetHeight : 0) + 12;
+  var top = el.getBoundingClientRect().top;
+  if (top < off || top > window.innerHeight - 60) window.scrollTo(0, Math.max(0, top + window.pageYOffset - off));
+}
+function scrollASchede() {
+  var s = document.getElementById('tabSentinel');
+  if (!s) return;
+  var top = s.getBoundingClientRect().top + window.pageYOffset;
+  if (window.pageYOffset > top) window.scrollTo(0, top);
+}
+
+/* Cambio scheda (solo modalita' entrambe): le schede nascoste conservano quanto gia' scritto */
+function vaiScheda(v, iniziale) {
+  if (v !== 'iscrizione') v = 'info';
+  ['info', 'iscrizione'].forEach(function(k) {
+    var b = document.getElementById('tab_' + k);
+    var p = document.getElementById('panel_' + k);
+    var on = (k === v);
+    if (b) { b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }
+    if (p) p.style.display = on ? '' : 'none';
+  });
+  if (!iniziale) scrollASchede();
+}
 
 /* Restituisce le forme della parola in base alla terminologia scelta per l'evento */
 function termWords(t) {
@@ -329,13 +509,41 @@ async function init() {
 function render() {
   var app = document.getElementById('app');
   var closed = isClosed(ev) || !ev.attivo;
-  var cf = ev.custom_fields || [];
-  var sponsors = ev.sponsors || [];
   var TW = termWords(ev.terminologia);
-  document.title = TW.N + ' evento -- EventsFun';
+  var modo = modalitaEvento();
+  document.title = (modo === 'info') ? TXT_INFO.titoloPagina : TW.N + ' evento -- EventsFun';
 
+  if (modo !== 'iscrizioni') { renderConInfo(modo, closed, TW); return; }
+
+  /* Sola iscrizioni: pagina identica a prima */
+  app.innerHTML = headerCardHtml(true)
+    + buildCapHtml(TW)
+    + '<div class="card">' + buildRegFormHtml(closed, TW) + '</div>'
+    + buildSponsorsHtml()
+    + footerHtml('iscrizioni');
+}
+
+/* Intestazione evento (immagine, data, titolo, luogo, e descrizione se richiesta) */
+function headerCardHtml(conDescrizione) {
   var imgHtml = ev.immagine ? '<img src="' + ev.immagine + '" class="ev-img" alt="' + ev.nome + '">' : '';
+  return '<div class="card">'
+    + imgHtml
+    + '<div class="ev-date">' + isoToIt(ev.data_iso) + (ev.ora ? ' &middot; ' + ev.ora : '') + '</div>'
+    + '<h1 class="ev-title">' + ev.nome + '</h1>'
+    + (ev.evento_online
+        ? '<div class="ev-loc">💻 Evento online' + (ev.luogo ? ' &middot; ' + ev.luogo : '') + '</div>'
+        : (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : ''))
+    + (conDescrizione ? descrizioneHtml() : '')
+    + '</div>';
+}
 
+/* Descrizione in sicurezza, con i link cliccabili */
+function descrizioneHtml() {
+  return ev.descrizione ? '<p class="ev-desc">' + autoLink(ev.descrizione) + '</p>' : '';
+}
+
+/* Barra posti disponibili (solo iscrizioni) */
+function buildCapHtml(TW) {
   var capHtml = '';
   if (ev.opt_capienza && ev.capienza) {
     var occupati = cap.occupati;
@@ -349,6 +557,12 @@ function render() {
       + '</div>';
   }
 
+  return capHtml;
+}
+
+/* Modulo di iscrizione (identico a prima) */
+function buildRegFormHtml(closed, TW) {
+  var cf = ev.custom_fields || [];
   var extraFields = '';
   if (ev.opt_multipla) {
     var pplLbl = (ev.opt_bambini !== false) ? 'Adulti' : termWords(ev.terminologia).ppl;
@@ -392,7 +606,7 @@ function render() {
     ? '<label class="lp-nl"><input type="checkbox" id="r_newsletter" style="accent-color:#C9A96E;width:15px;height:15px"> Acconsento a ricevere comunicazioni future</label>'
     : '';
 
-  var gdprHtml = '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="r_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> Ho letto e accetto l\'<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">informativa sul trattamento dei dati personali</a> *</label>';
+  var gdprHtml = '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="r_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> <span>Ho letto e accetto l\'<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">informativa sul trattamento dei dati personali</a> *</span></label>';
 
   var formHtml = closed
     ? '<div class="closed-box">⛔ Le ' + TW.np + ' per questo evento sono chiuse</div>'
@@ -411,6 +625,12 @@ function render() {
       + gdprHtml
       + '<button class="submit-btn" id="submitBtn" onclick="submitReg()">' + TW.imp + ' →</button>';
 
+  return formHtml;
+}
+
+/* Sponsor */
+function buildSponsorsHtml() {
+  var sponsors = ev.sponsors || [];
   var sponsorsHtml = '';
   if (sponsors.length) {
     sponsorsHtml = '<div class="spon-wrap"><div class="spon-title">Con il supporto di</div><div class="spon-list">'
@@ -422,19 +642,146 @@ function render() {
       + '</div></div>';
   }
 
-  app.innerHTML = '<div class="card">'
-    + imgHtml
-    + '<div class="ev-date">' + isoToIt(ev.data_iso) + (ev.ora ? ' &middot; ' + ev.ora : '') + '</div>'
-    + '<h1 class="ev-title">' + ev.nome + '</h1>'
-    + (ev.evento_online
-        ? '<div class="ev-loc">💻 Evento online' + (ev.luogo ? ' &middot; ' + ev.luogo : '') + '</div>'
-        : (ev.luogo ? '<div class="ev-loc">📍 ' + ev.luogo + '</div>' : ''))
-    + (ev.descrizione ? '<p class="ev-desc">' + ev.descrizione + '</p>' : '')
+  return sponsorsHtml;
+}
+
+/* Piede pagina con nota dati e marchio EventsFun */
+function footerHtml(modo) {
+  if (modo === 'iscrizioni') {
+    return '<div class="ef-footer"><div class="ef-gdpr">I dati di questa iscrizione sono raccolti e gestiti esclusivamente dall\'organizzatore dell\'evento. Nessun marketplace, nessun uso da parte di terzi.</div><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
+  }
+  var nota = (modo === 'info') ? TXT_INFO.footerInfo : TXT_INFO.footerEntrambe;
+  return '<div class="ef-footer"><div class="ef-gdpr">' + nota + '</div><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
+}
+
+/* Pagina con informazioni: sola Informazioni (pagina unica) o Entrambe (due schede) */
+function renderConInfo(modo, closed, TW) {
+  var app = document.getElementById('app');
+  var richiestaCard = '<div class="card" id="richiestaCard">' + richiestaFormHtml(modo, closed) + '</div>';
+  var html;
+  if (modo === 'info') {
+    var blk = blocchiHtml();
+    html = headerCardHtml(true)
+      + (blk ? '<div class="card">' + blk + '</div>' : '')
+      + richiestaCard;
+  } else {
+    var contenuto = descrizioneHtml() + blocchiHtml();
+    html = headerCardHtml(false)
+      + '<div id="tabSentinel"></div>'
+      + '<div class="tabbar" role="tablist">'
+      +   '<button type="button" role="tab" class="tab-btn" id="tab_info" aria-controls="panel_info" onclick="vaiScheda(\'info\')">' + TXT_INFO.tabInfo + '</button>'
+      +   '<button type="button" role="tab" class="tab-btn" id="tab_iscrizione" aria-controls="panel_iscrizione" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + '</button>'
+      + '</div>'
+      + '<div class="tab-panel" id="panel_info" role="tabpanel">'
+      +   (contenuto ? '<div class="card">' + contenuto + '</div>' : '')
+      +   richiestaCard
+      +   (closed ? '' : '<div class="card info-cta" id="richiamoIscr"><p>' + TXT_INFO.richiamoIscr + '</p><button type="button" class="tab-link-btn" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>')
+      + '</div>'
+      + '<div class="tab-panel" id="panel_iscrizione" role="tabpanel">'
+      +   '<div id="capWrap">' + buildCapHtml(TW) + '</div>'
+      +   '<div class="card" id="regCard">' + buildRegFormHtml(closed, TW) + '</div>'
+      + '</div>';
+  }
+  app.innerHTML = html + buildSponsorsHtml() + footerHtml(modo);
+  if (modo === 'entrambe') vaiScheda(schedaIniziale(), true);
+  if (!closed) aggiornaCanale();
+}
+
+/* Modulo richiesta informazioni */
+function richiestaFormHtml(modo, closed) {
+  if (closed) return '<div class="closed-box">⛔ ' + TXT_INFO.chiuso + '</div>';
+  var titolo = (modo === 'entrambe') ? TXT_INFO.titoloEntrambe : TXT_INFO.titoloInfo;
+  function opz(val, etichetta, sel) {
+    return '<label class="ch-opt"><input type="radio" name="q_canale" value="' + val + '"' + (sel ? ' checked' : '') + ' onchange="aggiornaCanale()"><span>' + etichetta + '</span></label>';
+  }
+  return '<h2 class="form-title" style="margin-bottom:6px">' + titolo + '</h2>'
+    + '<p class="info-sub">' + TXT_INFO.sottotitolo + '</p>'
+    + '<div class="alert" id="infoAlert"></div>'
+    + '<div class="lp-fg"><label class="lp-lbl" for="q_nome">' + TXT_INFO.lblNome + ' *</label><input id="q_nome" class="lp-inp" maxlength="120" autocomplete="name" placeholder="Mario Rossi"></div>'
+    + '<div class="lp-fg"><span class="lp-lbl">' + TXT_INFO.lblCanale + ' *</span><div class="ch-group" role="radiogroup">'
+    +   opz('telefono', TXT_INFO.chTelefono, true) + opz('whatsapp', TXT_INFO.chWhatsapp, false) + opz('email', TXT_INFO.chEmail, false)
+    + '</div></div>'
+    + '<div class="lp-grid">'
+    + '<div class="lp-fg"><label class="lp-lbl" for="q_tel" id="q_tel_lbl">' + TXT_INFO.lblTel + '</label><input id="q_tel" class="lp-inp" type="tel" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="333 0000000"></div>'
+    + '<div class="lp-fg"><label class="lp-lbl" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" class="lp-inp" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="mario@email.it"></div>'
     + '</div>'
-    + capHtml
-    + '<div class="card">' + formHtml + '</div>'
-    + sponsorsHtml
-    + '<div class="ef-footer"><div class="ef-gdpr">I dati di questa iscrizione sono raccolti e gestiti esclusivamente dall\'organizzatore dell\'evento. Nessun marketplace, nessun uso da parte di terzi.</div><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';
+    + '<div class="lp-fg"><label class="lp-lbl" for="q_msg">' + TXT_INFO.lblMsg + '</label><textarea id="q_msg" class="lp-inp" rows="4" maxlength="2000" placeholder="' + TXT_INFO.phMsg + '" style="resize:vertical;font-family:inherit;font-size:14px;line-height:1.5;padding:10px 12px"></textarea></div>'
+    + '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="q_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> <span>' + TXT_INFO.consensoPre + '<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">' + TXT_INFO.consensoLink + '</a> *</span></label>'
+    + '<button class="submit-btn" id="infoBtn" onclick="submitRichiesta()">' + TXT_INFO.btnInvia + ' &rarr;</button>';
+}
+
+function canaleScelto() {
+  var r = document.querySelector('input[name="q_canale"]:checked');
+  return r ? r.value : 'telefono';
+}
+
+/* Asterischi dei recapiti in base al canale scelto (e all'email obbligatoria dell'organizzatore) */
+function aggiornaCanale() {
+  var c = canaleScelto();
+  var telObb = (c === 'telefono' || c === 'whatsapp');
+  var mailObb = (c === 'email') || !!ev.info_email_obbligatoria;
+  var lt = document.getElementById('q_tel_lbl');
+  var le = document.getElementById('q_email_lbl');
+  if (lt) lt.textContent = TXT_INFO.lblTel + (telObb ? ' *' : '');
+  if (le) le.textContent = TXT_INFO.lblEmail + (mailObb ? ' *' : '');
+}
+
+/* Invio richiesta informazioni */
+async function submitRichiesta() {
+  function val(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+  var nome = val('q_nome'), tel = val('q_tel'), email = val('q_email'), msg = val('q_msg');
+  var canale = canaleScelto();
+  var g = document.getElementById('q_gdpr');
+  var consenso = !!(g && g.checked);
+  var reMail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  var errore = '';
+  if (!nome) errore = TXT_INFO.errNome;
+  else if ((canale === 'telefono' || canale === 'whatsapp') && !tel) errore = TXT_INFO.errTel;
+  else if (tel && !/[0-9]/.test(tel)) errore = TXT_INFO.errTelVal;
+  else if ((canale === 'email' || ev.info_email_obbligatoria) && !email) errore = TXT_INFO.errEmail;
+  else if (email && !reMail.test(email)) errore = TXT_INFO.errEmailVal;
+  else if (!consenso) errore = TXT_INFO.errConsenso;
+  if (errore) { showAlert(errore, 'infoAlert'); scrollAElemento(document.getElementById('infoAlert')); return; }
+
+  var btn = document.getElementById('infoBtn');
+  btn.disabled = true; btn.textContent = TXT_INFO.invio;
+  try {
+    await sbInsert('richieste_contatto', {
+      event_id: ev.id,
+      nome: nome.slice(0, 120),
+      telefono: tel ? tel.slice(0, 40) : null,
+      email: email ? email.slice(0, 254) : null,
+      canale_preferito: canale,
+      messaggio: msg ? msg.slice(0, 2000) : null,
+      consenso: true
+    });
+    showRichiestaOk(nome, canale);
+  } catch (e) {
+    btn.disabled = false; btn.innerHTML = TXT_INFO.btnInvia + ' &rarr;';
+    showAlert(TXT_INFO.errInvio, 'infoAlert');
+    scrollAElemento(document.getElementById('infoAlert'));
+  }
+}
+
+/* Conferma richiesta: sostituisce SOLO il modulo, le informazioni restano leggibili */
+function showRichiestaOk(nome, canale) {
+  var card = document.getElementById('richiestaCard');
+  if (!card) return;
+  var TW = termWords(ev.terminologia);
+  var cta = '';
+  if (modalitaEvento() === 'entrambe' && !(isClosed(ev) || !ev.attivo)) {
+    cta = '<div class="ok-cta"><p>' + TXT_INFO.vuoiAnche.replace('{azione}', TW.inf) + '</p>'
+      + '<button type="button" class="tab-link-btn" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>';
+  }
+  card.innerHTML = '<div class="success-box">'
+    + '<div class="success-icon">✉️</div>'
+    + '<h2>' + TXT_INFO.okTitolo.replace('{nome}', esc(nome)) + '</h2>'
+    + '<p>' + TXT_INFO.okTesto.replace('{evento}', ev.nome).replace('{canale}', TXT_INFO.okCanale[canale] || '') + '</p>'
+    + cta
+    + '</div>';
+  var r = document.getElementById('richiamoIscr');
+  if (r) r.style.display = 'none';
+  scrollAElemento(card);
 }
 
 /* ============================================================
@@ -605,8 +952,8 @@ async function submitReg() {
   }
 }
 
-function showAlert(msg) {
-  var a = document.getElementById('formAlert'); if (!a) return;
+function showAlert(msg, id) {
+  var a = document.getElementById(id || 'formAlert'); if (!a) return;
   a.textContent = '⚠️ ' + msg; a.style.display = 'block';
   setTimeout(function() { a.style.display = 'none'; }, 5000);
 }
@@ -619,6 +966,22 @@ function showSuccess(nome, inAttesa) {
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
     : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.evento_online ? ' <strong>online</strong>' + (ev.luogo ? ' su <strong>' + ev.luogo + '</strong>' : '') : (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '')) + '.';
   var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:24px;display:flex;flex-direction:column;align-items:center">' + waShareBtnHtml(ev) + gcalBtnHtml(ev) + '</div>' : '';
+  if (modalitaEvento() === 'entrambe') {
+    var regCard = document.getElementById('regCard');
+    var capWrap = document.getElementById('capWrap');
+    if (capWrap) capWrap.style.display = 'none';
+    if (regCard) {
+      regCard.innerHTML = '<div class="success-box">'
+        + '<div class="success-icon">' + iconaTxt + '</div>'
+        + '<h2>' + titoloTxt + '</h2>'
+        + '<p>' + testoTxt + '</p>'
+        + gcalSuccessHtml
+        + '<div class="ok-cta"><button type="button" class="tab-link-btn" onclick="vaiScheda(\'info\')">' + TXT_INFO.rivedi + '</button></div>'
+        + '</div>';
+      scrollASchede();
+      return;
+    }
+  }
   document.getElementById('app').innerHTML = '<div class="card"><div class="success-box">'
     + '<div class="success-icon">' + iconaTxt + '</div>'
     + '<h2>' + titoloTxt + '</h2>'
