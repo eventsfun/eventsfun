@@ -217,7 +217,14 @@ tbody td.xv{color:var(--gold)}
 .tip.tip-down .tip-box{bottom:auto;top:calc(100% + 7px);left:0;right:auto;transform:none;max-width:min(280px,calc(100vw - 64px));font-family:"DM Sans",sans-serif;font-weight:400;letter-spacing:0}
 .status-nota{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;max-width:560px}
 .rich-tools .rub-filter{padding:7px 10px;font-size:12px}
-.link-extra-nota{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin:12px 0 8px}
+.link-extra-det{margin-top:12px}
+.link-extra-det summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text-muted);padding:4px 0;user-select:none}
+.link-extra-det summary::-webkit-details-marker{display:none}
+.link-extra-det summary::before{content:'▸';color:var(--gold);font-size:11px;transition:transform .2s;display:inline-block}
+.link-extra-det[open] summary::before{transform:rotate(90deg)}
+.link-extra-det summary:hover{color:var(--text)}
+.link-extra-det summary span{font-weight:400;color:var(--text-dim)}
+.link-extra-nota{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin:8px 0 8px}
 .link-extra{margin-top:10px}
 .link-extra-lbl{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:5px}
 .link-extra-row{display:flex;gap:8px;align-items:stretch}
@@ -2605,12 +2612,14 @@ function renderLinkExtra(ev) {
     ['Link diretto alla scheda "Informazioni"', base + sep + 'vista=info'],
     ['Link diretto alla scheda "' + (IMP[ev.terminologia] || 'Iscriviti') + '"', base + sep + 'vista=iscrizione']
   ];
-  box.innerHTML = '<div class="link-extra-nota">Il link qui sopra apre la scheda che hai scelto nelle impostazioni. Questi due aprono direttamente una scheda precisa: utili, ad esempio, sui social o in un\'email.</div>'
+  box.innerHTML = '<details class="link-extra-det"><summary>Link diretti alle singole schede <span>(facoltativi)</span></summary>'
+    + '<div class="link-extra-nota">Il link qui sopra, lo stesso del QR code, apre la pagina sulla scheda che hai scelto nelle impostazioni: \u00e8 quello da usare di solito. Questi due aprono direttamente una scheda precisa: utili, ad esempio, in un post social o in un\'email.</div>'
     + righe.map(function(x) {
       return '<div class="link-extra"><div class="link-extra-lbl">' + escHtml(x[0]) + '</div>'
         + '<div class="link-extra-row"><code>' + escHtml(x[1]) + '</code>'
         + '<button class="btn-sm" data-url="' + escHtml(x[1]) + '" onclick="copyTxt(this.getAttribute(\'data-url\'), this)">Copia</button></div></div>';
-    }).join('');
+    }).join('')
+    + '</details>';
 }
 
 /* Copia negli appunti (con ripiego per i browser piu' vecchi) */
