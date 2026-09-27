@@ -296,6 +296,57 @@ select option{background:#1a1a1a;color:var(--text)}
 .acc-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0}
 .acc-body{display:none;padding:2px 16px 14px}
 .acc.open .acc-body{display:block}
+/* RICHIESTA INFORMAZIONI: modalita', blocchi, avvisi */
+.mod-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mod-opt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--inp-bg);color:var(--text);font-family:"DM Sans",sans-serif;cursor:pointer;transition:border-color .2s,background .2s}
+.mod-opt:hover{border-color:rgba(201,169,110,0.4)}
+.mod-opt.on{border-color:var(--gold);background:rgba(201,169,110,0.1)}
+.mod-t{font-size:13px;font-weight:700;color:var(--text)}
+.mod-s{font-size:11px;color:var(--text-dim);line-height:1.35}
+.ib-note{font-size:11.5px;color:var(--text-dim);line-height:1.55;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:8px;padding:9px 12px;margin-bottom:12px}
+.ib-warn{margin-top:8px;font-size:12px;line-height:1.5;color:#d99a3a;background:rgba(224,160,64,0.08);border:1px solid rgba(224,160,64,0.3);border-radius:8px;padding:9px 12px}
+.ib-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.ib-list:empty::before{content:"Nessun blocco: la pagina mostra solo la descrizione.";font-size:12px;color:var(--text-dim)}
+.ib-row{padding:10px;background:var(--inp-bg);border:1px solid var(--border2);border-radius:10px;display:flex;flex-direction:column;gap:8px}
+.ib-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ib-type{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+.ib-acts{display:flex;gap:6px}
+.ib-acts .rm-btn:disabled{opacity:.3;cursor:default}
+.ib-text{resize:vertical;min-height:90px;font-size:13px;line-height:1.5}
+.ib-img-area{border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:border-color .2s}
+.ib-img-area:hover{border-color:var(--gold)}
+.ib-img{max-width:100%;max-height:220px;border-radius:8px;display:block;margin:0 auto}
+.ib-ph{font-size:12px;color:var(--text-muted);line-height:1.5}
+.ib-ph span{font-size:11px;color:var(--text-dim)}
+.ib-status{font-size:12px;color:var(--text-dim)}
+.ib-status:empty{display:none}
+.ib-status.err{color:#e06060}
+.ib-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+@media(max-width:600px){.mod-seg{grid-template-columns:1fr}}
+/* RICHIESTE DI CONTATTO */
+.pill-gold{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
+.rich-list{display:flex;flex-direction:column;gap:10px;padding:14px}
+.rich-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.rich-card.done{opacity:.75}
+.rich-msg{margin-top:10px;font-size:13px;line-height:1.55;color:var(--text);white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word;background:var(--inp-bg);border-left:3px solid rgba(201,169,110,0.5);border-radius:6px;padding:9px 12px}
+.rub-cbtn.pref{background:rgba(201,169,110,0.16);border-color:var(--gold);color:var(--gold)}
+.rich-manage{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)}
+.rich-del:hover{color:#e06060;border-color:rgba(200,80,80,0.35);background:rgba(200,80,80,0.08)}
+.rich-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rich-title{display:flex;align-items:center;gap:8px;position:relative}
+.tip.tip-down{position:static}
+/* Leggibilita' dei suggerimenti "?": testo chiaro sul riquadro scuro in entrambi i temi, senza maiuscolo ereditato dalle etichette */
+.tip-box{color:rgba(240,237,232,0.88);text-transform:none;letter-spacing:0;font-weight:400}
+.tip.tip-down .tip-box{bottom:auto;top:calc(100% + 7px);left:0;right:auto;transform:none;max-width:min(280px,calc(100vw - 64px));font-family:"DM Sans",sans-serif;font-weight:400;letter-spacing:0}
+.status-nota{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;max-width:560px}
+.rich-tools .rub-filter{padding:7px 10px;font-size:12px}
+.link-extra-nota{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin:12px 0 8px}
+.link-extra{margin-top:10px}
+.link-extra-lbl{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:5px}
+.link-extra-row{display:flex;gap:8px;align-items:stretch}
+.link-extra-row code{flex:1;min-width:0;display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text-muted);word-break:break-all}
+.link-extra-row .btn-sm{flex-shrink:0}
+@media(max-width:600px){.rich-list{padding:10px}.rich-tools{width:100%}.rich-tools .rub-filter{flex:1}}
 </style>
 </head>
 <body>
@@ -426,6 +477,7 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="sinfo">
         <h3 id="status-nome">Nessun evento</h3>
         <p id="status-det">Crea il tuo primo evento per iniziare</p>
+        <p id="statusNota" class="status-nota" style="display:none"></p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="status-pill"><span class="pill pill-gray">--</span></span>
@@ -433,7 +485,7 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
     </div>
 
-    <div class="panel">
+    <div class="panel" id="panelIscritti">
       <div class="panel-head">
         <div><h3 id="panel-title">Iscritti</h3><p id="panel-sub">Crea un evento per visualizzare gli iscritti</p></div>
         <div style="display:flex;gap:8px" id="panelBtns"></div>
@@ -446,9 +498,26 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
     </div>
 
+    <!-- RICHIESTE DI CONTATTO (modalita' Informazioni / Entrambe) -->
+    <div class="panel" id="panelRichieste" style="display:none">
+      <div class="panel-head">
+        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla.</span></span></h3><p id="richSub">--</p></div>
+        <div class="rich-tools">
+          <select id="richFiltro" class="rub-filter" onchange="renderRichieste()" aria-label="Filtra richieste">
+            <option value="tutte">Tutte</option>
+            <option value="da_contattare">Da contattare</option>
+            <option value="contattato">Contattate</option>
+          </select>
+          <button class="btn-sm" onclick="loadRichieste(true)">&#8635; Aggiorna</button>
+        </div>
+      </div>
+      <div id="richList" class="rich-list"></div>
+    </div>
+
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Link pagina pubblica</div>
       <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">--</code>
+      <div id="pubLinkExtra"></div>
     </div>
 
     <!-- PANNELLO LISTA D'ATTESA -->
@@ -610,7 +679,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <p class="modal-sub">Compila i dettagli. Potrai modificarli in qualsiasi momento prima della data evento.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
-      <div class="mf">
+      <div class="mf" id="ev_cap_mf">
         <label>
           Capienza
           <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per iscrizioni illimitate. Se attivi "Capienza per persona", il numero conta le persone totali (adulti + bambini), non le iscrizioni.</span></span>
@@ -627,6 +696,16 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se gestisci eventi per conto di clienti diversi, indica qui chi ha commissionato l'evento. Non compare mai nella pagina pubblica: lo vedi solo tu nella dashboard.</span></span>
       </label>
       <input id="ev_cliente" placeholder="Es. Studio Rossi, Comune di...">
+    </div>
+    <div class="mf">
+      <label>Cosa raccoglie la pagina dell'evento
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli se le persone si iscrivono, se ti lasciano i recapiti per essere ricontattate, oppure entrambe le cose. Puoi cambiarlo quando vuoi.</span></span>
+      </label>
+      <div class="mod-seg" id="ev_mod_seg">
+        <button type="button" class="mod-opt on" data-mod="iscrizioni" onclick="setModalita('ev','iscrizioni')"><span class="mod-t">&#128221; Iscrizioni</span><span class="mod-s">Le persone si iscrivono all'evento</span></button>
+        <button type="button" class="mod-opt" data-mod="info" onclick="setModalita('ev','info')"><span class="mod-t">&#8505;&#65039; Informazioni</span><span class="mod-s">Le persone ti lasciano i recapiti per essere ricontattate</span></button>
+        <button type="button" class="mod-opt" data-mod="entrambe" onclick="setModalita('ev','entrambe')"><span class="mod-t">&#128256; Entrambe</span><span class="mod-s">Informazioni e iscrizioni, in due schede</span></button>
+      </div>
     </div>
     <div class="opt-row" style="border-top:1px solid var(--border2);border-bottom:none;padding-top:14px;margin-bottom:6px">
       <div>
@@ -661,6 +740,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Questa email viene mostrata agli iscritti nell'email di conferma come riferimento per domande sull'evento. Usa una casella che controlli regolarmente.</span></span>
       </label>
       <input id="ev_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+      <div class="ib-note" id="ev_email_info_note" style="display:none;margin:4px 0 0">&#128276; A questo indirizzo ricevi anche gli avvisi delle richieste di informazioni.</div>
     </div>
     <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, logo, copertina)</span></label>
@@ -702,7 +782,55 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_ev_info" style="display:none">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#8505;&#65039; Pagina informazioni<span class="acc-dot" id="acc_dot_ev_info" style="display:none"></span></div>
+          <div class="acc-desc">Contenuti della pagina, richieste di contatto e avvisi</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf" id="ev_scheda_wrap" style="display:none">
+      <label>Scheda che si apre per prima</label>
+      <select id="ev_scheda_iniziale">
+        <option value="info">Informazioni</option>
+        <option value="iscrizione">Iscriviti</option>
+      </select>
+    </div>
+    <div class="ib-note" id="ev_scheda_nota" style="display:none">Vale quando l'evento raccoglie sia iscrizioni sia richieste di informazioni. Scegli "Informazioni" se vuoi che le persone leggano prima i dettagli (programma, piantina, orari). Scegli "Iscriviti" se il tuo obiettivo principale &egrave; raccogliere iscrizioni. Chi visita la pagina pu&ograve; sempre passare da una scheda all'altra.</div>
+    <div class="sec-div">&#129521; Blocchi della pagina <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativi)</span>
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi testi e immagini (programma, orari, piantina, mappa...) nell'ordine che preferisci: compaiono sotto la descrizione. I link che scrivi (https://...) diventano cliccabili.</span></span>
+    </div>
+    <div id="ev_ibList" class="ib-list"></div>
+    <div class="ib-add">
+      <button type="button" class="add-row-btn" onclick="ibAdd('ev','testo')">+ Testo</button>
+      <button type="button" class="add-row-btn" onclick="ibAdd('ev','immagine')">+ Immagine</button>
+    </div>
+    <div class="sec-div">&#9993;&#65039; Modulo richiesta informazioni</div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl">Email obbligatoria</div>
+        <div class="opt-sub">Chi ti chiede informazioni deve lasciare sempre anche la propria email</div>
+      </div>
+      <div class="tog" id="otog_info_email" onclick="otog('info_email')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">&#128276; Avvisi per le richieste</div>
+    <div class="mf">
+      <label>Come vuoi essere avvisato</label>
+      <select id="ev_info_avviso" onchange="ibAvvisoUI('ev')">
+        <option value="ogni_richiesta">Un'email per ogni richiesta</option>
+        <option value="riepilogo">Un riepilogo al giorno</option>
+      </select>
+    </div>
+    <div class="mf" id="ev_info_ora_wrap" style="display:none">
+      <label>Orario del riepilogo (ora italiana)</label>
+      <select id="ev_info_ora"><option value="0">00:00</option><option value="1">01:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option><option value="5">05:00</option><option value="6">06:00</option><option value="7">07:00</option><option value="8">08:00</option><option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option><option value="17">17:00</option><option value="18">18:00</option><option value="19">19:00</option><option value="20">20:00</option><option value="21">21:00</option><option value="22">22:00</option><option value="23">23:00</option></select>
+    </div>
+    <div class="ib-note">Scegli come vuoi essere avvisato quando qualcuno ti chiede informazioni. Con "un'email per ogni richiesta" lo sai subito, utile se ne ricevi poche e vuoi rispondere in fretta. Con "un riepilogo al giorno" ricevi una sola email all'orario che preferisci con tutte le richieste nuove, utile nei periodi con molte richieste. Se in un giorno non arriva nessuna richiesta, il riepilogo non viene inviato. In ogni caso trovi sempre tutte le richieste nella sezione "Richieste di contatto" dell'evento.</div>
+      </div>
+    </div>
+    <div class="acc" id="acc_ev_modulo">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">⚙️ Modulo di iscrizione<span class="acc-dot" id="acc_dot_ev_modulo" style="display:none"></span></div>
@@ -855,7 +983,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <div id="cspList" style="margin-bottom:8px"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_ev_campi">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">📝 Campi aggiuntivi<span class="acc-dot" id="acc_dot_ev_campi" style="display:none"></span></div>
@@ -888,11 +1016,22 @@ select option{background:#1a1a1a;color:var(--text)}
     <p class="modal-sub">Modifica i dati. Le modifiche si applicano subito.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
-      <div class="mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
+      <div class="mf" id="se_cap_mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
     </div>
     <div class="fg2">
       <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
       <div class="mf"><label>Ora</label><input id="se_ora"></div>
+    </div>
+    <div class="mf">
+      <label>Cosa raccoglie la pagina dell'evento
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli se le persone si iscrivono, se ti lasciano i recapiti per essere ricontattate, oppure entrambe le cose. Puoi cambiarlo quando vuoi.</span></span>
+      </label>
+      <div class="mod-seg" id="se_mod_seg">
+        <button type="button" class="mod-opt on" data-mod="iscrizioni" onclick="setModalita('se','iscrizioni')"><span class="mod-t">&#128221; Iscrizioni</span><span class="mod-s">Le persone si iscrivono all'evento</span></button>
+        <button type="button" class="mod-opt" data-mod="info" onclick="setModalita('se','info')"><span class="mod-t">&#8505;&#65039; Informazioni</span><span class="mod-s">Le persone ti lasciano i recapiti per essere ricontattate</span></button>
+        <button type="button" class="mod-opt" data-mod="entrambe" onclick="setModalita('se','entrambe')"><span class="mod-t">&#128256; Entrambe</span><span class="mod-s">Informazioni e iscrizioni, in due schede</span></button>
+      </div>
+    <div class="ib-warn" id="se_mod_warn" style="display:none"></div>
     </div>
     <div class="opt-row" style="border-top:1px solid var(--border2);border-bottom:none;padding-top:14px;margin-bottom:6px">
       <div>
@@ -927,6 +1066,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Mostrata nell'email di conferma agli iscritti come riferimento per domande sull'evento.</span></span>
       </label>
       <input id="se_email_contatto" type="email" placeholder="es. info@tuaorganizzazione.it">
+      <div class="ib-note" id="se_email_info_note" style="display:none;margin:4px 0 0">&#128276; A questo indirizzo ricevi anche gli avvisi delle richieste di informazioni.</div>
     </div>
     <div class="mf">
       <label>Immagine evento</label>
@@ -968,7 +1108,55 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_se_info" style="display:none">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#8505;&#65039; Pagina informazioni<span class="acc-dot" id="acc_dot_se_info" style="display:none"></span></div>
+          <div class="acc-desc">Contenuti della pagina, richieste di contatto e avvisi</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf" id="se_scheda_wrap" style="display:none">
+      <label>Scheda che si apre per prima</label>
+      <select id="se_scheda_iniziale">
+        <option value="info">Informazioni</option>
+        <option value="iscrizione">Iscriviti</option>
+      </select>
+    </div>
+    <div class="ib-note" id="se_scheda_nota" style="display:none">Vale quando l'evento raccoglie sia iscrizioni sia richieste di informazioni. Scegli "Informazioni" se vuoi che le persone leggano prima i dettagli (programma, piantina, orari). Scegli "Iscriviti" se il tuo obiettivo principale &egrave; raccogliere iscrizioni. Chi visita la pagina pu&ograve; sempre passare da una scheda all'altra.</div>
+    <div class="sec-div">&#129521; Blocchi della pagina <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativi)</span>
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi testi e immagini (programma, orari, piantina, mappa...) nell'ordine che preferisci: compaiono sotto la descrizione. I link che scrivi (https://...) diventano cliccabili.</span></span>
+    </div>
+    <div id="se_ibList" class="ib-list"></div>
+    <div class="ib-add">
+      <button type="button" class="add-row-btn" onclick="ibAdd('se','testo')">+ Testo</button>
+      <button type="button" class="add-row-btn" onclick="ibAdd('se','immagine')">+ Immagine</button>
+    </div>
+    <div class="sec-div">&#9993;&#65039; Modulo richiesta informazioni</div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl">Email obbligatoria</div>
+        <div class="opt-sub">Chi ti chiede informazioni deve lasciare sempre anche la propria email</div>
+      </div>
+      <div class="tog" id="stog_info_email" onclick="stog('info_email')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">&#128276; Avvisi per le richieste</div>
+    <div class="mf">
+      <label>Come vuoi essere avvisato</label>
+      <select id="se_info_avviso" onchange="ibAvvisoUI('se')">
+        <option value="ogni_richiesta">Un'email per ogni richiesta</option>
+        <option value="riepilogo">Un riepilogo al giorno</option>
+      </select>
+    </div>
+    <div class="mf" id="se_info_ora_wrap" style="display:none">
+      <label>Orario del riepilogo (ora italiana)</label>
+      <select id="se_info_ora"><option value="0">00:00</option><option value="1">01:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option><option value="5">05:00</option><option value="6">06:00</option><option value="7">07:00</option><option value="8">08:00</option><option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option><option value="17">17:00</option><option value="18">18:00</option><option value="19">19:00</option><option value="20">20:00</option><option value="21">21:00</option><option value="22">22:00</option><option value="23">23:00</option></select>
+    </div>
+    <div class="ib-note">Scegli come vuoi essere avvisato quando qualcuno ti chiede informazioni. Con "un'email per ogni richiesta" lo sai subito, utile se ne ricevi poche e vuoi rispondere in fretta. Con "un riepilogo al giorno" ricevi una sola email all'orario che preferisci con tutte le richieste nuove, utile nei periodi con molte richieste. Se in un giorno non arriva nessuna richiesta, il riepilogo non viene inviato. In ogni caso trovi sempre tutte le richieste nella sezione "Richieste di contatto" dell'evento.</div>
+      </div>
+    </div>
+    <div class="acc" id="acc_se_modulo">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">⚙️ Modulo di iscrizione<span class="acc-dot" id="acc_dot_se_modulo" style="display:none"></span></div>
@@ -1111,7 +1299,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <div id="sspList" style="margin-bottom:8px"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_se_campi">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">📝 Campi aggiuntivi<span class="acc-dot" id="acc_dot_se_campi" style="display:none"></span></div>
@@ -1371,6 +1559,8 @@ var customStats = [null, null];
 var configStatIdx = null;
 var configStatSel = null;
 var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste */
+var modState = { ev: 'iscrizioni', se: 'iscrizioni' }; /* modalita' della pagina nei due form */
+var ibUploading = 0; /* immagini dei blocchi in caricamento */
 
 /* ============================================================
    LOADING / ERROR HELPERS
@@ -2059,6 +2249,12 @@ function sanitizeEvent(ev) {
   ev.link_invio = ev.link_invio || 'entrambi';
   ev.cliente = ev.cliente || '';
   ev.referente_contatto_id = ev.referente_contatto_id || null;
+  ev.modalita = (ev.modalita === 'info' || ev.modalita === 'entrambe') ? ev.modalita : 'iscrizioni';
+  ev.landing_scheda_iniziale = ev.landing_scheda_iniziale === 'iscrizione' ? 'iscrizione' : 'info';
+  ev.info_email_obbligatoria = !!ev.info_email_obbligatoria;
+  ev.info_blocchi = Array.isArray(ev.info_blocchi) ? ev.info_blocchi : [];
+  ev.info_avviso = ev.info_avviso === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta';
+  ev.info_riepilogo_ora = (typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8;
   return ev;
 }
 
@@ -2262,8 +2458,8 @@ function renderDash() {
   if (sp) {
     if (!ev) sp.innerHTML = '<span class="pill pill-gray">--</span>';
     else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
-    else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">Iscrizioni aperte</span>';
-    else sp.innerHTML = '<span class="pill pill-red">Iscrizioni chiuse</span>';
+    else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">' + statoLabel(ev, true) + '</span>';
+    else sp.innerHTML = '<span class="pill pill-red">' + statoLabel(ev, false) + '</span>';
   }
 
   /* Link pubblico */
@@ -2273,6 +2469,227 @@ function renderDash() {
   renderTable(ev, confermati, closed);
   /* Pannello lista attesa */
   renderAttesa(ev, inAttesa, closed);
+  /* Modalita' Informazioni / Entrambe: richieste di contatto e link diretti */
+  applyModalitaDash(ev);
+}
+
+/* ============================================================
+   RICHIESTE DI CONTATTO (dashboard dell'evento)
+   ============================================================ */
+var currentRich = [];
+var richLoadedFor = null;
+var richLoading = false;
+var richErr = false;
+var RICH_CANALE = { telefono: 'una telefonata', whatsapp: 'WhatsApp', email: 'email' };
+
+/* Etichetta dello stato aperto/chiuso in base a cosa raccoglie la pagina */
+function statoLabel(ev, aperto) {
+  var m = ev ? ev.modalita : 'iscrizioni';
+  if (m === 'info') return aperto ? 'Richieste aperte' : 'Richieste chiuse';
+  if (m === 'entrambe') return aperto ? 'Iscrizioni e richieste aperte' : 'Iscrizioni e richieste chiuse';
+  return aperto ? 'Iscrizioni aperte' : 'Iscrizioni chiuse';
+}
+
+/* Mostra/nasconde le parti della dashboard secondo la modalita' dell'evento */
+function applyModalitaDash(ev) {
+  var m = ev ? ev.modalita : 'iscrizioni';
+  if (m === 'info') {
+    ['btnAddReg', 'btnPresenze', 'btnCSV', 'btnPDF', 'btnAttesa', 'btnSendLink'].forEach(function(id) { setDisp(id, 'none'); });
+    setDisp('statsRow', 'none');
+    setDisp('panelIscritti', 'none');
+    setDisp('panelAttesa', 'none');
+  } else {
+    setDisp('statsRow', 'flex');
+    setDisp('panelIscritti', 'block');
+  }
+  var nota = document.getElementById('statusNota');
+  if (nota) {
+    var testoNota = '';
+    if (ev && !isClosed(ev) && m === 'info') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 inviare richieste, ma quelle gi\u00e0 arrivate restano qui.';
+    if (ev && !isClosed(ev) && m === 'entrambe') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 iscriversi n\u00e9 inviare richieste, ma iscritti e richieste gi\u00e0 arrivati restano qui.';
+    nota.textContent = testoNota;
+    nota.style.display = testoNota ? 'block' : 'none';
+  }
+  renderLinkExtra(ev);
+  if (ev && m !== 'iscrizioni') {
+    if (richLoadedFor !== ev.id && !richLoading) { currentRich = []; loadRichieste(true); return; }
+  }
+  renderRichieste();
+}
+
+async function loadRichieste(forza) {
+  var ev = currentEv;
+  if (!ev || ev.modalita === 'iscrizioni') { renderRichieste(); return; }
+  if (!forza && richLoadedFor === ev.id) { renderRichieste(); return; }
+  var evId = ev.id;
+  richLoading = true; richErr = false;
+  if (richLoadedFor !== evId) currentRich = [];
+  renderRichieste();
+  var rows = null, errore = false;
+  try {
+    var r = await fetch(SB_URL + '/rest/v1/richieste_contatto?event_id=eq.' + encodeURIComponent(evId) + '&order=created_at.desc', { headers: sbH() });
+    if (!r.ok) throw new Error(await r.text());
+    rows = await r.json();
+  } catch (e) { errore = true; }
+  richLoading = false;
+  if (!currentEv || currentEv.id !== evId) return; /* nel frattempo e' stato scelto un altro evento */
+  richLoadedFor = evId;
+  richErr = errore;
+  currentRich = (!errore && Array.isArray(rows)) ? rows : [];
+  renderRichieste();
+}
+
+function richData(iso) {
+  try {
+    return new Date(iso).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch (e) { return ''; }
+}
+
+/* Numero per wa.me: solo cifre con prefisso internazionale (se manca si assume l'Italia) */
+function richWa(t) {
+  var n = String(t || '').replace(/[^0-9+]/g, '');
+  if (n.indexOf('+') === 0) n = n.slice(1);
+  else if (n.indexOf('00') === 0) n = n.slice(2);
+  else if (/^[03]\d{5,10}$/.test(n)) n = '39' + n;
+  return n.replace(/[^0-9]/g, '');
+}
+
+function richCardHtml(r) {
+  var fatto = (r.stato === 'contattato');
+  var pref = r.canale_preferito;
+  var tel = String(r.telefono || '').replace(/[^0-9+]/g, '');
+  var btns = '';
+  if (tel) {
+    btns += '<a class="rub-cbtn' + (pref === 'telefono' ? ' pref' : '') + '" href="tel:' + escHtml(tel) + '">&#128222; Chiama</a>';
+    var wa = richWa(r.telefono);
+    if (wa) btns += '<a class="rub-cbtn' + (pref === 'whatsapp' ? ' pref' : '') + '" href="https://wa.me/' + wa + '" target="_blank" rel="noopener">&#128172; WhatsApp</a>';
+  }
+  if (r.email) {
+    btns += '<a class="rub-cbtn' + (pref === 'email' ? ' pref' : '') + '" href="mailto:' + escHtml(r.email) + '?subject=' + encodeURIComponent('Informazioni su ' + (currentEv ? currentEv.nome : '')) + '">&#9993; Email</a>';
+  }
+  var meta = '';
+  if (r.telefono) meta += '&#128222; ' + escHtml(r.telefono);
+  if (r.email) meta += (meta ? '<br>' : '') + '&#9993; ' + escHtml(r.email);
+  return '<div class="rich-card' + (fatto ? ' done' : '') + '">'
+    + '<div class="rub-card-top"><div style="min-width:0">'
+    +   '<div class="rub-name">' + escHtml(r.nome || '') + '</div>'
+    +   '<div class="rub-ref">' + richData(r.created_at) + ' &middot; preferisce ' + (RICH_CANALE[pref] || escHtml(pref || '')) + '</div>'
+    + '</div><span class="pill ' + (fatto ? 'pill-green' : 'pill-gold') + '">' + (fatto ? 'Contattato' : 'Da contattare') + '</span></div>'
+    + (meta ? '<div class="rub-meta">' + meta + '</div>' : '')
+    + (r.messaggio ? '<div class="rich-msg">' + escHtml(r.messaggio) + '</div>' : '')
+    + (btns ? '<div class="rub-actions">' + btns + '</div>' : '')
+    + '<div class="rich-manage">'
+    +   '<button class="btn-sm' + (fatto ? '' : ' btn-sm-green') + '" data-id="' + escHtml(r.id) + '" onclick="richStato(this.getAttribute(\'data-id\'))">' + (fatto ? '&#8634; Segna da contattare' : '&#10003; Segna come contattato') + '</button>'
+    +   '<button class="btn-sm rich-del" data-id="' + escHtml(r.id) + '" onclick="richDel(this.getAttribute(\'data-id\'))">&#128465; Elimina</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function renderRichieste() {
+  var panel = document.getElementById('panelRichieste');
+  if (!panel) return;
+  var ev = currentEv;
+  if (!ev || ev.modalita === 'iscrizioni') { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  var list = document.getElementById('richList');
+  var inCarica = richLoading && richLoadedFor !== ev.id;
+  var tot = currentRich.length;
+  var daFare = currentRich.filter(function(r) { return r.stato !== 'contattato'; }).length;
+  if (inCarica) {
+    setText('richSub', 'Caricamento...');
+    list.innerHTML = '<div class="no-regs">Caricamento delle richieste...</div>';
+    return;
+  }
+  if (richErr) {
+    setText('richSub', '--');
+    list.innerHTML = '<div class="no-regs">Non riesco a caricare le richieste. Premi "Aggiorna" per riprovare.</div>';
+    return;
+  }
+  setText('richSub', tot === 0 ? 'Nessuna richiesta per ora' : (tot + (tot === 1 ? ' richiesta' : ' richieste') + ' \u00b7 ' + daFare + ' da contattare'));
+  if (!tot) {
+    list.innerHTML = '<div class="no-regs">Quando qualcuno ti chiede informazioni dalla pagina dell\'evento, la richiesta compare qui.<br>Ti avvisiamo anche via email, come hai scelto nelle impostazioni.</div>';
+    return;
+  }
+  var filtro = getVal('richFiltro') || 'tutte';
+  var rows = currentRich.filter(function(r) {
+    if (filtro === 'contattato') return r.stato === 'contattato';
+    if (filtro === 'da_contattare') return r.stato !== 'contattato';
+    return true;
+  });
+  list.innerHTML = rows.length ? rows.map(richCardHtml).join('') : '<div class="no-regs">Nessuna richiesta in questo filtro.</div>';
+}
+
+async function richStato(id) {
+  var r = currentRich.find(function(x) { return x.id === id; });
+  if (!r) return;
+  var nuovo = (r.stato === 'contattato') ? 'da_contattare' : 'contattato';
+  try {
+    var upd = await sbPatch('richieste_contatto', id, { stato: nuovo });
+    r.stato = (upd && upd.stato) ? upd.stato : nuovo;
+    renderRichieste();
+    showToast(nuovo === 'contattato' ? 'Segnata come contattata' : 'Rimessa tra quelle da contattare', 'g');
+  } catch (e) { showToast(friendlyError(e), 'r'); }
+}
+
+async function richDel(id) {
+  var r = currentRich.find(function(x) { return x.id === id; });
+  if (!r) return;
+  if (!confirm('Eliminare la richiesta di ' + (r.nome || '') + '? Sparisce anche dal conteggio e dagli avvisi non ancora inviati. L\'operazione non si pu\u00f2 annullare.')) return;
+  try {
+    await sbDel('richieste_contatto', id);
+    currentRich = currentRich.filter(function(x) { return x.id !== id; });
+    renderRichieste();
+    showToast('Richiesta eliminata', 'g');
+  } catch (e) { showToast(friendlyError(e), 'r'); }
+}
+
+/* Link diretti alle due schede (solo modalita' Entrambe) */
+function renderLinkExtra(ev) {
+  var box = document.getElementById('pubLinkExtra');
+  if (!box) return;
+  if (!ev || ev.modalita !== 'entrambe') { box.innerHTML = ''; return; }
+  var base = landingUrl(ev);
+  if (!base) { box.innerHTML = ''; return; }
+  var sep = base.indexOf('?') >= 0 ? '&' : '?';
+  var IMP = { iscrizione: 'Iscriviti', prenotazione: 'Prenota', partecipazione: 'Partecipa', registrazione: 'Registrati' };
+  var righe = [
+    ['Link diretto alla scheda "Informazioni"', base + sep + 'vista=info'],
+    ['Link diretto alla scheda "' + (IMP[ev.terminologia] || 'Iscriviti') + '"', base + sep + 'vista=iscrizione']
+  ];
+  box.innerHTML = '<div class="link-extra-nota">Il link qui sopra apre la scheda che hai scelto nelle impostazioni. Questi due aprono direttamente una scheda precisa: utili, ad esempio, sui social o in un\'email.</div>'
+    + righe.map(function(x) {
+      return '<div class="link-extra"><div class="link-extra-lbl">' + escHtml(x[0]) + '</div>'
+        + '<div class="link-extra-row"><code>' + escHtml(x[1]) + '</code>'
+        + '<button class="btn-sm" data-url="' + escHtml(x[1]) + '" onclick="copyTxt(this.getAttribute(\'data-url\'), this)">Copia</button></div></div>';
+    }).join('');
+}
+
+/* Copia negli appunti (con ripiego per i browser piu' vecchi) */
+function copyTxt(t, btn) {
+  var fatto = function() {
+    if (!btn) return;
+    var orig = btn.getAttribute('data-orig') || btn.textContent;
+    btn.setAttribute('data-orig', orig);
+    btn.textContent = 'Copiato \u2713';
+    setTimeout(function() { btn.textContent = orig; }, 1600);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(t).then(fatto, function() { if (copyFallback(t)) fatto(); });
+  } else if (copyFallback(t)) {
+    fatto();
+  }
+}
+function copyFallback(t) {
+  var ta = document.createElement('textarea');
+  ta.value = t; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.top = '-1000px';
+  document.body.appendChild(ta);
+  ta.select();
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  if (!ok) window.prompt('Copia il link:', t);
+  return ok;
 }
 
 /* ============================================================
@@ -2636,6 +3053,7 @@ function resetEvForm() {
   setDisp('opasto_sub', 'none');
   setDisp('o_capienza_pp_row', 'none');
   applyOnlineUI('ev', 'o', false);
+  infoFill('ev', {});
 }
 
 /* Normalizza il telefono di contatto e gestisce la visibilita' del toggle WhatsApp */
@@ -2735,6 +3153,8 @@ async function saveEvent() {
     custom_fields: collectCF('ccfList'),
     activated: false
   };
+  if (!infoCheck('ev')) return;
+  Object.assign(evData, infoFields('ev'));
   try {
     var ev;
     if (bozzaId) {
@@ -2812,6 +3232,7 @@ function openEditEvent() {
   (ev.sponsors || []).forEach(function(s) { addSP('s', 'sspList', s); });
   setHTML('scfList', ''); cfIdx.s = 0;
   (ev.custom_fields || []).forEach(function(f) { addCF('s', 'scfList', f); });
+  infoFill('se', ev);
   openOv('ovSettings');
   accResetModal('ovSettings');
   accSync('se');
@@ -2859,6 +3280,8 @@ async function saveSettings() {
     sponsors: collectSP('sspList'),
     custom_fields: collectCF('scfList')
   };
+  if (!infoCheck('se')) return;
+  Object.assign(upd, infoFields('se'));
   try {
     var updated = await sbPatch('events', ev.id, upd);
     currentEv = sanitizeEvent(updated);
@@ -2875,7 +3298,7 @@ async function toggleStatus() {
     currentEv = sanitizeEvent(await sbPatch('events', ev.id, { attivo: !ev.attivo }));
     var idx = allEvents.findIndex(function(e) { return e.id === ev.id; });
     if (idx >= 0) allEvents[idx] = currentEv;
-    renderDash(); showToast(currentEv.attivo ? 'Iscrizioni aperte' : 'Iscrizioni chiuse', currentEv.attivo ? 'g' : 'r');
+    renderDash(); showToast(statoLabel(currentEv, currentEv.attivo), currentEv.attivo ? 'g' : 'r');
   } catch(e) { showToast('Errore', 'r'); }
 }
 
@@ -2891,7 +3314,7 @@ function applyOnlineUI(inpPfx, rowPfx, on) {
   setDisp(rowPfx + '_online_fields', on ? 'block' : 'none');
   setDisp(rowPfx + '_tipo_row', on ? 'none' : 'flex');
   setDisp(rowPfx + '_pasto_row', on ? 'none' : 'flex');
-  setDisp(rowPfx + '_checkin_sect', on ? 'none' : 'block');
+  setDisp(rowPfx + '_checkin_sect', (on || modState[inpPfx] === 'info') ? 'none' : 'block');
 }
 function otog(k) {
   otogState[k] = !otogState[k];
@@ -2941,6 +3364,7 @@ function accSync(pfx) {
   accSetDot('acc_dot_' + pfx + '_checkin', !!st.qr_checkin);
   accSetDot('acc_dot_' + pfx + '_aspetto', aspetto);
   accSetDot('acc_dot_' + pfx + '_campi', accCount(cfList) > 0);
+  accSetDot('acc_dot_' + pfx + '_info', accCount(pfx + '_ibList') > 0 || !!st.info_email || accVal(pfx + '_info_avviso') === 'riepilogo');
 }
 function accInit() {
   [['ovCreate', 'ev'], ['ovSettings', 'se']].forEach(function(p) {
@@ -2952,6 +3376,282 @@ function accInit() {
   });
 }
 accInit();
+
+/* ============================================================
+   RICHIESTA INFORMAZIONI: modalita' della pagina, blocchi, avvisi
+   ============================================================ */
+var IB_MAX = 30;
+var IB_BUCKET_URL = SB_URL + '/storage/v1/object/public/info-immagini/';
+
+/* Modalita' della pagina: iscrizioni (come sempre) / info / entrambe */
+function setModalita(p, m, silenzioso) {
+  if (m !== 'info' && m !== 'entrambe') m = 'iscrizioni';
+  modState[p] = m;
+  var seg = document.getElementById(p + '_mod_seg');
+  if (seg) {
+    var bs = seg.querySelectorAll('.mod-opt');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-mod') === m);
+  }
+  var conInfo = (m !== 'iscrizioni');
+  var conIscr = (m !== 'info');
+  var st = (p === 'ev') ? otogState : stogState;
+  setDisp('acc_' + p + '_info', conInfo ? 'block' : 'none');
+  setDisp(p + '_scheda_wrap', m === 'entrambe' ? 'flex' : 'none');
+  setDisp(p + '_scheda_nota', m === 'entrambe' ? 'block' : 'none');
+  setDisp(p + '_cap_mf', conIscr ? 'flex' : 'none');
+  setDisp('acc_' + p + '_modulo', conIscr ? 'block' : 'none');
+  setDisp('acc_' + p + '_campi', conIscr ? 'block' : 'none');
+  setDisp((p === 'ev' ? 'o' : 's') + '_checkin_sect', (conIscr && !st.online) ? 'block' : 'none');
+  setDisp(p + '_email_info_note', conInfo ? 'block' : 'none');
+  if (p === 'se') modWarn();
+  if (conInfo && !silenzioso) {
+    var a = document.getElementById('acc_' + p + '_info');
+    if (a) a.classList.add('open');
+  }
+  accSync(p);
+}
+
+/* Avviso nelle impostazioni: passare a sola Informazioni con iscritti gia' presenti */
+function modWarn() {
+  var w = document.getElementById('se_mod_warn');
+  if (!w) return;
+  var n = (currentRegs || []).length;
+  if (modState.se === 'info' && currentEv && currentEv.modalita !== 'info' && n > 0) {
+    w.textContent = 'Questo evento ha gi\u00e0 ' + n + (n === 1 ? ' iscritto' : ' iscritti') + '. Con "Informazioni" la pagina non accetta pi\u00f9 nuove iscrizioni: chi \u00e8 gi\u00e0 iscritto resta nella dashboard.';
+    w.style.display = 'block';
+  } else {
+    w.style.display = 'none';
+  }
+}
+
+function ibAvvisoUI(p) {
+  setDisp(p + '_info_ora_wrap', getVal(p + '_info_avviso') === 'riepilogo' ? 'flex' : 'none');
+}
+
+function ibPublicUrl(path) {
+  return IB_BUCKET_URL + String(path).split('/').map(encodeURIComponent).join('/');
+}
+
+/* Aggiunge un blocco (testo o immagine) all'elenco; data = blocco gia' salvato */
+function ibAdd(p, tipo, data) {
+  var list = document.getElementById(p + '_ibList');
+  if (!list) return;
+  if (list.children.length >= IB_MAX) { alert('Hai raggiunto il numero massimo di blocchi (' + IB_MAX + ').'); return; }
+  var row = document.createElement('div');
+  row.className = 'ib-row';
+  row.setAttribute('data-tipo', tipo === 'immagine' ? 'immagine' : 'testo');
+  var head = '<div class="ib-head"><span class="ib-type">' + (tipo === 'immagine' ? '&#128444;&#65039; Immagine' : '&#9999;&#65039; Testo') + '</span><div class="ib-acts">'
+    + '<button type="button" class="rm-btn" title="Sposta su" aria-label="Sposta su" onclick="ibMove(this,-1)">&#8593;</button>'
+    + '<button type="button" class="rm-btn" title="Sposta gi\u00f9" aria-label="Sposta gi\u00f9" onclick="ibMove(this,1)">&#8595;</button>'
+    + '<button type="button" class="rm-btn" title="Elimina blocco" aria-label="Elimina blocco" onclick="ibRemove(this)">&#10005;</button>'
+    + '</div></div>';
+  if (tipo === 'immagine') {
+    var path = (data && data.path) ? String(data.path) : '';
+    row.setAttribute('data-path', path);
+    row.innerHTML = head
+      + '<div class="ib-img-area" onclick="ibPick(this)">'
+      + '<img class="ib-img" alt="" style="display:none">'
+      + '<div class="ib-ph">Tocca per scegliere l\'immagine<br><span>JPG, PNG o WebP: viene alleggerita in automatico</span></div>'
+      + '</div>'
+      + '<div class="ib-status"></div>'
+      + '<input type="file" class="ib-file" accept="image/*" style="display:none" onchange="ibUpload(this)">'
+      + '<input class="row-inp ib-cap" maxlength="200" placeholder="Didascalia (facoltativa)">';
+    if (path) ibShowImg(row, ibPublicUrl(path));
+    if (data && data.didascalia) row.querySelector('.ib-cap').value = data.didascalia;
+  } else {
+    row.innerHTML = head
+      + '<textarea class="row-inp ib-text" rows="4" maxlength="5000" placeholder="Programma, orari, come arrivare... I link (https://...) diventano cliccabili."></textarea>';
+    if (data && data.testo) row.querySelector('.ib-text').value = data.testo;
+  }
+  list.appendChild(row);
+  ibRefresh(p);
+  if (!data && tipo !== 'immagine') { var ta = row.querySelector('.ib-text'); if (ta) ta.focus(); }
+}
+
+function ibPrefix(el) {
+  var list = el && el.closest ? el.closest('.ib-list') : null;
+  return (list && list.id === 'se_ibList') ? 'se' : 'ev';
+}
+
+function ibMove(btn, dir) {
+  var row = btn.closest('.ib-row');
+  if (!row) return;
+  var list = row.parentNode;
+  if (dir < 0 && row.previousElementSibling) list.insertBefore(row, row.previousElementSibling);
+  if (dir > 0 && row.nextElementSibling) list.insertBefore(row.nextElementSibling, row);
+  ibRefresh(ibPrefix(list.firstElementChild || row));
+}
+
+function ibRemove(btn) {
+  var row = btn.closest('.ib-row');
+  if (!row) return;
+  var p = ibPrefix(row);
+  var pieno = (row.getAttribute('data-tipo') === 'immagine')
+    ? !!row.getAttribute('data-path')
+    : !!((row.querySelector('.ib-text') || {}).value || '').trim();
+  if (pieno && !confirm('Eliminare questo blocco?')) return;
+  row.parentNode.removeChild(row);
+  ibRefresh(p);
+}
+
+/* Aggiorna frecce (prima/ultima) e pallino dell'accordion */
+function ibRefresh(p) {
+  var rows = document.querySelectorAll('#' + p + '_ibList .ib-row');
+  for (var i = 0; i < rows.length; i++) {
+    var b = rows[i].querySelectorAll('.ib-acts .rm-btn');
+    if (b[0]) b[0].disabled = (i === 0);
+    if (b[1]) b[1].disabled = (i === rows.length - 1);
+  }
+  accSync(p);
+}
+
+function ibShowImg(row, url) {
+  var img = row.querySelector('.ib-img');
+  var ph = row.querySelector('.ib-ph');
+  if (img) { img.src = url; img.style.display = 'block'; }
+  if (ph) ph.style.display = 'none';
+}
+
+function ibPick(area) {
+  if (area.getAttribute('data-busy') === '1') return;
+  var f = area.parentNode.querySelector('.ib-file');
+  if (f) f.click();
+}
+
+/* Rimpicciolisce l'immagine (lato lungo max 1600 px) e la converte in JPG leggero */
+function ibResize(file) {
+  return new Promise(function(resolve, reject) {
+    var url = URL.createObjectURL(file);
+    var im = new Image();
+    im.onload = function() {
+      var w = im.naturalWidth, h = im.naturalHeight;
+      if (!w || !h) { URL.revokeObjectURL(url); reject(new Error('formato')); return; }
+      var k = Math.min(1, 1600 / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+      var c = document.createElement('canvas');
+      c.width = cw; c.height = ch;
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cw, ch);
+      ctx.drawImage(im, 0, 0, cw, ch);
+      URL.revokeObjectURL(url);
+      c.toBlob(function(b) { if (b) resolve(b); else reject(new Error('conversione')); }, 'image/jpeg', 0.85);
+    };
+    im.onerror = function() { URL.revokeObjectURL(url); reject(new Error('formato')); };
+    im.src = url;
+  });
+}
+
+/* Caricamento sicuro: permesso firmato dalla funzione info-immagine-upload, poi invio del file */
+async function ibUpload(input) {
+  var file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  var row = input.closest('.ib-row');
+  if (!row) return;
+  var area = row.querySelector('.ib-img-area');
+  var stEl = row.querySelector('.ib-status');
+  stEl.className = 'ib-status';
+  if (file.type && file.type.indexOf('image/') !== 0) {
+    stEl.className = 'ib-status err'; stEl.textContent = 'Questo file non \u00e8 un\'immagine.'; return;
+  }
+  ibUploading++;
+  area.setAttribute('data-busy', '1');
+  stEl.textContent = 'Caricamento in corso...';
+  try {
+    var blob;
+    try { blob = await ibResize(file); }
+    catch (e1) { throw new Error('Non riesco a leggere questa immagine: prova con un file JPG o PNG.'); }
+    if (blob.size > 5 * 1024 * 1024) throw new Error('Immagine troppo pesante anche dopo la riduzione.');
+    var r = await fetch(SB_URL + '/functions/v1/info-immagine-upload', {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: TOKEN, mime: 'image/jpeg' })
+    });
+    var d = {};
+    try { d = await r.json(); } catch (e2) { d = {}; }
+    if (!r.ok || !d.signedUrl || !d.path) throw new Error('Permesso di caricamento non ottenuto.');
+    var fd = new FormData();
+    fd.append('cacheControl', '3600');
+    fd.append('', blob, 'immagine.jpg');
+    var up = await fetch(d.signedUrl, {
+      method: 'PUT',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'x-upsert': 'false' },
+      body: fd
+    });
+    if (!up.ok) throw new Error('Caricamento non riuscito (' + up.status + ').');
+    row.setAttribute('data-path', d.path);
+    ibShowImg(row, d.publicUrl || ibPublicUrl(d.path));
+    stEl.textContent = '';
+  } catch (e) {
+    stEl.className = 'ib-status err';
+    stEl.textContent = (e && e.message ? e.message : 'Caricamento non riuscito.') + ' Riprova.';
+  } finally {
+    ibUploading = Math.max(0, ibUploading - 1);
+    area.removeAttribute('data-busy');
+    accSync(ibPrefix(row));
+  }
+}
+
+/* Legge i blocchi dal form, nell'ordine mostrato */
+function ibCollect(p) {
+  var out = [], vuote = 0;
+  var rows = document.querySelectorAll('#' + p + '_ibList .ib-row');
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (r.getAttribute('data-tipo') === 'immagine') {
+      var path = r.getAttribute('data-path') || '';
+      if (!path) { vuote++; continue; }
+      var cap = ((r.querySelector('.ib-cap') || {}).value || '').trim().slice(0, 200);
+      var b = { tipo: 'immagine', path: path };
+      if (cap) b.didascalia = cap;
+      out.push(b);
+    } else {
+      var t = ((r.querySelector('.ib-text') || {}).value || '').replace(/\s+$/, '');
+      if (t.trim()) out.push({ tipo: 'testo', testo: t.slice(0, 5000) });
+    }
+  }
+  return { blocchi: out, vuote: vuote };
+}
+
+/* Campi da salvare sull'evento */
+function infoFields(p) {
+  var st = (p === 'ev') ? otogState : stogState;
+  var ora = parseInt(getVal(p + '_info_ora'), 10);
+  return {
+    modalita: modState[p],
+    landing_scheda_iniziale: getVal(p + '_scheda_iniziale') === 'iscrizione' ? 'iscrizione' : 'info',
+    info_email_obbligatoria: !!st.info_email,
+    info_blocchi: ibCollect(p).blocchi,
+    info_avviso: getVal(p + '_info_avviso') === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta',
+    info_riepilogo_ora: isNaN(ora) ? 8 : Math.min(23, Math.max(0, ora))
+  };
+}
+
+/* Controlli prima di salvare */
+function infoCheck(p) {
+  if (ibUploading > 0) { alert('Attendi la fine del caricamento delle immagini.'); return false; }
+  if (ibCollect(p).vuote > 0) { alert('C\'\u00e8 un blocco immagine senza immagine: scegli l\'immagine oppure elimina il blocco.'); return false; }
+  return true;
+}
+
+/* Riempie la sezione con i dati dell'evento (o con i valori predefiniti) */
+function infoFill(p, ev) {
+  ev = ev || {};
+  var st = (p === 'ev') ? otogState : stogState;
+  st.info_email = !!ev.info_email_obbligatoria;
+  var tg = document.getElementById((p === 'ev' ? 'otog' : 'stog') + '_info_email');
+  if (tg) tg.classList.toggle('on', st.info_email);
+  setVal(p + '_scheda_iniziale', ev.landing_scheda_iniziale === 'iscrizione' ? 'iscrizione' : 'info');
+  setVal(p + '_info_avviso', ev.info_avviso === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta');
+  setVal(p + '_info_ora', String((typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8));
+  setHTML(p + '_ibList', '');
+  (Array.isArray(ev.info_blocchi) ? ev.info_blocchi : []).forEach(function(b) {
+    if (b && (b.tipo === 'testo' || b.tipo === 'immagine')) ibAdd(p, b.tipo, b);
+  });
+  ibAvvisoUI(p);
+  setModalita(p, ev.modalita || 'iscrizioni', true);
+}
 
 /* ============================================================
    IMAGE UPLOAD
@@ -3523,6 +4223,8 @@ async function openPreviewFromForm() {
     landing_tema: evTemaState || 'chiaro',
     activated: false
   };
+  if (!infoCheck('ev')) return;
+  Object.assign(evData, infoFields('ev'));
   try {
     var ev;
     if (bozzaId) {
@@ -3566,6 +4268,8 @@ async function openPreviewFromSettings() {
     custom_fields: collectCF('scfList'),
     landing_tema: seTemaState || 'chiaro'
   };
+  if (!infoCheck('se')) return;
+  Object.assign(upd, infoFields('se'));
   try {
     await sbPatch('events', ev.id, upd);
     window.open(landingUrl(ev) + '&tema=' + (seTemaState || 'chiaro'), '_blank');
