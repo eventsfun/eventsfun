@@ -347,6 +347,9 @@ select option{background:#1a1a1a;color:var(--text)}
 .link-extra-row code{flex:1;min-width:0;display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text-muted);word-break:break-all}
 .link-extra-row .btn-sm{flex-shrink:0}
 @media(max-width:600px){.rich-list{padding:10px}.rich-tools{width:100%}.rich-tools .rub-filter{flex:1}}
+/* SUGGERIMENTI "?": mostrati in un riquadro sopra a tutto, sempre interi dentro lo schermo */
+.tip-js .tip-box{display:none !important}
+#tipFloat{position:fixed;z-index:1000;display:none;left:0;top:0;width:max-content;max-width:min(260px,calc(100vw - 16px));background:#222;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:11px;font-weight:400;line-height:1.6;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.88);box-shadow:0 4px 20px rgba(0,0,0,0.4);pointer-events:none;white-space:normal;text-align:left}
 </style>
 </head>
 <body>
@@ -3652,6 +3655,49 @@ function infoFill(p, ev) {
   ibAvvisoUI(p);
   setModalita(p, ev.modalita || 'iscrizioni', true);
 }
+
+/* ============================================================
+   SUGGERIMENTI "?": il testo viene mostrato in un riquadro unico
+   sopra a tutta la pagina, posizionato per restare sempre intero
+   dentro lo schermo (niente piu' testo tagliato da riquadri o bordi)
+   ============================================================ */
+(function() {
+  var fl = null;
+  function box() {
+    if (!fl) {
+      fl = document.createElement('div');
+      fl.id = 'tipFloat';
+      fl.setAttribute('role', 'tooltip');
+      document.body.appendChild(fl);
+    }
+    return fl;
+  }
+  function show(icon) {
+    var src = icon.nextElementSibling;
+    if (!src || !src.classList || !src.classList.contains('tip-box')) return;
+    var f = box();
+    f.innerHTML = src.innerHTML;
+    f.style.left = '0px'; f.style.top = '0px'; f.style.display = 'block';
+    var r = icon.getBoundingClientRect();
+    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var bw = f.offsetWidth, bh = f.offsetHeight, m = 8;
+    var left = Math.min(Math.max(m, r.left + r.width / 2 - bw / 2), Math.max(m, vw - bw - m));
+    var top = r.top - bh - 8;
+    if (top < m) top = Math.min(r.bottom + 8, Math.max(m, vh - bh - m));
+    f.style.left = Math.round(left) + 'px';
+    f.style.top = Math.round(top) + 'px';
+  }
+  function hide() { if (fl) fl.style.display = 'none'; }
+  function iconOf(t) { return (t && t.closest) ? t.closest('.tip-icon') : null; }
+  document.documentElement.classList.add('tip-js');
+  document.addEventListener('mouseover', function(e) { var i = iconOf(e.target); if (i) show(i); });
+  document.addEventListener('mouseout', function(e) { var i = iconOf(e.target); if (i && i !== document.activeElement) hide(); });
+  document.addEventListener('focusin', function(e) { var i = iconOf(e.target); if (i) show(i); });
+  document.addEventListener('focusout', function(e) { var i = iconOf(e.target); if (i) hide(); });
+  window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') hide(); });
+})();
 
 /* ============================================================
    IMAGE UPLOAD
