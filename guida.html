@@ -25,7 +25,11 @@ body{background:var(--bg);color:var(--text);font-family:"DM Sans",sans-serif;fon
 .wrap{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:268px 1fr;gap:48px;padding:88px 24px 90px}
 
 /* SIDEBAR INDICE */
-.side{align-self:start;position:sticky;top:84px}
+.side{align-self:start;position:sticky;top:84px;max-height:calc(100vh - 104px);max-height:calc(100dvh - 104px);overflow-y:auto;overscroll-behavior:contain;padding-right:6px;scrollbar-width:thin;scrollbar-color:rgba(201,169,110,0.35) transparent}
+.side::-webkit-scrollbar{width:6px}
+.side::-webkit-scrollbar-track{background:transparent}
+.side::-webkit-scrollbar-thumb{background:rgba(201,169,110,0.35);border-radius:6px}
+.side::-webkit-scrollbar-thumb:hover{background:rgba(201,169,110,0.6)}
 .side-toggle{display:none}
 .idx-title{font-family:"Syne",sans-serif;font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--gold);margin-bottom:14px}
 .idx-group{margin-bottom:18px}
@@ -83,7 +87,7 @@ a.term:hover{border-bottom-style:solid}
 /* MOBILE */
 @media(max-width:860px){
   .wrap{grid-template-columns:1fr;gap:0;padding:76px 18px 70px}
-  .side{position:static;margin-bottom:28px}
+  .side{position:static;margin-bottom:28px;max-height:none;overflow:visible;padding-right:0}
   .side-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer}
   .side-toggle .chev{color:var(--gold);transition:transform .2s}
   .side-toggle.open .chev{transform:rotate(180deg)}
@@ -549,6 +553,19 @@ for(var i=0;i<idxLinks.length;i++){
   });
 }
 
+// Su computer e tablet l'indice scorre per conto suo: tiene visibile la voce evidenziata
+// (muove solo l'indice, mai la pagina)
+function keepIdxVisible(link){
+  if(window.innerWidth<=860)return;
+  var side=document.querySelector('.side');
+  if(!side||side.scrollHeight<=side.clientHeight)return;
+  var sr=side.getBoundingClientRect();
+  var lr=link.getBoundingClientRect();
+  var pad=24;
+  if(lr.top<sr.top+pad){side.scrollTop-=(sr.top+pad-lr.top);}
+  else if(lr.bottom>sr.bottom-pad){side.scrollTop+=(lr.bottom-(sr.bottom-pad));}
+}
+
 // Evidenzia nell'indice la sezione che stai leggendo
 (function(){
   var sections=document.querySelectorAll('section[id]');
@@ -565,6 +582,7 @@ for(var i=0;i<idxLinks.length;i++){
         if(!link)return;
         for(var k=0;k<idxLinks.length;k++){idxLinks[k].classList.remove('active');}
         link.classList.add('active');
+        keepIdxVisible(link);
       }
     });
   },{rootMargin:'-80px 0px -65% 0px'});
