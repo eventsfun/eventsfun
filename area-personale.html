@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.0 Supabase Auth -->
+<!-- EventsFun | Area Personale | v4.1 Supabase Auth + Punto Info + avviso dopo il pagamento -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -49,6 +49,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .badge-base{background:rgba(120,160,200,0.12);color:#8ab4d8;border:1px solid rgba(120,160,200,0.25)}
 .badge-pro{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
 .badge-agenzia{background:rgba(168,130,201,0.12);color:#b89cd8;border:1px solid rgba(168,130,201,0.25)}
+.badge-info{background:rgba(110,190,180,0.12);color:#8fd0c6;border:1px solid rgba(110,190,180,0.25)}
 .plan-info{font-size:13px;color:var(--text-muted);line-height:1.7;margin-bottom:18px}
 .plan-info strong{color:var(--text)}
 .btn-dashboard{display:block;width:100%;padding:14px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;text-align:center;text-decoration:none;transition:opacity .2s}
@@ -117,6 +118,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
     <p>Accedi per gestire i tuoi eventi da qualsiasi dispositivo.</p>
   </div>
 
+  <!-- AVVISO DOPO IL PAGAMENTO (indirizzo con ?acquisto=1) -->
+  <div class="alert alert-ok" id="buyNotice"></div>
+
   <!-- LOGIN -->
   <div class="card" id="loginCard">
     <div class="login-icon">🔑</div>
@@ -180,9 +184,9 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
     </div>
 
     <div id="accStripeSection" style="display:none;margin-top:20px;padding-top:18px;border-top:1px solid var(--border2)">
-      <div class="acc-section-title">Abbonamento Agenzia</div>
+      <div class="acc-section-title">Abbonamento</div>
       <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6">Gestisci il tuo abbonamento, aggiorna il metodo di pagamento o annulla dal portale Stripe.</p>
-      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" class="btn-stripe">
+      <a href="https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400" target="_blank" class="btn-stripe" id="accStripeLink">
         &#128279; Gestisci abbonamento su Stripe &#8594;
       </a>
     </div>
@@ -220,11 +224,12 @@ async function sbGet(table, filters, sel, token){
   return r.json();
 }
 
-var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403',upgrade_base_pro:'https://buy.stripe.com/4gMaEPaoud3qdUA8uo14404'};
-var DASH_FILE={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html'};
-var PLAN_LABEL={base:'Base',pro:'Pro',agenzia:'Agenzia'};
+var PAYMENT_LINKS={base:'https://buy.stripe.com/bJe6ozfIO0gE9EkcKE14400',pro:'https://buy.stripe.com/fZu28j7ci7J6bMs8uo14401',agenzia_mensile:'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402',agenzia_annuale:'https://buy.stripe.com/aFa6ozgMSfby8Agh0U14403',info_mensile:'https://buy.stripe.com/5kQbITcwC2oMg2I3a414406',info_annuale:'https://buy.stripe.com/fZu5kv2W27J65o4dOI14407'};
+var DASH_FILE={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html',info:'info-dashboard.html'};
+var PLAN_LABEL={base:'Base',pro:'Pro',agenzia:'Agenzia',info:'Punto Info'};
 var PORTAL_URL='https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400';
 var currentEmail='',accessToken='';
+var ACQUISTO=new URLSearchParams(window.location.search).get('acquisto')==='1';
 
 function isClosed(ev){if(!ev||!ev.data_iso)return false;var t=new Date();t.setHours(0,0,0,0);var d=new Date(ev.data_iso);d.setHours(0,0,0,0);d.setDate(d.getDate()+1);return t>=d;}
 function isoToIt(iso){if(!iso)return '';var p=iso.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
@@ -245,6 +250,7 @@ async function doLogin(){
     sessionStorage.setItem('ef_at',accessToken);
     sessionStorage.setItem('ef_email',email);
     document.getElementById('loginCard').style.display='none';
+    updateBuyNotice();
     await loadDashboards();
   }catch(e){
     btn.disabled=false;btn.textContent='Accedi →';
@@ -286,6 +292,8 @@ async function loadDashboards(){
       var dashUrl=DASH_FILE[piano]+'?token='+token;
       if(piano==='agenzia'){
         html+=cardWrap(piano,renderAgenzia(order,dashUrl));
+      }else if(piano==='info'){
+        html+=cardWrap(piano,renderInfo(order,dashUrl));
       }else{
         var ev=null;
         try{
@@ -298,8 +306,11 @@ async function loadDashboards(){
 
     var hasActiveAgenzia=orders.some(function(o){return o.piano==='agenzia'&&agenziaState(o)==='active';});
     var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
-    hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'; });
+    /* abbonamenti gestibili dal portale Stripe: Agenzia e Punto Info */
+    hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'||o.piano==='info'; });
+    var hasInfo=orders.some(function(o){return o.piano==='info';});
     if(hasSingleUse&&!hasActiveAgenzia){html+=buildUpsell();}
+    else if(hasInfo&&!hasActiveAgenzia){html+=buildUpsellInfo();}
     area.innerHTML=html;
   }catch(e){
     area.innerHTML='<div class="card"><p style="text-align:center;color:var(--red);font-size:14px">Errore nel caricamento. <button class="link-btn" onclick="loadDashboards()">Riprova</button></p></div>';
@@ -307,7 +318,9 @@ async function loadDashboards(){
 }
 
 function cardWrap(piano,inner){
-  return '<div class="plan-card"><div class="plan-card-head"><span class="plan-name">Pacchetto '+PLAN_LABEL[piano]+'</span><span class="plan-badge badge-'+piano+'">'+piano.toUpperCase()+'</span></div>'+inner+'</div>';
+  var titolo=(piano==='info')?PLAN_LABEL[piano]:('Pacchetto '+PLAN_LABEL[piano]);
+  var etichetta=(piano==='info')?'PUNTO INFO':piano.toUpperCase();
+  return '<div class="plan-card"><div class="plan-card-head"><span class="plan-name">'+titolo+'</span><span class="plan-badge badge-'+piano+'">'+etichetta+'</span></div>'+inner+'</div>';
 }
 
 function payLink(url){return url+(url.indexOf('?')>=0?'&':'?')+'prefilled_email='+encodeURIComponent(currentEmail);}
@@ -355,18 +368,17 @@ function renderAgenzia(order,dashUrl){
 }
 
 function renderSingle(piano,dashUrl,ev){
-  var upg=(piano==='base')?'<a href="'+payLink(PAYMENT_LINKS.upgrade_base_pro)+'" class="upgrade-link" target="_blank">Vuoi più funzioni? Passa a <strong>Pro</strong> con soli €50 in più →</a>':'';
   if(!ev){
     return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pronto</span></div>'
       +'<div class="plan-info">Crea il tuo evento per iniziare.</div>'
-      +'<a href="'+dashUrl+'" class="btn-dashboard">Crea il tuo evento →</a>'+upg;
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Crea il tuo evento →</a>';
   }
   var nomeEv=ev.nome||'Il tuo evento';
   var dataEv=ev.data_iso?(' &middot; '+isoToIt(ev.data_iso)):'';
   if(!isClosed(ev)){
     return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Evento attivo</span></div>'
       +'<div class="plan-info"><strong>'+nomeEv+'</strong>'+dataEv+'<br>Gestisci iscritti e presenze dalla dashboard.</div>'
-      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>'+upg;
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+PLAN_LABEL[piano]+' →</a>';
   }
   var ret=ev.data_iso?addDays(ev.data_iso,30):null;
   var now=new Date();now.setHours(0,0,0,0);
@@ -386,6 +398,62 @@ function buildUpsell(){
     +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_mensile)+'" target="_blank">Abbonati</a></div>'
     +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_annuale)+'" target="_blank">Abbonati</a></div>'
     +'</div></div>';
+}
+
+/* ---------- Punto Info (regola alla disdetta: accesso fino a fine periodo + 7 giorni,
+   poi cancellate le richieste; pagine degli eventi conservate 12 mesi) ---------- */
+function reactivateInfoBlock(){
+  return '<div class="pkg-grid" style="margin-top:14px">'
+    +'<div class="pkg"><div class="pkg-name">Punto Info mensile</div><div class="pkg-price">€9,90<span>/mese</span></div><a href="'+payLink(PAYMENT_LINKS.info_mensile)+'" target="_blank">Riattiva</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Punto Info annuale</div><div class="pkg-price">€79<span>/anno</span></div><a href="'+payLink(PAYMENT_LINKS.info_annuale)+'" target="_blank">Riattiva</a></div>'
+    +'</div>';
+}
+
+function renderInfo(order,dashUrl){
+  var state=agenziaState(order);
+  if(state==='active'){
+    var rinnovo=order.subscription_renews_at?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
+    return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Abbonamento attivo</span></div>'
+      +'<div class="plan-info">Eventi illimitati: pagina informativa e richieste di contatto.'+rinnovo+'</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Punto Info →</a>'
+      +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento o metodo di pagamento →</a>';
+  }
+  if(state==='grace'){
+    var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
+    return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Abbonamento annullato</span></div>'
+      +'<div class="plan-info">Puoi accedere ancora fino al <strong>'+exp+'</strong>. Dopo questa data le richieste di contatto ricevute verranno cancellate, mentre le pagine dei tuoi eventi resteranno conservate per 12 mesi: se ti riabboni entro questo periodo le ritroverai.</div>'
+      +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Punto Info →</a>'
+      +reactivateInfoBlock();
+  }
+  var testo='Riattiva l\'abbonamento per tornare a usare la dashboard.';
+  if(order.subscription_expires_at){
+    var fine=new Date(order.subscription_expires_at);fine.setMonth(fine.getMonth()+12);
+    if(new Date()<=fine){testo='Le pagine dei tuoi eventi restano conservate fino al <strong>'+fmtDate(fine)+'</strong>: riabbonati entro questa data per ritrovarle.';}
+    else{testo='Il periodo di conservazione &egrave; terminato: riabbonati per ricominciare.';}
+  }
+  return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--red)">Abbonamento scaduto</span></div>'
+    +'<div class="plan-info">'+testo+'</div>'
+    +reactivateInfoBlock();
+}
+
+function buildUpsellInfo(){
+  return '<div class="upsell"><h3>🎟️ Vuoi anche raccogliere iscrizioni?</h3><p>Con Base, Pro e Agenzia le persone si iscrivono direttamente dalla pagina del tuo evento e tu gestisci iscritti e presenze dalla dashboard.</p><div class="pkg-grid">'
+    +'<div class="pkg"><div class="pkg-name">Evento Base</div><div class="pkg-price">€29</div><a href="'+payLink(PAYMENT_LINKS.base)+'" target="_blank">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Evento Pro</div><div class="pkg-price">€79</div><a href="'+payLink(PAYMENT_LINKS.pro)+'" target="_blank">Acquista</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia mensile</div><div class="pkg-price">€69<span>/mese</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_mensile)+'" target="_blank">Abbonati</a></div>'
+    +'<div class="pkg"><div class="pkg-name">Agenzia annuale</div><div class="pkg-price">€588<span>/anno</span></div><a href="'+payLink(PAYMENT_LINKS.agenzia_annuale)+'" target="_blank">Abbonati</a></div>'
+    +'</div></div>';
+}
+
+/* Avviso per chi arriva dal pagamento Stripe (area-personale.html?acquisto=1) */
+function updateBuyNotice(){
+  var n=document.getElementById('buyNotice');
+  if(!n)return;
+  if(!ACQUISTO){n.style.display='none';return;}
+  n.textContent=accessToken
+    ?'✅ Pagamento ricevuto! Il nuovo acquisto compare qui sotto: se non lo vedi ancora, ricarica la pagina tra qualche istante.'
+    :'✅ Pagamento ricevuto! Controlla la tua email, anche nella cartella spam: ti abbiamo mandato il link per impostare la password. Se hai già un account, puoi accedere subito qui sotto.';
+  n.style.display='block';
 }
 
 var accNewsletterState = false;
@@ -437,7 +505,9 @@ async function loadAccountData(){
       var tog = document.getElementById('accTogNewsletter');
       if(accNewsletterState) tog.classList.add('on'); else tog.classList.remove('on');
     }
-    /* Mostra sezione Stripe solo se ha piano Agenzia */
+    /* Mostra sezione Stripe solo se ha un abbonamento (Agenzia o Punto Info) */
+    var stripeLink = document.getElementById('accStripeLink');
+    if(stripeLink) stripeLink.href = PORTAL_URL;
     document.getElementById('accStripeSection').style.display = hasAgenzia ? 'block' : 'none';
   } catch(e) { showAccErr('Errore nel caricamento dei dati.'); }
 }
@@ -509,11 +579,14 @@ function doLogout(){
   document.getElementById('loginBtn').disabled=false;document.getElementById('loginBtn').textContent='Accedi →';
   document.getElementById('loginCard').style.display='block';
   hideAlert();
+  updateBuyNotice();
 }
 
 (function(){
   var at=sessionStorage.getItem('ef_at'),em=sessionStorage.getItem('ef_email');
-  if(at&&em){accessToken=at;currentEmail=em;document.getElementById('loginCard').style.display='none';loadDashboards();}
+  if(at&&em){accessToken=at;currentEmail=em;document.getElementById('loginCard').style.display='none';}
+  updateBuyNotice();
+  if(at&&em){loadDashboards();}
 })();
 </script>
 </body>
