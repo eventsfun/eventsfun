@@ -1616,6 +1616,9 @@ document.addEventListener('click', function(e) {
 /* ============================================================
    INIT
    ============================================================ */
+/* Dashboard di ogni piano: usata per rimandare un token alla sua pagina */
+var DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
+
 async function init() {
   initTheme();
   TOKEN = new URLSearchParams(window.location.search).get('token') || localStorage.getItem('ef_token');
@@ -1641,6 +1644,8 @@ async function init() {
     hideLoading(); showErr(); return;
   } else {
     PIANO = (rows[0].orders && rows[0].orders.piano) ? rows[0].orders.piano : 'agenzia';
+    /* Controllo piano: se il token e' di un altro piano, vai alla dashboard giusta */
+    if (PIANO !== 'agenzia' && DASH_PER_PIANO[PIANO]) { location.replace(DASH_PER_PIANO[PIANO] + '?token=' + encodeURIComponent(TOKEN)); return; }
     ORDER_ID = rows[0].order_id || null;
     if (rows[0].orders) { accountName = ((rows[0].orders.nome || '') + ' ' + (rows[0].orders.cognome || '')).trim(); }
     /* Check stato abbonamento */
@@ -4515,6 +4520,6 @@ function handleQrData(data) {
 init();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.1 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.2 agenzia</div>
 </body>
 </html>

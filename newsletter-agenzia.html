@@ -973,6 +973,8 @@
 
   // ===== STATO =====
   let currentToken = null;
+  let tokenPiano = null;     // piano dell'ordine collegato al token
+  const DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
   let allEvents = [];       // eventi dell'account
   let nlData = {};          // { event_id: [registrations con newsletter=true] }
   let gestioneData = [];    // array piatto per tab gestione
@@ -992,6 +994,12 @@
     const valid = await verificaToken(currentToken);
     if (!valid) {
       showAuthError('Token non valido o scaduto.');
+      return;
+    }
+
+    // Controllo piano: la newsletter e' solo per il piano Agenzia
+    if (tokenPiano && tokenPiano !== 'agenzia' && DASH_PER_PIANO[tokenPiano]) {
+      location.replace(DASH_PER_PIANO[tokenPiano] + '?token=' + encodeURIComponent(currentToken));
       return;
     }
 
@@ -1020,11 +1028,12 @@
   async function verificaToken(token) {
     try {
       const r = await fetch(
-        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato',
+        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato,orders(piano)',
         { headers: supaHeaders() }
       );
       const data = await r.json();
       if (!data || data.length === 0) return false;
+      tokenPiano = (data[0].orders && data[0].orders.piano) ? data[0].orders.piano : null;
       // Accetta token attivato oppure active -- i token beta manuali possono avere stato variabile
       return data[0].activated === true || data[0].stato === 'active' || data[0].stato === 'pending';
     } catch { return false; }

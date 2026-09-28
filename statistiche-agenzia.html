@@ -265,8 +265,25 @@ var dragSrc = null;
 /* ============================================================
    INIT
    ============================================================ */
+/* Dashboard di ogni piano: usata per rimandare un token alla sua pagina */
+var DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
+
 async function init() {
   if (!TOKEN) { document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:rgba(245,240,232,0.4)"><p style="font-size:18px">Token mancante</p></div>'; return; }
+
+  /* Controllo token e piano: le statistiche sono solo per il piano Agenzia */
+  var tokRows;
+  try { tokRows = await sbGet('activations', { token: TOKEN }, 'id,orders(piano)'); }
+  catch(e) { tokRows = null; } /* problema di connessione: si prosegue come prima */
+  if (tokRows && !tokRows.length) {
+    document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-muted)"><p style="font-size:18px">Link non valido. Accedi dalla tua area personale.</p></div>';
+    return;
+  }
+  var tokPiano = (tokRows && tokRows[0].orders) ? tokRows[0].orders.piano : null;
+  if (tokPiano && tokPiano !== 'agenzia' && DASH_PER_PIANO[tokPiano]) {
+    location.replace(DASH_PER_PIANO[tokPiano] + '?token=' + encodeURIComponent(TOKEN));
+    return;
+  }
 
   /* Nav links */
   document.getElementById('navDashLink').href = 'agenzia-dashboard.html?token=' + TOKEN;
