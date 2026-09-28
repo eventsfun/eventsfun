@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.2 Supabase Auth + Punto Info + avviso dopo il pagamento + recupero password corretto -->
+<!-- EventsFun | Area Personale | v4.3 Supabase Auth + Punto Info + avviso dopo il pagamento + recupero password corretto + data di rinnovo solo se futura -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -353,7 +353,7 @@ function reactivateBlock(){
 function renderAgenzia(order,dashUrl){
   var state=agenziaState(order);
   if(state==='active'){
-    var rinnovo=order.subscription_renews_at?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
+    var rinnovo=(order.subscription_renews_at&&new Date(order.subscription_renews_at)>new Date())?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
     return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Abbonamento attivo</span></div>'
       +'<div class="plan-info">Eventi illimitati. Gestisci tutto dalla tua dashboard.'+rinnovo+'</div>'
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
@@ -417,7 +417,7 @@ function reactivateInfoBlock(){
 function renderInfo(order,dashUrl){
   var state=agenziaState(order);
   if(state==='active'){
-    var rinnovo=order.subscription_renews_at?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
+    var rinnovo=(order.subscription_renews_at&&new Date(order.subscription_renews_at)>new Date())?('<br>Attivo fino al <strong>'+fmtDate(new Date(order.subscription_renews_at))+'</strong>, poi si rinnova automaticamente.'):'';
     return '<div class="status-line"><span class="dot dot-green"></span><span style="color:var(--green)">Abbonamento attivo</span></div>'
       +'<div class="plan-info">Eventi illimitati: pagina informativa e richieste di contatto.'+rinnovo+'</div>'
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Punto Info →</a>'
