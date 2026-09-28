@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.0 richiesta informazioni -->
+<!-- EventsFun | Landing Page | v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -490,6 +490,8 @@ async function init() {
     }
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];
+    /* Punto Info scaduto: pagina sospesa (torna visibile da sola se l'organizzatore si riabbona) */
+    if (ev.pagina_sospesa === true) { showError('Pagina non disponibile', 'Questa pagina al momento non è disponibile.'); return; }
     /* Il parametro ?tema= nell'URL ha la precedenza sul valore salvato su DB --
        permette all'anteprima di mostrare il tema scelto prima del salvataggio */
     var temaParam = new URLSearchParams(window.location.search).get('tema');
