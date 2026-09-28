@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.1 Supabase Auth + Punto Info + avviso dopo il pagamento -->
+<!-- EventsFun | Area Personale | v4.2 Supabase Auth + Punto Info + avviso dopo il pagamento + recupero password corretto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -211,8 +211,10 @@ async function authLogin(email,pwd){
   return data;
 }
 async function authReset(email){
-  var r=await fetch(SB_URL+'/auth/v1/recover',{method:'POST',headers:authH(),body:JSON.stringify({email:email,options:{redirectTo:'https://eventsfun.com/imposta-password.html'}})});
-  if(!r.ok){var d=await r.json();throw new Error(d.msg||'Errore');}
+  /* la pagina di ritorno va indicata nell'indirizzo (redirect_to): nel corpo verrebbe ignorata */
+  var r=await fetch(SB_URL+'/auth/v1/recover?redirect_to='+encodeURIComponent('https://eventsfun.com/imposta-password.html'),{method:'POST',headers:authH(),body:JSON.stringify({email:email})});
+  if(r.status===429)throw new Error('TROPPE_RICHIESTE');
+  if(!r.ok){var d={};try{d=await r.json();}catch(x){}throw new Error(d.msg||'Errore');}
   return true;
 }
 async function sbGet(table, filters, sel, token){
@@ -265,8 +267,11 @@ async function forgotPwd(){
   if(!email||!email.includes('@')){showAlert('Inserisci prima la tua email, poi clicca "Password dimenticata".');return;}
   try{
     await authReset(email);
-    showAlert('Ti abbiamo inviato un\'email per reimpostare la password.','ok');
-  }catch(e){showAlert('Errore nell\'invio. Riprova.');}
+    showAlert('Se l\'email corrisponde a un account, ti abbiamo inviato il link per reimpostare la password. Controlla anche la cartella spam.','ok');
+  }catch(e){
+    if(e.message==='TROPPE_RICHIESTE'){showAlert('Hai già chiesto un link da poco. Attendi un minuto e riprova.');}
+    else{showAlert('Errore nell\'invio. Riprova.');}
+  }
 }
 
 async function loadDashboards(){
