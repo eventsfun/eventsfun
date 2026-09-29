@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.3 Supabase Auth + Punto Info + avviso dopo il pagamento + recupero password corretto + data di rinnovo solo se futura -->
+<!-- EventsFun | Area Personale | v4.4 regola di fine abbonamento Agenzia + stato pagamento non riuscito + collegamento ai dettagli (base: v4.3 Supabase Auth, Punto Info, avviso dopo il pagamento, recupero password, data di rinnovo solo se futura) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -309,7 +309,7 @@ async function loadDashboards(){
       }
     }
 
-    var hasActiveAgenzia=orders.some(function(o){return o.piano==='agenzia'&&agenziaState(o)==='active';});
+    var hasActiveAgenzia=orders.some(function(o){var st=agenziaState(o);return o.piano==='agenzia'&&(st==='active'||st==='payment_issue');});
     var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
     /* abbonamenti gestibili dal portale Stripe: Agenzia e Punto Info */
     hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'||o.piano==='info'; });
@@ -334,6 +334,9 @@ function addDays(iso,n){var d=new Date(iso);d.setHours(0,0,0,0);d.setDate(d.getD
 
 function agenziaState(order){
   var st=order.subscription_status;
+  /* v4.4 -- pagamento non riuscito senza data di fine: Stripe sta riprovando, l'abbonamento
+     e' ancora valido (stesso criterio del database, private.ef_abbonamento_scaduto) */
+  if(st==='past_due'&&!order.subscription_expires_at)return 'payment_issue';
   if(st==='canceled'||st==='past_due'){
     var now=new Date();
     var exp=order.subscription_expires_at?new Date(order.subscription_expires_at):null;
@@ -350,6 +353,26 @@ function reactivateBlock(){
     +'</div>';
 }
 
+/* v4.4 -- collegamento alla sezione della privacy che spiega la regola di fine abbonamento */
+function linkDettagli(){
+  return '<a href="https://eventsfun.com/privacy.html#fine-abbonamento" target="_blank" class="upgrade-link">Tutti i dettagli sulla fine dell\'abbonamento</a>';
+}
+
+/* v4.4 -- pagamento non riuscito (Agenzia e Punto Info): la dashboard resta accessibile */
+function renderPaymentIssue(dashUrl,nomeDash){
+  return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Pagamento non riuscito</span></div>'
+    +'<div class="plan-info">Non siamo riusciti a rinnovare l\'abbonamento. Il sistema di pagamento riproverà automaticamente nei prossimi giorni: per evitare interruzioni, aggiorna il metodo di pagamento.</div>'
+    +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+nomeDash+' →</a>'
+    +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Aggiorna il metodo di pagamento →</a>';
+}
+
+/* v4.4 -- data fino alla quale restano conservati eventi e pagine (fine accesso + 12 mesi) */
+function fineConservazione(order){
+  if(!order.subscription_expires_at)return null;
+  var fine=new Date(order.subscription_expires_at);fine.setMonth(fine.getMonth()+12);
+  return fine;
+}
+
 function renderAgenzia(order,dashUrl){
   var state=agenziaState(order);
   if(state==='active'){
@@ -359,17 +382,28 @@ function renderAgenzia(order,dashUrl){
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
       +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento, metodo di pagamento o cambio piano →</a>';
   }
+  if(state==='payment_issue'){
+    return renderPaymentIssue(dashUrl,'Agenzia');
+  }
   if(state==='grace'){
     var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
     return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Abbonamento annullato</span></div>'
-      +'<div class="plan-info">Puoi accedere ancora fino al <strong>'+exp+'</strong>. I tuoi dati restano al sicuro: riattiva per non perderli.</div>'
+      +'<div class="plan-info">Puoi accedere ancora fino al <strong>'+exp+'</strong>. Prima di questa data puoi scaricare dalla dashboard gli elenchi degli iscritti e delle presenze.<br>Dopo, le pagine dei tuoi eventi non saranno più visibili e verranno cancellati iscritti, liste d\'attesa, richieste di contatto e newsletter programmate. Eventi, pagine, rubrica e fornitori resteranno conservati per 12 mesi: se ti riabboni entro questo periodo li ritroverai.</div>'
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Agenzia →</a>'
-      +reactivateBlock();
+      +reactivateBlock()
+      +linkDettagli();
+  }
+  /* v4.4 -- scaduto: niente pulsante verso la dashboard (non e' piu' accessibile) */
+  var testo='Riattiva l\'abbonamento per tornare a usare la dashboard.';
+  var fine=fineConservazione(order);
+  if(fine){
+    if(new Date()<=fine){testo='Eventi, pagine, rubrica e fornitori restano conservati fino al <strong>'+fmtDate(fine)+'</strong>: riabbonati entro questa data per ritrovarli.';}
+    else{testo='Il periodo di conservazione &egrave; terminato: riabbonati per ricominciare.';}
   }
   return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--red)">Abbonamento scaduto</span></div>'
-    +'<div class="plan-info">I tuoi dati sono al sicuro. Riattiva per riaccedere e gestirli.</div>'
-    +'<a href="'+dashUrl+'" class="btn-dashboard">Vedi i tuoi dati →</a>'
-    +reactivateBlock();
+    +'<div class="plan-info">'+testo+'</div>'
+    +reactivateBlock()
+    +linkDettagli();
 }
 
 function renderSingle(piano,dashUrl,ev){
@@ -423,22 +457,27 @@ function renderInfo(order,dashUrl){
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Punto Info →</a>'
       +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento o metodo di pagamento →</a>';
   }
+  if(state==='payment_issue'){
+    return renderPaymentIssue(dashUrl,'Punto Info');
+  }
   if(state==='grace'){
     var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
     return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Abbonamento annullato</span></div>'
       +'<div class="plan-info">Puoi accedere ancora fino al <strong>'+exp+'</strong>. Dopo questa data le richieste di contatto ricevute verranno cancellate, mentre le pagine dei tuoi eventi resteranno conservate per 12 mesi: se ti riabboni entro questo periodo le ritroverai.</div>'
       +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard Punto Info →</a>'
-      +reactivateInfoBlock();
+      +reactivateInfoBlock()
+      +linkDettagli();
   }
   var testo='Riattiva l\'abbonamento per tornare a usare la dashboard.';
-  if(order.subscription_expires_at){
-    var fine=new Date(order.subscription_expires_at);fine.setMonth(fine.getMonth()+12);
+  var fine=fineConservazione(order);
+  if(fine){
     if(new Date()<=fine){testo='Le pagine dei tuoi eventi restano conservate fino al <strong>'+fmtDate(fine)+'</strong>: riabbonati entro questa data per ritrovarle.';}
     else{testo='Il periodo di conservazione &egrave; terminato: riabbonati per ricominciare.';}
   }
   return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--red)">Abbonamento scaduto</span></div>'
     +'<div class="plan-info">'+testo+'</div>'
-    +reactivateInfoBlock();
+    +reactivateInfoBlock()
+    +linkDettagli();
 }
 
 function buildUpsellInfo(){
@@ -484,8 +523,8 @@ function hideAccAlerts(){
   document.getElementById('accAlertOk').style.display = 'none';
 }
 
-function showAccErr(msg){ hideAccAlerts(); var a=document.getElementById('accAlertErr'); a.textContent='&#9888;&#65039; '+msg; a.style.display='block'; }
-function showAccOk(msg){ hideAccAlerts(); var a=document.getElementById('accAlertOk'); a.textContent='&#10003; '+msg; a.style.display='block'; }
+function showAccErr(msg){ hideAccAlerts(); var a=document.getElementById('accAlertErr'); a.textContent='⚠️ '+msg; a.style.display='block'; }
+function showAccOk(msg){ hideAccAlerts(); var a=document.getElementById('accAlertOk'); a.textContent='✓ '+msg; a.style.display='block'; }
 
 async function loadAccountData(){
   try {
