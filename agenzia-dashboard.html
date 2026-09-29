@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v7.0 clean rewrite -->
+<!-- EventsFun | Agenzia Dashboard | v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -32,6 +32,15 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .err-box{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:40px;max-width:400px;text-align:center}
 .err-box h2{font-family:"Syne",sans-serif;font-size:20px;font-weight:700;margin:12px 0 8px}
 .err-box p{font-size:13px;color:var(--text-muted);line-height:1.7}
+.scad-box{max-width:460px}
+.scad-btn{display:block;margin-top:22px;padding:13px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:14px;font-weight:700;text-decoration:none}
+.scad-btn:hover{opacity:.88}
+.scad-link{display:inline-block;margin-top:14px;font-size:12px;color:var(--text-dim);text-decoration:underline}
+.scad-link:hover{color:var(--gold)}
+.sub-banner-txt{flex:1 1 280px;min-width:0}
+.sub-banner-azioni{display:flex;flex-direction:column;align-items:flex-start;gap:8px}
+.sub-banner-dett{font-size:12px;color:var(--text-dim);text-decoration:underline}
+.sub-banner-dett:hover{color:var(--gold)}
 /* LOADING */
 .loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999;flex-direction:column;gap:16px}
 .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
@@ -402,6 +411,20 @@ select option{background:#1a1a1a;color:var(--text)}
   </div>
 </div>
 
+<!-- ABBONAMENTO SCADUTO (regola di fine abbonamento) -->
+<div class="view" id="view-scaduto">
+  <div class="err-wrap">
+    <div class="err-box scad-box">
+      <div style="font-size:48px">&#128274;</div>
+      <h2>Abbonamento scaduto</h2>
+      <p id="scadText1"></p>
+      <p id="scadText2" style="margin-top:10px"></p>
+      <a href="https://eventsfun.com/area-personale.html" class="scad-btn">Riattiva dall'area personale</a>
+      <a href="https://eventsfun.com/privacy.html#fine-abbonamento" target="_blank" class="scad-link">Tutti i dettagli sulla fine dell'abbonamento</a>
+    </div>
+  </div>
+</div>
+
 <!-- DASHBOARD -->
 <div class="view" id="view-dash">
   <div class="dash">
@@ -428,7 +451,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="dash-header">
       <div class="dash-header-left">
         <h1 id="dash-title">Dashboard Agenzia</h1>
-        <p id="dash-sub">Nessun evento creato -- clicca su "Crea evento" per iniziare</p>
+        <p id="dash-sub">Nessun evento creato: clicca su "Crea evento" per iniziare</p>
       </div>
       <div class="dash-btns">
         <button class="btn-sm btn-sm-green" id="btnAddReg" onclick="openAddReg()" style="display:none">+ Aggiungi iscritto</button>
@@ -454,18 +477,14 @@ select option{background:#1a1a1a;color:var(--text)}
 
     <!-- BANNER SCADENZA ABBONAMENTO -->
     <div class="sub-banner sub-banner-warn" id="subBannerWarn" style="display:none">
-      <div>
-        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#9888;&#65039; Abbonamento cancellato</p>
-        <p style="font-size:12px;color:var(--text-muted)" id="subBannerWarnText">Puoi continuare ad usare la dashboard fino alla scadenza del grace period.</p>
+      <div class="sub-banner-txt">
+        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px" id="subBannerWarnTitle">&#9888;&#65039; Abbonamento annullato</p>
+        <p style="font-size:12px;color:var(--text-muted);line-height:1.6" id="subBannerWarnText"></p>
       </div>
-      <a href="https://eventsfun.com/area-personale.html" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
-    </div>
-    <div class="sub-banner sub-banner-exp" id="subBannerExp" style="display:none">
-      <div>
-        <p style="font-size:14px;font-weight:700;color:#e08080;margin-bottom:3px">&#128274; Abbonamento scaduto</p>
-        <p style="font-size:12px;color:var(--text-muted)">Il tuo abbonamento Agenzia &egrave; scaduto. I dati sono al sicuro -- riattiva per continuare.</p>
+      <div class="sub-banner-azioni">
+        <a href="https://eventsfun.com/area-personale.html" target="_blank" id="subBannerWarnBtn" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
+        <a href="https://eventsfun.com/privacy.html#fine-abbonamento" target="_blank" id="subBannerWarnDett" class="sub-banner-dett">Tutti i dettagli</a>
       </div>
-      <a href="https://eventsfun.com/area-personale.html" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
     </div>
 
     <!-- STATISTICHE -->
@@ -1619,6 +1638,46 @@ document.addEventListener('click', function(e) {
 /* Dashboard di ogni piano: usata per rimandare un token alla sua pagina */
 var DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
 
+/* Regola di fine abbonamento: testi dei banner e della schermata "scaduto" */
+var PORTAL_URL_SUB = 'https://billing.stripe.com/p/login/bJe6ozfIO0gE9EkcKE14400';
+function fmtDataSub(d) { return ('0' + d.getDate()).slice(-2) + '/' + ('0' + (d.getMonth() + 1)).slice(-2) + '/' + d.getFullYear(); }
+function mostraBannerTolleranza(expires, now) {
+  var g = Math.max(1, Math.ceil((expires - now) / 86400000));
+  var data = fmtDataSub(expires);
+  var el = document.getElementById('subBannerWarn');
+  document.getElementById('subBannerWarnTitle').innerHTML = '&#9888;&#65039; Abbonamento annullato';
+  document.getElementById('subBannerWarnText').textContent = 'Puoi usare la dashboard ancora per ' + g + ' giorn' + (g === 1 ? 'o' : 'i') + ', fino al ' + data + '. Prima di questa data scarica gli elenchi degli iscritti e delle presenze. Dopo, le pagine dei tuoi eventi non saranno più visibili e verranno cancellati iscritti, liste d\'attesa, richieste di contatto e newsletter programmate. Eventi, pagine, rubrica e fornitori restano conservati per 12 mesi.';
+  var btn = document.getElementById('subBannerWarnBtn');
+  btn.href = 'https://eventsfun.com/area-personale.html'; btn.textContent = 'Riattiva abbonamento →';
+  document.getElementById('subBannerWarnDett').style.display = '';
+  if (el) el.style.display = 'flex';
+}
+function mostraBannerPagamento() {
+  var el = document.getElementById('subBannerWarn');
+  document.getElementById('subBannerWarnTitle').innerHTML = '&#9888;&#65039; Pagamento non riuscito';
+  document.getElementById('subBannerWarnText').textContent = 'Non siamo riusciti a rinnovare l\'abbonamento. Il sistema di pagamento riproverà automaticamente nei prossimi giorni: per evitare interruzioni, aggiorna il metodo di pagamento.';
+  var btn = document.getElementById('subBannerWarnBtn');
+  btn.href = PORTAL_URL_SUB; btn.textContent = 'Aggiorna il metodo di pagamento →';
+  document.getElementById('subBannerWarnDett').style.display = 'none';
+  if (el) el.style.display = 'flex';
+}
+function mostraScaduto(expires) {
+  var t1 = 'Il tuo abbonamento Agenzia è scaduto.';
+  var t2 = 'Riattiva l\'abbonamento per tornare a usare la dashboard.';
+  if (expires) {
+    var data = fmtDataSub(expires);
+    t1 = 'Il tuo abbonamento Agenzia è scaduto il ' + data + '. Le pagine dei tuoi eventi non sono più visibili; iscritti, liste d\'attesa, richieste di contatto e newsletter programmate vengono cancellati.';
+    var fine = new Date(expires); fine.setMonth(fine.getMonth() + 12);
+    t2 = (new Date() <= fine)
+      ? 'Eventi, pagine, rubrica e fornitori restano conservati fino al ' + fmtDataSub(fine) + ': riabbonati entro questa data per ritrovarli.'
+      : 'Il periodo di conservazione è terminato: riabbonati per ricominciare.';
+  }
+  document.getElementById('scadText1').textContent = t1;
+  document.getElementById('scadText2').textContent = t2;
+  setDisp('mainNav', 'none');
+  showView('scaduto');
+}
+
 async function init() {
   initTheme();
   TOKEN = new URLSearchParams(window.location.search).get('token') || localStorage.getItem('ef_token');
@@ -1654,24 +1713,16 @@ async function init() {
     if (subStatus === 'canceled' || subStatus === 'past_due') {
       var now = new Date();
       var expires = subExpiresAt ? new Date(subExpiresAt) : null;
-      if (expires && now < expires) {
-        /* Grace period: mostra banner warning ma lascia accedere */
-        var daysLeft = Math.ceil((expires - now) / (1000 * 60 * 60 * 24));
-        var el = document.getElementById('subBannerWarn');
-        var txt = document.getElementById('subBannerWarnText');
-        if (txt) txt.textContent = 'Puoi continuare ad usare la dashboard per altri ' + daysLeft + ' giorn' + (daysLeft === 1 ? 'o' : 'i') + '. Riattiva per non perdere l\'accesso.';
-        if (el) el.style.display = 'flex';
-      } else if (!expires || now >= expires) {
-        /* Scaduto: mostra banner blocco e impedisce uso */
+      if (subStatus === 'past_due' && !expires) {
+        /* Pagamento non riuscito: Stripe sta riprovando, l'abbonamento e' ancora valido */
+        mostraBannerPagamento();
+      } else if (expires && now < expires) {
+        /* Tolleranza: banner con la regola, la dashboard resta usabile */
+        mostraBannerTolleranza(expires, now);
+      } else {
+        /* Scaduto: schermata dedicata, niente menu ne' dashboard */
         hideLoading();
-        var bannerExp = document.getElementById('subBannerExp');
-        if (bannerExp) bannerExp.style.display = 'flex';
-        setDisp('mainNav', 'flex');
-        showView('dash');
-        document.getElementById('statsRow') && (document.getElementById('statsRow').style.opacity = '0.3');
-        document.getElementById('statsRow') && (document.getElementById('statsRow').style.pointerEvents = 'none');
-        document.querySelector('.dash-header .dash-btns') && (document.querySelector('.dash-header .dash-btns').style.pointerEvents = 'none');
-        document.querySelector('.dash-header .dash-btns') && (document.querySelector('.dash-header .dash-btns').style.opacity = '0.3');
+        mostraScaduto(expires);
         return;
       }
     }
@@ -2431,7 +2482,7 @@ function renderDash() {
   setText('dash-title', ev ? ev.nome : 'Dashboard Agenzia');
   setText('dash-sub', ev
     ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : ''))
-    : 'Nessun evento creato -- clicca su "Crea evento" per iniziare');
+    : 'Nessun evento creato: clicca su "Crea evento" per iniziare');
 
   /* Pulsanti */
   setDisp('btnAddReg', canEdit ? 'inline-block' : 'none');
@@ -4520,6 +4571,6 @@ function handleQrData(data) {
 init();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.2 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.3 agenzia</div>
 </body>
 </html>
