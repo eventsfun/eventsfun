@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Statistiche Agenzia | v1.0 -->
+<!-- EventsFun | Statistiche Agenzia | v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -273,7 +273,7 @@ async function init() {
 
   /* Controllo token e piano: le statistiche sono solo per il piano Agenzia */
   var tokRows;
-  try { tokRows = await sbGet('activations', { token: TOKEN }, 'id,orders(piano)'); }
+  try { tokRows = await sbGet('activations', { token: TOKEN }, 'id,orders(piano,subscription_status,subscription_expires_at)'); }
   catch(e) { tokRows = null; } /* problema di connessione: si prosegue come prima */
   if (tokRows && !tokRows.length) {
     document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-muted)"><p style="font-size:18px">Link non valido. Accedi dalla tua area personale.</p></div>';
@@ -283,6 +283,18 @@ async function init() {
   if (tokPiano && tokPiano !== 'agenzia' && DASH_PER_PIANO[tokPiano]) {
     location.replace(DASH_PER_PIANO[tokPiano] + '?token=' + encodeURIComponent(TOKEN));
     return;
+  }
+  /* Abbonamento scaduto: stesso criterio della dashboard Agenzia. Tolleranza e pagamento
+     non riuscito senza data (Stripe sta riprovando) restano permessi. */
+  var tokOrd = (tokRows && tokRows[0].orders) ? tokRows[0].orders : {};
+  if (tokOrd.subscription_status === 'canceled' || tokOrd.subscription_status === 'past_due') {
+    var tokScad = tokOrd.subscription_expires_at ? new Date(tokOrd.subscription_expires_at) : null;
+    var tokRiprova = tokOrd.subscription_status === 'past_due' && !tokScad;
+    var tokTolleranza = tokScad && new Date() < tokScad;
+    if (!tokRiprova && !tokTolleranza) {
+      location.replace('agenzia-dashboard.html?token=' + encodeURIComponent(TOKEN));
+      return;
+    }
   }
 
   /* Nav links */

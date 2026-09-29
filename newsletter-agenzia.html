@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- EventsFun | Newsletter Agenzia | v2.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -974,6 +975,7 @@
   // ===== STATO =====
   let currentToken = null;
   let tokenPiano = null;     // piano dell'ordine collegato al token
+  let tokenScaduto = false;  // abbonamento scaduto (regola di fine abbonamento)
   const DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
   let allEvents = [];       // eventi dell'account
   let nlData = {};          // { event_id: [registrations con newsletter=true] }
@@ -1003,6 +1005,12 @@
       return;
     }
 
+    // Abbonamento scaduto: la dashboard Agenzia mostra la schermata dedicata
+    if (tokenScaduto) {
+      location.replace('agenzia-dashboard.html?token=' + encodeURIComponent(currentToken));
+      return;
+    }
+
     // Aggiorna link dashboard e area personale con token
     document.getElementById('nav-dashboard').href = 'agenzia-dashboard.html?token=' + currentToken;
     const navDashMob = document.getElementById('nav-dashboard-mob');
@@ -1028,12 +1036,21 @@
   async function verificaToken(token) {
     try {
       const r = await fetch(
-        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato,orders(piano)',
+        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato,orders(piano,subscription_status,subscription_expires_at)',
         { headers: supaHeaders() }
       );
       const data = await r.json();
       if (!data || data.length === 0) return false;
       tokenPiano = (data[0].orders && data[0].orders.piano) ? data[0].orders.piano : null;
+      /* Abbonamento scaduto: stesso criterio della dashboard Agenzia. Tolleranza e pagamento
+         non riuscito senza data (Stripe sta riprovando) restano permessi. */
+      const ord = data[0].orders || {};
+      if (ord.subscription_status === 'canceled' || ord.subscription_status === 'past_due') {
+        const scad = ord.subscription_expires_at ? new Date(ord.subscription_expires_at) : null;
+        const riprova = ord.subscription_status === 'past_due' && !scad;
+        const inTolleranza = scad && new Date() < scad;
+        tokenScaduto = !riprova && !inTolleranza;
+      }
       // Accetta token attivato oppure active -- i token beta manuali possono avere stato variabile
       return data[0].activated === true || data[0].stato === 'active' || data[0].stato === 'pending';
     } catch { return false; }
