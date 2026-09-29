@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Privacy & Termini | v1.0 -->
+<!-- EventsFun | Privacy & Termini | v1.1 settembre 2026: richieste di informazioni, Punto Info, regola di fine abbonamento, servizio riservato alle organizzazioni, approvazione clausole -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<title>Privacy & Termini di Servizio — EventsFun</title>
+<title>Privacy & Termini di Servizio | EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -35,6 +35,8 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 .section li{margin-bottom:6px}
 .highlight-box{background:#fff;border:1px solid #e8e4de;border-radius:12px;padding:20px 24px;margin:16px 0;font-size:13px;color:#555}
 .highlight-box strong{color:#1a1a1a}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;margin:16px 0}
+.table-wrap .data-table{margin:0}
 .data-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
 .data-table th{background:#f8f7f5;padding:10px 14px;text-align:left;font-weight:700;color:#1a1a1a;border:1px solid #e8e4de}
 .data-table td{padding:10px 14px;border:1px solid #e8e4de;color:#444;vertical-align:top}
@@ -47,6 +49,27 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 .footer{background:#0A0A0A;padding:28px 32px;text-align:center}
 .footer p{font-size:12px;color:rgba(245,240,232,.35)}
 .last-update{font-size:12px;color:#aaa;margin-top:4px}
+.section a{color:#C9A96E}
+[id]{scroll-margin-top:120px}
+.toc-link:focus-visible,.nav-logo:focus-visible,.nav-back:focus-visible,.section a:focus-visible,.contact-box a:focus-visible{outline:2px solid #C9A96E;outline-offset:2px}
+@media (max-width:600px){
+  .nav{padding:14px 18px}
+  .hero{padding:44px 18px 36px}
+  .hero h1{font-size:25px}
+  .toc-nav{padding:0 10px;top:53px}
+  .toc-link{padding:12px 12px}
+  .content{padding:36px 16px}
+  .section h2{font-size:20px}
+  .data-table{font-size:12.5px}
+  .data-table th,.data-table td{padding:8px 10px}
+  .data-table a{overflow-wrap:anywhere}
+  .data-table.stack,.data-table.stack tbody,.data-table.stack tr,.data-table.stack td{display:block;width:100%}
+  .data-table.stack tr.hdr{display:none}
+  .data-table.stack tr{background:#fff;border:1px solid #e8e4de;border-radius:10px;padding:8px 0;margin-bottom:10px}
+  .data-table.stack td,.data-table.stack tr:nth-child(even) td{border:none;background:transparent;padding:5px 14px}
+  .data-table.stack td::before{content:attr(data-label);display:block;font-size:11px;font-weight:700;color:#999;margin-bottom:1px}
+  .highlight-box{padding:16px 18px}
+}
 </style>
 </head>
 <body>
@@ -58,7 +81,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 
 <div class="hero">
   <h1>Privacy & Termini di Servizio</h1>
-  <p class="last-update">Ultimo aggiornamento: Luglio 2026</p>
+  <p class="last-update">Ultimo aggiornamento: Settembre 2026</p>
 </div>
 
 <nav class="toc-nav">
@@ -66,11 +89,13 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
   <a href="#dati-raccolti" class="toc-link">Dati raccolti</a>
   <a href="#finalita" class="toc-link">Finalità</a>
   <a href="#conservazione" class="toc-link">Conservazione</a>
+  <a href="#terze-parti" class="toc-link">Terze parti</a>
   <a href="#diritti" class="toc-link">Diritti</a>
   <a href="#cookie" class="toc-link">Cookie</a>
   <a href="#ruoli" class="toc-link">Ruoli e responsabilità</a>
   <a href="#dpa" class="toc-link">DPA</a>
   <a href="#termini" class="toc-link">Termini di servizio</a>
+  <a href="#fine-abbonamento" class="toc-link">Fine abbonamento</a>
 </nav>
 
 <div class="content">
@@ -79,9 +104,9 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
   <div class="section">
     <div class="section-badge">Informativa</div>
     <h2>Informativa sul trattamento dei dati personali</h2>
-    <p>La presente informativa è redatta ai sensi del Regolamento (UE) 2016/679 (GDPR) e descrive come EventsFun raccoglie, utilizza e protegge i dati personali di chi utilizza la piattaforma, sia in qualità di organizzatore di eventi (cliente del servizio) sia in qualità di partecipante a un evento.</p>
+    <p>La presente informativa è redatta ai sensi del Regolamento (UE) 2016/679 (GDPR) e descrive come EventsFun raccoglie, utilizza e protegge i dati personali di chi utilizza la piattaforma, sia in qualità di organizzatore di eventi (cliente del servizio), sia in qualità di partecipante a un evento, sia in qualità di persona che chiede informazioni tramite la pagina di un evento.</p>
     <div class="highlight-box">
-      <strong>EventsFun è uno strumento B2B.</strong> Chi acquista il servizio (l'organizzatore) è responsabile del trattamento dei dati dei propri iscritti. EventsFun agisce come responsabile del trattamento per conto dell'organizzatore, in conformità con quanto previsto dall'art. 28 GDPR.
+      <strong>EventsFun è uno strumento B2B.</strong> Chi acquista il servizio (l'organizzatore) è titolare del trattamento dei dati dei propri iscritti e delle persone che gli chiedono informazioni. EventsFun agisce come responsabile del trattamento per conto dell'organizzatore, in conformità con quanto previsto dall'art. 28 GDPR.
     </div>
   </div>
 
@@ -92,7 +117,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <div class="highlight-box">
       <strong>EventsFun</strong><br>
       Titolare: <strong>Giorgio Boerci</strong><br>
-      Indirizzo: <strong>Largo della Pace 6, Crema (CR)</strong><br>
+      Indirizzo: <strong>Via delle Robinie 15, 26837 Mulazzano (LO)</strong><br>
       P.IVA / CF: <strong>14742380968</strong><br>
       Email: <a href="mailto:info@eventsfun.com">info@eventsfun.com</a>
     </div>
@@ -105,72 +130,100 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <h2>Dati personali raccolti</h2>
 
     <h3>A. Organizzatori (clienti del servizio)</h3>
-    <table class="data-table">
-      <tr><th>Dato</th><th>Fonte</th><th>Motivo</th></tr>
-      <tr><td>Nome e cognome</td><td>Stripe al momento dell'acquisto</td><td>Erogazione del servizio</td></tr>
-      <tr><td>Indirizzo email</td><td>Stripe al momento dell'acquisto</td><td>Invio credenziali e comunicazioni</td></tr>
-      <tr><td>Dati di pagamento</td><td>Stripe (non archiviati da EventsFun)</td><td>Elaborazione del pagamento</td></tr>
-      <tr><td>Dati dell'evento creato</td><td>Inseriti dall'organizzatore nella dashboard</td><td>Funzionamento del servizio</td></tr>
-      <tr><td>Contatti per gli iscritti (email, telefono)</td><td>Inseriti facoltativamente dall'organizzatore</td><td>Mostrati agli iscritti nelle email dell'evento come riferimento di contatto</td></tr>
-    </table>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Dato</th><th>Fonte</th><th>Motivo</th></tr>
+      <tr><td data-label="Dato">Nome e cognome</td><td data-label="Fonte">Stripe al momento dell'acquisto</td><td data-label="Motivo">Erogazione del servizio</td></tr>
+      <tr><td data-label="Dato">Indirizzo email</td><td data-label="Fonte">Stripe al momento dell'acquisto</td><td data-label="Motivo">Invio credenziali e comunicazioni</td></tr>
+      <tr><td data-label="Dato">Dati di pagamento</td><td data-label="Fonte">Stripe (non archiviati da EventsFun)</td><td data-label="Motivo">Elaborazione del pagamento</td></tr>
+      <tr><td data-label="Dato">Dati dell'evento creato</td><td data-label="Fonte">Inseriti dall'organizzatore nella dashboard</td><td data-label="Motivo">Funzionamento del servizio</td></tr>
+      <tr><td data-label="Dato">Contatti per gli iscritti (email, telefono)</td><td data-label="Fonte">Inseriti facoltativamente dall'organizzatore</td><td data-label="Motivo">Mostrati agli iscritti nelle email dell'evento come riferimento di contatto</td></tr>
+      <tr><td data-label="Dato">Email per gli avvisi delle richieste di informazioni</td><td data-label="Fonte">Inserita dall'organizzatore nella dashboard</td><td data-label="Motivo">Invio degli avvisi quando arriva una richiesta</td></tr>
+      <tr><td data-label="Dato">Testi e immagini delle pagine degli eventi</td><td data-label="Fonte">Caricati dall'organizzatore nella dashboard</td><td data-label="Motivo">Pubblicazione della pagina dell'evento</td></tr>
+      <tr><td data-label="Dato">Materiale allegato alle newsletter (piano Agenzia)</td><td data-label="Fonte">Caricato dall'organizzatore nella dashboard</td><td data-label="Motivo">Messo a disposizione dei destinatari per il periodo scelto dall'organizzatore</td></tr>
+      <tr><td data-label="Dato">Rubrica, fornitori e costi (piano Agenzia)</td><td data-label="Fonte">Inseriti dall'organizzatore nella dashboard</td><td data-label="Motivo">Organizzazione degli eventi. I dati di contatto di fornitori e collaboratori sono inseriti sotto la responsabilità dell'organizzatore</td></tr>
+    </table></div>
 
     <h3>B. Partecipanti agli eventi</h3>
     <p>I dati dei partecipanti vengono raccolti tramite il modulo di iscrizione predisposto dall'organizzatore sulla landing page dell'evento. I dati raccolti dipendono dalla configurazione scelta dall'organizzatore e possono includere:</p>
-    <table class="data-table">
-      <tr><th>Dato</th><th>Obbligatorio</th><th>Finalità</th></tr>
-      <tr><td>Nome e cognome</td><td>Sì</td><td>Identificazione del partecipante</td></tr>
-      <tr><td>Indirizzo email</td><td>Sì</td><td>Comunicazioni sull'evento</td></tr>
-      <tr><td>Numero di telefono</td><td>No</td><td>Contatti urgenti</td></tr>
-      <tr><td>Numero partecipanti (adulti/bambini)</td><td>No</td><td>Organizzazione logistica</td></tr>
-      <tr><td>Tipo di iscritto (Visitatore/Espositore)</td><td>No</td><td>Organizzazione interna</td></tr>
-      <tr><td>Preferenze pasto</td><td>No</td><td>Servizio ristorazione</td></tr>
-      <tr><td>Campi personalizzati dall'organizzatore</td><td>Variabile</td><td>Esigenze specifiche dell'evento</td></tr>
-      <tr><td>Consenso newsletter</td><td>No (facoltativo)</td><td>Invio comunicazioni future</td></tr>
-    </table>
-    <p><strong>Nota:</strong> EventsFun non utilizza i dati dei partecipanti per finalità proprie. I dati sono accessibili esclusivamente all'organizzatore dell'evento tramite la propria dashboard.</p>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Dato</th><th>Obbligatorio</th><th>Finalità</th></tr>
+      <tr><td data-label="Dato">Nome e cognome</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Identificazione del partecipante</td></tr>
+      <tr><td data-label="Dato">Indirizzo email</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Comunicazioni sull'evento</td></tr>
+      <tr><td data-label="Dato">Numero di telefono</td><td data-label="Obbligatorio">No</td><td data-label="Finalità">Contatti urgenti</td></tr>
+      <tr><td data-label="Dato">Numero partecipanti (adulti/bambini)</td><td data-label="Obbligatorio">No</td><td data-label="Finalità">Organizzazione logistica</td></tr>
+      <tr><td data-label="Dato">Tipo di iscritto (Visitatore/Espositore)</td><td data-label="Obbligatorio">No</td><td data-label="Finalità">Organizzazione interna</td></tr>
+      <tr><td data-label="Dato">Preferenze pasto</td><td data-label="Obbligatorio">No</td><td data-label="Finalità">Servizio ristorazione</td></tr>
+      <tr><td data-label="Dato">Campi personalizzati dall'organizzatore</td><td data-label="Obbligatorio">Variabile</td><td data-label="Finalità">Esigenze specifiche dell'evento</td></tr>
+      <tr><td data-label="Dato">Dati degli accompagnatori (nome e cognome; email e telefono se richiesti dall'organizzatore)</td><td data-label="Obbligatorio">Solo per le iscrizioni di più persone</td><td data-label="Finalità">Organizzazione logistica e comunicazioni sull'evento</td></tr>
+      <tr><td data-label="Dato">Consenso newsletter</td><td data-label="Obbligatorio">No (facoltativo)</td><td data-label="Finalità">Invio comunicazioni future</td></tr>
+      <tr><td data-label="Dato">Accettazione della presente informativa</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Condizione per inviare l'iscrizione</td></tr>
+    </table></div>
+
+    <h3>C. Persone che chiedono informazioni</h3>
+    <p>Se l'organizzatore attiva sulla pagina dell'evento la raccolta di richieste di informazioni, chi è interessato può lasciare i propri recapiti per essere ricontattato. I dati raccolti sono:</p>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Dato</th><th>Obbligatorio</th><th>Finalità</th></tr>
+      <tr><td data-label="Dato">Nome</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Sapere chi ricontattare</td></tr>
+      <tr><td data-label="Dato">Canale preferito (telefono, WhatsApp o email)</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Ricontattare nel modo scelto</td></tr>
+      <tr><td data-label="Dato">Numero di telefono</td><td data-label="Obbligatorio">Sì, se si sceglie telefono o WhatsApp</td><td data-label="Finalità">Ricontatto</td></tr>
+      <tr><td data-label="Dato">Indirizzo email</td><td data-label="Obbligatorio">Sì, se si sceglie email o se l'organizzatore la richiede</td><td data-label="Finalità">Ricontatto</td></tr>
+      <tr><td data-label="Dato">Messaggio</td><td data-label="Obbligatorio">No</td><td data-label="Finalità">Spiegare cosa si desidera sapere</td></tr>
+      <tr><td data-label="Dato">Accettazione della presente informativa</td><td data-label="Obbligatorio">Sì</td><td data-label="Finalità">Condizione per inviare la richiesta</td></tr>
+    </table></div>
+    <p>I dati della richiesta vengono inviati all'organizzatore anche per email (un avviso per ogni richiesta oppure un riepilogo giornaliero, a sua scelta), in modo che possa rispondere direttamente. EventsFun non contatta chi fa la richiesta.</p>
+    <p><strong>Nota:</strong> EventsFun non utilizza per finalità proprie i dati dei partecipanti e delle persone che chiedono informazioni. I dati sono accessibili esclusivamente all'organizzatore dell'evento, tramite la propria dashboard e le email di avviso.</p>
   </div>
 
   <!-- FINALITÀ -->
   <div class="section" id="finalita">
     <div class="section-badge">Art. 6 GDPR</div>
     <h2>Finalità e base giuridica del trattamento</h2>
-    <table class="data-table">
+    <div class="table-wrap"><table class="data-table">
       <tr><th>Finalità</th><th>Base giuridica</th></tr>
-      <tr><td>Erogazione del servizio EventsFun (creazione evento, raccolta iscrizioni, gestione dashboard)</td><td>Esecuzione del contratto — art. 6.1.b GDPR</td></tr>
-      <tr><td>Invio email di accesso all'area personale e aggiornamenti sul servizio</td><td>Esecuzione del contratto — art. 6.1.b GDPR</td></tr>
-      <tr><td>Adempimento di obblighi fiscali e legali</td><td>Obbligo legale — art. 6.1.c GDPR</td></tr>
-      <tr><td>Invio di comunicazioni commerciali (solo se esplicitamente richiesto)</td><td>Consenso — art. 6.1.a GDPR</td></tr>
-      <tr><td>Raccolta iscrizioni per eventi creati dagli organizzatori</td><td>Esecuzione di un contratto con il partecipante — art. 6.1.b GDPR</td></tr>
-    </table>
+      <tr><td>Erogazione del servizio EventsFun (creazione degli eventi, raccolta di iscrizioni e richieste di informazioni, gestione della dashboard)</td><td>Esecuzione del contratto (art. 6.1.b GDPR)</td></tr>
+      <tr><td>Invio email di accesso all'area personale e aggiornamenti sul servizio</td><td>Esecuzione del contratto (art. 6.1.b GDPR)</td></tr>
+      <tr><td>Adempimento di obblighi fiscali e legali</td><td>Obbligo legale (art. 6.1.c GDPR)</td></tr>
+      <tr><td>Invio di comunicazioni commerciali (solo se esplicitamente richiesto)</td><td>Consenso (art. 6.1.a GDPR)</td></tr>
+      <tr><td>Raccolta delle iscrizioni e invio delle email legate all'evento (conferma, promemoria) per conto degli organizzatori</td><td>Esecuzione di un contratto con il partecipante (art. 6.1.b GDPR)</td></tr>
+      <tr><td>Raccolta delle richieste di informazioni e invio degli avvisi all'organizzatore</td><td>Misure precontrattuali adottate su richiesta dell'interessato (art. 6.1.b GDPR)</td></tr>
+      <tr><td>Newsletter inviate dall'organizzatore ai propri iscritti (piano Agenzia)</td><td>Base giuridica individuata dall'organizzatore, titolare del trattamento (di norma il consenso raccolto al momento dell'iscrizione)</td></tr>
+    </table></div>
   </div>
 
   <!-- CONSERVAZIONE -->
   <div class="section" id="conservazione">
     <div class="section-badge">Art. 5.1.e GDPR</div>
     <h2>Periodo di conservazione dei dati</h2>
-    <table class="data-table">
+    <div class="table-wrap"><table class="data-table">
       <tr><th>Tipo di dato</th><th>Periodo di conservazione</th></tr>
-      <tr><td>Dati organizzatore (account, ordini)</td><td>5 anni dalla cessazione del servizio, per obblighi fiscali</td></tr>
-      <tr><td>Dati partecipanti agli eventi (piani Base e Pro)</td><td>30 giorni dalla data dell'evento, poi eliminati automaticamente</td></tr>
-      <tr><td>Dati partecipanti agli eventi (piano Agenzia)</td><td>Per tutta la durata dell'abbonamento dell'organizzatore, poi eliminati</td></tr>
-      <tr><td>Log di accesso e sicurezza</td><td>90 giorni</td></tr>
+      <tr><td>Dati organizzatore (account, ordini, pagamenti)</td><td>10 anni dalla cessazione del servizio, per gli obblighi di conservazione delle scritture contabili (art. 2220 codice civile)</td></tr>
+      <tr><td>Iscritti, accompagnatori e richieste di informazioni (piani Base e Pro)</td><td>30 giorni dalla data dell'evento, poi eliminati automaticamente</td></tr>
+      <tr><td>Eventi e pagine (piani Base e Pro)</td><td>Fino alla cancellazione da parte dell'organizzatore dalla dashboard, oppure su sua richiesta a info@eventsfun.com</td></tr>
+      <tr><td>Iscritti, accompagnatori, liste d'attesa, richieste di informazioni e newsletter programmate (piani Agenzia e Punto Info)</td><td>Per tutta la durata dell'abbonamento. Alla fine dell'accesso vengono eliminati automaticamente nella notte successiva (vedi "Fine dell'abbonamento: cosa succede ai dati")</td></tr>
+      <tr><td>Eventi, pagine, impostazioni, rubrica, fornitori e costi, storico delle newsletter inviate (piani Agenzia e Punto Info)</td><td>Per tutta la durata dell'abbonamento e per 12 mesi dopo la fine dell'accesso, poi eliminati automaticamente</td></tr>
+      <tr><td>Materiale allegato alle newsletter programmate (piano Agenzia)</td><td>Eliminato alla scadenza scelta dall'organizzatore (7, 15 o 30 giorni)</td></tr>
+      <tr><td>Log di accesso e sicurezza</td><td>Fino a 90 giorni</td></tr>
       <tr><td>Consensi newsletter</td><td>Fino alla revoca del consenso</td></tr>
-    </table>
+    </table></div>
   </div>
 
   <!-- TERZE PARTI -->
-  <div class="section">
+  <div class="section" id="terze-parti">
     <div class="section-badge">Sub-responsabili</div>
     <h2>Servizi di terze parti</h2>
-    <p>Per erogare il servizio, EventsFun si avvale dei seguenti fornitori che agiscono come sub-responsabili del trattamento:</p>
-    <table class="data-table">
-      <tr><th>Fornitore</th><th>Servizio</th><th>Paese</th><th>Privacy Policy</th></tr>
-      <tr><td><strong>Supabase Inc.</strong></td><td>Database e infrastruttura cloud</td><td>USA (EU servers)</td><td><a href="https://supabase.com/privacy" target="_blank" style="color:#C9A96E">supabase.com/privacy</a></td></tr>
-      <tr><td><strong>Stripe Inc.</strong></td><td>Pagamenti online</td><td>USA</td><td><a href="https://stripe.com/it/privacy" target="_blank" style="color:#C9A96E">stripe.com/privacy</a></td></tr>
-      <tr><td><strong>Resend Inc.</strong></td><td>Invio email transazionali</td><td>USA</td><td><a href="https://resend.com/privacy" target="_blank" style="color:#C9A96E">resend.com/privacy</a></td></tr>
-      <tr><td><strong>GitHub Inc.</strong></td><td>Hosting del sito web</td><td>USA</td><td><a href="https://docs.github.com/privacy" target="_blank" style="color:#C9A96E">github.com/privacy</a></td></tr>
-    </table>
+    <p>Per erogare il servizio, EventsFun si avvale dei seguenti fornitori:</p>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Fornitore</th><th>Servizio</th><th>Paese</th><th>Privacy Policy</th></tr>
+      <tr><td data-label="Fornitore"><strong>Supabase Inc.</strong></td><td data-label="Servizio">Database e infrastruttura cloud</td><td data-label="Paese">USA (EU servers)</td><td data-label="Privacy Policy"><a href="https://supabase.com/privacy" target="_blank" style="color:#C9A96E">supabase.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>Stripe Inc.</strong></td><td data-label="Servizio">Pagamenti online</td><td data-label="Paese">USA</td><td data-label="Privacy Policy"><a href="https://stripe.com/it/privacy" target="_blank" style="color:#C9A96E">stripe.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>Resend Inc.</strong></td><td data-label="Servizio">Invio delle email (accesso, conferme, promemoria, avvisi, newsletter)</td><td data-label="Paese">USA</td><td data-label="Privacy Policy"><a href="https://resend.com/legal/privacy-policy" target="_blank" style="color:#C9A96E">resend.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>GitHub Inc.</strong></td><td data-label="Servizio">Hosting del sito web</td><td data-label="Paese">USA</td><td data-label="Privacy Policy"><a href="https://docs.github.com/privacy" target="_blank" style="color:#C9A96E">github.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>Google (Google Fonts)</strong></td><td data-label="Servizio">Caratteri tipografici di tutte le pagine; riceve l'indirizzo IP di chi apre la pagina</td><td data-label="Paese">USA</td><td data-label="Privacy Policy"><a href="https://policies.google.com/privacy" target="_blank" style="color:#C9A96E">policies.google.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>jsDelivr (Volentio JSD Ltd)</strong></td><td data-label="Servizio">Componenti tecnici delle dashboard; riceve l'indirizzo IP di chi apre la pagina</td><td data-label="Paese">Regno Unito</td><td data-label="Privacy Policy"><a href="https://www.jsdelivr.com/terms/privacy-policy" target="_blank" style="color:#C9A96E">jsdelivr.com/privacy</a></td></tr>
+      <tr><td data-label="Fornitore"><strong>Cloudflare Inc. (cdnjs)</strong></td><td data-label="Servizio">Componenti tecnici delle dashboard e della demo; riceve l'indirizzo IP di chi apre la pagina</td><td data-label="Paese">USA</td><td data-label="Privacy Policy"><a href="https://www.cloudflare.com/privacypolicy/" target="_blank" style="color:#C9A96E">cloudflare.com/privacy</a></td></tr>
+    </table></div>
     <p>I dati trasferiti verso paesi extra-UE sono protetti da garanzie adeguate (Standard Contractual Clauses o decisioni di adeguatezza della Commissione Europea).</p>
+    <p>Le pagine pubbliche degli eventi caricano soltanto i caratteri tipografici di Google Fonts; i componenti tecnici di jsDelivr e cdnjs vengono caricati solo nelle dashboard degli organizzatori e nella demo.</p>
   </div>
 
   <!-- DIRITTI -->
@@ -179,30 +232,34 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <h2>Diritti dell'interessato</h2>
     <p>In qualità di interessato, hai il diritto di:</p>
     <ul>
-      <li><strong>Accesso</strong> — richiedere conferma se siano trattati dati che ti riguardano e ottenerne copia (art. 15)</li>
-      <li><strong>Rettifica</strong> — richiedere la correzione di dati inesatti o incompleti (art. 16)</li>
-      <li><strong>Cancellazione</strong> — richiedere la cancellazione dei tuoi dati ("diritto all'oblio") (art. 17)</li>
-      <li><strong>Limitazione</strong> — richiedere la limitazione del trattamento in determinati casi (art. 18)</li>
-      <li><strong>Portabilità</strong> — ricevere i tuoi dati in formato strutturato e leggibile da macchina (art. 20)</li>
-      <li><strong>Opposizione</strong> — opporti al trattamento in qualsiasi momento (art. 21)</li>
-      <li><strong>Revoca del consenso</strong> — revocare il consenso prestato in qualsiasi momento, senza pregiudizio per la liceità del trattamento precedente</li>
+      <li><strong>Accesso:</strong> richiedere conferma se siano trattati dati che ti riguardano e ottenerne copia (art. 15)</li>
+      <li><strong>Rettifica:</strong> richiedere la correzione di dati inesatti o incompleti (art. 16)</li>
+      <li><strong>Cancellazione:</strong> richiedere la cancellazione dei tuoi dati ("diritto all'oblio") (art. 17)</li>
+      <li><strong>Limitazione:</strong> richiedere la limitazione del trattamento in determinati casi (art. 18)</li>
+      <li><strong>Portabilità:</strong> ricevere i tuoi dati in formato strutturato e leggibile da macchina (art. 20)</li>
+      <li><strong>Opposizione:</strong> opporti al trattamento in qualsiasi momento (art. 21)</li>
+      <li><strong>Revoca del consenso:</strong> revocare il consenso prestato in qualsiasi momento, senza pregiudizio per la liceità del trattamento precedente</li>
     </ul>
     <p>Per esercitare i tuoi diritti, scrivi a <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a>. Risponderemo entro 30 giorni.</p>
+    <p>Se ti sei iscritto a un evento o hai chiesto informazioni tramite la pagina di un evento, il titolare dei tuoi dati è l'organizzatore di quell'evento: puoi rivolgerti direttamente a lui, oppure scrivere a <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a> e inoltreremo la tua richiesta all'organizzatore.</p>
     <p>Hai inoltre il diritto di proporre reclamo all'Autorità Garante per la Protezione dei Dati Personali (<a href="https://www.garanteprivacy.it" target="_blank" style="color:#C9A96E">garanteprivacy.it</a>).</p>
   </div>
 
   <!-- COOKIE -->
   <div class="section" id="cookie">
     <div class="section-badge">Cookie Policy</div>
-    <h2>Informativa sui cookie</h2>
-    <h3>Cookie tecnici (necessari)</h3>
-    <p>Il sito EventsFun utilizza esclusivamente cookie tecnici, necessari per il corretto funzionamento del servizio. Non vengono installati cookie di profilazione o di tracciamento di terze parti.</p>
-    <table class="data-table">
-      <tr><th>Cookie</th><th>Tipo</th><th>Durata</th><th>Finalità</th></tr>
-      <tr><td>ef_token (localStorage)</td><td>Tecnico</td><td>Persistente</td><td>Accesso alla dashboard senza reinserire il link (rimosso automaticamente se non pi&ugrave; valido)</td></tr>
-      <tr><td>ef_theme (localStorage)</td><td>Tecnico</td><td>Persistente</td><td>Preferenza tema chiaro/scuro</td></tr>
-    </table>
-    <p>Non essendo presenti cookie di profilazione o tracciamento, non è necessaria la visualizzazione del banner cookie ai sensi del Provvedimento del Garante 8 maggio 2014 e delle successive Linee Guida del 2021.</p>
+    <h2>Informativa sui cookie e sulla memoria del browser</h2>
+    <h3>Strumenti tecnici (necessari)</h3>
+    <p>Il sito EventsFun non installa cookie. Alcune pagine salvano poche informazioni tecniche nella memoria del browser (localStorage e sessionStorage), necessarie al funzionamento del servizio. Non vengono utilizzati strumenti di profilazione o di tracciamento, né propri né di terze parti.</p>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Nome</th><th>Tipo</th><th>Durata</th><th>Finalità</th></tr>
+      <tr><td data-label="Nome">ef_token (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Accesso alla dashboard senza reinserire il link (rimosso automaticamente se non pi&ugrave; valido)</td></tr>
+      <tr><td data-label="Nome">ef_theme (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Preferenza tema chiaro/scuro della dashboard</td></tr>
+      <tr><td data-label="Nome">ef_custom_stats (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Disposizione delle statistiche scelta nella dashboard</td></tr>
+      <tr><td data-label="Nome">ef_at, ef_email (sessionStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Fino alla chiusura della scheda</td><td data-label="Finalità">Mantenere aperta la sessione dell'area personale</td></tr>
+      <tr><td data-label="Nome">ef_demo (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Fino a "Ricomincia da zero" o alla pulizia del browser</td><td data-label="Finalità">Dati di prova inseriti nella demo: restano solo nel browser di chi la usa e non vengono inviati a EventsFun</td></tr>
+    </table></div>
+    <p>Non essendo presenti cookie o strumenti di profilazione o tracciamento, non è necessaria la visualizzazione del banner cookie ai sensi del Provvedimento del Garante 8 maggio 2014 e delle successive Linee Guida del 2021.</p>
   </div>
 
   <!-- RUOLI E RESPONSABILITA -->
@@ -214,15 +271,16 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <h3>Dati degli organizzatori (clienti EventsFun)</h3>
     <p>Per i dati di chi acquista il servizio, il <strong>Titolare del trattamento è Giorgio Boerci</strong> (i cui dati sono indicati nella sezione "Titolare del trattamento"). Questi dati sono trattati per erogare il servizio, gestire i pagamenti e adempiere agli obblighi di legge.</p>
 
-    <h3>Dati dei partecipanti agli eventi</h3>
+    <h3>Dati dei partecipanti e di chi chiede informazioni</h3>
     <div class="highlight-box" style="border-color:rgba(201,169,110,0.4)">
-      <strong>Importante.</strong> Per i dati raccolti tramite i moduli di iscrizione agli eventi, il <strong>Titolare del trattamento è l'organizzatore dell'evento</strong> (il cliente che ha acquistato EventsFun), <strong>non EventsFun</strong>. EventsFun agisce esclusivamente come <strong>Responsabile del trattamento</strong> ai sensi dell'art. 28 GDPR, limitandosi a fornire l'infrastruttura tecnica che consente all'organizzatore di raccogliere e gestire i dati.
+      <strong>Importante.</strong> Per i dati raccolti tramite i moduli di iscrizione e di richiesta di informazioni delle pagine degli eventi, il <strong>Titolare del trattamento è l'organizzatore dell'evento</strong> (il cliente che ha acquistato EventsFun), <strong>non EventsFun</strong>. EventsFun agisce esclusivamente come <strong>Responsabile del trattamento</strong> ai sensi dell'art. 28 GDPR, limitandosi a fornire l'infrastruttura tecnica che consente all'organizzatore di raccogliere e gestire i dati.
     </div>
     <p>Questo significa che:</p>
     <ul>
       <li>L'organizzatore decide quali dati raccogliere, per quali finalità e con quali modalità</li>
       <li>L'organizzatore è responsabile di fornire ai propri iscritti una corretta informativa privacy</li>
       <li>L'organizzatore è responsabile di raccogliere validamente il consenso dei partecipanti ove richiesto</li>
+      <li>L'organizzatore è responsabile anche dei dati di contatto di fornitori e collaboratori che inserisce nella rubrica (piano Agenzia)</li>
       <li>EventsFun non utilizza, non vende e non tratta per finalità proprie i dati dei partecipanti</li>
       <li>EventsFun tratta tali dati esclusivamente secondo le istruzioni dell'organizzatore e per il solo funzionamento del servizio</li>
     </ul>
@@ -251,11 +309,11 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <ul>
       <li><strong>Titolare:</strong> l'organizzatore dell'evento che acquista EventsFun e determina finalità e mezzi del trattamento dei dati dei partecipanti</li>
       <li><strong>Responsabile:</strong> Giorgio Boerci (EventsFun), che tratta i dati per conto del Titolare</li>
-      <li><strong>Interessati:</strong> i partecipanti che si iscrivono agli eventi</li>
+      <li><strong>Interessati:</strong> i partecipanti che si iscrivono agli eventi, le persone che chiedono informazioni tramite le pagine degli eventi e i contatti che l'organizzatore inserisce nella rubrica</li>
     </ul>
 
     <h3>2. Oggetto e durata</h3>
-    <p>Il Responsabile tratta i dati dei partecipanti per conto del Titolare al solo fine di erogare le funzionalità della piattaforma EventsFun. Il trattamento dura per tutto il periodo di utilizzo del servizio e cessa con la chiusura dell'evento o dell'account.</p>
+    <p>Il Responsabile tratta i dati dei partecipanti per conto del Titolare al solo fine di erogare le funzionalità della piattaforma EventsFun. Il trattamento dura per tutto il periodo di utilizzo del servizio e cessa nei tempi indicati nella sezione "Periodo di conservazione dei dati".</p>
 
     <h3>3. Obblighi del Responsabile</h3>
     <p>EventsFun (Responsabile) si impegna a:</p>
@@ -264,7 +322,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
       <li>Garantire che le persone autorizzate al trattamento siano vincolate alla riservatezza</li>
       <li>Adottare misure tecniche e organizzative adeguate a garantire la sicurezza dei dati (art. 32 GDPR)</li>
       <li>Assistere il Titolare nel rispondere alle richieste degli interessati (artt. 15-22 GDPR)</li>
-      <li>Cancellare o restituire i dati al termine del servizio, salvo obblighi di conservazione di legge</li>
+      <li>Cancellare i dati al termine del servizio, nei tempi indicati nella sezione "Periodo di conservazione dei dati", salvo obblighi di conservazione di legge</li>
       <li>Mettere a disposizione del Titolare le informazioni necessarie a dimostrare il rispetto degli obblighi</li>
       <li>Avvalersi esclusivamente di sub-responsabili che offrono garanzie adeguate (elencati nella sezione "Servizi di terze parti")</li>
     </ul>
@@ -280,7 +338,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     </ul>
 
     <h3>5. Sub-responsabili</h3>
-    <p>Il Titolare autorizza il Responsabile ad avvalersi dei sub-responsabili indicati nella sezione "Servizi di terze parti" (Supabase, Stripe, Resend, GitHub). Eventuali modifiche saranno comunicate con congruo preavviso.</p>
+    <p>Il Titolare autorizza il Responsabile ad avvalersi dei sub-responsabili indicati nella sezione "Servizi di terze parti" (Supabase, Stripe, Resend, GitHub, Google Fonts, jsDelivr, Cloudflare). Eventuali modifiche saranno comunicate con congruo preavviso.</p>
 
     <h3>6. Violazioni dei dati (data breach)</h3>
     <p>In caso di violazione dei dati personali, il Responsabile informa il Titolare senza ingiustificato ritardo dopo esserne venuto a conoscenza, fornendo le informazioni utili affinché il Titolare possa adempiere ai propri obblighi di notifica (artt. 33-34 GDPR).</p>
@@ -295,55 +353,77 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <p>I presenti Termini e Condizioni regolano l'acquisto e l'utilizzo della piattaforma EventsFun da parte degli organizzatori di eventi (di seguito "Cliente").</p>
 
     <h3>1. Descrizione del servizio</h3>
-    <p>EventsFun è una piattaforma SaaS (Software as a Service) per la gestione delle iscrizioni a eventi. Il servizio include:</p>
+    <p>EventsFun è una piattaforma SaaS (Software as a Service) per la gestione delle iscrizioni e delle richieste di informazioni per gli eventi. Il servizio include:</p>
     <ul>
-      <li>Una dashboard per la creazione e gestione dell'evento</li>
-      <li>Una landing page pubblica per la raccolta delle iscrizioni</li>
-      <li>Un QR code collegato alla pagina di iscrizione</li>
-      <li>Gli strumenti per la gestione dei partecipanti (CSV, presenze)</li>
+      <li>Una dashboard per la creazione e la gestione degli eventi</li>
+      <li>Una pagina pubblica per ogni evento, per raccogliere iscrizioni, richieste di informazioni o entrambe</li>
+      <li>Un QR code collegato alla pagina dell'evento</li>
+      <li>Gli strumenti per la gestione dei partecipanti e delle richieste (elenchi, presenze ed esportazioni, secondo il piano)</li>
+      <li>Le email automatiche legate all'evento (conferme, promemoria, avvisi all'organizzatore)</li>
     </ul>
 
-    <h3>2. Piani disponibili e prezzi</h3>
-    <table class="data-table">
-      <tr><th>Piano</th><th>Prezzo</th><th>Caratteristiche principali</th></tr>
-      <tr><td><strong>Evento Base</strong></td><td>€29,00 una tantum</td><td>1 evento, iscrizioni illimitate, form base</td></tr>
-      <tr><td><strong>Evento Pro</strong></td><td>€79,00 una tantum</td><td>1 evento, tutte le funzioni avanzate, export CSV</td></tr>
-      <tr><td><strong>Agenzia (mensile)</strong></td><td>€69,00/mese</td><td>Eventi illimitati, 3 account, tutte le funzioni</td></tr>
-      <tr><td><strong>Agenzia (annuale)</strong></td><td>€588,00/anno</td><td>Come mensile, pagamento anticipato</td></tr>
-    </table>
-    <p>I prezzi sono da intendersi IVA esclusa (se applicabile). Il pagamento avviene tramite Stripe in modo sicuro.</p>
+    <h3>2. A chi è rivolto il servizio</h3>
+    <p>EventsFun è un servizio destinato esclusivamente a organizzazioni e a chi agisce nell'ambito della propria attività: enti pubblici, associazioni, pro loco, parrocchie, comitati, imprese, agenzie e professionisti.</p>
+    <p>Con l'acquisto il Cliente dichiara di acquistare il servizio per conto di un'organizzazione oppure nell'ambito della propria attività imprenditoriale, commerciale, artigianale o professionale, e non come consumatore. Per questo motivo al rapporto non si applicano le norme del Codice del Consumo (D.Lgs. 206/2005) previste a tutela dei consumatori.</p>
 
-    <h3>3. Durata e cessazione del servizio</h3>
-    <p><strong>Piano Base e Pro:</strong> il servizio è attivo fino al giorno successivo alla data dell'evento inserita nella dashboard. Se l'evento viene rimandato, il Cliente è responsabile di aggiornare la data nelle impostazioni. I dati degli iscritti restano consultabili in sola lettura per 30 giorni dopo la data dell'evento, poi vengono eliminati automaticamente.</p>
-    <p><strong>Piano Agenzia mensile:</strong> il servizio si rinnova automaticamente ogni mese. La disdetta deve essere comunicata prima del rinnovo scrivendo a info@eventsfun.com; il servizio rimarrà attivo fino alla scadenza del periodo già pagato.</p>
-    <p><strong>Piano Agenzia annuale:</strong> il pagamento è anticipato per 12 mesi. In caso di disdetta anticipata, non è previsto rimborso per i mesi non utilizzati.</p>
+    <h3>3. Piani disponibili e prezzi</h3>
+    <div class="table-wrap"><table class="data-table stack">
+      <tr class="hdr"><th>Piano</th><th>Prezzo</th><th>Caratteristiche principali</th></tr>
+      <tr><td data-label="Piano"><strong>Evento Base</strong></td><td data-label="Prezzo">€29,00 una tantum</td><td data-label="Caratteristiche principali">1 evento, iscrizioni illimitate, funzioni essenziali, richiesta di informazioni inclusa</td></tr>
+      <tr><td data-label="Piano"><strong>Evento Pro</strong></td><td data-label="Prezzo">€79,00 una tantum</td><td data-label="Caratteristiche principali">1 evento, funzioni avanzate, esportazione CSV, richiesta di informazioni inclusa</td></tr>
+      <tr><td data-label="Piano"><strong>Agenzia (mensile)</strong></td><td data-label="Prezzo">€69,00/mese con rinnovo automatico</td><td data-label="Caratteristiche principali">Eventi illimitati, un solo accesso, tutte le funzioni</td></tr>
+      <tr><td data-label="Piano"><strong>Agenzia (annuale)</strong></td><td data-label="Prezzo">€588,00/anno con rinnovo automatico</td><td data-label="Caratteristiche principali">Come il mensile, con pagamento anticipato per 12 mesi</td></tr>
+      <tr><td data-label="Piano"><strong>Punto Info (mensile)</strong></td><td data-label="Prezzo">€9,90/mese con rinnovo automatico</td><td data-label="Caratteristiche principali">Eventi illimitati, solo raccolta di richieste di informazioni (nessuna iscrizione), un solo accesso</td></tr>
+      <tr><td data-label="Piano"><strong>Punto Info (annuale)</strong></td><td data-label="Prezzo">€79,00/anno con rinnovo automatico</td><td data-label="Caratteristiche principali">Come il mensile, con pagamento anticipato per 12 mesi</td></tr>
+    </table></div>
+    <p>I prezzi sono da intendersi IVA esclusa (se applicabile). Il pagamento avviene tramite Stripe in modo sicuro: EventsFun non conserva i dati della carta di pagamento.</p>
 
-    <h3>4. Diritto di recesso</h3>
-    <p>Ai sensi del D.Lgs. 21 febbraio 2014, n. 21 (Codice del Consumo), il Cliente ha diritto di recedere dal contratto entro 14 giorni dall'acquisto, senza necessità di fornire motivazioni. Il recesso può essere esercitato inviando una comunicazione a <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a>.</p>
-    <p>Il diritto di recesso non si applica qualora il servizio sia già stato pienamente erogato con il consenso espresso del Cliente prima della scadenza del termine di recesso (ad esempio, se il Cliente ha già creato il proprio evento e iniziato a raccogliere iscrizioni).</p>
+    <h3>4. Durata, rinnovo e disdetta</h3>
+    <p><strong>Piani Base e Pro:</strong> il servizio è attivo fino al giorno successivo alla data dell'evento inserita nella dashboard. Se l'evento viene rimandato, il Cliente è responsabile di aggiornare la data nelle impostazioni. Gli iscritti e le richieste di informazioni restano consultabili per 30 giorni dopo la data dell'evento, poi vengono eliminati automaticamente.</p>
+    <p><strong>Piani Agenzia e Punto Info (abbonamenti):</strong> l'abbonamento si rinnova automaticamente alla fine di ogni periodo (mese o anno, secondo il piano scelto), con addebito sul metodo di pagamento registrato, finché il Cliente non lo disdice.</p>
+    <p>La disdetta si può fare in qualsiasi momento dall'area personale, con il pulsante "Gestisci abbonamento", oppure scrivendo a <a href="mailto:info@eventsfun.com" style="color:#C9A96E">info@eventsfun.com</a>. La disdetta ha effetto alla fine del periodo già pagato; non sono previsti rimborsi per il periodo in corso, anche per gli abbonamenti annuali.</p>
+    <p>Se il pagamento di un rinnovo non va a buon fine, il sistema di pagamento riprova automaticamente nei giorni successivi e il Cliente riceve un'email con il collegamento per aggiornare il metodo di pagamento.</p>
 
-    <h3>5. Responsabilità dell'organizzatore</h3>
+    <h3 id="fine-abbonamento">5. Fine dell'abbonamento: cosa succede ai dati</h3>
+    <p>Per i piani Agenzia e Punto Info vale questa regola:</p>
+    <ul>
+      <li><strong>Fino alla fine del periodo già pagato, più 7 giorni di tolleranza,</strong> tutto resta disponibile come prima. In questo periodo il Cliente può consultare i propri dati e scaricare dalla dashboard gli elenchi previsti dal suo piano (per esempio iscritti e presenze).</li>
+      <li><strong>Dopo questa data</strong> l'accesso alla dashboard viene sospeso e le pagine pubbliche degli eventi mostrano "Pagina non disponibile": non accettano più iscrizioni né richieste di informazioni. Nella notte successiva vengono eliminati definitivamente iscritti, accompagnatori, liste d'attesa, richieste di informazioni e newsletter programmate.</li>
+      <li><strong>Per 12 mesi</strong> restano conservati eventi, pagine, impostazioni, rubrica, fornitori e costi e storico delle newsletter inviate. Se il Cliente si riabbona con la stessa email entro questo periodo, li ritrova.</li>
+      <li><strong>Trascorsi 12 mesi</strong> vengono eliminati definitivamente anche questi dati.</li>
+      <li><strong>Ordini e pagamenti</strong> vengono conservati per 10 anni per gli obblighi di legge.</li>
+    </ul>
+
+    <h3>6. Diritto di recesso</h3>
+    <p>Poiché il servizio è destinato a organizzazioni e a chi agisce nell'ambito della propria attività (punto 2), non si applica il diritto di recesso previsto dal Codice del Consumo per i consumatori.</p>
+    <p>Gli abbonamenti Agenzia e Punto Info si possono disdire in qualsiasi momento, con effetto alla fine del periodo già pagato, come indicato al punto 4.</p>
+
+    <h3>7. Responsabilità dell'organizzatore</h3>
     <p>Il Cliente è responsabile:</p>
     <ul>
-      <li>Del contenuto dell'evento inserito nella dashboard</li>
-      <li>Del trattamento dei dati personali dei partecipanti raccolti tramite la landing page</li>
-      <li>Dell'adempimento degli obblighi di informativa privacy nei confronti dei propri iscritti</li>
+      <li>Del contenuto degli eventi e delle pagine inseriti nella dashboard</li>
+      <li>Del trattamento dei dati personali dei partecipanti e delle persone che chiedono informazioni, raccolti tramite le pagine degli eventi</li>
+      <li>Dei dati di contatto inseriti nella rubrica (piano Agenzia)</li>
+      <li>Dell'adempimento degli obblighi di informativa privacy nei confronti dei propri iscritti e delle persone che gli chiedono informazioni</li>
       <li>Di non utilizzare la piattaforma per raccogliere dati per finalità illecite</li>
     </ul>
     <p>EventsFun non è responsabile per eventuali danni derivanti dall'utilizzo improprio della piattaforma da parte del Cliente.</p>
 
-    <h3>6. Limitazione di responsabilità</h3>
+    <h3>8. Limitazione di responsabilità</h3>
     <p>EventsFun non garantisce la disponibilità continua e ininterrotta del servizio. In caso di interruzioni tecniche non imputabili a EventsFun (es. manutenzione dei fornitori di infrastruttura), non sarà dovuto alcun indennizzo al Cliente.</p>
     <p>La responsabilità massima di EventsFun nei confronti del Cliente è limitata all'importo pagato per il servizio negli ultimi 12 mesi.</p>
 
-    <h3>7. Proprietà intellettuale</h3>
+    <h3>9. Proprietà intellettuale</h3>
     <p>Il software, il design e tutti i contenuti della piattaforma EventsFun sono di proprietà esclusiva del titolare. È vietata la riproduzione, la distribuzione o la modifica senza autorizzazione scritta.</p>
 
-    <h3>8. Modifiche ai termini</h3>
+    <h3>10. Modifiche ai termini</h3>
     <p>EventsFun si riserva il diritto di modificare i presenti Termini e Condizioni in qualsiasi momento. Le modifiche saranno comunicate via email ai Clienti attivi con almeno 30 giorni di preavviso. L'utilizzo continuato del servizio dopo la comunicazione delle modifiche costituisce accettazione dei nuovi termini.</p>
 
-    <h3>9. Legge applicabile e foro competente</h3>
-    <p>I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia relativa all'interpretazione o all'esecuzione del contratto, il foro competente è quello del domicilio del titolare di EventsFun, salvo quanto previsto dalla normativa a tutela del consumatore.</p>
+    <h3>11. Legge applicabile e foro competente</h3>
+    <p>I presenti Termini sono regolati dalla legge italiana. Per qualsiasi controversia relativa all'interpretazione o all'esecuzione del contratto, il foro competente è quello del domicilio del titolare di EventsFun.</p>
+
+    <h3>12. Approvazione specifica delle clausole</h3>
+    <p>Ai sensi degli articoli 1341 e 1342 del codice civile, il Cliente dichiara di aver letto e di approvare specificamente le seguenti clausole: punto 2 (servizio riservato a organizzazioni e attività professionali), punto 4 (rinnovo automatico degli abbonamenti e disdetta), punto 5 (sospensione delle pagine e cancellazione dei dati alla fine dell'abbonamento), punto 6 (diritto di recesso), punto 8 (limitazione di responsabilità), punto 10 (modifiche ai termini) e punto 11 (foro competente). L'approvazione avviene con l'apposita casella al momento dell'acquisto.</p>
   </div>
 
   <div class="contact-box">
@@ -355,8 +435,8 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
 </div>
 
 <footer class="footer">
-  <p>© 2026 EventsFun — Tutti i diritti riservati</p>
-  <p style="margin-top:6px">Documento soggetto ad aggiornamenti. Versione: Luglio 2026</p>
+  <p>© 2026 EventsFun. Tutti i diritti riservati</p>
+  <p style="margin-top:6px">Documento soggetto ad aggiornamenti. Versione: Settembre 2026</p>
 </footer>
 
 </body>
