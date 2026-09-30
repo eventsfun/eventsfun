@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.4 regola di fine abbonamento Agenzia + stato pagamento non riuscito + collegamento ai dettagli (base: v4.3 Supabase Auth, Punto Info, avviso dopo il pagamento, recupero password, data di rinnovo solo se futura) -->
+<!-- EventsFun | Area Personale | v4.5 disdetta programmata dal portale Stripe (stato "Disdetta programmata" con data di fine), letta da orders.subscription_cancel_at scritta da stripe-webhook v13 (base: v4.4 regola di fine abbonamento Agenzia + stato pagamento non riuscito + collegamento ai dettagli (base: v4.3 Supabase Auth, Punto Info, avviso dopo il pagamento, recupero password, data di rinnovo solo se futura) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -278,7 +278,7 @@ async function loadDashboards(){
   var area=document.getElementById('resultArea');
   area.innerHTML='<div class="card"><div class="loading"><div class="spinner"></div><p style="font-size:13px;color:var(--text-muted)">Carico le tue dashboard...</p></div></div>';
   try{
-    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,subscription_renews_at,created_at',accessToken);
+    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,subscription_renews_at,subscription_cancel_at,created_at',accessToken);
     if(!orders||!orders.length){
       area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
@@ -309,7 +309,7 @@ async function loadDashboards(){
       }
     }
 
-    var hasActiveAgenzia=orders.some(function(o){var st=agenziaState(o);return o.piano==='agenzia'&&(st==='active'||st==='payment_issue');});
+    var hasActiveAgenzia=orders.some(function(o){var st=agenziaState(o);return o.piano==='agenzia'&&(st==='active'||st==='payment_issue'||st==='scheduled');});
     var hasSingleUse=orders.some(function(o){return o.piano==='base'||o.piano==='pro';});
     /* abbonamenti gestibili dal portale Stripe: Agenzia e Punto Info */
     hasAgenzia = orders.some(function(o){ return o.piano==='agenzia'||o.piano==='info'; });
@@ -343,7 +343,19 @@ function agenziaState(order){
     if(exp&&now<exp)return 'grace';
     return 'expired';
   }
+  /* v4.5 -- disdetta programmata dal portale: resta attivo fino alla data, poi non si rinnova */
+  if(order.subscription_cancel_at&&new Date(order.subscription_cancel_at)>new Date())return 'scheduled';
   return 'active';
+}
+
+/* v4.5 -- disdetta programmata (Agenzia e Punto Info): stesso testo per entrambi */
+function renderScheduled(order,dashUrl,nomeDash){
+  var fine=fmtDate(new Date(order.subscription_cancel_at));
+  return '<div class="status-line"><span class="dot dot-gold"></span><span style="color:var(--gold)">Disdetta programmata</span></div>'
+    +'<div class="plan-info">Hai disdetto l\'abbonamento: resta attivo fino al <strong>'+fine+'</strong> e non si rinnoverà. Fino a quella data puoi usare tutto come prima, e dopo avrai ancora 7 giorni per consultare e scaricare quello che ti serve. Se cambi idea, puoi riattivarlo prima di quella data da "Gestisci abbonamento".</div>'
+    +'<a href="'+dashUrl+'" class="btn-dashboard">Accedi alla Dashboard '+nomeDash+' →</a>'
+    +'<a href="'+PORTAL_URL+'" target="_blank" class="upgrade-link">Gestisci abbonamento o riattiva →</a>'
+    +linkDettagli();
 }
 
 function reactivateBlock(){
@@ -384,6 +396,9 @@ function renderAgenzia(order,dashUrl){
   }
   if(state==='payment_issue'){
     return renderPaymentIssue(dashUrl,'Agenzia');
+  }
+  if(state==='scheduled'){
+    return renderScheduled(order,dashUrl,'Agenzia');
   }
   if(state==='grace'){
     var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
@@ -459,6 +474,9 @@ function renderInfo(order,dashUrl){
   }
   if(state==='payment_issue'){
     return renderPaymentIssue(dashUrl,'Punto Info');
+  }
+  if(state==='scheduled'){
+    return renderScheduled(order,dashUrl,'Punto Info');
   }
   if(state==='grace'){
     var exp=order.subscription_expires_at?fmtDate(new Date(order.subscription_expires_at)):'';
