@@ -310,6 +310,59 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   .nav-burger{display:flex}
   .nav-mobile.open{display:flex}
 }
+/* -- PUNTO INFO (v1.6) -- */
+.pinfo{padding:100px 40px;background:var(--bg2);position:relative;z-index:1}
+.pinfo::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
+.pinfo-inner{max-width:1000px;margin:0 auto}
+.pinfo-header{text-align:center;margin-bottom:56px}
+.pinfo-header .section-sub{margin:0 auto;max-width:640px}
+.pinfo-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.pinfo-card{border:1px solid var(--border);border-radius:14px;padding:28px;background:var(--bg3)}
+.pinfo-card h3{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;margin-bottom:8px;letter-spacing:-.2px}
+.pinfo-card p{font-size:13px;line-height:1.7;color:var(--text-muted)}
+.pinfo-for{margin-top:48px;text-align:center}
+.pinfo-tags{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:14px}
+.pinfo-tags span{padding:6px 14px;border-radius:6px;border:1px solid var(--border);font-size:12px;color:var(--text-muted);background:rgba(255,255,255,0.03)}
+.pinfo-for-note{font-size:14px;line-height:1.65;color:var(--text-muted);max-width:560px;margin:18px auto 0}
+.pinfo-box{margin:44px auto 0;max-width:720px;border:1px solid rgba(201,169,110,0.3);border-radius:14px;padding:28px;background:linear-gradient(135deg,rgba(201,169,110,0.07),rgba(201,169,110,0.02));text-align:center}
+.pinfo-box p{font-size:15px;line-height:1.7;color:var(--text-muted);margin-bottom:22px}
+.pinfo-box .btn-demo{display:inline-block}
+.pi-wrap{margin-top:56px;scroll-margin-top:90px}
+.pi-title{font-family:'Syne',sans-serif;font-size:clamp(20px,2.6vw,26px);font-weight:800;letter-spacing:-.5px;color:var(--text);margin-bottom:20px;text-align:center}
+.pi-strip{border:1px solid rgba(201,169,110,0.35);border-radius:16px;padding:32px;background:var(--bg3);text-align:left}
+.pi-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.pi-name{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+.pi-prices{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:flex-start}
+.pi-price{font-family:'Syne',sans-serif;font-size:36px;font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1}
+.pi-price span{font-size:15px;font-weight:400;letter-spacing:0;color:var(--text-muted)}
+.pi-save{font-size:11px;color:#7ED99A;margin-top:6px}
+.pi-desc{font-size:13px;color:var(--text-muted);line-height:1.65;margin-top:16px}
+.pi-feats{display:flex;flex-direction:column;gap:10px}
+.pi-no{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)}
+.pi-btns{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.pi-btn{display:block;text-align:center;padding:13px;border-radius:9px;border:1px solid rgba(255,255,255,0.2);color:var(--text);font-size:13px;font-weight:700;text-decoration:none;transition:all .2s}
+.pi-btn:hover{background:rgba(255,255,255,0.07)}
+.pi-btn-gold{border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A}
+.pi-btn-gold:hover{background:linear-gradient(135deg,var(--gold),var(--gold-dark));opacity:.87}
+.pi-note{margin-top:14px;font-size:12px;color:var(--text-dim);text-align:center;line-height:1.6}
+.faq-a.open{max-height:700px}
+.feat-grid > .feat:last-child:nth-child(3n+1){grid-column:1/-1}
+.feat-grid > .feat:last-child:nth-child(3n+2){grid-column:span 2}
+.feat-grid > .feat:last-child:nth-child(3n+1) p{max-width:620px}
+.faq-a a{color:var(--gold)}
+.footer-links{flex-wrap:wrap;row-gap:10px}
+.form-msg{display:none;margin-top:12px;padding:12px 14px;border-radius:8px;font-size:13px;line-height:1.55;border:1px solid rgba(255,120,120,0.35);background:rgba(255,120,120,0.08);color:#FFC2C2}
+.form-submit:disabled{opacity:.6;cursor:wait;transform:none;box-shadow:none}
+.hp-field{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+@media(max-width:1180px){.nav-links{gap:20px}}
+@media(max-width:980px){.nav-links{display:none}.nav-burger{display:flex}.nav-mobile.open{display:flex}}
+@media(max-width:768px){
+  .pinfo{padding:80px 20px}
+  .pinfo-grid{grid-template-columns:1fr}
+  .pi-grid{grid-template-columns:1fr;gap:24px}
+  .pi-strip{padding:24px 20px}
+}
+@media(max-width:420px){.pi-btns{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -319,6 +372,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   <div class="nav-links">
     <a href="#features">Funzionalità</a>
     <a href="#come-funziona">Come funziona</a>
+    <a href="#punto-info">Punto Info</a>
     <a href="#prezzi">Prezzi</a>
     <a href="#faq">FAQ</a>
     <a href="guide/">Guide</a>
@@ -332,6 +386,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 <div class="nav-mobile" id="navMobile">
   <a href="#features" onclick="closeMobileMenu()">Funzionalità</a>
   <a href="#come-funziona" onclick="closeMobileMenu()">Come funziona</a>
+  <a href="#punto-info" onclick="closeMobileMenu()">Punto Info</a>
   <a href="#prezzi" onclick="closeMobileMenu()">Prezzi</a>
   <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
   <a href="guide/" onclick="closeMobileMenu()">Guide</a>
@@ -534,7 +589,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <a href="demo.html" class="btn-primary">Prova la demo gratuita →</a>
       <a href="#come-funziona" class="btn-secondary">Come funziona</a>
     </div>
-    <p class="demo-cta-note">Nessuna registrazione richiesta &nbsp;·&nbsp; Funziona offline</p>
+    <p class="demo-cta-note">Nessuna registrazione richiesta &nbsp;·&nbsp; Funziona su telefono e computer</p>
   </div>
 </section>
 
@@ -778,6 +833,54 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
 <!-- USE CASES -->
 
+<!-- PUNTO INFO (v1.6) -->
+<section class="pinfo" id="punto-info">
+  <div class="pinfo-inner">
+    <div class="pinfo-header fade-up">
+      <div class="section-label">Punto Info</div>
+      <h2 class="section-title">Smetti di essere sommerso dalle chiamate.</h2>
+      <p class="section-sub">Sulla locandina, al posto del solito "per info: 333...", metti il QR del tuo evento. Chi vuole saperne di più trova tutto su una pagina chiara e, se ha ancora una domanda, ti lascia i suoi dati. Lo ricontatti tu, quando hai tempo.</p>
+    </div>
+    <div class="pinfo-grid fade-up" style="transition-delay:.1s">
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128196;</div>
+        <h3>Una pagina con tutto</h3>
+        <p>Programma, orari, come arrivare, la piantina. La componi tu con blocchi di testo e immagini, nell'ordine che vuoi, e i link diventano cliccabili da soli.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128229;</div>
+        <h3>Le domande arrivano in ordine</h3>
+        <p>Chi ha bisogno di altro lascia nome, recapito, come preferisce essere ricontattato e un messaggio. Niente più numeri appuntati su un foglietto.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128276;</div>
+        <h3>Avvisi come preferisci</h3>
+        <p>Un'email per ogni richiesta, oppure un riepilogo al giorno all'ora che scegli tu.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128222;</div>
+        <h3>Rispondi con un tocco</h3>
+        <p>Dalla lista delle richieste chiami, scrivi su WhatsApp o mandi un'email. Poi segni "contattato" e sai sempre a chi hai già risposto.</p>
+      </div>
+    </div>
+    <div class="pinfo-for fade-up">
+      <div class="proof-label">Perfetto per</div>
+      <div class="pinfo-tags">
+        <span>&#127963;&#65039; Comuni</span>
+        <span>&#127914; Pro loco</span>
+        <span>&#129309; Associazioni</span>
+        <span>&#9962; Parrocchie</span>
+        <span>&#127881; Feste e sagre</span>
+      </div>
+      <p class="pinfo-for-note">E per chiunque debba dare informazioni su un evento, un corso o un'iniziativa, senza restare attaccato al telefono.</p>
+    </div>
+    <div class="pinfo-box fade-up">
+      <p>È incluso in tutti i piani con iscrizioni: per ogni evento scegli se la pagina raccoglie iscrizioni, richieste di informazioni o entrambe. Se ti servono solo le informazioni, c'è il Punto Info da solo: 9,90&nbsp;€ al mese o 79&nbsp;€ all'anno, con eventi illimitati.</p>
+      <a href="#punto-info-prezzi" class="btn-demo">Vedi il Punto Info →</a>
+    </div>
+  </div>
+</section>
+
 <!-- NEWSLETTER -->
 <section class="nl-section" id="newsletter">
   <div class="nl-inner">
@@ -799,8 +902,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <div class="nl-benefit">
           <div class="nl-benefit-icon">&#9993;</div>
           <div>
-            <div class="nl-benefit-title">Il tuo nome, la tua email</div>
-            <div class="nl-benefit-desc">Il mittente sei tu. Le risposte arrivano a te. I tuoi iscritti non sanno che usi EventsFun - vedono solo il tuo brand.</div>
+            <div class="nl-benefit-title">Il tuo nome come mittente</div>
+            <div class="nl-benefit-desc">Nella casella degli iscritti compare il tuo nome e, se rispondono, la risposta arriva direttamente a te. Al centro c'è il tuo evento, non la piattaforma.</div>
           </div>
         </div>
         <div class="nl-benefit">
@@ -949,6 +1052,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">1 evento</div>
           <div class="plan-feat">Iscritti illimitati</div>
           <div class="plan-feat">Landing page pubblica</div>
+          <div class="plan-feat">Punto Info incluso (richieste di informazioni)</div>
           <div class="plan-feat">QR code automatico</div>
           <div class="plan-feat">Dashboard iscritti</div>
           <div class="plan-feat">Lista presenze con check-in</div>
@@ -981,7 +1085,9 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">1 evento completo</div>
           <div class="plan-feat">Iscritti illimitati</div>
           <div class="plan-feat">Landing page pubblica</div>
+          <div class="plan-feat">Punto Info incluso (richieste di informazioni)</div>
           <div class="plan-feat">QR code automatico</div>
+          <div class="plan-feat">QR con testo o logo</div>
           <div class="plan-feat">Dashboard iscritti</div>
           <div class="plan-feat">Lista presenze con check-in</div>
           <div class="plan-feat">Email conferma agli iscritti</div>
@@ -1013,12 +1119,13 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span id="proPrice">€69</span><span style="font-size:16px;font-weight:400;letter-spacing:0;color:var(--text-muted)" id="proPeriod"> / mese</span>
         </div>
         <div id="proAnnualNote" style="display:none;font-size:11px;color:#7ED99A;margin-bottom:4px">€588 / anno - risparmi 2 mesi rispetto al mensile</div>
-        <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px" id="proConvenienza">Organizzi più di 1 evento al mese? Il Pro si ripaga già al secondo.</div>
+        <div style="font-size:11px;color:var(--text-dim);margin-bottom:6px" id="proConvenienza">Organizzi più di un evento al mese? L'Agenzia costa meno di un solo Evento Pro.</div>
         <div style="font-size:13px;color:var(--text-muted);margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid rgba(255,255,255,0.08);line-height:1.65">Per chi gestisce più eventi ogni mese. Tutto incluso, eventi e iscritti illimitati.</div>
         <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:28px">
           <div class="plan-feat">Eventi illimitati</div>
           <div class="plan-feat">Iscritti illimitati</div>
           <div class="plan-feat">Landing page per ogni evento</div>
+          <div class="plan-feat">Punto Info incluso (richieste di informazioni)</div>
           <div class="plan-feat">QR code automatico</div>
           <div class="plan-feat">QR con testo o logo</div>
           <div class="plan-feat">Dashboard iscritti</div>
@@ -1045,6 +1152,36 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <a id="agenziaBtn" href="https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402" target="_blank" style="display:block;text-align:center;padding:14px;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:13px;font-weight:700;text-decoration:none;transition:opacity .2s" onmouseover="this.style.opacity='.87'" onmouseout="this.style.opacity='1'">Abbonati →</a>
       </div>
 
+    </div>
+    <div class="pi-wrap fade-up" id="punto-info-prezzi">
+      <h3 class="pi-title">Ti servono solo le informazioni?</h3>
+      <div class="pi-strip">
+        <div class="pi-grid">
+          <div>
+            <div class="pi-name">Punto Info</div>
+            <div class="pi-prices">
+              <div class="pi-p"><div class="pi-price">€9,90<span> / mese</span></div></div>
+              <div class="pi-p"><div class="pi-price">€79<span> / anno</span></div><div class="pi-save">Paghi 8 mesi, ne hai 12</div></div>
+            </div>
+            <p class="pi-desc">Per chi non raccoglie iscrizioni ma vuole dare tutte le informazioni senza passare le giornate al telefono.</p>
+          </div>
+          <div class="pi-feats">
+            <div class="plan-feat">Eventi illimitati</div>
+            <div class="plan-feat">Pagina a blocchi di testo e immagini</div>
+            <div class="plan-feat">QR code e link condivisibile</div>
+            <div class="plan-feat">Modulo di richiesta informazioni</div>
+            <div class="plan-feat">Avvisi via email, uno per richiesta o riepilogo giornaliero</div>
+            <div class="plan-feat">Lista richieste con Chiama, WhatsApp, Email</div>
+            <div class="plan-feat">Tema della pagina chiaro o scuro</div>
+            <div class="pi-no"><span>✕</span>Iscrizioni e check-in</div>
+          </div>
+        </div>
+        <div class="pi-btns">
+          <a href="https://buy.stripe.com/5kQbITcwC2oMg2I3a414406" target="_blank" rel="noopener" class="pi-btn pi-btn-gold">Abbonati mensile →</a>
+          <a href="https://buy.stripe.com/fZu5kv2W27J65o4dOI14407" target="_blank" rel="noopener" class="pi-btn">Abbonati annuale →</a>
+        </div>
+      </div>
+      <p class="pi-note">Vuoi anche raccogliere iscrizioni? I tre piani qui sopra includono già il Punto Info.</p>
     </div>
     <p style="max-width:640px;margin:32px auto 0;text-align:center;font-size:15px;line-height:1.65;color:var(--text-muted)">Quando un servizio è gratis, spesso a pagare sono i tuoi dati e il tuo pubblico. <strong style="color:var(--text);font-weight:600">Con EventsFun resti tu il proprietario di tutto quello che raccogli.</strong></p>
     <p style="margin-top:28px;font-size:12px;color:var(--text-dim);text-align:center">Contattaci per esigenze specifiche o volumi elevati.</p>
@@ -1092,7 +1229,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Cosa succede dopo la data dell'evento?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">La pagina pubblica va offline automaticamente il giorno dopo. I dati degli iscritti restano disponibili nella tua dashboard per 30 giorni - puoi scaricarli in CSV o PDF in qualsiasi momento. Passati i 30 giorni i dati vengono eliminati definitivamente.</div>
+        <div class="faq-a">Con Evento Base ed Evento Pro la pagina pubblica va offline automaticamente il giorno dopo. Iscritti e richieste di informazioni restano nella tua dashboard per 30 giorni, e con Evento Pro puoi scaricare gli iscritti in CSV. Passati i 30 giorni i dati vengono eliminati definitivamente.</div>
       </div>
 
       <div class="faq-item">
@@ -1116,7 +1253,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Quanti iscritti posso raccogliere?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Con Evento Base il limite è la capienza che imposti tu per l'evento (es. 100 posti). Con Evento Pro e Agenzia gli iscritti sono illimitati - raccoglie iscrizioni finché non chiudi l'evento.</div>
+        <div class="faq-a">In tutti i piani gli iscritti sono illimitati. Se vuoi, imposti tu una capienza (per esempio 100 posti): raggiunta la capienza le iscrizioni si fermano, e con il piano Agenzia si attiva la lista d'attesa automatica.</div>
       </div>
 
       <div class="faq-item">
@@ -1132,7 +1269,15 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>Posso usare EventsFun per più eventi diversi?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Evento Base ed Evento Pro sono per un singolo evento ciascuno. Se organizzi più eventi l'anno, il piano Agenzia a €69/mese ti conviene già dal secondo evento - hai tutto illimitato.</div>
+        <div class="faq-a">Evento Base ed Evento Pro valgono per un singolo evento ciascuno. Se organizzi eventi spesso, il piano Agenzia ha eventi illimitati e costa meno di un solo Evento Pro al mese. Se ti servono solo pagine informative, senza iscrizioni, il Punto Info ha eventi illimitati a 9,90&nbsp;€ al mese.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Che differenza c'è tra il Punto Info e i piani con iscrizioni?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Il Punto Info serve solo a dare informazioni: pagina dell'evento e richieste di contatto, senza iscrizioni, posti o check-in. Base, Pro e Agenzia fanno tutto questo e in più raccolgono le iscrizioni. Se parti dal Punto Info e poi ti servono le iscrizioni, acquisti uno dei piani (gli eventi del Punto Info non vengono trasferiti).</div>
       </div>
 
       <div class="faq-item">
@@ -1140,15 +1285,31 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <span>I dati degli iscritti sono al sicuro? Chi può vederli?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">I dati sono salvati in modo sicuro e visibili solo a te tramite la tua area personale o dashboard. Non vengono condivisi con terze parti né usati per marketing.</div>
+        <div class="faq-a">I dati sono salvati in modo sicuro e visibili solo a te. Non li vendiamo né li cediamo a nessuno e non li usiamo per il nostro marketing. Per far funzionare il servizio ci appoggiamo a pochi fornitori tecnici, elencati nella pagina <a href="privacy.html#terze-parti">Privacy</a>.</div>
       </div>
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
-          <span>Posso disdire il piano Agenzia quando voglio?</span>
+          <span>Posso disdire l'Agenzia o il Punto Info quando voglio?</span>
           <span class="faq-icon">+</span>
         </button>
-        <div class="faq-a">Sì. Puoi disdire in qualsiasi momento dalla tua area personale. L'abbonamento rimane attivo fino alla fine del periodo già pagato, poi non si rinnova.</div>
+        <div class="faq-a">Sì, in qualsiasi momento dall'area personale, con il pulsante "Gestisci abbonamento". L'abbonamento resta attivo fino alla fine del periodo già pagato e non si rinnova. Dopo hai ancora 7 giorni per scaricare quello che ti serve.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Cosa succede ai miei dati se disdico l'Agenzia o il Punto Info?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Finito l'accesso (fine del periodo pagato più 7 giorni), le pagine degli eventi non sono più visibili e nella notte vengono cancellati iscritti, liste d'attesa, richieste di informazioni e newsletter programmate. Eventi, pagine, impostazioni, rubrica, fornitori e storico delle newsletter restano conservati per 12 mesi: se ti riabboni con la stessa email li ritrovi dove li avevi lasciati. Dopo 12 mesi viene cancellato tutto. <a href="privacy.html#fine-abbonamento">Tutti i dettagli</a></div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>A chi è rivolto EventsFun?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">A organizzazioni e attività professionali: enti, comuni, associazioni, pro loco, parrocchie, imprese e professionisti. Per questo non si applica il diritto di recesso previsto dal Codice del Consumo per gli acquisti dei privati. <a href="privacy.html#termini">Leggi i Termini di servizio</a></div>
       </div>
 
       <div class="faq-item">
@@ -1182,21 +1343,21 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="form-row">
         <div class="form-field">
           <label>Nome *</label>
-          <input id="f_nome" type="text" placeholder="Mario">
+          <input id="f_nome" type="text" placeholder="Mario" maxlength="80" autocomplete="given-name">
         </div>
         <div class="form-field">
           <label>Cognome *</label>
-          <input id="f_cognome" type="text" placeholder="Rossi">
+          <input id="f_cognome" type="text" placeholder="Rossi" maxlength="80" autocomplete="family-name">
         </div>
       </div>
       <div class="form-row">
         <div class="form-field">
           <label>Email *</label>
-          <input id="f_email" type="email" placeholder="mario@agenzia.it">
+          <input id="f_email" type="email" placeholder="mario@agenzia.it" maxlength="200" autocomplete="email">
         </div>
         <div class="form-field">
           <label>Telefono</label>
-          <input id="f_tel" type="tel" placeholder="333 0000000">
+          <input id="f_tel" type="tel" placeholder="333 0000000" maxlength="40" autocomplete="tel">
         </div>
       </div>
       <div class="form-row">
@@ -1208,6 +1369,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
             <option>Evento Pro - €79</option>
             <option>Agenzia - €69/mese</option>
             <option>Agenzia - €588/anno (2 mesi gratis)</option>
+            <option>Punto Info - €9,90/mese</option>
+            <option>Punto Info - €79/anno</option>
             <option>Non so ancora, voglio informazioni</option>
           </select>
         </div>
@@ -1216,6 +1379,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <select id="f_tipo">
             <option value="">Seleziona...</option>
             <option>Agenzia di eventi</option>
+            <option>Comune / Pro loco / Associazione / Parrocchia</option>
             <option>Conferenza / Workshop</option>
             <option>Sport / Running</option>
             <option>Fiera / Esposizione</option>
@@ -1228,7 +1392,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="form-full">
         <div class="form-field">
           <label>Messaggio</label>
-          <textarea id="f_msg" placeholder="Es. ho bisogno di una personalizzazione grafica, ho un evento particolare, voglio un preventivo per più eventi..."></textarea>
+          <textarea id="f_msg" maxlength="5000" placeholder="Es. ho bisogno di una personalizzazione grafica, ho un evento particolare, voglio un preventivo per più eventi..."></textarea>
         </div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-top:6px;margin-bottom:6px;padding:13px 16px;background:rgba(201,169,110,0.04);border:1px solid rgba(201,169,110,0.15);border-radius:8px">
@@ -1240,10 +1404,12 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div style="display:flex;align-items:flex-start;gap:10px;margin-top:6px;margin-bottom:6px;padding:14px 16px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:8px">
         <input type="checkbox" id="gdpr_check" style="margin-top:2px;flex-shrink:0;width:16px;height:16px;accent-color:#C9A96E;cursor:pointer">
         <label for="gdpr_check" style="font-size:11px;color:rgba(240,237,232,0.65);line-height:1.6;cursor:pointer">
-          Ho letto e accetto la <a href="privacy.html" target="_blank" style="color:var(--gold);text-decoration:underline">Privacy Policy</a>. I dati forniti saranno trattati da EventsFun esclusivamente per rispondere alla tua richiesta, non saranno ceduti a terzi né usati per finalità di marketing senza consenso esplicito. Puoi richiedere la cancellazione in qualsiasi momento scrivendo a <span style="color:rgba(240,237,232,0.75)">privacy@eventsfun.com</span>. *
+          Ho letto e accetto la <a href="privacy.html" target="_blank" style="color:var(--gold);text-decoration:underline">Privacy Policy</a>. I dati forniti saranno trattati da EventsFun esclusivamente per rispondere alla tua richiesta, non saranno ceduti a terzi né usati per finalità di marketing senza consenso esplicito. Puoi richiedere la cancellazione in qualsiasi momento scrivendo a <span style="color:rgba(240,237,232,0.75)">info@eventsfun.com</span>. *
         </label>
       </div>
-      <button class="form-submit" onclick="submitDemo()">Invia messaggio →</button>
+      <div class="hp-field" aria-hidden="true"><label for="f_sito">Sito web</label><input id="f_sito" type="text" tabindex="-1" autocomplete="off"></div>
+      <button class="form-submit" id="formBtn" onclick="submitDemo()">Invia messaggio →</button>
+      <div class="form-msg" id="formMsg" role="alert"></div>
     </div>
     <div class="form-success" id="formSuccess">
       <div style="font-size:48px;margin-bottom:16px">✓</div>
@@ -1273,6 +1439,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     <div class="footer-links">
       <a href="#features">Funzionalità</a>
       <a href="#come-funziona">Come funziona</a>
+      <a href="#punto-info">Punto Info</a>
       <a href="#prezzi">Prezzi</a>
       <a href="#contatti">Contatti</a>
       <a href="privacy.html">Privacy & Termini</a>
@@ -1337,19 +1504,74 @@ function toggleBilling(){
     price.textContent = '€69';
     period.textContent = ' / mese';
     note.style.display = 'none';
-    if(conv) conv.textContent = 'Organizzi più di 1 evento al mese? Il Pro si ripaga già al secondo.';
+    if(conv) conv.textContent = 'Organizzi più di un evento al mese? L\'Agenzia costa meno di un solo Evento Pro.';
     if(agenziaBtn) agenziaBtn.href = 'https://buy.stripe.com/3cIaEPbsye7ug2I7qk14402';
   }
 }
 
+// Modulo contatti: invio vero a info@ tramite la funzione contatti-sito (v1.6)
+var CONTATTI_URL = 'https://vousendridklswygvqpl.supabase.co/functions/v1/contatti-sito';
+var formApertoIl = Date.now();
+var ERR_INVIO = 'Non siamo riusciti a inviare il messaggio. Riprova tra qualche minuto oppure scrivi a info@eventsfun.com.';
+function valoreCampo(id){ var el = document.getElementById(id); return el ? String(el.value || '').trim() : ''; }
+function mostraMsgForm(testo){
+  var box = document.getElementById('formMsg');
+  box.textContent = testo;
+  box.style.display = 'block';
+}
+function ripristinaBtnForm(){
+  var btn = document.getElementById('formBtn');
+  btn.disabled = false;
+  btn.textContent = 'Invia messaggio →';
+}
 function submitDemo(){
-  var nome = document.getElementById('f_nome').value.trim();
-  var email = document.getElementById('f_email').value.trim();
+  var btn = document.getElementById('formBtn');
+  if(btn.disabled) return;
+  document.getElementById('formMsg').style.display = 'none';
+  var nome = valoreCampo('f_nome');
+  var cognome = valoreCampo('f_cognome');
+  var email = valoreCampo('f_email');
   var gdpr = document.getElementById('gdpr_check');
-  if(!nome || !email){ alert('Inserisci almeno nome ed email.'); return; }
-  if(gdpr && !gdpr.checked){ alert('Per procedere devi accettare la Privacy Policy.'); return; }
-  document.getElementById('demoForm').style.display = 'none';
-  document.getElementById('formSuccess').style.display = 'block';
+  if(!nome || !cognome || !email){ mostraMsgForm('Inserisci nome, cognome ed email.'); return; }
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ mostraMsgForm("Controlla l'indirizzo email."); return; }
+  if(!gdpr || !gdpr.checked){ mostraMsgForm('Per inviare il messaggio devi accettare la Privacy Policy.'); return; }
+  var dati = {
+    nome: nome,
+    cognome: cognome,
+    email: email,
+    telefono: valoreCampo('f_tel'),
+    piano: valoreCampo('f_piano'),
+    tipo_evento: valoreCampo('f_tipo'),
+    messaggio: valoreCampo('f_msg'),
+    consenso_aggiornamenti: !!(document.getElementById('nl_site') && document.getElementById('nl_site').checked),
+    privacy: true,
+    sito_web: valoreCampo('f_sito'),
+    aperto_ms: Date.now() - formApertoIl
+  };
+  btn.disabled = true;
+  btn.textContent = 'Invio in corso...';
+  fetch(CONTATTI_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dati)
+  }).then(function(r){
+    return r.json().then(function(d){ return { ok: r.ok, d: d }; }, function(){ return { ok: false, d: {} }; });
+  }).then(function(esito){
+    if(esito.ok && esito.d && esito.d.ok === true){
+      document.getElementById('demoForm').style.display = 'none';
+      document.getElementById('formSuccess').style.display = 'block';
+      return;
+    }
+    ripristinaBtnForm();
+    var codice = esito.d ? esito.d.errore : '';
+    if(codice === 'obbligatori') mostraMsgForm('Inserisci nome, cognome ed email.');
+    else if(codice === 'email') mostraMsgForm("Controlla l'indirizzo email.");
+    else if(codice === 'privacy') mostraMsgForm('Per inviare il messaggio devi accettare la Privacy Policy.');
+    else mostraMsgForm(ERR_INVIO);
+  }).catch(function(){
+    ripristinaBtnForm();
+    mostraMsgForm(ERR_INVIO);
+  });
 }
 
 // Nav smooth scroll for mobile
@@ -1384,6 +1606,6 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.5</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.6</div>
 </body>
 </html>
