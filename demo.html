@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v1.3 localStorage + accordion form -->
+<!-- EventsFun | Demo Locale | v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -299,6 +299,109 @@ select option{background:#1a1a1a;color:var(--text)}
 .pick-name{font-size:13px;font-weight:600;color:var(--text);word-break:break-word}
 .pick-cat{font-size:11px;color:var(--text-dim);margin-top:2px}
 @media(max-width:600px){.rub-wrap,.forn-wrap{padding:24px 14px 80px}.rub-toolbar{flex-direction:column}.rub-filter{width:100%}.forn-fields{grid-template-columns:1fr}.forn-totali{justify-content:space-between}}
+/* RICHIESTA INFORMAZIONI: modalita', blocchi, avvisi */
+.mod-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.mod-opt{display:flex;flex-direction:column;align-items:flex-start;gap:3px;text-align:left;padding:10px 12px;border-radius:10px;border:1.5px solid var(--border);background:var(--inp-bg);color:var(--text);font-family:"DM Sans",sans-serif;cursor:pointer;transition:border-color .2s,background .2s}
+.mod-opt:hover{border-color:rgba(201,169,110,0.4)}
+.mod-opt.on{border-color:var(--gold);background:rgba(201,169,110,0.1)}
+.mod-t{font-size:13px;font-weight:700;color:var(--text)}
+.mod-s{font-size:11px;color:var(--text-dim);line-height:1.35}
+.ib-note{font-size:11.5px;color:var(--text-dim);line-height:1.55;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:8px;padding:9px 12px;margin-bottom:12px}
+.ib-warn{margin-top:8px;font-size:12px;line-height:1.5;color:#d99a3a;background:rgba(224,160,64,0.08);border:1px solid rgba(224,160,64,0.3);border-radius:8px;padding:9px 12px}
+.ib-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
+.ib-list:empty::before{content:"Nessun blocco: la pagina mostra solo la descrizione.";font-size:12px;color:var(--text-dim)}
+.ib-row{padding:10px;background:var(--inp-bg);border:1px solid var(--border2);border-radius:10px;display:flex;flex-direction:column;gap:8px}
+.ib-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ib-type{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+.ib-acts{display:flex;gap:6px}
+.ib-acts .rm-btn:disabled{opacity:.3;cursor:default}
+.ib-text{resize:vertical;min-height:90px;font-size:13px;line-height:1.5}
+.ib-img-area{border:2px dashed var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:border-color .2s}
+.ib-img-area:hover{border-color:var(--gold)}
+.ib-img{max-width:100%;max-height:220px;border-radius:8px;display:block;margin:0 auto}
+.ib-ph{font-size:12px;color:var(--text-muted);line-height:1.5}
+.ib-ph span{font-size:11px;color:var(--text-dim)}
+.ib-status{font-size:12px;color:var(--text-dim)}
+.ib-status:empty{display:none}
+.ib-status.err{color:#e06060}
+.ib-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+@media(max-width:600px){.mod-seg{grid-template-columns:1fr}}
+/* RICHIESTE DI CONTATTO */
+.pill-gold{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
+.rich-list{display:flex;flex-direction:column;gap:10px;padding:14px}
+.rich-card{background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+.rich-card.done{opacity:.75}
+.rich-msg{margin-top:10px;font-size:13px;line-height:1.55;color:var(--text);white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word;background:var(--inp-bg);border-left:3px solid rgba(201,169,110,0.5);border-radius:6px;padding:9px 12px}
+.rub-cbtn.pref{background:rgba(201,169,110,0.16);border-color:var(--gold);color:var(--gold)}
+.rich-manage{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--border2)}
+.rich-del:hover{color:#e06060;border-color:rgba(200,80,80,0.35);background:rgba(200,80,80,0.08)}
+.rich-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rich-title{display:flex;align-items:center;gap:8px;position:relative}
+.tip.tip-down{position:static}
+/* Leggibilita' dei suggerimenti "?": testo chiaro sul riquadro scuro in entrambi i temi, senza maiuscolo ereditato dalle etichette */
+.tip-box{color:rgba(240,237,232,0.88);text-transform:none;letter-spacing:0;font-weight:400}
+.tip.tip-down .tip-box{bottom:auto;top:calc(100% + 7px);left:0;right:auto;transform:none;max-width:min(280px,calc(100vw - 64px));font-family:"DM Sans",sans-serif;font-weight:400;letter-spacing:0}
+.status-nota{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;max-width:560px}
+.rich-tools .rub-filter{padding:7px 10px;font-size:12px}
+.link-extra-det{margin-top:12px}
+.link-extra-det summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text-muted);padding:4px 0;user-select:none}
+.link-extra-det summary::-webkit-details-marker{display:none}
+.link-extra-det summary::before{content:'▸';color:var(--gold);font-size:11px;transition:transform .2s;display:inline-block}
+.link-extra-det[open] summary::before{transform:rotate(90deg)}
+.link-extra-det summary:hover{color:var(--text)}
+.link-extra-det summary span{font-weight:400;color:var(--text-dim)}
+.link-extra-nota{font-size:11.5px;color:var(--text-dim);line-height:1.5;margin:8px 0 8px}
+.link-extra{margin-top:10px}
+.link-extra-lbl{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:5px}
+.link-extra-row{display:flex;gap:8px;align-items:stretch}
+.link-extra-row code{flex:1;min-width:0;display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-size:12px;color:var(--text-muted);word-break:break-all}
+.link-extra-row .btn-sm{flex-shrink:0}
+@media(max-width:600px){.rich-list{padding:10px}.rich-tools{width:100%}.rich-tools .rub-filter{flex:1}}
+/* SUGGERIMENTI "?": mostrati in un riquadro sopra a tutto, sempre interi dentro lo schermo */
+.tip-js .tip-box{display:none !important}
+#tipFloat{position:fixed;z-index:1000;display:none;left:0;top:0;width:max-content;max-width:min(260px,calc(100vw - 16px));background:#222;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:11px;font-weight:400;line-height:1.6;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.88);box-shadow:0 4px 20px rgba(0,0,0,0.4);pointer-events:none;white-space:normal;text-align:left}
+/* ANTEPRIMA: RICHIESTA INFORMAZIONI (stile della pagina evento reale, landing v7.1) */
+#landingContent .ev-desc a,#landingContent .info-txt a{color:#8a6e3e;text-decoration:underline;word-break:break-all}
+#landingContent .info-blk{margin-top:18px}
+#landingContent .info-blk:first-child{margin-top:0}
+#landingContent .info-txt{font-size:14px;color:#444;line-height:1.7;white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word}
+#landingContent .info-fig{margin-left:0;margin-right:0}
+#landingContent .info-fig img{width:100%;height:auto;display:block;border-radius:12px;border:1px solid #eee}
+#landingContent .info-fig figcaption{font-size:12px;color:#777;text-align:center;margin-top:8px;line-height:1.5;word-break:break-word}
+#landingContent .info-sub{font-size:13px;color:#666;line-height:1.6;margin-bottom:18px}
+#landingContent .tabbar{position:-webkit-sticky;position:sticky;top:var(--lpbar,52px);z-index:5;display:flex;gap:8px;padding:10px 0;margin:0 0 12px;background:#f4f3f0}
+#landingContent .tab-btn{flex:1;min-height:46px;padding:10px 8px;border:1.5px solid #e0ddd8;border-radius:11px;background:#fff;font-family:"Syne",sans-serif;font-size:14px;font-weight:700;color:#666;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+#landingContent .tab-btn.active{background:#1a1a1a;border-color:#1a1a1a;color:#F5F0E8}
+#landingContent .tab-btn:focus-visible{outline:2px solid #C9A96E;outline-offset:2px}
+#landingContent .ch-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:2px}
+#landingContent .ch-opt{flex:1;min-width:88px;position:relative;cursor:pointer}
+#landingContent .ch-opt input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+#landingContent .ch-opt span{display:block;text-align:center;padding:11px 6px;border:1.5px solid #e0ddd8;border-radius:9px;background:#fafaf8;font-size:13px;font-weight:600;color:#555;transition:border-color .2s,background .2s}
+#landingContent .ch-opt input:checked+span{border-color:#C9A96E;background:rgba(201,169,110,.13);color:#1a1a1a}
+#landingContent .ch-opt input:focus-visible+span{outline:2px solid #C9A96E;outline-offset:2px}
+#landingContent .info-cta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+#landingContent .info-cta p{font-size:14px;font-weight:600;color:#1a1a1a;margin:0}
+#landingContent .tab-link-btn{display:inline-block;padding:11px 20px;background:transparent;border:1.5px solid #C9A96E;border-radius:10px;font-size:13px;font-weight:700;color:#8a6e3e;cursor:pointer;font-family:inherit;transition:background .2s}
+#landingContent .tab-link-btn:hover{background:rgba(201,169,110,.12)}
+#landingContent .ok-cta{margin-top:24px}
+#landingContent .ok-cta p{font-size:13px;color:#666;margin:0 auto 10px}
+#landingContent .lp-grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#landingContent .lp-dark .ev-desc a,#landingContent .lp-dark .info-txt a{color:#C9A96E}
+#landingContent .lp-dark .info-txt{color:rgba(245,240,232,.78)}
+#landingContent .lp-dark .info-fig img{border-color:rgba(255,255,255,.08)}
+#landingContent .lp-dark .info-fig figcaption{color:rgba(245,240,232,.55)}
+#landingContent .lp-dark .info-sub{color:rgba(245,240,232,.6)}
+#landingContent .lp-dark .tabbar{background:#0A0A0A}
+#landingContent .lp-dark .tab-btn{background:#111;border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.7)}
+#landingContent .lp-dark .tab-btn.active{background:#C9A96E;border-color:#C9A96E;color:#0A0A0A}
+#landingContent .lp-dark .ch-opt span{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:rgba(245,240,232,.75)}
+#landingContent .lp-dark .ch-opt input:checked+span{border-color:#C9A96E;background:rgba(201,169,110,.16);color:#F5F0E8}
+#landingContent .lp-dark .info-cta p{color:#F5F0E8}
+#landingContent .lp-dark .tab-link-btn{color:#C9A96E}
+#landingContent .lp-dark .ok-cta p{color:rgba(245,240,232,.6)}
+@media(max-width:480px){#landingContent .tab-btn{font-size:13px}#landingContent .ch-opt{min-width:0}#landingContent .ch-opt span{padding:11px 4px;font-size:12.5px}#landingContent .lp-grid2{grid-template-columns:1fr}}
+/* Demo: le barre in basso non coprono i moduli aperti */
+body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar,body:has(.ov.on) #obHelpBanner,body:has(#landingOv.on) #guideBar,body:has(#landingOv.on) #obHelpBanner,body:has(#emailSimOv.on) #guideBar,body:has(#emailSimOv.on) #obHelpBanner{display:none !important}
 </style>
 </head>
 <body>
@@ -325,10 +428,10 @@ select option{background:#1a1a1a;color:var(--text)}
   <div class="email-sim-box">
     <div class="email-sim-hdr">
       <div class="email-sim-icon">&#128231;</div>
-      <div><div class="email-sim-title">Email di conferma inviata</div><div class="email-sim-to" id="emailSimTo">A: --</div></div>
+      <div><div class="email-sim-title" id="emailSimTitle">Email di conferma inviata</div><div class="email-sim-to" id="emailSimTo">A: --</div></div>
     </div>
     <div class="email-sim-body" id="emailSimBody">--</div>
-    <div class="email-sim-note"><strong>Solo nella demo:</strong> nella versione reale questa email viene inviata automaticamente all'iscritto via Resend, con link per aggiungere l'evento a Google Calendar.</div>
+    <div class="email-sim-note" id="emailSimNote"><strong>Solo nella demo:</strong> nella versione reale questa email viene inviata automaticamente all'iscritto via Resend, con link per aggiungere l'evento a Google Calendar.</div>
     <button class="btn-full" onclick="closeEmailSim()">Ho capito, torna alla dashboard &#10003;</button>
   </div>
 </div>
@@ -426,13 +529,13 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="stat-custom" id="statCustom1" onclick="openStatConfig(1)"><div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div><div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare">?</div></div>
     </div>
     <div class="status-bar">
-      <div class="sinfo"><h3 id="status-nome">Nessun evento</h3><p id="status-det">Crea il tuo primo evento per iniziare</p></div>
+      <div class="sinfo"><h3 id="status-nome">Nessun evento</h3><p id="status-det">Crea il tuo primo evento per iniziare</p><p id="statusNota" class="status-nota" style="display:none"></p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="status-pill"><span class="pill pill-gray">--</span></span>
         <button class="btn-sm" id="btnToggleStatus" onclick="toggleStatus()" style="display:none">Cambia stato</button>
       </div>
     </div>
-    <div class="panel">
+    <div class="panel" id="panelIscritti">
       <div class="panel-head">
         <div><h3 id="panel-title">Iscritti</h3><p id="panel-sub">Crea un evento per visualizzare gli iscritti</p></div>
         <div style="display:flex;gap:8px" id="panelBtns"></div>
@@ -444,9 +547,25 @@ select option{background:#1a1a1a;color:var(--text)}
         </table>
       </div>
     </div>
+    <!-- RICHIESTE DI CONTATTO (modalita' Informazioni / Entrambe) -->
+    <div class="panel" id="panelRichieste" style="display:none">
+      <div class="panel-head">
+        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla.</span></span></h3><p id="richSub">--</p></div>
+        <div class="rich-tools">
+          <select id="richFiltro" class="rub-filter" onchange="renderRichieste()" aria-label="Filtra richieste">
+            <option value="tutte">Tutte</option>
+            <option value="da_contattare">Da contattare</option>
+            <option value="contattato">Contattate</option>
+          </select>
+          <button class="btn-sm" onclick="loadRichieste(true)">&#8635; Aggiorna</button>
+        </div>
+      </div>
+      <div id="richList" class="rich-list"></div>
+    </div>
     <div class="publink-note">
       <div class="label">Link pagina pubblica</div>
       <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">--</code>
+      <div id="pubLinkExtra"></div>
     </div>
     <div class="panel-attesa" id="panelAttesa">
       <div class="panel-head" style="background:rgba(201,169,110,0.04)">
@@ -591,11 +710,21 @@ select option{background:#1a1a1a;color:var(--text)}
     <div class="fg2">
       <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
       <div class="mf"><label>Cliente <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativo, visibile solo a te)</span></label><input id="ev_cliente" placeholder="Es. Studio Rossi"></div>
-      <div class="mf"><label>Capienza <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per illimitata. Con "Capienza per persona" conta adulti+bambini.</span></span></label><input id="ev_cap" type="number" placeholder="Vuoto = illimitata" min="1"></div>
+      <div class="mf" id="ev_cap_mf"><label>Capienza <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascia vuoto per illimitata. Con "Capienza per persona" conta adulti+bambini.</span></span></label><input id="ev_cap" type="number" placeholder="Vuoto = illimitata" min="1"></div>
     </div>
     <div class="fg2">
       <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
       <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
+    </div>
+    <div class="mf">
+      <label>Cosa raccoglie la pagina dell'evento
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli se le persone si iscrivono, se ti lasciano i recapiti per essere ricontattate, oppure entrambe le cose. Puoi cambiarlo quando vuoi.</span></span>
+      </label>
+      <div class="mod-seg" id="ev_mod_seg">
+        <button type="button" class="mod-opt on" data-mod="iscrizioni" onclick="setModalita('ev','iscrizioni')"><span class="mod-t">&#128221; Iscrizioni</span><span class="mod-s">Le persone si iscrivono all'evento</span></button>
+        <button type="button" class="mod-opt" data-mod="info" onclick="setModalita('ev','info')"><span class="mod-t">&#8505;&#65039; Informazioni</span><span class="mod-s">Le persone ti lasciano i recapiti per essere ricontattate</span></button>
+        <button type="button" class="mod-opt" data-mod="entrambe" onclick="setModalita('ev','entrambe')"><span class="mod-t">&#128256; Entrambe</span><span class="mod-s">Informazioni e iscrizioni, in due schede</span></button>
+      </div>
     </div>
     <div class="mf"><label id="ev_luogo_lbl">Luogo *</label><input id="ev_luogo" placeholder="Es. Villa Reale, Milano"></div>
     <div class="opt-row" style="border-top:1px solid var(--border);margin-top:10px"><div><div class="opt-lbl">Evento online</div><div class="opt-sub">Webinar, diretta o call: invii un link invece di un luogo fisico</div></div><div class="tog" id="otog_online" onclick="otog('online')"><div class="tog-dot"></div></div></div>
@@ -604,7 +733,9 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="mf"><label>Quando inviare il link</label><select id="ev_link_invio"><option value="conferma">Subito, nell'email di conferma</option><option value="reminder">Solo nel promemoria</option><option value="entrambi" selected>In entrambe</option></select></div>
     </div>
     <div class="mf"><label>Descrizione</label><textarea id="ev_desc" placeholder="Descrivi il tuo evento..."></textarea></div>
-    <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="ev_email_contatto" type="email" placeholder="es. info@esempio.example"></div>
+    <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="ev_email_contatto" type="email" placeholder="es. info@esempio.example">
+      <div class="ib-note" id="ev_email_info_note" style="display:none;margin:4px 0 0">&#128276; A questo indirizzo ricevi anche gli avvisi delle richieste di informazioni.</div>
+    </div>
     <div class="mf">
       <label>Immagine evento <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(locandina, copertina)</span></label>
       <div class="img-upload-area" onclick="document.getElementById('ev_img_file').click()">
@@ -629,7 +760,55 @@ select option{background:#1a1a1a;color:var(--text)}
         <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="ev_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_ev_info" style="display:none">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#8505;&#65039; Pagina informazioni<span class="acc-dot" id="acc_dot_ev_info" style="display:none"></span></div>
+          <div class="acc-desc">Contenuti della pagina, richieste di contatto e avvisi</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf" id="ev_scheda_wrap" style="display:none">
+      <label>Scheda che si apre per prima</label>
+      <select id="ev_scheda_iniziale">
+        <option value="info">Informazioni</option>
+        <option value="iscrizione">Iscriviti</option>
+      </select>
+    </div>
+    <div class="ib-note" id="ev_scheda_nota" style="display:none">Vale quando l'evento raccoglie sia iscrizioni sia richieste di informazioni. Scegli "Informazioni" se vuoi che le persone leggano prima i dettagli (programma, piantina, orari). Scegli "Iscriviti" se il tuo obiettivo principale &egrave; raccogliere iscrizioni. Chi visita la pagina pu&ograve; sempre passare da una scheda all'altra.</div>
+    <div class="sec-div">&#129521; Blocchi della pagina <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativi)</span>
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi testi e immagini (programma, orari, piantina, mappa...) nell'ordine che preferisci: compaiono sotto la descrizione. I link che scrivi (https://...) diventano cliccabili.</span></span>
+    </div>
+    <div id="ev_ibList" class="ib-list"></div>
+    <div class="ib-add">
+      <button type="button" class="add-row-btn" onclick="ibAdd('ev','testo')">+ Testo</button>
+      <button type="button" class="add-row-btn" onclick="ibAdd('ev','immagine')">+ Immagine</button>
+    </div>
+    <div class="sec-div">&#9993;&#65039; Modulo richiesta informazioni</div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl">Email obbligatoria</div>
+        <div class="opt-sub">Chi ti chiede informazioni deve lasciare sempre anche la propria email</div>
+      </div>
+      <div class="tog" id="otog_info_email" onclick="otog('info_email')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">&#128276; Avvisi per le richieste</div>
+    <div class="mf">
+      <label>Come vuoi essere avvisato</label>
+      <select id="ev_info_avviso" onchange="ibAvvisoUI('ev')">
+        <option value="ogni_richiesta">Un'email per ogni richiesta</option>
+        <option value="riepilogo">Un riepilogo al giorno</option>
+      </select>
+    </div>
+    <div class="mf" id="ev_info_ora_wrap" style="display:none">
+      <label>Orario del riepilogo (ora italiana)</label>
+      <select id="ev_info_ora"><option value="0">00:00</option><option value="1">01:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option><option value="5">05:00</option><option value="6">06:00</option><option value="7">07:00</option><option value="8">08:00</option><option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option><option value="17">17:00</option><option value="18">18:00</option><option value="19">19:00</option><option value="20">20:00</option><option value="21">21:00</option><option value="22">22:00</option><option value="23">23:00</option></select>
+    </div>
+    <div class="ib-note">Scegli come vuoi essere avvisato quando qualcuno ti chiede informazioni. Con "un'email per ogni richiesta" lo sai subito, utile se ne ricevi poche e vuoi rispondere in fretta. Con "un riepilogo al giorno" ricevi una sola email all'orario che preferisci con tutte le richieste nuove, utile nei periodi con molte richieste. Se in un giorno non arriva nessuna richiesta, il riepilogo non viene inviato. In ogni caso trovi sempre tutte le richieste nella sezione "Richieste di contatto" dell'evento.</div>
+      </div>
+    </div>
+    <div class="acc" id="acc_ev_modulo">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">&#9881;&#65039; Modulo di iscrizione<span class="acc-dot" id="acc_dot_ev_modulo" style="display:none"></span></div>
@@ -715,7 +894,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <div id="cspList" style="margin-bottom:8px"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_ev_campi">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">&#128221; Campi aggiuntivi<span class="acc-dot" id="acc_dot_ev_campi" style="display:none"></span></div>
@@ -743,11 +922,22 @@ select option{background:#1a1a1a;color:var(--text)}
     <p class="modal-sub">Modifica i dati. Le modifiche si applicano subito.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
-      <div class="mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
+      <div class="mf" id="se_cap_mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
     </div>
     <div class="fg2">
       <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
       <div class="mf"><label>Ora</label><input id="se_ora"></div>
+    </div>
+    <div class="mf">
+      <label>Cosa raccoglie la pagina dell'evento
+        <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Scegli se le persone si iscrivono, se ti lasciano i recapiti per essere ricontattate, oppure entrambe le cose. Puoi cambiarlo quando vuoi.</span></span>
+      </label>
+      <div class="mod-seg" id="se_mod_seg">
+        <button type="button" class="mod-opt on" data-mod="iscrizioni" onclick="setModalita('se','iscrizioni')"><span class="mod-t">&#128221; Iscrizioni</span><span class="mod-s">Le persone si iscrivono all'evento</span></button>
+        <button type="button" class="mod-opt" data-mod="info" onclick="setModalita('se','info')"><span class="mod-t">&#8505;&#65039; Informazioni</span><span class="mod-s">Le persone ti lasciano i recapiti per essere ricontattate</span></button>
+        <button type="button" class="mod-opt" data-mod="entrambe" onclick="setModalita('se','entrambe')"><span class="mod-t">&#128256; Entrambe</span><span class="mod-s">Informazioni e iscrizioni, in due schede</span></button>
+      </div>
+      <div class="ib-warn" id="se_mod_warn" style="display:none"></div>
     </div>
     <div class="mf"><label id="se_luogo_lbl">Luogo</label><input id="se_luogo"></div>
     <div class="opt-row" style="border-top:1px solid var(--border);margin-top:10px"><div><div class="opt-lbl">Evento online</div><div class="opt-sub">Webinar, diretta o call: invii un link invece di un luogo fisico</div></div><div class="tog" id="stog_online" onclick="stog('online')"><div class="tog-dot"></div></div></div>
@@ -756,7 +946,9 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="mf"><label>Quando inviare il link</label><select id="se_link_invio"><option value="conferma">Subito, nell'email di conferma</option><option value="reminder">Solo nel promemoria</option><option value="entrambi" selected>In entrambe</option></select></div>
     </div>
     <div class="mf"><label>Descrizione</label><textarea id="se_desc"></textarea></div>
-    <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="se_email_contatto" type="email" placeholder="es. info@esempio.example"></div>
+    <div class="mf"><label>Email di contatto per gli iscritti *</label><input id="se_email_contatto" type="email" placeholder="es. info@esempio.example">
+      <div class="ib-note" id="se_email_info_note" style="display:none;margin:4px 0 0">&#128276; A questo indirizzo ricevi anche gli avvisi delle richieste di informazioni.</div>
+    </div>
     <div class="mf">
       <label>Immagine evento</label>
       <div class="img-upload-area" onclick="document.getElementById('se_img_file').click()"><div class="img-ph" id="seImgPh"><span>&#128444;&#65039;</span>Clicca per caricare</div><img id="se_img_preview" src="" alt="" style="display:none;max-width:100%;max-height:140px;border-radius:8px"></div>
@@ -778,7 +970,55 @@ select option{background:#1a1a1a;color:var(--text)}
         <div class="mf"><label>Nome mittente delle email <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(opzionale)</span></label><input id="se_mittente" maxlength="60" placeholder="Es. Mario Rossi"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_se_info" style="display:none">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">&#8505;&#65039; Pagina informazioni<span class="acc-dot" id="acc_dot_se_info" style="display:none"></span></div>
+          <div class="acc-desc">Contenuti della pagina, richieste di contatto e avvisi</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+    <div class="mf" id="se_scheda_wrap" style="display:none">
+      <label>Scheda che si apre per prima</label>
+      <select id="se_scheda_iniziale">
+        <option value="info">Informazioni</option>
+        <option value="iscrizione">Iscriviti</option>
+      </select>
+    </div>
+    <div class="ib-note" id="se_scheda_nota" style="display:none">Vale quando l'evento raccoglie sia iscrizioni sia richieste di informazioni. Scegli "Informazioni" se vuoi che le persone leggano prima i dettagli (programma, piantina, orari). Scegli "Iscriviti" se il tuo obiettivo principale &egrave; raccogliere iscrizioni. Chi visita la pagina pu&ograve; sempre passare da una scheda all'altra.</div>
+    <div class="sec-div">&#129521; Blocchi della pagina <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativi)</span>
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi testi e immagini (programma, orari, piantina, mappa...) nell'ordine che preferisci: compaiono sotto la descrizione. I link che scrivi (https://...) diventano cliccabili.</span></span>
+    </div>
+    <div id="se_ibList" class="ib-list"></div>
+    <div class="ib-add">
+      <button type="button" class="add-row-btn" onclick="ibAdd('se','testo')">+ Testo</button>
+      <button type="button" class="add-row-btn" onclick="ibAdd('se','immagine')">+ Immagine</button>
+    </div>
+    <div class="sec-div">&#9993;&#65039; Modulo richiesta informazioni</div>
+    <div class="opt-row" style="border-bottom:none">
+      <div>
+        <div class="opt-lbl">Email obbligatoria</div>
+        <div class="opt-sub">Chi ti chiede informazioni deve lasciare sempre anche la propria email</div>
+      </div>
+      <div class="tog" id="stog_info_email" onclick="stog('info_email')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="sec-div">&#128276; Avvisi per le richieste</div>
+    <div class="mf">
+      <label>Come vuoi essere avvisato</label>
+      <select id="se_info_avviso" onchange="ibAvvisoUI('se')">
+        <option value="ogni_richiesta">Un'email per ogni richiesta</option>
+        <option value="riepilogo">Un riepilogo al giorno</option>
+      </select>
+    </div>
+    <div class="mf" id="se_info_ora_wrap" style="display:none">
+      <label>Orario del riepilogo (ora italiana)</label>
+      <select id="se_info_ora"><option value="0">00:00</option><option value="1">01:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option><option value="5">05:00</option><option value="6">06:00</option><option value="7">07:00</option><option value="8">08:00</option><option value="9">09:00</option><option value="10">10:00</option><option value="11">11:00</option><option value="12">12:00</option><option value="13">13:00</option><option value="14">14:00</option><option value="15">15:00</option><option value="16">16:00</option><option value="17">17:00</option><option value="18">18:00</option><option value="19">19:00</option><option value="20">20:00</option><option value="21">21:00</option><option value="22">22:00</option><option value="23">23:00</option></select>
+    </div>
+    <div class="ib-note">Scegli come vuoi essere avvisato quando qualcuno ti chiede informazioni. Con "un'email per ogni richiesta" lo sai subito, utile se ne ricevi poche e vuoi rispondere in fretta. Con "un riepilogo al giorno" ricevi una sola email all'orario che preferisci con tutte le richieste nuove, utile nei periodi con molte richieste. Se in un giorno non arriva nessuna richiesta, il riepilogo non viene inviato. In ogni caso trovi sempre tutte le richieste nella sezione "Richieste di contatto" dell'evento.</div>
+      </div>
+    </div>
+    <div class="acc" id="acc_se_modulo">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">&#9881;&#65039; Modulo di iscrizione<span class="acc-dot" id="acc_dot_se_modulo" style="display:none"></span></div>
@@ -860,7 +1100,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <div id="sspList" style="margin-bottom:8px"></div>
       </div>
     </div>
-    <div class="acc">
+    <div class="acc" id="acc_se_campi">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
           <div class="acc-title">&#128221; Campi aggiuntivi<span class="acc-dot" id="acc_dot_se_campi" style="display:none"></span></div>
@@ -1034,7 +1274,7 @@ select option{background:#1a1a1a;color:var(--text)}
 var LS_EVENTS='ef_demo_events',LS_REGS='ef_demo_regs',LS_THEME='ef_demo_theme',LS_STATS='ef_demo_stats',LS_STARTED='ef_demo_started';
 var LS_CONTATTI='ef_demo_contatti',LS_EVCONTATTI='ef_demo_evcontatti',LS_FORN_SEEDED='ef_demo_forn_seeded';
 function lsGet(k){try{var v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch(e){return null;}}
-function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function lsSet(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){return false;}}
 function genId(){return 'demo_'+Date.now()+'_'+Math.random().toString(36).slice(2,8);}
 function dbGetEvents(){return lsGet(LS_EVENTS)||[];}
 function dbSaveEvents(evs){lsSet(LS_EVENTS,evs);}
@@ -1284,7 +1524,7 @@ function pickerCreateNew(){var purpose=pickerPurpose;pickerPurpose=null;closeOv(
    WELCOME + RESET
    ============================================================ */
 function startDemo(){lsSet(LS_STARTED,true);document.getElementById('welcomeScreen').style.display='none';init();}
-function hardReset(){if(!confirm('Eliminare tutti i dati della demo e ricominciare da zero?'))return;[LS_EVENTS,LS_REGS,LS_STATS,LS_STARTED,LS_CONTATTI,LS_EVCONTATTI,LS_FORN_SEEDED].forEach(function(k){localStorage.removeItem(k);});location.reload();}
+function hardReset(){if(!confirm('Eliminare tutti i dati della demo e ricominciare da zero?'))return;[LS_EVENTS,LS_REGS,LS_STATS,LS_STARTED,LS_CONTATTI,LS_EVCONTATTI,LS_FORN_SEEDED,'ef_demo_richieste'].forEach(function(k){localStorage.removeItem(k);});location.reload();}
 function confirmReset(){hardReset();}
 
 /* ============================================================
@@ -1293,8 +1533,8 @@ function confirmReset(){hardReset();}
 var currentEv=null,currentRegs=[],allEvents=[],delPending=null;
 var allContatti=[],delContattoPending=null,contattoAfterCreate=null,pickerPurpose=null;
 var spIdx={c:0,s:0},cfIdx={c:0,s:0};
-var otogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false};
-var stogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,promo_auto:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false};
+var otogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false,info_email:false};
+var stogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,promo_auto:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false,info_email:false};
 var attesaVisible=false,customStats=[null,null],configStatIdx=null,configStatSel=null;
 var evTemaState='chiaro',seTemaState='chiaro',evQrTipo='nessuno',seQrTipo='nessuno',evQrLogoB64=null,seQrLogoB64=null;
 
@@ -1336,6 +1576,10 @@ function sanitizeEvent(ev){
   ev.promo_automatica=!!ev.promo_automatica;ev.bozza=!!ev.bozza;ev.attivo=ev.attivo!==false;ev.opt_bambini=ev.opt_bambini!==false;ev.evento_online=!!ev.evento_online;ev.link_partecipazione=ev.link_partecipazione||'';ev.link_invio=ev.link_invio||'entrambi';
   ev.opt_qr_checkin=!!ev.opt_qr_checkin;
   ev.terminologia=ev.terminologia||'iscrizione';
+  ev.modalita=(ev.modalita==='info'||ev.modalita==='entrambe')?ev.modalita:'iscrizioni';
+  ev.landing_scheda_iniziale=ev.landing_scheda_iniziale==='iscrizione'?'iscrizione':'info';
+  ev.info_email_obbligatoria=!!ev.info_email_obbligatoria;ev.info_blocchi=Array.isArray(ev.info_blocchi)?ev.info_blocchi:[];
+  ev.info_avviso=ev.info_avviso==='riepilogo'?'riepilogo':'ogni_richiesta';ev.info_riepilogo_ora=(typeof ev.info_riepilogo_ora==='number')?ev.info_riepilogo_ora:8;
   return ev;
 }
 
@@ -1408,9 +1652,10 @@ function renderDash(){
   setText('status-nome',ev?ev.nome:'Nessun evento');
   setText('status-det',ev?(isoToIt(ev.data_iso)+(ev.ora?' · '+ev.ora:'')):'Crea il tuo primo evento per iniziare');
   var sp=document.getElementById('status-pill');
-  if(sp){if(!ev)sp.innerHTML='<span class="pill pill-gray">--</span>';else if(closed)sp.innerHTML='<span class="pill pill-gray">Concluso</span>';else if(ev.attivo)sp.innerHTML='<span class="pill pill-green">Iscrizioni aperte</span>';else sp.innerHTML='<span class="pill pill-red">Iscrizioni chiuse</span>';}
+  if(sp){if(!ev)sp.innerHTML='<span class="pill pill-gray">--</span>';else if(closed)sp.innerHTML='<span class="pill pill-gray">Concluso</span>';else if(ev.attivo)sp.innerHTML='<span class="pill pill-green">'+statoLabel(ev,true)+'</span>';else sp.innerHTML='<span class="pill pill-red">'+statoLabel(ev,false)+'</span>';}
   setText('pubLink',hasEv?('▶ Usa il pulsante "Anteprima / Iscriviti". Nella versione reale: eventsfun.com/landing.html?slug='+(ev.slug||ev.id)):'--');
   renderTable(ev,conf,closed);renderAttesa(ev,inA,closed);
+  applyModalitaDash(ev);
 }
 
 function getStatOptions(ev,conf){var opts=[];if(!ev)return opts;(ev.custom_fields||[]).forEach(function(f){if(f.type==='dropdown'||f.type==='checkbox'){(f.options||[]).forEach(function(opt){var count=conf.filter(function(r){if(!r.extra)return false;var val=r.extra[f.id];if(f.type==='checkbox'){return Array.isArray(val)?val.includes(opt):false;}return val===opt;}).length;opts.push({id:f.id+'__'+opt,label:f.label+': '+opt,value:count});});}else if(f.type==='text'){var filled=conf.filter(function(r){return r.extra&&r.extra[f.id]&&r.extra[f.id].toString().trim();}).length;opts.push({id:f.id+'__filled',label:f.label+' (compilati)',value:filled});}});return opts;}
@@ -1473,9 +1718,11 @@ function waRowCheck(p) {
   }
 }
 
-function resetEvForm(){['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo','ev_mittente','ev_link','ev_cliente'].forEach(function(id){setVal(id,'');});updateQrCount('ev_qr_testo','ev_qr_count');var ep=document.getElementById('ev_qr_preview');if(ep)ep.style.display='none';evQrTipo='nessuno';evQrLogoB64=null;setQrTipo('ev','nessuno');removeQrLogo('ev');evTemaState='chiaro';setTema('ev','chiaro');setVal('ev_cap','');setVal('ev_data','');removeEvImg();setHTML('cspList','');setHTML('ccfList','');var etRes=document.getElementById('ev_terminologia');if(etRes)etRes.value='iscrizione';spIdx.c=0;cfIdx.c=0;var defs={multipla:false,cap_persona:false,tipo:false,pasto:false,newsletter:true,capienza:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false};Object.keys(defs).forEach(function(k){otogState[k]=defs[k];var el=document.getElementById('otog_'+k);if(el){if(otogState[k])el.classList.add('on');else el.classList.remove('on');}});setDisp('opasto_sub','none');setDisp('o_capienza_pp_row','none');setDisp('o_acc_opts_row','none');var eli=document.getElementById('ev_link_invio');if(eli)eli.value='entrambi';setOnlineUI('ev',false);setVal('ev_tel_contatto','+39 ');waRowCheck('ev');}
+function resetEvForm(){['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contatto','ev_qr_testo','ev_mittente','ev_link','ev_cliente'].forEach(function(id){setVal(id,'');});updateQrCount('ev_qr_testo','ev_qr_count');var ep=document.getElementById('ev_qr_preview');if(ep)ep.style.display='none';evQrTipo='nessuno';evQrLogoB64=null;setQrTipo('ev','nessuno');removeQrLogo('ev');evTemaState='chiaro';setTema('ev','chiaro');setVal('ev_cap','');setVal('ev_data','');removeEvImg();setHTML('cspList','');setHTML('ccfList','');var etRes=document.getElementById('ev_terminologia');if(etRes)etRes.value='iscrizione';spIdx.c=0;cfIdx.c=0;var defs={multipla:false,cap_persona:false,tipo:false,pasto:false,newsletter:true,capienza:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false};Object.keys(defs).forEach(function(k){otogState[k]=defs[k];var el=document.getElementById('otog_'+k);if(el){if(otogState[k])el.classList.add('on');else el.classList.remove('on');}});setDisp('opasto_sub','none');setDisp('o_capienza_pp_row','none');setDisp('o_acc_opts_row','none');var eli=document.getElementById('ev_link_invio');if(eli)eli.value='entrambi';setOnlineUI('ev',false);setVal('ev_tel_contatto','+39 ');waRowCheck('ev');infoFill('ev',{});}
 
 function saveEvent(){var nome=getVal('ev_nome').trim(),data=getVal('ev_data'),ora=getVal('ev_ora').trim(),luogo=getVal('ev_luogo').trim(),emailContatto=getVal('ev_email_contatto').trim();if(!nome||!data||!ora||!luogo){alert('Compila Nome, Data, Ora e Luogo.');return;}if(!emailContatto){alert('Inserisci l\'email di contatto per gli iscritti.');return;}var img=document.getElementById('ev_img_preview');var evData={nome:nome,data_iso:data,ora:ora,luogo:luogo,email_contatto:emailContatto,cliente:getVal('ev_cliente').trim()||null,telefono_contatto:normTelefono(getVal('ev_tel_contatto')),contatto_whatsapp:!!(normTelefono(getVal('ev_tel_contatto'))&&otogState.contatto_wa),descrizione:getVal('ev_desc').trim(),qr_testo:evQrTipo==='testo'?(getVal('ev_qr_testo').trim().slice(0,18)||null):null,qr_logo:evQrTipo==='logo'?(evQrLogoB64||null):null,landing_tema:evTemaState||'chiaro',slug:makeSlug(nome),capienza:parseInt(getVal('ev_cap'))||null,immagine:(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null,attivo:true,bozza:false,opt_multipla:otogState.multipla,opt_cap_persona:otogState.cap_persona,opt_accompagnatori_email_obbligatoria:otogState.acc_email_obb,opt_accompagnatori_telefono_obbligatorio:otogState.acc_tel_obb,opt_tipo:otogState.tipo,opt_pasto:otogState.pasto,opt_pasto_pranzo:!otogState.pasto||document.getElementById('oopt_pranzo').checked,opt_pasto_cena:!otogState.pasto||document.getElementById('oopt_cena').checked,opt_newsletter:otogState.newsletter,opt_capienza:otogState.capienza,opt_qr_checkin:otogState.qr_checkin,opt_bambini:otogState.bambini,evento_online:otogState.online,link_partecipazione:getVal('ev_link').trim(),link_invio:(document.getElementById('ev_link_invio')||{}).value||'entrambi',mittente_nome:getVal('ev_mittente').trim()||null,terminologia:(document.getElementById('ev_terminologia')||{}).value||'iscrizione',sponsors:collectSP('cspList'),custom_fields:collectCF('ccfList')};
+  if(!infoCheck('ev'))return;
+  Object.assign(evData,infoFields('ev'));
   var ev=sanitizeEvent(dbCreateEvent(evData));allEvents.push(ev);currentEv=ev;currentRegs=[];closeOv('ovCreate');renderDash();showToast('Evento creato!','g');advanceGuide('created');setTimeout(function(){openQR();},400);}
 
 function openEditEvent(){var ev=currentEv;if(!ev)return;setVal('se_nome',ev.nome||'');setVal('se_cap',ev.capienza||'');setVal('se_data',ev.data_iso||'');setVal('se_ora',ev.ora||'');setVal('se_luogo',ev.luogo||'');setVal('se_desc',ev.descrizione||'');setVal('se_email_contatto',ev.email_contatto||'');setVal('se_tel_contatto',ev.telefono_contatto||'+39 ');stogState.contatto_wa=!!ev.contatto_whatsapp;var stwEl=document.getElementById('stog_contatto_wa');if(stwEl){if(stogState.contatto_wa)stwEl.classList.add('on');else stwEl.classList.remove('on');}waRowCheck('se');setVal('se_terminologia',ev.terminologia||'iscrizione');setVal('se_mittente',ev.mittente_nome||'');setVal('se_link',ev.link_partecipazione||'');var sli=document.getElementById('se_link_invio');if(sli)sli.value=ev.link_invio||'entrambi';
@@ -1487,12 +1734,14 @@ function openEditEvent(){var ev=currentEv;if(!ev)return;setVal('se_nome',ev.nome
   ['multipla','cap_persona','acc_email_obb','acc_tel_obb','tipo','pasto','newsletter','capienza','promo_auto','qr_checkin','bambini','online'].forEach(function(k){var evKey=k==='promo_auto'?'promo_automatica':k==='acc_email_obb'?'opt_accompagnatori_email_obbligatoria':k==='acc_tel_obb'?'opt_accompagnatori_telefono_obbligatorio':k==='qr_checkin'?'opt_qr_checkin':k==='bambini'?'opt_bambini':k==='online'?'evento_online':'opt_'+k;stogState[k]=ev[evKey]!==undefined?ev[evKey]:(k==='newsletter'||k==='bambini');var el=document.getElementById('stog_'+k);if(el){if(stogState[k])el.classList.add('on');else el.classList.remove('on');}});
   var ss=document.getElementById('spasto_sub');if(ss)ss.style.display=stogState.pasto?'block':'none';setDisp('s_capienza_pp_row',stogState.multipla?'flex':'none');setDisp('s_acc_opts_row',stogState.multipla?'block':'none');setOnlineUI('se',stogState.online);
   var sp2=document.getElementById('sopt_pranzo');if(sp2)sp2.checked=ev.opt_pasto_pranzo!==false;var sc2=document.getElementById('sopt_cena');if(sc2)sc2.checked=ev.opt_pasto_cena!==false;
-  setHTML('sspList','');spIdx.s=0;(ev.sponsors||[]).forEach(function(s){addSP('s','sspList',s);});setHTML('scfList','');cfIdx.s=0;(ev.custom_fields||[]).forEach(function(f){addCF('s','scfList',f);});openOv('ovSettings');accResetModal('ovSettings');accSync('se');}
+  setHTML('sspList','');spIdx.s=0;(ev.sponsors||[]).forEach(function(s){addSP('s','sspList',s);});setHTML('scfList','');cfIdx.s=0;(ev.custom_fields||[]).forEach(function(f){addCF('s','scfList',f);});infoFill('se',ev);openOv('ovSettings');accResetModal('ovSettings');accSync('se');}
 
 function saveSettings(){var ev=currentEv;if(!ev)return;var nome=getVal('se_nome').trim();if(!nome){alert('Nome obbligatorio.');return;}var emailContatto=getVal('se_email_contatto').trim();if(!emailContatto){alert('Inserisci l\'email di contatto.');return;}var si=document.getElementById('se_img_preview');var upd={nome:nome,email_contatto:emailContatto,telefono_contatto:normTelefono(getVal('se_tel_contatto')),contatto_whatsapp:!!(normTelefono(getVal('se_tel_contatto'))&&stogState.contatto_wa),qr_testo:seQrTipo==='testo'?(getVal('se_qr_testo').trim().slice(0,18)||null):null,qr_logo:seQrTipo==='logo'?(seQrLogoB64||null):null,landing_tema:seTemaState||'chiaro',slug:ev.slug||makeSlug(nome),capienza:parseInt(getVal('se_cap'))||null,data_iso:getVal('se_data'),ora:getVal('se_ora').trim(),luogo:getVal('se_luogo').trim(),descrizione:getVal('se_desc').trim(),immagine:(si&&si.style.display!=='none'&&si.src&&si.src!==window.location.href)?si.src:null,opt_multipla:stogState.multipla,opt_cap_persona:stogState.cap_persona,opt_accompagnatori_email_obbligatoria:stogState.acc_email_obb,opt_accompagnatori_telefono_obbligatorio:stogState.acc_tel_obb,opt_tipo:stogState.tipo,opt_pasto:stogState.pasto,opt_pasto_pranzo:!stogState.pasto||document.getElementById('sopt_pranzo').checked,opt_pasto_cena:!stogState.pasto||document.getElementById('sopt_cena').checked,opt_newsletter:stogState.newsletter,opt_capienza:stogState.capienza,promo_automatica:stogState.promo_auto,opt_qr_checkin:stogState.qr_checkin,opt_bambini:stogState.bambini,evento_online:stogState.online,link_partecipazione:getVal('se_link').trim(),link_invio:(document.getElementById('se_link_invio')||{}).value||'entrambi',mittente_nome:getVal('se_mittente').trim()||null,terminologia:(document.getElementById('se_terminologia')||{}).value||'iscrizione',sponsors:collectSP('sspList'),custom_fields:collectCF('scfList')};
+  if(!infoCheck('se'))return;
+  Object.assign(upd,infoFields('se'));
   var updated=sanitizeEvent(dbUpdateEvent(ev.id,upd));currentEv=updated;var idx=allEvents.findIndex(function(e){return e.id===ev.id;});if(idx>=0)allEvents[idx]=currentEv;closeOv('ovSettings');renderDash();showToast('Salvato','g');}
 
-function toggleStatus(){var ev=currentEv;if(!ev)return;var updated=sanitizeEvent(dbUpdateEvent(ev.id,{attivo:!ev.attivo}));currentEv=updated;var idx=allEvents.findIndex(function(e){return e.id===ev.id;});if(idx>=0)allEvents[idx]=currentEv;renderDash();showToast(currentEv.attivo?'Iscrizioni aperte':'Iscrizioni chiuse',currentEv.attivo?'g':'r');}
+function toggleStatus(){var ev=currentEv;if(!ev)return;var updated=sanitizeEvent(dbUpdateEvent(ev.id,{attivo:!ev.attivo}));currentEv=updated;var idx=allEvents.findIndex(function(e){return e.id===ev.id;});if(idx>=0)allEvents[idx]=currentEv;renderDash();showToast(statoLabel(currentEv,currentEv.attivo),currentEv.attivo?'g':'r');}
 
 /* ============================================================
    ACCORDION FORM (apertura/chiusura + pallino "attive")
@@ -1527,6 +1776,7 @@ function accSync(pfx) {
   accSetDot('acc_dot_' + pfx + '_checkin', !!st.qr_checkin);
   accSetDot('acc_dot_' + pfx + '_aspetto', aspetto);
   accSetDot('acc_dot_' + pfx + '_campi', accCount(cfList) > 0);
+  accSetDot('acc_dot_' + pfx + '_info', accCount(pfx + '_ibList') > 0 || !!st.info_email || accVal(pfx + '_info_avviso') === 'riepilogo');
 }
 function accInit() {
   [['ovCreate', 'ev'], ['ovSettings', 'se']].forEach(function(p) {
@@ -1539,7 +1789,812 @@ function accInit() {
 }
 accInit();
 
-function setOnlineUI(p,on){var lbl=document.getElementById(p+'_luogo_lbl');if(lbl)lbl.textContent=on?'Piattaforma':(p==='ev'?'Luogo *':'Luogo');var inp=document.getElementById(p+'_luogo');if(inp)inp.placeholder=on?'Es. Zoom, Google Meet, YouTube Live':(p==='ev'?'Es. Villa Reale, Milano':'');var pfx=p==='ev'?'o':'s';setDisp(pfx+'_online_box',on?'block':'none');['_row_tipo','_row_pasto'].forEach(function(s){var e=document.getElementById(pfx+s);if(e)e.style.display=on?'none':'flex';});setDisp(pfx+'_checkin_sect',on?'none':'block');var st=p==='ev'?otogState:stogState;var ps=document.getElementById(p==='ev'?'opasto_sub':'spasto_sub');if(ps)ps.style.display=on?'none':(st.pasto?'block':'none');}
+/* ============================================================
+   RICHIESTA INFORMAZIONI: modalita' della pagina, blocchi, avvisi
+   (dalla dashboard Agenzia v7.3; nella demo le immagini restano nel browser)
+   ============================================================ */
+var IB_MAX = 30;
+var modState = { ev: 'iscrizioni', se: 'iscrizioni' }; /* modalita' della pagina nei due form */
+var ibUploading = 0; /* immagini dei blocchi in preparazione */
+
+/* Modalita' della pagina: iscrizioni (come sempre) / info / entrambe */
+function setModalita(p, m, silenzioso) {
+  if (m !== 'info' && m !== 'entrambe') m = 'iscrizioni';
+  modState[p] = m;
+  var seg = document.getElementById(p + '_mod_seg');
+  if (seg) {
+    var bs = seg.querySelectorAll('.mod-opt');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-mod') === m);
+  }
+  var conInfo = (m !== 'iscrizioni');
+  var conIscr = (m !== 'info');
+  var st = (p === 'ev') ? otogState : stogState;
+  setDisp('acc_' + p + '_info', conInfo ? 'block' : 'none');
+  setDisp(p + '_scheda_wrap', m === 'entrambe' ? 'flex' : 'none');
+  setDisp(p + '_scheda_nota', m === 'entrambe' ? 'block' : 'none');
+  setDisp(p + '_cap_mf', conIscr ? 'flex' : 'none');
+  setDisp('acc_' + p + '_modulo', conIscr ? 'block' : 'none');
+  setDisp('acc_' + p + '_campi', conIscr ? 'block' : 'none');
+  setDisp((p === 'ev' ? 'o' : 's') + '_checkin_sect', (conIscr && !st.online) ? 'block' : 'none');
+  setDisp(p + '_email_info_note', conInfo ? 'block' : 'none');
+  if (p === 'se') modWarn();
+  if (conInfo && !silenzioso) {
+    var a = document.getElementById('acc_' + p + '_info');
+    if (a) a.classList.add('open');
+  }
+  accSync(p);
+}
+
+/* Avviso nelle impostazioni: passare a sola Informazioni con iscritti gia' presenti */
+function modWarn() {
+  var w = document.getElementById('se_mod_warn');
+  if (!w) return;
+  var n = (currentRegs || []).length;
+  if (modState.se === 'info' && currentEv && currentEv.modalita !== 'info' && n > 0) {
+    w.textContent = 'Questo evento ha gi\u00e0 ' + n + (n === 1 ? ' iscritto' : ' iscritti') + '. Con "Informazioni" la pagina non accetta pi\u00f9 nuove iscrizioni: chi \u00e8 gi\u00e0 iscritto resta nella dashboard.';
+    w.style.display = 'block';
+  } else {
+    w.style.display = 'none';
+  }
+}
+
+function ibAvvisoUI(p) {
+  setDisp(p + '_info_ora_wrap', getVal(p + '_info_avviso') === 'riepilogo' ? 'flex' : 'none');
+}
+
+/* Nella demo l'immagine e' conservata nel browser: il "path" e' gia' l'immagine */
+function ibPublicUrl(path) {
+  return String(path || '');
+}
+
+/* Aggiunge un blocco (testo o immagine) all'elenco; data = blocco gia' salvato */
+function ibAdd(p, tipo, data) {
+  var list = document.getElementById(p + '_ibList');
+  if (!list) return;
+  if (list.children.length >= IB_MAX) { alert('Hai raggiunto il numero massimo di blocchi (' + IB_MAX + ').'); return; }
+  var row = document.createElement('div');
+  row.className = 'ib-row';
+  row.setAttribute('data-tipo', tipo === 'immagine' ? 'immagine' : 'testo');
+  var head = '<div class="ib-head"><span class="ib-type">' + (tipo === 'immagine' ? '&#128444;&#65039; Immagine' : '&#9999;&#65039; Testo') + '</span><div class="ib-acts">'
+    + '<button type="button" class="rm-btn" title="Sposta su" aria-label="Sposta su" onclick="ibMove(this,-1)">&#8593;</button>'
+    + '<button type="button" class="rm-btn" title="Sposta gi\u00f9" aria-label="Sposta gi\u00f9" onclick="ibMove(this,1)">&#8595;</button>'
+    + '<button type="button" class="rm-btn" title="Elimina blocco" aria-label="Elimina blocco" onclick="ibRemove(this)">&#10005;</button>'
+    + '</div></div>';
+  if (tipo === 'immagine') {
+    var path = (data && data.path) ? String(data.path) : '';
+    row.setAttribute('data-path', path);
+    row.innerHTML = head
+      + '<div class="ib-img-area" onclick="ibPick(this)">'
+      + '<img class="ib-img" alt="" style="display:none">'
+      + '<div class="ib-ph">Tocca per scegliere l\'immagine<br><span>JPG, PNG o WebP: viene alleggerita in automatico</span></div>'
+      + '</div>'
+      + '<div class="ib-status"></div>'
+      + '<input type="file" class="ib-file" accept="image/*" style="display:none" onchange="ibUpload(this)">'
+      + '<input class="row-inp ib-cap" maxlength="200" placeholder="Didascalia (facoltativa)">';
+    if (path) ibShowImg(row, ibPublicUrl(path));
+    if (data && data.didascalia) row.querySelector('.ib-cap').value = data.didascalia;
+  } else {
+    row.innerHTML = head
+      + '<textarea class="row-inp ib-text" rows="4" maxlength="5000" placeholder="Programma, orari, come arrivare... I link (https://...) diventano cliccabili."></textarea>';
+    if (data && data.testo) row.querySelector('.ib-text').value = data.testo;
+  }
+  list.appendChild(row);
+  ibRefresh(p);
+  if (!data && tipo !== 'immagine') { var ta = row.querySelector('.ib-text'); if (ta) ta.focus(); }
+}
+
+function ibPrefix(el) {
+  var list = el && el.closest ? el.closest('.ib-list') : null;
+  return (list && list.id === 'se_ibList') ? 'se' : 'ev';
+}
+
+function ibMove(btn, dir) {
+  var row = btn.closest('.ib-row');
+  if (!row) return;
+  var list = row.parentNode;
+  if (dir < 0 && row.previousElementSibling) list.insertBefore(row, row.previousElementSibling);
+  if (dir > 0 && row.nextElementSibling) list.insertBefore(row.nextElementSibling, row);
+  ibRefresh(ibPrefix(list.firstElementChild || row));
+}
+
+function ibRemove(btn) {
+  var row = btn.closest('.ib-row');
+  if (!row) return;
+  var p = ibPrefix(row);
+  var pieno = (row.getAttribute('data-tipo') === 'immagine')
+    ? !!row.getAttribute('data-path')
+    : !!((row.querySelector('.ib-text') || {}).value || '').trim();
+  if (pieno && !confirm('Eliminare questo blocco?')) return;
+  row.parentNode.removeChild(row);
+  ibRefresh(p);
+}
+
+/* Aggiorna frecce (prima/ultima) e pallino dell'accordion */
+function ibRefresh(p) {
+  var rows = document.querySelectorAll('#' + p + '_ibList .ib-row');
+  for (var i = 0; i < rows.length; i++) {
+    var b = rows[i].querySelectorAll('.ib-acts .rm-btn');
+    if (b[0]) b[0].disabled = (i === 0);
+    if (b[1]) b[1].disabled = (i === rows.length - 1);
+  }
+  accSync(p);
+}
+
+function ibShowImg(row, url) {
+  var img = row.querySelector('.ib-img');
+  var ph = row.querySelector('.ib-ph');
+  if (img) { img.src = url; img.style.display = 'block'; }
+  if (ph) ph.style.display = 'none';
+}
+
+function ibPick(area) {
+  if (area.getAttribute('data-busy') === '1') return;
+  var f = area.parentNode.querySelector('.ib-file');
+  if (f) f.click();
+}
+
+/* Rimpicciolisce l'immagine e la converte in JPG leggero.
+   Nella demo lato lungo max 1200 px, perche' tutto resta nella memoria del browser. */
+function ibResize(file) {
+  return new Promise(function(resolve, reject) {
+    var url = URL.createObjectURL(file);
+    var im = new Image();
+    im.onload = function() {
+      var w = im.naturalWidth, h = im.naturalHeight;
+      if (!w || !h) { URL.revokeObjectURL(url); reject(new Error('formato')); return; }
+      var k = Math.min(1, 1200 / Math.max(w, h));
+      var cw = Math.max(1, Math.round(w * k)), ch = Math.max(1, Math.round(h * k));
+      var c = document.createElement('canvas');
+      c.width = cw; c.height = ch;
+      var ctx = c.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, cw, ch);
+      ctx.drawImage(im, 0, 0, cw, ch);
+      URL.revokeObjectURL(url);
+      try { resolve(c.toDataURL('image/jpeg', 0.8)); } catch (e) { reject(new Error('conversione')); }
+    };
+    im.onerror = function() { URL.revokeObjectURL(url); reject(new Error('formato')); };
+    im.src = url;
+  });
+}
+
+/* Nella demo l'immagine non viene caricata su un server: resta nel browser */
+async function ibUpload(input) {
+  var file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  var row = input.closest('.ib-row');
+  if (!row) return;
+  var area = row.querySelector('.ib-img-area');
+  var stEl = row.querySelector('.ib-status');
+  stEl.className = 'ib-status';
+  if (file.type && file.type.indexOf('image/') !== 0) {
+    stEl.className = 'ib-status err'; stEl.textContent = 'Questo file non \u00e8 un\'immagine.'; return;
+  }
+  ibUploading++;
+  area.setAttribute('data-busy', '1');
+  stEl.textContent = 'Caricamento in corso...';
+  try {
+    var dataUrl;
+    try { dataUrl = await ibResize(file); }
+    catch (e1) { throw new Error('Non riesco a leggere questa immagine: prova con un file JPG o PNG.'); }
+    if (dataUrl.length > 2500000) throw new Error('Immagine troppo pesante anche dopo la riduzione.');
+    row.setAttribute('data-path', dataUrl);
+    ibShowImg(row, dataUrl);
+    stEl.textContent = '';
+  } catch (e) {
+    stEl.className = 'ib-status err';
+    stEl.textContent = (e && e.message ? e.message : 'Caricamento non riuscito.') + ' Riprova.';
+  } finally {
+    ibUploading = Math.max(0, ibUploading - 1);
+    area.removeAttribute('data-busy');
+    accSync(ibPrefix(row));
+  }
+}
+
+/* Legge i blocchi dal form, nell'ordine mostrato */
+function ibCollect(p) {
+  var out = [], vuote = 0;
+  var rows = document.querySelectorAll('#' + p + '_ibList .ib-row');
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    if (r.getAttribute('data-tipo') === 'immagine') {
+      var path = r.getAttribute('data-path') || '';
+      if (!path) { vuote++; continue; }
+      var cap = ((r.querySelector('.ib-cap') || {}).value || '').trim().slice(0, 200);
+      var b = { tipo: 'immagine', path: path };
+      if (cap) b.didascalia = cap;
+      out.push(b);
+    } else {
+      var t = ((r.querySelector('.ib-text') || {}).value || '').replace(/\s+$/, '');
+      if (t.trim()) out.push({ tipo: 'testo', testo: t.slice(0, 5000) });
+    }
+  }
+  return { blocchi: out, vuote: vuote };
+}
+
+/* Campi da salvare sull'evento */
+function infoFields(p) {
+  var st = (p === 'ev') ? otogState : stogState;
+  var ora = parseInt(getVal(p + '_info_ora'), 10);
+  return {
+    modalita: modState[p],
+    landing_scheda_iniziale: getVal(p + '_scheda_iniziale') === 'iscrizione' ? 'iscrizione' : 'info',
+    info_email_obbligatoria: !!st.info_email,
+    info_blocchi: ibCollect(p).blocchi,
+    info_avviso: getVal(p + '_info_avviso') === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta',
+    info_riepilogo_ora: isNaN(ora) ? 8 : Math.min(23, Math.max(0, ora))
+  };
+}
+
+/* Controlli prima di salvare */
+function infoCheck(p) {
+  if (ibUploading > 0) { alert('Attendi la fine del caricamento delle immagini.'); return false; }
+  if (ibCollect(p).vuote > 0) { alert('C\'\u00e8 un blocco immagine senza immagine: scegli l\'immagine oppure elimina il blocco.'); return false; }
+  return true;
+}
+
+/* Riempie la sezione con i dati dell'evento (o con i valori predefiniti) */
+function infoFill(p, ev) {
+  ev = ev || {};
+  var st = (p === 'ev') ? otogState : stogState;
+  st.info_email = !!ev.info_email_obbligatoria;
+  var tg = document.getElementById((p === 'ev' ? 'otog' : 'stog') + '_info_email');
+  if (tg) tg.classList.toggle('on', st.info_email);
+  setVal(p + '_scheda_iniziale', ev.landing_scheda_iniziale === 'iscrizione' ? 'iscrizione' : 'info');
+  setVal(p + '_info_avviso', ev.info_avviso === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta');
+  setVal(p + '_info_ora', String((typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8));
+  setHTML(p + '_ibList', '');
+  (Array.isArray(ev.info_blocchi) ? ev.info_blocchi : []).forEach(function(b) {
+    if (b && (b.tipo === 'testo' || b.tipo === 'immagine')) ibAdd(p, b.tipo, b);
+  });
+  ibAvvisoUI(p);
+  setModalita(p, ev.modalita || 'iscrizioni', true);
+}
+
+/* ============================================================
+   SUGGERIMENTI "?": il testo viene mostrato in un riquadro unico
+   sopra a tutta la pagina, posizionato per restare sempre intero
+   dentro lo schermo (niente piu' testo tagliato da riquadri o bordi)
+   ============================================================ */
+(function() {
+  var fl = null;
+  function box() {
+    if (!fl) {
+      fl = document.createElement('div');
+      fl.id = 'tipFloat';
+      fl.setAttribute('role', 'tooltip');
+      document.body.appendChild(fl);
+    }
+    return fl;
+  }
+  function show(icon) {
+    var src = icon.nextElementSibling;
+    if (!src || !src.classList || !src.classList.contains('tip-box')) return;
+    var f = box();
+    f.innerHTML = src.innerHTML;
+    f.style.left = '0px'; f.style.top = '0px'; f.style.display = 'block';
+    var r = icon.getBoundingClientRect();
+    var vw = document.documentElement.clientWidth, vh = window.innerHeight;
+    var bw = f.offsetWidth, bh = f.offsetHeight, m = 8;
+    var left = Math.min(Math.max(m, r.left + r.width / 2 - bw / 2), Math.max(m, vw - bw - m));
+    var top = r.top - bh - 8;
+    if (top < m) top = Math.min(r.bottom + 8, Math.max(m, vh - bh - m));
+    f.style.left = Math.round(left) + 'px';
+    f.style.top = Math.round(top) + 'px';
+  }
+  function hide() { if (fl) fl.style.display = 'none'; }
+  function iconOf(t) { return (t && t.closest) ? t.closest('.tip-icon') : null; }
+  document.documentElement.classList.add('tip-js');
+  document.addEventListener('mouseover', function(e) { var i = iconOf(e.target); if (i) show(i); });
+  document.addEventListener('mouseout', function(e) { var i = iconOf(e.target); if (i && i !== document.activeElement) hide(); });
+  document.addEventListener('focusin', function(e) { var i = iconOf(e.target); if (i) show(i); });
+  document.addEventListener('focusout', function(e) { var i = iconOf(e.target); if (i) hide(); });
+  window.addEventListener('scroll', hide, true);
+  window.addEventListener('resize', hide);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') hide(); });
+})();
+
+/* ============================================================
+   RICHIESTE DI CONTATTO (dashboard dell'evento)
+   (dalla dashboard Agenzia v7.3; nella demo le richieste restano nel browser)
+   ============================================================ */
+var LS_RICH = 'ef_demo_richieste';
+var currentRich = [];
+var richLoadedFor = null;
+var richLoading = false;
+var richErr = false;
+var RICH_CANALE = { telefono: 'una telefonata', whatsapp: 'WhatsApp', email: 'email' };
+
+function dbGetAllRich() { var a = lsGet(LS_RICH); return Array.isArray(a) ? a : []; }
+function dbGetRich(evId) {
+  return dbGetAllRich().filter(function(r) { return r.event_id === evId; })
+    .sort(function(a, b) { return String(b.created_at).localeCompare(String(a.created_at)); });
+}
+function dbSaveAllRich(a) { return lsSet(LS_RICH, a); }
+function dbCreateRich(r) { var a = dbGetAllRich(); a.push(r); return dbSaveAllRich(a); }
+function dbUpdateRich(id, f) { var a = dbGetAllRich(); a.forEach(function(r) { if (r.id === id) Object.assign(r, f); }); return dbSaveAllRich(a); }
+function dbDeleteRich(id) { return dbSaveAllRich(dbGetAllRich().filter(function(r) { return r.id !== id; })); }
+
+/* Etichetta dello stato aperto/chiuso in base a cosa raccoglie la pagina */
+function statoLabel(ev, aperto) {
+  var m = ev ? ev.modalita : 'iscrizioni';
+  if (m === 'info') return aperto ? 'Richieste aperte' : 'Richieste chiuse';
+  if (m === 'entrambe') return aperto ? 'Iscrizioni e richieste aperte' : 'Iscrizioni e richieste chiuse';
+  return aperto ? 'Iscrizioni aperte' : 'Iscrizioni chiuse';
+}
+
+/* Mostra/nasconde le parti della dashboard secondo la modalita' dell'evento */
+function applyModalitaDash(ev) {
+  var m = ev ? ev.modalita : 'iscrizioni';
+  if (m === 'info') {
+    ['btnAddReg', 'btnPresenze', 'btnCSV', 'btnPDF', 'btnAttesa', 'btnSendLink'].forEach(function(id) { setDisp(id, 'none'); });
+    setDisp('statsRow', 'none');
+    setDisp('panelIscritti', 'none');
+    setDisp('panelAttesa', 'none');
+  } else {
+    setDisp('statsRow', 'flex');
+    setDisp('panelIscritti', 'block');
+  }
+  var nota = document.getElementById('statusNota');
+  if (nota) {
+    var testoNota = '';
+    if (ev && !isClosed(ev) && m === 'info') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 inviare richieste, ma quelle gi\u00e0 arrivate restano qui.';
+    if (ev && !isClosed(ev) && m === 'entrambe') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 iscriversi n\u00e9 inviare richieste, ma iscritti e richieste gi\u00e0 arrivati restano qui.';
+    nota.textContent = testoNota;
+    nota.style.display = testoNota ? 'block' : 'none';
+  }
+  renderLinkExtra(ev);
+  if (ev && m !== 'iscrizioni') {
+    if (richLoadedFor !== ev.id && !richLoading) { currentRich = []; loadRichieste(true); return; }
+  }
+  renderRichieste();
+}
+
+function loadRichieste(forza) {
+  var ev = currentEv;
+  if (!ev || ev.modalita === 'iscrizioni') { renderRichieste(); return; }
+  if (!forza && richLoadedFor === ev.id) { renderRichieste(); return; }
+  richErr = false;
+  currentRich = dbGetRich(ev.id);
+  richLoadedFor = ev.id;
+  renderRichieste();
+}
+
+function richData(iso) {
+  try {
+    return new Date(iso).toLocaleString('it-IT', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+  } catch (e) { return ''; }
+}
+
+/* Numero per wa.me: solo cifre con prefisso internazionale (se manca si assume l'Italia) */
+function richWa(t) {
+  var n = String(t || '').replace(/[^0-9+]/g, '');
+  if (n.indexOf('+') === 0) n = n.slice(1);
+  else if (n.indexOf('00') === 0) n = n.slice(2);
+  else if (/^[03]\d{5,10}$/.test(n)) n = '39' + n;
+  return n.replace(/[^0-9]/g, '');
+}
+
+function richCardHtml(r) {
+  var fatto = (r.stato === 'contattato');
+  var pref = r.canale_preferito;
+  var tel = String(r.telefono || '').replace(/[^0-9+]/g, '');
+  var btns = '';
+  if (tel) {
+    btns += '<a class="rub-cbtn' + (pref === 'telefono' ? ' pref' : '') + '" href="tel:' + escHtml(tel) + '">&#128222; Chiama</a>';
+    var wa = richWa(r.telefono);
+    if (wa) btns += '<a class="rub-cbtn' + (pref === 'whatsapp' ? ' pref' : '') + '" href="https://wa.me/' + wa + '" target="_blank" rel="noopener">&#128172; WhatsApp</a>';
+  }
+  if (r.email) {
+    btns += '<a class="rub-cbtn' + (pref === 'email' ? ' pref' : '') + '" href="mailto:' + escHtml(r.email) + '?subject=' + encodeURIComponent('Informazioni su ' + (currentEv ? currentEv.nome : '')) + '">&#9993; Email</a>';
+  }
+  var meta = '';
+  if (r.telefono) meta += '&#128222; ' + escHtml(r.telefono);
+  if (r.email) meta += (meta ? '<br>' : '') + '&#9993; ' + escHtml(r.email);
+  return '<div class="rich-card' + (fatto ? ' done' : '') + '">'
+    + '<div class="rub-card-top"><div style="min-width:0">'
+    +   '<div class="rub-name">' + escHtml(r.nome || '') + '</div>'
+    +   '<div class="rub-ref">' + richData(r.created_at) + ' &middot; preferisce ' + (RICH_CANALE[pref] || escHtml(pref || '')) + '</div>'
+    + '</div><span class="pill ' + (fatto ? 'pill-green' : 'pill-gold') + '">' + (fatto ? 'Contattato' : 'Da contattare') + '</span></div>'
+    + (meta ? '<div class="rub-meta">' + meta + '</div>' : '')
+    + (r.messaggio ? '<div class="rich-msg">' + escHtml(r.messaggio) + '</div>' : '')
+    + (btns ? '<div class="rub-actions">' + btns + '</div>' : '')
+    + '<div class="rich-manage">'
+    +   '<button class="btn-sm' + (fatto ? '' : ' btn-sm-green') + '" data-id="' + escHtml(r.id) + '" onclick="richStato(this.getAttribute(\'data-id\'))">' + (fatto ? '&#8634; Segna da contattare' : '&#10003; Segna come contattato') + '</button>'
+    +   '<button class="btn-sm rich-del" data-id="' + escHtml(r.id) + '" onclick="richDel(this.getAttribute(\'data-id\'))">&#128465; Elimina</button>'
+    + '</div>'
+    + '</div>';
+}
+
+function renderRichieste() {
+  var panel = document.getElementById('panelRichieste');
+  if (!panel) return;
+  var ev = currentEv;
+  if (!ev || ev.modalita === 'iscrizioni') { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  var list = document.getElementById('richList');
+  var inCarica = richLoading && richLoadedFor !== ev.id;
+  var tot = currentRich.length;
+  var daFare = currentRich.filter(function(r) { return r.stato !== 'contattato'; }).length;
+  if (inCarica) {
+    setText('richSub', 'Caricamento...');
+    list.innerHTML = '<div class="no-regs">Caricamento delle richieste...</div>';
+    return;
+  }
+  if (richErr) {
+    setText('richSub', '--');
+    list.innerHTML = '<div class="no-regs">Non riesco a caricare le richieste. Premi "Aggiorna" per riprovare.</div>';
+    return;
+  }
+  setText('richSub', tot === 0 ? 'Nessuna richiesta per ora' : (tot + (tot === 1 ? ' richiesta' : ' richieste') + ' \u00b7 ' + daFare + ' da contattare'));
+  if (!tot) {
+    list.innerHTML = '<div class="no-regs">Quando qualcuno ti chiede informazioni dalla pagina dell\'evento, la richiesta compare qui.<br>Ti avvisiamo anche via email, come hai scelto nelle impostazioni.</div>';
+    return;
+  }
+  var filtro = getVal('richFiltro') || 'tutte';
+  var rows = currentRich.filter(function(r) {
+    if (filtro === 'contattato') return r.stato === 'contattato';
+    if (filtro === 'da_contattare') return r.stato !== 'contattato';
+    return true;
+  });
+  list.innerHTML = rows.length ? rows.map(richCardHtml).join('') : '<div class="no-regs">Nessuna richiesta in questo filtro.</div>';
+}
+
+function richStato(id) {
+  var r = currentRich.find(function(x) { return x.id === id; });
+  if (!r) return;
+  var nuovo = (r.stato === 'contattato') ? 'da_contattare' : 'contattato';
+  if (!dbUpdateRich(id, { stato: nuovo })) { showToast('Errore nel salvataggio', 'r'); return; }
+  r.stato = nuovo;
+  renderRichieste();
+  showToast(nuovo === 'contattato' ? 'Segnata come contattata' : 'Rimessa tra quelle da contattare', 'g');
+}
+
+function richDel(id) {
+  var r = currentRich.find(function(x) { return x.id === id; });
+  if (!r) return;
+  if (!confirm('Eliminare la richiesta di ' + (r.nome || '') + '? Sparisce anche dal conteggio e dagli avvisi non ancora inviati. L\'operazione non si pu\u00f2 annullare.')) return;
+  if (!dbDeleteRich(id)) { showToast('Errore nel salvataggio', 'r'); return; }
+  currentRich = currentRich.filter(function(x) { return x.id !== id; });
+  renderRichieste();
+  showToast('Richiesta eliminata', 'g');
+}
+
+/* Link diretti alle due schede (solo modalita' Entrambe) */
+function renderLinkExtra(ev) {
+  var box = document.getElementById('pubLinkExtra');
+  if (!box) return;
+  if (!ev || ev.modalita !== 'entrambe') { box.innerHTML = ''; return; }
+  var base = demoLandingUrl(ev);
+  if (!base) { box.innerHTML = ''; return; }
+  var sep = base.indexOf('?') >= 0 ? '&' : '?';
+  var IMP = { iscrizione: 'Iscriviti', prenotazione: 'Prenota', partecipazione: 'Partecipa', registrazione: 'Registrati' };
+  var righe = [
+    ['Link diretto alla scheda "Informazioni"', base + sep + 'vista=info'],
+    ['Link diretto alla scheda "' + (IMP[ev.terminologia] || 'Iscriviti') + '"', base + sep + 'vista=iscrizione']
+  ];
+  box.innerHTML = '<details class="link-extra-det"><summary>Link diretti alle singole schede <span>(facoltativi)</span></summary>'
+    + '<div class="link-extra-nota">Il link qui sopra, lo stesso del QR code, apre la pagina sulla scheda che hai scelto nelle impostazioni: \u00e8 quello da usare di solito. Questi due aprono direttamente una scheda precisa: utili, ad esempio, in un post social o in un\'email.</div>'
+    + righe.map(function(x) {
+      return '<div class="link-extra"><div class="link-extra-lbl">' + escHtml(x[0]) + '</div>'
+        + '<div class="link-extra-row"><code>' + escHtml(x[1]) + '</code>'
+        + '<button class="btn-sm" data-url="' + escHtml(x[1]) + '" onclick="copyTxt(this.getAttribute(\'data-url\'), this)">Copia</button></div></div>';
+    }).join('')
+    + '</details>';
+}
+
+/* Copia negli appunti (con ripiego per i browser piu' vecchi) */
+function copyTxt(t, btn) {
+  var fatto = function() {
+    if (!btn) return;
+    var orig = btn.getAttribute('data-orig') || btn.textContent;
+    btn.setAttribute('data-orig', orig);
+    btn.textContent = 'Copiato \u2713';
+    setTimeout(function() { btn.textContent = orig; }, 1600);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(t).then(fatto, function() { if (copyFallback(t)) fatto(); });
+  } else if (copyFallback(t)) {
+    fatto();
+  }
+}
+function copyFallback(t) {
+  var ta = document.createElement('textarea');
+  ta.value = t; ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed'; ta.style.top = '-1000px';
+  document.body.appendChild(ta);
+  ta.select();
+  var ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  if (!ok) window.prompt('Copia il link:', t);
+  return ok;
+}
+
+/* ============================================================
+   ANTEPRIMA: RICHIESTA INFORMAZIONI
+   (stessi testi e stessa struttura della pagina evento reale, landing v7.1)
+   ============================================================ */
+var TXT_INFO = {
+  tabInfo: 'Informazioni',
+  titoloInfo: 'Richiedi informazioni',
+  titoloEntrambe: 'Hai domande? Lasciaci i tuoi dati',
+  sottotitolo: 'Lascia i tuoi recapiti: l\'organizzatore ti ricontatter\u00e0 nel modo che preferisci.',
+  lblNome: 'Nome e cognome',
+  lblCanale: 'Come preferisci essere ricontattato?',
+  chTelefono: 'Telefono',
+  chWhatsapp: 'WhatsApp',
+  chEmail: 'Email',
+  lblTel: 'Telefono',
+  lblEmail: 'Email',
+  lblMsg: 'Messaggio (facoltativo)',
+  phMsg: 'Scrivi qui la tua domanda',
+  consensoPre: 'Ho letto e accetto l\'',
+  consensoLink: 'informativa sul trattamento dei dati personali',
+  btnInvia: 'Invia richiesta',
+  chiuso: 'Le richieste di informazioni per questo evento sono chiuse',
+  richiamoIscr: 'Vuoi partecipare all\'evento?',
+  vuoiAnche: 'Vuoi anche {azione}?',
+  errNome: 'Inserisci il tuo nome.',
+  errTel: 'Inserisci il numero di telefono: serve per ricontattarti con una telefonata o su WhatsApp.',
+  errTelVal: 'Inserisci un numero di telefono valido.',
+  errEmail: 'Inserisci la tua email.',
+  errEmailVal: 'Inserisci un indirizzo email valido.',
+  errConsenso: 'Devi accettare il trattamento dei dati per procedere.',
+  okTitolo: 'Grazie, {nome}!',
+  okTesto: 'La tua richiesta per <strong>{evento}</strong> \u00e8 arrivata all\'organizzatore.<br>Ti ricontatteremo al pi\u00f9 presto {canale}.',
+  okCanale: { telefono: 'con una telefonata', whatsapp: 'su WhatsApp', email: 'via email' },
+  anteprima: 'Questa \u00e8 un\'anteprima: torna alla dashboard e usa "Anteprima / Iscriviti" per inviare davvero la richiesta.'
+};
+var _lpPendingRichSim = null;
+
+/* Modalita' dell'evento: iscrizioni (come sempre) / info / entrambe */
+function lpModalita(ev) {
+  var m = ev && ev.modalita;
+  return (m === 'info' || m === 'entrambe') ? m : 'iscrizioni';
+}
+
+/* Testo in sicurezza + indirizzi http/https resi cliccabili (nuova scheda) */
+function lpEsc(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function lpAutoLink(testo) {
+  var s = String(testo == null ? '' : testo);
+  var re = /https?:\/\/[^\s<>"']+/g;
+  var out = '', last = 0, m;
+  while ((m = re.exec(s)) !== null) {
+    var url = m[0], coda = '';
+    var mm = url.match(/[.,;:!?)\]]+$/);
+    if (mm) { coda = mm[0]; url = url.slice(0, url.length - coda.length); }
+    out += lpEsc(s.slice(last, m.index));
+    if (url.length > 10) {
+      out += '<a href="' + lpEsc(url) + '" target="_blank" rel="noopener noreferrer">' + lpEsc(url) + '</a>';
+    } else {
+      out += lpEsc(url);
+    }
+    out += lpEsc(coda);
+    last = m.index + m[0].length;
+  }
+  return out + lpEsc(s.slice(last));
+}
+
+/* Blocchi liberi della pagina informativa (testo / immagine), nell'ordine scelto */
+function lpBlocchiHtml(ev) {
+  var lista = Array.isArray(ev.info_blocchi) ? ev.info_blocchi : [];
+  var out = '';
+  lista.forEach(function(b) {
+    if (!b || typeof b !== 'object') return;
+    if (b.tipo === 'testo' && b.testo && String(b.testo).trim()) {
+      out += '<div class="info-blk info-txt">' + lpAutoLink(b.testo) + '</div>';
+    } else if (b.tipo === 'immagine' && typeof b.path === 'string' && b.path.indexOf('data:image/') === 0) {
+      var did = b.didascalia ? String(b.didascalia) : '';
+      out += '<figure class="info-blk info-fig"><img src="' + b.path + '" alt="' + lpEsc(did || ev.nome) + '">'
+        + (did ? '<figcaption>' + lpEsc(did) + '</figcaption>' : '')
+        + '</figure>';
+    }
+  });
+  return out;
+}
+
+/* Cambio scheda (solo modalita' entrambe): le schede nascoste conservano quanto gia' scritto */
+function lpVaiScheda(v, iniziale) {
+  if (v !== 'iscrizione') v = 'info';
+  ['info', 'iscrizione'].forEach(function(k) {
+    var b = document.getElementById('lp_tab_' + k);
+    var p = document.getElementById('lp_panel_' + k);
+    var on = (k === v);
+    if (b) { b.classList.toggle('active', on); b.setAttribute('aria-selected', on ? 'true' : 'false'); }
+    if (p) p.style.display = on ? '' : 'none';
+  });
+  if (!iniziale) {
+    var ov = document.getElementById('landingOv'), s = document.getElementById('lp_tabSentinel');
+    if (ov && s) {
+      var bar = ov.querySelector('.landing-bar');
+      var top = s.getBoundingClientRect().top - ov.getBoundingClientRect().top + ov.scrollTop - (bar ? bar.offsetHeight : 0);
+      if (ov.scrollTop > top) ov.scrollTop = Math.max(0, top);
+    }
+  }
+}
+
+/* Scorre l'anteprima per mostrare un elemento */
+function lpScrollA(el) {
+  var ov = document.getElementById('landingOv');
+  if (!el || !ov) return;
+  var bar = ov.querySelector('.landing-bar');
+  var tb = ov.querySelector('.tabbar');
+  var off = (bar ? bar.offsetHeight : 0) + (tb ? tb.offsetHeight : 0) + 12;
+  var top = el.getBoundingClientRect().top - ov.getBoundingClientRect().top;
+  if (top < off || top > ov.clientHeight - 60) ov.scrollTop = Math.max(0, ov.scrollTop + top - off);
+}
+
+/* Modulo richiesta informazioni (stili della demo: inp = campi, lbl = etichette, al = avviso) */
+function lpRichiestaFormHtml(ev, modo, closed, S) {
+  if (closed) return '<div style="' + S.closedS + '">&#9940; ' + TXT_INFO.chiuso + '</div>';
+  var titolo = (modo === 'entrambe') ? TXT_INFO.titoloEntrambe : TXT_INFO.titoloInfo;
+  function opz(val, etichetta, sel) {
+    return '<label class="ch-opt"><input type="radio" name="q_canale" value="' + val + '"' + (sel ? ' checked' : '') + ' onchange="lpAggiornaCanale()"><span>' + etichetta + '</span></label>';
+  }
+  return '<h2 style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;margin-bottom:6px;color:' + S.txt + '">' + titolo + '</h2>'
+    + '<p class="info-sub">' + TXT_INFO.sottotitolo + '</p>'
+    + '<div id="q_alert" style="' + S.alertS + '"></div>'
+    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_nome">' + TXT_INFO.lblNome + ' *</label><input id="q_nome" style="' + S.inpS + '" maxlength="120" autocomplete="name" placeholder="Mario Rossi"></div>'
+    + '<div style="margin-bottom:16px"><span style="' + S.lblS + '">' + TXT_INFO.lblCanale + ' *</span><div class="ch-group" role="radiogroup">'
+    +   opz('telefono', TXT_INFO.chTelefono, true) + opz('whatsapp', TXT_INFO.chWhatsapp, false) + opz('email', TXT_INFO.chEmail, false)
+    + '</div></div>'
+    + '<div class="lp-grid2">'
+    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_tel" id="q_tel_lbl">' + TXT_INFO.lblTel + '</label><input id="q_tel" style="' + S.inpS + '" type="tel" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="333 0000000"></div>'
+    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" style="' + S.inpS + '" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="mario@email.it"></div>'
+    + '</div>'
+    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_msg">' + TXT_INFO.lblMsg + '</label><textarea id="q_msg" rows="4" maxlength="2000" placeholder="' + TXT_INFO.phMsg + '" style="' + S.inpS + ';resize:vertical;line-height:1.5"></textarea></div>'
+    + '<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:' + S.sub + ';cursor:pointer;margin-top:6px"><input type="checkbox" id="q_gdpr" style="accent-color:#C9A96E;width:15px;height:15px;flex-shrink:0"> <span>' + TXT_INFO.consensoPre + '<a href="https://eventsfun.com/privacy.html" target="_blank" rel="noopener" style="color:#C9A96E;text-decoration:underline">' + TXT_INFO.consensoLink + '</a> *</span></label>'
+    + '<button id="q_btn" onclick="lpSubmitRichiesta()" style="width:100%;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-size:15px;font-weight:700;cursor:pointer;margin-top:14px;font-family:inherit">' + TXT_INFO.btnInvia + ' &rarr;</button>';
+}
+
+/* Pagina con informazioni: sola Informazioni (pagina unica) o Entrambe (due schede) */
+function lpInfoPage(ev, modo, closed, S, headerSenzaDesc, descHtml, capHtml, formIscrHtml) {
+  var TW = termWords(ev.terminologia);
+  var richiestaCard = '<div style="' + S.cardS + '" id="q_card">' + lpRichiestaFormHtml(ev, modo, closed, S) + '</div>';
+  var blk = lpBlocchiHtml(ev);
+  if (modo === 'info') {
+    return '<div style="' + S.cardS + '">' + headerSenzaDesc + descHtml + '</div>'
+      + (blk ? '<div style="' + S.cardS + '">' + blk + '</div>' : '')
+      + richiestaCard;
+  }
+  var contenuto = descHtml + blk;
+  return '<div style="' + S.cardS + '">' + headerSenzaDesc + '</div>'
+    + '<div id="lp_tabSentinel"></div>'
+    + '<div class="tabbar" role="tablist">'
+    +   '<button type="button" role="tab" class="tab-btn" id="lp_tab_info" aria-controls="lp_panel_info" onclick="lpVaiScheda(\'info\')">' + TXT_INFO.tabInfo + '</button>'
+    +   '<button type="button" role="tab" class="tab-btn" id="lp_tab_iscrizione" aria-controls="lp_panel_iscrizione" onclick="lpVaiScheda(\'iscrizione\')">' + TW.imp + '</button>'
+    + '</div>'
+    + '<div id="lp_panel_info" role="tabpanel">'
+    +   (contenuto ? '<div style="' + S.cardS + '">' + contenuto + '</div>' : '')
+    +   richiestaCard
+    +   (closed ? '' : '<div class="info-cta" id="lp_richiamoIscr" style="' + S.cardS + '"><p>' + TXT_INFO.richiamoIscr + '</p><button type="button" class="tab-link-btn" onclick="lpVaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>')
+    + '</div>'
+    + '<div id="lp_panel_iscrizione" role="tabpanel">'
+    +   capHtml
+    +   '<div style="' + S.cardS + '">' + formIscrHtml + '</div>'
+    + '</div>';
+}
+
+function lpCanaleScelto() {
+  var r = document.querySelector('input[name="q_canale"]:checked');
+  return r ? r.value : 'telefono';
+}
+
+/* Asterischi dei recapiti in base al canale scelto (e all'email obbligatoria dell'organizzatore) */
+function lpAggiornaCanale() {
+  var ev = window._lpInfoEv || {};
+  var c = lpCanaleScelto();
+  var telObb = (c === 'telefono' || c === 'whatsapp');
+  var mailObb = (c === 'email') || !!ev.info_email_obbligatoria;
+  var lt = document.getElementById('q_tel_lbl');
+  var le = document.getElementById('q_email_lbl');
+  if (lt) lt.textContent = TXT_INFO.lblTel + (telObb ? ' *' : '');
+  if (le) le.textContent = TXT_INFO.lblEmail + (mailObb ? ' *' : '');
+}
+
+function lpInfoAlert(m) {
+  var a = document.getElementById('q_alert');
+  if (!a) return;
+  a.textContent = '\u26A0\uFE0F ' + m;
+  a.style.display = 'block';
+  lpScrollA(a);
+  setTimeout(function() { a.style.display = 'none'; }, 5000);
+}
+
+/* Invio richiesta informazioni (nella demo resta nel browser) */
+function lpSubmitRichiesta() {
+  var ev = window._lpInfoEv;
+  if (!ev) return;
+  function val(id) { var el = document.getElementById(id); return el ? (el.value || '').trim() : ''; }
+  var nome = val('q_nome'), tel = val('q_tel'), email = val('q_email'), msg = val('q_msg');
+  var canale = lpCanaleScelto();
+  var g = document.getElementById('q_gdpr');
+  var consenso = !!(g && g.checked);
+  var reMail = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  var errore = '';
+  if (!nome) errore = TXT_INFO.errNome;
+  else if ((canale === 'telefono' || canale === 'whatsapp') && !tel) errore = TXT_INFO.errTel;
+  else if (tel && !/[0-9]/.test(tel)) errore = TXT_INFO.errTelVal;
+  else if ((canale === 'email' || ev.info_email_obbligatoria) && !email) errore = TXT_INFO.errEmail;
+  else if (email && !reMail.test(email)) errore = TXT_INFO.errEmailVal;
+  else if (!consenso) errore = TXT_INFO.errConsenso;
+  if (errore) { lpInfoAlert(errore); return; }
+  if (window._lpPreviewOnly || ev.id === 'preview') { lpInfoAlert(TXT_INFO.anteprima); return; }
+  var r = {
+    id: genId(),
+    event_id: ev.id,
+    nome: nome.slice(0, 120),
+    telefono: tel ? tel.slice(0, 40) : null,
+    email: email ? email.slice(0, 254) : null,
+    canale_preferito: canale,
+    messaggio: msg ? msg.slice(0, 2000) : null,
+    consenso: true,
+    stato: 'da_contattare',
+    created_at: new Date().toISOString()
+  };
+  if (!dbCreateRich(r)) { lpInfoAlert('Si \u00e8 verificato un errore. Riprova tra qualche secondo.'); return; }
+  richLoadedFor = null;
+  _lpPendingRichSim = { r: r, ev: ev };
+  lpShowRichiestaOk(ev, nome, canale);
+}
+
+/* Conferma richiesta: sostituisce SOLO il modulo, le informazioni restano leggibili */
+function lpShowRichiestaOk(ev, nome, canale) {
+  var card = document.getElementById('q_card');
+  if (!card) return;
+  var TW = termWords(ev.terminologia);
+  var S = window._lpInfoS || {};
+  var cta = '';
+  if (lpModalita(ev) === 'entrambe' && !(isClosed(ev) || ev.attivo === false)) {
+    cta = '<div class="ok-cta"><p>' + TXT_INFO.vuoiAnche.replace('{azione}', TW.inf) + '</p>'
+      + '<button type="button" class="tab-link-btn" onclick="lpVaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>';
+  }
+  card.innerHTML = '<div style="text-align:center;padding:12px 0">'
+    + '<div style="font-size:48px;margin-bottom:14px">&#9993;&#65039;</div>'
+    + '<h2 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;margin:0 0 12px;color:' + (S.txt || '#1a1a1a') + '">' + TXT_INFO.okTitolo.replace('{nome}', lpEsc(nome)) + '</h2>'
+    + '<p style="font-size:14px;line-height:1.7;color:' + (S.sub || '#666') + ';margin:0">' + TXT_INFO.okTesto.replace('{evento}', lpEsc(ev.nome)).replace('{canale}', TXT_INFO.okCanale[canale] || '') + '</p>'
+    + cta
+    + '<div style="margin-top:22px"><button onclick="closeLanding()" style="background:none;border:1.5px solid ' + (S.dark ? 'rgba(255,255,255,.2)' : '#ccc') + ';border-radius:10px;padding:10px 22px;font-size:13px;font-weight:600;color:' + (S.sub || '#666') + ';cursor:pointer;font-family:inherit">&larr; Torna alla dashboard</button></div>'
+    + '</div>';
+  var rr = document.getElementById('lp_richiamoIscr');
+  if (rr) rr.style.display = 'none';
+  lpScrollA(card);
+}
+
+/* Avviso all'organizzatore (simulato): stessi contenuti dell'email reale */
+var _emailSimDefault = null;
+function showRichSim(r, ev) {
+  var tEl = document.getElementById('emailSimTitle'), nEl = document.getElementById('emailSimNote');
+  if (!_emailSimDefault) _emailSimDefault = { t: tEl ? tEl.innerHTML : '', n: nEl ? nEl.innerHTML : '' };
+  var riep = (ev.info_avviso === 'riepilogo');
+  var ora = (typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8;
+  var oraTxt = (ora < 10 ? '0' : '') + ora + ':00';
+  function riga(et, v) { return '<tr><td style="width:92px;white-space:normal;padding:4px 10px 4px 0;color:var(--text-dim);font-size:12px;vertical-align:top">' + et + '</td><td style="white-space:normal;padding:4px 0;color:var(--text);font-size:13px;font-weight:600;vertical-align:top;word-break:break-word;overflow-wrap:anywhere">' + v + '</td></tr>'; }
+  var righe = riga('Nome', escHtml(r.nome)) + riga('Preferisce', escHtml(RICH_CANALE[r.canale_preferito] || r.canale_preferito));
+  if (r.telefono) righe += riga('Telefono', escHtml(r.telefono));
+  if (r.email) righe += riga('Email', escHtml(r.email));
+  if (r.messaggio) righe += riga('Messaggio', '<span style="font-weight:400;white-space:pre-wrap">' + escHtml(r.messaggio) + '</span>');
+  righe += riga('Ricevuta il', richData(r.created_at));
+  var blocco = '<table style="width:100%;min-width:0;table-layout:fixed;border-collapse:collapse;margin-top:8px">' + righe + '</table>';
+  if (tEl) tEl.innerHTML = riep ? 'Richiesta ricevuta' : 'Avviso inviato all\'organizzatore';
+  document.getElementById('emailSimTo').textContent = 'A: ' + (ev.email_contatto || 'l\'email del tuo account');
+  document.getElementById('emailSimBody').innerHTML = riep
+    ? 'Hai scelto <strong>un riepilogo al giorno</strong>: questa richiesta arriver&agrave; nell\'email delle <strong>' + oraTxt + '</strong>, insieme alle altre richieste nuove.' + blocco
+    : '<strong>Nuova richiesta di informazioni</strong><br>Qualcuno ha chiesto informazioni su <strong>' + escHtml(ev.nome) + '</strong>. Ecco i suoi dati:' + blocco
+      + (r.email ? '<div style="margin-top:8px">Puoi anche premere <strong>Rispondi</strong>: la risposta arriva direttamente a ' + escHtml(r.nome) + '.</div>' : '');
+  if (nEl) nEl.innerHTML = '<strong>Solo nella demo:</strong> nella versione reale questo avviso arriva via email all\'indirizzo di contatto dell\'evento, con i tasti per chiamare, scrivere su WhatsApp o rispondere. La richiesta la trovi anche nella sezione "Richieste di contatto" dell\'evento.';
+  document.getElementById('emailSimOv').classList.add('on');
+}
+
+function demoLandingUrl(ev){return ev?'https://eventsfun.com/landing.html?slug='+(ev.slug||ev.id):'';}
+
+function setOnlineUI(p,on){var lbl=document.getElementById(p+'_luogo_lbl');if(lbl)lbl.textContent=on?'Piattaforma':(p==='ev'?'Luogo *':'Luogo');var inp=document.getElementById(p+'_luogo');if(inp)inp.placeholder=on?'Es. Zoom, Google Meet, YouTube Live':(p==='ev'?'Es. Villa Reale, Milano':'');var pfx=p==='ev'?'o':'s';setDisp(pfx+'_online_box',on?'block':'none');['_row_tipo','_row_pasto'].forEach(function(s){var e=document.getElementById(pfx+s);if(e)e.style.display=on?'none':'flex';});setDisp(pfx+'_checkin_sect',(on||modState[p]==='info')?'none':'block');var st=p==='ev'?otogState:stogState;var ps=document.getElementById(p==='ev'?'opasto_sub':'spasto_sub');if(ps)ps.style.display=on?'none':(st.pasto?'block':'none');}
 function otog(k){otogState[k]=!otogState[k];var el=document.getElementById('otog_'+k);if(el){if(otogState[k])el.classList.add('on');else el.classList.remove('on');}if(k==='pasto'){var s=document.getElementById('opasto_sub');if(s)s.style.display=otogState[k]?'block':'none';}if(k==='multipla'){setDisp('o_capienza_pp_row',otogState[k]?'flex':'none');setDisp('o_acc_opts_row',otogState[k]?'block':'none');if(!otogState[k]){['cap_persona','acc_email_obb','acc_tel_obb'].forEach(function(kk){otogState[kk]=false;var e=document.getElementById('otog_'+kk);if(e)e.classList.remove('on');});}}if(k==='online'){setOnlineUI('ev',otogState.online);}}
 function stog(k){stogState[k]=!stogState[k];var el=document.getElementById('stog_'+k);if(el){if(stogState[k])el.classList.add('on');else el.classList.remove('on');}if(k==='pasto'){var s=document.getElementById('spasto_sub');if(s)s.style.display=stogState[k]?'block':'none';}if(k==='multipla'){setDisp('s_capienza_pp_row',stogState[k]?'flex':'none');setDisp('s_acc_opts_row',stogState[k]?'block':'none');if(!stogState[k]){['cap_persona','acc_email_obb','acc_tel_obb'].forEach(function(kk){stogState[kk]=false;var e=document.getElementById('stog_'+kk);if(e)e.classList.remove('on');});}}if(k==='online'){setOnlineUI('se',stogState.online);}}
 
@@ -1578,15 +2633,15 @@ function promuoviAttesa(id){var r=currentRegs.find(function(x){return x.id===id;
    ============================================================ */
 function demoSendLink(){var ev=currentEv;if(!ev||!ev.evento_online||!ev.link_partecipazione)return;var regs=dbGetRegs(ev.id).filter(function(r){return!r.in_lista_attesa&&r.email;});if(!regs.length){alert('Nessun iscritto confermato a cui inviare il link.');return;}if(!confirm('Inviare il link di partecipazione a '+regs.length+' iscritti? (simulazione demo)'))return;showToast('Link inviato a '+regs.length+' iscritti','g');}
 function showEmailSim(reg,ev,inAttesa){var TW=termWords(ev.terminologia);var fromLine=ev.mittente_nome?'<div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border)">Mittente: <strong>'+escHtml(ev.mittente_nome)+'</strong> tramite EventsFun</div>':'';var linkLine=(!inAttesa&&ev.evento_online&&ev.link_partecipazione)?'<br>Link di partecipazione: '+escHtml(ev.link_partecipazione):'';document.getElementById('emailSimTo').textContent='A: '+reg.nome+' '+reg.cognome+' <'+reg.email+'>';var qrNote=(!inAttesa&&ev.opt_qr_checkin)?'<br><br>&#128247; <strong>Il tuo QR di ingresso</strong> &egrave; allegato in questa email -- mostralo all\'entrata per il check-in.':'';document.getElementById('emailSimBody').innerHTML=fromLine+(inAttesa?'<strong>Sei in lista d\'attesa</strong> per <strong>'+escHtml(ev.nome)+'</strong>.<br>Data: '+isoToIt(ev.data_iso)+(ev.ora?' ore '+ev.ora:'')+'.<br>Se si libera un posto ti contatteremo a questa email.':'<strong>La tua '+TW.n+' &egrave; confermata</strong> per <strong>'+escHtml(ev.nome)+'</strong>.<br>Data: '+isoToIt(ev.data_iso)+(ev.ora?' ore '+ev.ora:'')+(ev.luogo?'<br>'+(ev.evento_online?'Piattaforma':'Luogo')+': '+escHtml(ev.luogo):'')+linkLine+'<br><br>Per informazioni: '+escHtml(ev.email_contatto||'')+(ev.telefono_contatto?' &middot; &#128222; '+escHtml(ev.telefono_contatto):'')+((ev.telefono_contatto&&ev.contatto_whatsapp)?' &middot; <span style="color:#1faa53;font-weight:700">&#128172; Scrivici su WhatsApp</span>':'')+qrNote);document.getElementById('emailSimOv').classList.add('on');}
-function closeEmailSim(){document.getElementById('emailSimOv').classList.remove('on');}
+function closeEmailSim(){document.getElementById('emailSimOv').classList.remove('on');if(_emailSimDefault){var t=document.getElementById('emailSimTitle'),n=document.getElementById('emailSimNote');if(t)t.innerHTML=_emailSimDefault.t;if(n)n.innerHTML=_emailSimDefault.n;}}
 
 /* ============================================================
    LANDING VIEW IN-PAGE
    ============================================================ */
 function openLandingView(){var ev=currentEv;if(!ev)return;renderLandingContent(ev,false);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';advanceGuide('landing_opened');}
-function closeLanding(){document.getElementById('landingOv').classList.remove('on');document.body.style.overflow='';currentRegs=currentEv?dbGetRegs(currentEv.id):[];renderDash();if(_lpPendingEmailSim){var p=_lpPendingEmailSim;_lpPendingEmailSim=null;showToast('Iscrizione completata!','g');showEmailSim(p.reg,p.ev,false);advanceGuide('registered');}}
-function openPreviewFromForm(){var nome=getVal('ev_nome').trim(),data=getVal('ev_data'),ora=getVal('ev_ora').trim(),luogo=getVal('ev_luogo').trim();if(!nome||!data||!ora||!luogo){alert('Compila almeno Nome, Data, Ora e Luogo per vedere l\'anteprima.');return;}var img=document.getElementById('ev_img_preview');var ev=sanitizeEvent({id:'preview',nome:nome,data_iso:data,ora:ora,luogo:luogo,email_contatto:getVal('ev_email_contatto').trim(),descrizione:getVal('ev_desc').trim(),capienza:parseInt(getVal('ev_cap'))||null,immagine:(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null,sponsors:collectSP('cspList'),custom_fields:collectCF('ccfList'),opt_multipla:otogState.multipla,evento_online:otogState.online,link_partecipazione:getVal('ev_link').trim(),link_invio:(document.getElementById('ev_link_invio')||{}).value||'entrambi',opt_bambini:otogState.bambini,opt_tipo:otogState.tipo,opt_pasto:otogState.pasto,opt_pasto_pranzo:!otogState.pasto||document.getElementById('oopt_pranzo').checked,opt_pasto_cena:!otogState.pasto||document.getElementById('oopt_cena').checked,opt_newsletter:otogState.newsletter,opt_capienza:otogState.capienza,terminologia:(document.getElementById('ev_terminologia')||{}).value||'iscrizione',landing_tema:evTemaState||'chiaro',attivo:true,bozza:false});renderLandingContent(ev,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
-function openPreviewFromSettings(){var ev=currentEv;if(!ev)return;var si=document.getElementById('se_img_preview');var evP=sanitizeEvent(Object.assign({},ev,{nome:getVal('se_nome').trim()||ev.nome,capienza:parseInt(getVal('se_cap'))||null,data_iso:getVal('se_data'),ora:getVal('se_ora').trim(),luogo:getVal('se_luogo').trim(),descrizione:getVal('se_desc').trim(),immagine:(si&&si.style.display!=='none'&&si.src&&si.src!==window.location.href)?si.src:null,opt_multipla:stogState.multipla,evento_online:stogState.online,link_partecipazione:getVal('se_link').trim(),link_invio:(document.getElementById('se_link_invio')||{}).value||'entrambi',opt_bambini:stogState.bambini,opt_tipo:stogState.tipo,opt_pasto:stogState.pasto,opt_pasto_pranzo:!stogState.pasto||document.getElementById('sopt_pranzo').checked,opt_pasto_cena:!stogState.pasto||document.getElementById('sopt_cena').checked,opt_newsletter:stogState.newsletter,opt_capienza:stogState.capienza,sponsors:collectSP('sspList'),custom_fields:collectCF('scfList'),terminologia:(document.getElementById('se_terminologia')||{}).value||(ev.terminologia||'iscrizione'),landing_tema:seTemaState||'chiaro'}));renderLandingContent(evP,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
+function closeLanding(){document.getElementById('landingOv').classList.remove('on');if(!document.querySelector('.ov.on'))document.body.classList.remove('ov-aperto');document.body.style.overflow='';currentRegs=currentEv?dbGetRegs(currentEv.id):[];renderDash();if(_lpPendingEmailSim){var p=_lpPendingEmailSim;_lpPendingEmailSim=null;showToast('Iscrizione completata!','g');showEmailSim(p.reg,p.ev,false);advanceGuide('registered');}else if(_lpPendingRichSim){var q=_lpPendingRichSim;_lpPendingRichSim=null;showToast('Richiesta di informazioni ricevuta','g');showRichSim(q.r,q.ev);}}
+function openPreviewFromForm(){var nome=getVal('ev_nome').trim(),data=getVal('ev_data'),ora=getVal('ev_ora').trim(),luogo=getVal('ev_luogo').trim();if(!nome||!data||!ora||!luogo){alert('Compila almeno Nome, Data, Ora e Luogo per vedere l\'anteprima.');return;}var img=document.getElementById('ev_img_preview');var ev=sanitizeEvent(Object.assign({id:'preview',nome:nome,data_iso:data,ora:ora,luogo:luogo,email_contatto:getVal('ev_email_contatto').trim(),descrizione:getVal('ev_desc').trim(),capienza:parseInt(getVal('ev_cap'))||null,immagine:(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null,sponsors:collectSP('cspList'),custom_fields:collectCF('ccfList'),opt_multipla:otogState.multipla,evento_online:otogState.online,link_partecipazione:getVal('ev_link').trim(),link_invio:(document.getElementById('ev_link_invio')||{}).value||'entrambi',opt_bambini:otogState.bambini,opt_tipo:otogState.tipo,opt_pasto:otogState.pasto,opt_pasto_pranzo:!otogState.pasto||document.getElementById('oopt_pranzo').checked,opt_pasto_cena:!otogState.pasto||document.getElementById('oopt_cena').checked,opt_newsletter:otogState.newsletter,opt_capienza:otogState.capienza,terminologia:(document.getElementById('ev_terminologia')||{}).value||'iscrizione',landing_tema:evTemaState||'chiaro',attivo:true,bozza:false},infoFields('ev')));renderLandingContent(ev,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
+function openPreviewFromSettings(){var ev=currentEv;if(!ev)return;var si=document.getElementById('se_img_preview');var evP=sanitizeEvent(Object.assign({},ev,{nome:getVal('se_nome').trim()||ev.nome,capienza:parseInt(getVal('se_cap'))||null,data_iso:getVal('se_data'),ora:getVal('se_ora').trim(),luogo:getVal('se_luogo').trim(),descrizione:getVal('se_desc').trim(),immagine:(si&&si.style.display!=='none'&&si.src&&si.src!==window.location.href)?si.src:null,opt_multipla:stogState.multipla,evento_online:stogState.online,link_partecipazione:getVal('se_link').trim(),link_invio:(document.getElementById('se_link_invio')||{}).value||'entrambi',opt_bambini:stogState.bambini,opt_tipo:stogState.tipo,opt_pasto:stogState.pasto,opt_pasto_pranzo:!stogState.pasto||document.getElementById('sopt_pranzo').checked,opt_pasto_cena:!stogState.pasto||document.getElementById('sopt_cena').checked,opt_newsletter:stogState.newsletter,opt_capienza:stogState.capienza,sponsors:collectSP('sspList'),custom_fields:collectCF('scfList'),terminologia:(document.getElementById('se_terminologia')||{}).value||(ev.terminologia||'iscrizione'),landing_tema:seTemaState||'chiaro'},infoFields('se')));renderLandingContent(evP,true);document.getElementById('landingOv').classList.add('on');document.body.style.overflow='hidden';}
 
 /* ============================================================
    LANDING HTML RENDERER
@@ -1598,7 +2653,7 @@ function renderLandingContent(ev,previewOnly){
   var conf=regs.filter(function(r){return!r.in_lista_attesa;});
   var postiOcc=ev.opt_cap_persona&&ev.opt_multipla?conf.reduce(function(a,r){return a+(r.adulti||1)+(r.bambini||0);},0):conf.length;
   var capienzaPiena=ev.capienza&&postiOcc>=ev.capienza;
-  var closed=previewOnly?false:isClosed(ev);
+  var closed=previewOnly?false:(isClosed(ev)||ev.attivo===false);
 
   var bg=dark?'#0A0A0A':'#f4f3f0',cardBg=dark?'#111':'#fff',cardBorder=dark?'border:1px solid rgba(255,255,255,.07);':'',inpBg=dark?'rgba(255,255,255,.05)':'#fafaf8',inpBorder=dark?'rgba(255,255,255,.12)':'#e0ddd8';
   var wrapS='font-family:\'DM Sans\',sans-serif;background:'+bg+';color:'+(dark?'#F5F0E8':'#1a1a1a')+';min-height:100vh;padding:40px 16px 80px';
@@ -1632,21 +2687,27 @@ function renderLandingContent(ev,previewOnly){
   /* Capture current event fields for lpSubmit closure */
   var evId=ev.id,evCF=JSON.stringify(ev.custom_fields||[]),evOptMult=ev.opt_multipla,evCap=ev.capienza||0;
 
-  var html='<div style="'+wrapS+'"><div style="max-width:520px;margin:0 auto">'
-    +'<div style="'+cardS+'">'
-    +imgHtml
+  var lpDescHtml=ev.descrizione?'<p class="ev-desc" style="font-size:13px;color:'+(dark?'rgba(245,240,232,.55)':'#666')+';line-height:1.7;white-space:pre-wrap;word-break:break-word">'+lpAutoLink(ev.descrizione)+'</p>':'';
+  var lpHeadHtml=imgHtml
     +'<div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#aaa;margin-bottom:10px">'+isoToIt(ev.data_iso)+(ev.ora?' &middot; '+ev.ora:'')+'</div>'
     +'<h1 style="font-family:Syne,sans-serif;font-size:26px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px;color:'+(dark?'#F5F0E8':'#1a1a1a')+'">'+escHtml(ev.nome)+'</h1>'
-    +((ev.luogo||ev.evento_online)?'<div style="font-size:13px;color:'+(dark?'rgba(245,240,232,.55)':'#666')+';margin-bottom:12px">'+(ev.evento_online?'&#128187; Evento online'+(ev.luogo?' &middot; '+escHtml(ev.luogo):''):'&#128205; '+escHtml(ev.luogo))+'</div>':'')
-    +(ev.descrizione?'<p style="font-size:13px;color:'+(dark?'rgba(245,240,232,.55)':'#666')+';line-height:1.7">'+escHtml(ev.descrizione)+'</p>':'')
-    +'</div>'
-    +capHtml
-    +'<div style="'+cardS+'">'+formHtml+'</div>'
+    +((ev.luogo||ev.evento_online)?'<div style="font-size:13px;color:'+(dark?'rgba(245,240,232,.55)':'#666')+';margin-bottom:12px">'+(ev.evento_online?'&#128187; Evento online'+(ev.luogo?' &middot; '+escHtml(ev.luogo):''):'&#128205; '+escHtml(ev.luogo))+'</div>':'');
+  var lpModo=lpModalita(ev);
+  window._lpInfoEv=ev;
+  window._lpInfoS={dark:dark,txt:(dark?'#F5F0E8':'#1a1a1a'),sub:(dark?'rgba(245,240,232,.6)':'#666'),cardS:cardS,inpS:inpS,lblS:lblS,alertS:alertS,closedS:'background:'+(dark?'rgba(160,64,64,.12)':'#f5e6e6')+';border:1px solid '+(dark?'rgba(160,64,64,.3)':'#e0a0a0')+';border-radius:10px;padding:14px;text-align:center;color:'+(dark?'#e07070':'#a04040')+';font-size:13px;font-weight:600'};
+  var lpBody=(lpModo==='iscrizioni')
+    ?('<div style="'+cardS+'">'+lpHeadHtml+lpDescHtml+'</div>'+capHtml+'<div style="'+cardS+'">'+formHtml+'</div>')
+    :lpInfoPage(ev,lpModo,closed,window._lpInfoS,lpHeadHtml,lpDescHtml,capHtml,formHtml);
+  var html='<div class="lp-wrap'+(dark?' lp-dark':'')+'" style="'+wrapS+'"><div style="max-width:520px;margin:0 auto">'
+    +lpBody
     +spHtml
     +'<div style="margin-top:32px;text-align:center"><div style="display:inline-flex;align-items:center;gap:8px;background:#0A0A0A;border-radius:10px;padding:10px 20px"><span style="font-family:Syne,sans-serif;font-size:14px;font-weight:800;color:#F5F0E8;letter-spacing:-.3px">Events<span style="color:#C9A96E">Fun</span></span><span style="font-size:11px;color:rgba(245,240,232,.45);border-left:1px solid rgba(255,255,255,.12);padding-left:8px;margin-left:4px">Gestito con EventsFun</span></div></div>'
     +'</div></div>';
 
-  document.getElementById('landingContent').innerHTML=html;
+  document.getElementById('landingContent').innerHTML=html;document.body.classList.add('ov-aperto');
+  var lpBar=document.querySelector('#landingOv .landing-bar');document.getElementById('landingContent').style.setProperty('--lpbar',(lpBar?lpBar.offsetHeight:52)+'px');
+  if(lpModo==='entrambe')lpVaiScheda(ev.landing_scheda_iniziale==='iscrizione'?'iscrizione':'info',true);
+  if(lpModo!=='iscrizioni'&&!closed)lpAggiornaCanale();
   /* Init counters */
   window._lpAdulti=1;window._lpBambini=0;
   /* Attach submit */
@@ -1811,8 +2872,8 @@ function exportPDF(){var ev=currentEv;if(!ev)return;var regs=currentRegs.filter(
    UTILS
    ============================================================ */
 function showView(n){document.querySelectorAll('.view').forEach(function(v){v.classList.remove('on');});var el=document.getElementById('view-'+n);if(el)el.classList.add('on');if(n==='presenze')renderPresenze();}
-function openOv(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden';}
-function closeOv(id){document.getElementById(id).classList.remove('on');document.body.style.overflow='';}
+function openOv(id){document.getElementById(id).classList.add('on');document.body.style.overflow='hidden';document.body.classList.add('ov-aperto');}
+function closeOv(id){document.getElementById(id).classList.remove('on');document.body.style.overflow='';if(!document.querySelector('.ov.on'))document.body.classList.remove('ov-aperto');}
 function showToast(msg,t){var el=document.getElementById('toast'+t.toUpperCase());el.textContent=(t==='g'?'✓ ':'✕ ')+msg;el.style.display='block';setTimeout(function(){el.style.display='none';},3000);}
 
 /* ============================================================
@@ -1827,7 +2888,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.3 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.4 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW
