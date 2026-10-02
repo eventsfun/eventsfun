@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Newsletter Agenzia | v2.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
+<!-- EventsFun | Newsletter Agenzia | v2.2 B27: invio immediato protetto (codice di accesso + eventi, destinatari calcolati dal server, limite 24 ore, storico scritto dal server) -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -1501,13 +1501,18 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
     try {
       const htmlEmail = buildEmailHtml(mittente, corpo, oggetto);
 
+      const eventIds = [...checkboxes].map(cb => cb.value);
+
       const res = await fetch(SUPA_URL + '/functions/v1/send-newsletter', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'apikey': SUPA_ANON,
           'Authorization': 'Bearer ' + SUPA_ANON
         },
         body: JSON.stringify({
+          token: currentToken,
+          event_ids: eventIds,
           subject: oggetto,
           html: htmlEmail,
           emails: emails,
@@ -1517,7 +1522,17 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
         })
       });
 
-      const result = await res.json();
+      let result = {};
+      try { result = await res.json(); } catch (e) { result = {}; }
+
+      if (res.status === 401 || res.status === 403) {
+        showAlert(alertEl, 'error', 'Accesso non valido o abbonamento scaduto. Torna alla dashboard e riprova.');
+        return;
+      }
+      if (res.status === 429) {
+        showAlert(alertEl, 'error', 'Hai raggiunto il limite di 10 newsletter nelle ultime 24 ore. Potrai inviarne un\'altra più tardi.');
+        return;
+      }
 
       if (result.success) {
         showAlert(alertEl, 'success', 'Newsletter inviata! ' + result.sent + ' email inviate' + (result.failed > 0 ? ', ' + result.failed + ' fallite.' : '.'));
@@ -1526,7 +1541,8 @@ Per cancellarti, rispondi a questa email con oggetto "Cancellami".</div>
           const ev = allEvents.find(e => e.id === cb.value);
           return ev ? ev.nome : '';
         }).filter(Boolean).join(', ');
-        await salvaLog(oggetto, mittente, replyto, emails.length, eventiSelezionati, htmlEmail);
+        // Lo storico lo scrive il server (B27); la pagina lo scrive solo se il server non l'ha fatto
+        if (!result.logged) await salvaLog(oggetto, mittente, replyto, emails.length, eventiSelezionati, htmlEmail);
         // Reset form
         document.getElementById('nl-oggetto').value = '';
         document.getElementById('editor').innerHTML = '';
