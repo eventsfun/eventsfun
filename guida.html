@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.5 -->
+<!-- EventsFun | Guida in-app | v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -63,6 +63,11 @@ ul.dots li::before{content:"";position:absolute;left:4px;top:13px;width:6px;heig
 .badge-pro{background:rgba(201,169,110,0.14);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
 .badge-ag{background:rgba(168,130,201,0.14);color:#c4a9e0;border:1px solid rgba(168,130,201,0.32)}
 .badge-all{background:rgba(126,217,154,0.14);color:var(--green);border:1px solid rgba(126,217,154,0.32)}
+.badge-info{background:rgba(94,201,190,0.14);color:#86dccf;border:1px solid rgba(94,201,190,0.34)}
+
+/* COLLEGAMENTI NEL TESTO */
+a.lnk{color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4)}
+a.lnk:hover{border-bottom-color:var(--gold)}
 
 /* BOX NOTE */
 .note{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:14px 18px;margin:16px 0;font-size:14px;color:var(--text-muted)}
@@ -141,6 +146,13 @@ a.term:hover{border-bottom-style:solid}
           <a href="#qr-checkin">Il check-in con QR</a>
         </div>
         <div class="idx-group">
+          <div class="idx-group-name">Richiesta informazioni</div>
+          <a href="#richiesta-info">Cosa raccoglie la pagina</a>
+          <a href="#pagina-info">Comporre la pagina informazioni</a>
+          <a href="#richieste">Ricevere e gestire le richieste</a>
+          <a href="#punto-info">Il Punto Info</a>
+        </div>
+        <div class="idx-group">
           <div class="idx-group-name">Funzioni avanzate</div>
           <a href="#tipo-pasti">Tipo iscritto e pasti</a>
           <a href="#sponsor">Sponsor</a>
@@ -157,6 +169,7 @@ a.term:hover{border-bottom-style:solid}
           <div class="idx-group-name">Account e accesso</div>
           <a href="#account">Area personale e accesso</a>
           <a href="#dispositivi">Usare da telefono</a>
+          <a href="#abbonamento">Disdetta e fine abbonamento</a>
         </div>
         <div class="idx-group">
           <div class="idx-group-name">Privacy e dati</div>
@@ -181,7 +194,7 @@ a.term:hover{border-bottom-style:solid}
     </div>
 
     <div class="note">
-      <p style="margin:0;color:var(--text-muted)">Questa guida copre tutte le funzioni di EventsFun, di tutti i piani. Le voci con l'etichetta <strong>Pro e Agenzia</strong> o <strong>Solo Agenzia</strong> sono incluse solo in quei piani: se le vedi ma il tuo piano non le ha, è del tutto normale. Quando ti servono, puoi passare a un piano superiore in qualsiasi momento dalla tua <a href="area-personale.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4)">area personale</a>.</p>
+      <p style="margin:0;color:var(--text-muted)">Questa guida copre tutte le funzioni di EventsFun, di tutti i piani. Le voci con l'etichetta <strong>Pro e Agenzia</strong> o <strong>Solo Agenzia</strong> sono incluse solo in quei piani: se le vedi ma il tuo piano non le ha, è del tutto normale. Se hai il <strong>Punto Info</strong>, le parti che ti riguardano sono quelle sulla richiesta informazioni e la sezione dedicata al Punto Info. Quando ti servono, puoi passare a un piano superiore in qualsiasi momento dalla tua <a href="area-personale.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4)">area personale</a>.</p>
     </div>
 
     <!-- PER INIZIARE -->
@@ -321,6 +334,72 @@ a.term:hover{border-bottom-style:solid}
       <div class="note">Riceve il QR solo il capogruppo. Gli accompagnatori si segnano presenti a mano dalla lista.</div>
     </section>
 
+    <!-- RICHIESTA INFORMAZIONI -->
+    <section id="richiesta-info">
+      <h2>Richiesta informazioni: cosa raccoglie la pagina <span class="badge badge-all">Tutti i piani</span></h2>
+      <p>Non tutti gli eventi hanno bisogno di iscrizioni. Per una sagra, una festa di paese, una mostra o un corso spesso basta farsi contattare: sulle locandine c'è scritto "per info chiama il...". Con la <a href="#g-richiesta" class="term">richiesta informazioni</a> metti sulla locandina il QR o il link della pagina dell'evento al posto del numero: chi è interessato legge i dettagli e, se vuole, ti lascia i suoi recapiti per essere ricontattato. Tu ricevi le richieste in ordine, in un unico posto, invece di essere sommerso di chiamate e messaggi.</p>
+      <p>Per ogni evento scegli cosa raccoglie la pagina, quando crei l'evento o nelle sue impostazioni, alla voce <strong>Cosa raccoglie la pagina dell'evento</strong>:</p>
+      <ul class="dots">
+        <li><strong>Iscrizioni</strong>: le persone si iscrivono all'evento, come sempre. È la scelta predefinita.</li>
+        <li><strong>Informazioni</strong>: le persone ti lasciano i recapiti per essere ricontattate. Spariscono posti, capienza e lista d'attesa: la pagina mostra i dettagli dell'evento e il modulo per chiedere informazioni.</li>
+        <li><strong>Entrambe</strong>: la pagina ha due schede, una con le informazioni e una per iscriversi. Chi vuole solo chiedere qualcosa usa la prima, chi vuole partecipare la seconda, e si può passare da una all'altra in qualsiasi momento.</li>
+      </ul>
+      <p>Puoi cambiare la scelta quando vuoi. Se passi a sola Informazioni un evento che ha già degli iscritti, la pagina smette di accettare nuove iscrizioni, ma chi è già iscritto resta nella dashboard.</p>
+      <h3>Con "Entrambe": la scheda che si apre per prima</h3>
+      <p>Nella sezione <strong>Pagina informazioni</strong> dell'evento, con <strong>Scheda che si apre per prima</strong> scegli cosa vede per primo chi apre la pagina: "Informazioni" se vuoi che le persone leggano prima i dettagli (programma, piantina, orari), "Iscriviti" se il tuo obiettivo principale è raccogliere iscrizioni.</p>
+      <p>Sotto il link pubblico dell'evento trovi anche i <strong>Link diretti alle singole schede</strong>, facoltativi: due indirizzi che aprono direttamente la scheda delle informazioni o quella dell'iscrizione, utili per esempio in un post social o in un'email. Il link normale, lo stesso del QR code, apre la scheda che hai scelto ed è quello da usare di solito.</p>
+    </section>
+
+    <section id="pagina-info">
+      <h2>Comporre la pagina informazioni <span class="badge badge-all">Tutti i piani</span></h2>
+      <p>Quando la pagina raccoglie informazioni, da sola o insieme alle iscrizioni, nelle impostazioni dell'evento compare la sezione <strong>Pagina informazioni</strong>. Qui prepari quello che le persone leggono prima di contattarti: tutto quello che su una locandina non ci sta.</p>
+      <ol class="steps">
+        <li>Scrivi la <strong>descrizione</strong> dell'evento come sempre: compare in alto nella pagina.</li>
+        <li>In <strong>Blocchi della pagina</strong> aggiungi, se vuoi, blocchi di testo con "+ Testo" e immagini con "+ Immagine": programma, orari, piantina, mappa, foto. Compaiono sotto la descrizione nell'ordine che scegli, e puoi spostarli o eliminarli. Le immagini vengono alleggerite in automatico, così la pagina si apre veloce anche dal telefono.</li>
+        <li>Gli indirizzi web che scrivi nei testi, come https://..., diventano cliccabili da soli. Vale anche per la descrizione.</li>
+        <li>In <strong>Modulo richiesta informazioni</strong> decidi con l'interruttore <strong>Email obbligatoria</strong> se chi ti scrive deve lasciare sempre anche la propria email.</li>
+        <li>Premi <strong>Salva</strong>: la pagina si aggiorna subito.</li>
+      </ol>
+      <h3>Cosa lascia chi ti chiede informazioni</h3>
+      <p>Il modulo è semplice: nome e cognome, come preferisce essere ricontattato (telefono, WhatsApp o email), il recapito che serve per quel canale, un messaggio facoltativo e il consenso al trattamento dei dati. Dopo l'invio vede un messaggio di ringraziamento che gli conferma che la richiesta ti è arrivata e che verrà ricontattato nel modo che ha scelto.</p>
+      <div class="note">La richiesta informazioni si chiude da sola il giorno dopo la data dell'evento, come le iscrizioni. Puoi anche chiuderla e riaprirla prima con <strong>Cambia stato</strong> nella dashboard: le richieste già arrivate restano dove sono.</div>
+    </section>
+
+    <section id="richieste">
+      <h2>Ricevere e gestire le richieste <span class="badge badge-all">Tutti i piani</span></h2>
+      <h3>Gli avvisi via email</h3>
+      <p>Nella sezione <strong>Avvisi per le richieste</strong> scegli come vuoi sapere che qualcuno ti ha scritto:</p>
+      <ul class="dots">
+        <li><strong>Un'email per ogni richiesta</strong>: lo sai subito. Comodo se ne ricevi poche e vuoi rispondere in fretta. Se la persona ha lasciato la sua email, ti basta premere "Rispondi".</li>
+        <li><strong>Un riepilogo al giorno</strong>: una sola email, all'orario che scegli (ora italiana), con tutte le richieste nuove. Comodo nei periodi con molte richieste. Se in un giorno non arriva nessuna richiesta, il riepilogo non parte.</li>
+      </ul>
+      <p>Gli avvisi arrivano all'<strong>email di contatto</strong> dell'evento (nel Punto Info si chiama <strong>Email per gli avvisi</strong>). In ogni avviso trovi i tasti per chiamare, scrivere su WhatsApp o rispondere via email.</p>
+      <h3>La lista delle richieste</h3>
+      <p>Nella dashboard, dentro l'evento, trovi la sezione <strong>Richieste di contatto</strong>, separata dagli iscritti: le richieste non occupano posti e non finiscono nelle presenze né negli elenchi degli iscritti. Per ogni richiesta vedi nome, data, recapiti, messaggio e canale preferito.</p>
+      <ul class="dots">
+        <li>I tasti <strong>Chiama</strong>, <strong>WhatsApp</strong> ed <strong>Email</strong> aprono direttamente il telefono, WhatsApp o la posta. Quello evidenziato in oro è il canale che la persona preferisce.</li>
+        <li><strong>Segna come contattato</strong> ti aiuta a tenere il conto di chi hai già ricontattato. Serve solo a te: chi ha fatto la richiesta non riceve nulla. Se ti sbagli, la rimetti tra quelle da contattare con "Segna da contattare".</li>
+        <li>Con il filtro scegli se vedere tutte le richieste, solo quelle da contattare o solo quelle già contattate.</li>
+        <li><strong>Aggiorna</strong> ricarica la lista, utile se aspetti nuove richieste mentre la pagina è aperta.</li>
+        <li><strong>Elimina</strong> cancella una richiesta per sempre.</li>
+      </ul>
+      <div class="note">Per sapere quanto tempo restano disponibili le richieste, vedi <a href="#durata-dati" class="lnk">Per quanto restano i dati</a>.</div>
+    </section>
+
+    <section id="punto-info">
+      <h2>Il Punto Info <span class="badge badge-info">Punto Info</span></h2>
+      <p>Il <a href="#g-punto-info" class="term">Punto Info</a> è l'abbonamento pensato per chi ha bisogno solo della richiesta informazioni, senza iscrizioni: comuni, pro loco, associazioni, parrocchie, feste e sagre. Comprende eventi illimitati, ognuno con la sua pagina informazioni e il suo modulo per farsi ricontattare, con un solo accesso.</p>
+      <p>Ha una dashboard dedicata, più semplice: ci sono gli eventi con la loro pagina informazioni, il link e il QR code da condividere, le richieste di contatto e gli avvisi. Non ci sono iscritti, presenze, newsletter, statistiche, rubrica e fornitori, perché riguardano le iscrizioni o il piano Agenzia.</p>
+      <h3>I primi passi</h3>
+      <ol class="steps">
+        <li><strong>Crea l'evento</strong>: nome, data, ora, luogo, descrizione e, se vuoi, i blocchi con programma, orari o piantina (vedi <a href="#pagina-info" class="lnk">Comporre la pagina informazioni</a>). Inserisci l'<strong>email per gli avvisi</strong>, dove ti arriveranno le richieste.</li>
+        <li><strong>Condividi il link</strong> o il QR code: sulla locandina, sui social, ovunque prima scrivevi "per info chiama il...".</li>
+        <li><strong>Ricevi le richieste</strong>: ti arriva un avviso via email e le trovi tutte nella sezione Richieste di contatto dell'evento.</li>
+      </ol>
+      <h3>Se vuoi anche raccogliere iscrizioni</h3>
+      <p>Nella dashboard trovi il riquadro <strong>Vuoi anche raccogliere iscrizioni?</strong> con il pulsante "Scopri i piani". La richiesta informazioni è inclusa in tutti i piani con iscrizioni (Base, Pro e Agenzia): per usarla insieme alle iscrizioni acquisti il piano che ti serve. Il nuovo piano ha la sua dashboard, separata: gli eventi già creati nel Punto Info restano lì e non vengono spostati. Se il Punto Info non ti serve più, puoi disdirlo a parte (vedi <a href="#abbonamento" class="lnk">Disdetta e fine abbonamento</a>).</p>
+    </section>
+
     <!-- FUNZIONI AVANZATE -->
     <section id="tipo-pasti">
       <h2>Tipo iscritto e pasti <span class="badge badge-pro">Pro e Agenzia</span></h2>
@@ -363,7 +442,8 @@ a.term:hover{border-bottom-style:solid}
         <li>Scrivi oggetto e testo del messaggio. Puoi formattare il testo (grassetto, corsivo, elenchi) e inserire link.</li>
         <li>Puoi aggiungere immagini: con "Carica img" scegli un'immagine dal tuo dispositivo e viene inserita nel messaggio, oppure con "Img URL" incolli il link di un'immagine già online.</li>
         <li>Puoi aggiungere <a href="#g-allegato" class="term">allegati</a> con "Allega": file che l'iscritto trova nell'email e può scaricare, ad esempio un PDF o una locandina. Limiti: fino a 3 MB per immagine, 5 MB per ogni allegato e 15 MB di allegati in totale.</li>
-        <li>Scegli a chi inviarlo tra i tuoi iscritti.</li>
+        <li>Scegli gli eventi: la newsletter va agli iscritti di quegli eventi che hanno dato il consenso a essere ricontattati.</li>
+        <li>Puoi inviare fino a 10 newsletter nelle 24 ore. Se raggiungi il limite, la pagina te lo dice e potrai inviarne un'altra più tardi.</li>
         <li>Con "Anteprima" vedi com'è fatta l'email prima di inviarla, immagini comprese.</li>
         <li>Trovi lo storico degli invii con l'anteprima di ciò che hai mandato.</li>
       </ul>
@@ -423,6 +503,35 @@ a.term:hover{border-bottom-style:solid}
       <p>La prima volta che apri la dashboard dal link, il dispositivo la ricorda: le volte successive la ritrovi anche senza il link. Per usarla su un altro dispositivo, accedi dall'area personale con email e password.</p>
     </section>
 
+    <section id="abbonamento">
+      <h2>Disdetta e fine abbonamento <span class="badge badge-ag">Agenzia</span> <span class="badge badge-info">Punto Info</span></h2>
+      <p>Agenzia e Punto Info sono abbonamenti che si rinnovano da soli. Li gestisci dalla tua <a href="area-personale.html" class="lnk">area personale</a>: lì vedi lo stato dell'abbonamento e trovi il collegamento al portale dei pagamenti.</p>
+      <h3>Come disdire</h3>
+      <ol class="steps">
+        <li>Entra nell'area personale e premi <strong>Gestisci abbonamento</strong>: si apre il portale di Stripe, il servizio che gestisce i pagamenti.</li>
+        <li>Annulla l'abbonamento dal portale.</li>
+        <li>Ricevi un'email di conferma e nell'area personale lo stato diventa <strong>Disdetta programmata</strong>.</li>
+      </ol>
+      <p>La disdetta non è immediata: l'abbonamento resta attivo fino alla fine del periodo già pagato e poi non si rinnova. Fino a quella data puoi usare tutto come sempre.</p>
+      <h3>Se cambi idea</h3>
+      <p>Prima della data di fine puoi tornare sui tuoi passi: dall'area personale premi <strong>Gestisci abbonamento o riattiva</strong> e nel portale scegli <strong>Riattiva piano</strong>. L'abbonamento riprende a rinnovarsi normalmente e ricevi un'email di conferma.</p>
+      <h3>Dopo la fine del periodo: 7 giorni in più</h3>
+      <p>Finito il periodo pagato, hai ancora <strong>7 giorni</strong> per consultare e scaricare quello che ti serve. In dashboard compare l'avviso <strong>Abbonamento annullato</strong> con i giorni che restano.</p>
+      <ul class="dots">
+        <li><strong>Agenzia</strong>: è il momento di scaricare gli elenchi degli iscritti e delle presenze.</li>
+        <li><strong>Punto Info</strong>: è il momento di ricontattare le ultime richieste.</li>
+      </ul>
+      <h3>Quando l'abbonamento è scaduto</h3>
+      <p>Passati i 7 giorni, al posto della dashboard compare la schermata <strong>Abbonamento scaduto</strong>. Le pagine dei tuoi eventi non sono più visibili al pubblico e non si possono più ricevere iscrizioni né richieste.</p>
+      <ul class="dots">
+        <li><strong>Vengono cancellati</strong>: iscritti, liste d'attesa, richieste di contatto e newsletter programmate.</li>
+        <li><strong>Restano conservati per 12 mesi</strong>: eventi, pagine e impostazioni e, per l'Agenzia, anche rubrica, fornitori e costi e storico delle newsletter. Se ti riabboni con la stessa email entro 12 mesi, li ritrovi dove li avevi lasciati. Dopo 12 mesi viene cancellato tutto.</li>
+      </ul>
+      <h3>Se un pagamento non va a buon fine</h3>
+      <p>Se il rinnovo non riesce, per esempio per una carta scaduta, il sistema di pagamento riprova da solo nei giorni successivi. Nel frattempo tutto continua a funzionare: in dashboard e nell'area personale compare l'avviso <strong>Pagamento non riuscito</strong> con il collegamento per aggiornare il metodo di pagamento.</p>
+      <div class="note">Tutti i dettagli sono nell'<a href="privacy.html#fine-abbonamento" class="lnk" target="_blank" rel="noopener">informativa privacy, alla parte sulla fine dell'abbonamento</a>.</div>
+    </section>
+
     <!-- PRIVACY E DATI -->
     <section id="privacy">
       <h2>Privacy e dati, in parole semplici</h2>
@@ -435,8 +544,8 @@ a.term:hover{border-bottom-style:solid}
       <h2>Per quanto restano i dati</h2>
       <p>Dipende dal piano.</p>
       <ul class="dots">
-        <li><strong>Base e Pro</strong>: i dati degli iscritti restano disponibili fino a 30 giorni dopo la data dell'evento, poi vengono eliminati. Conviene esportarli prima se vuoi conservarli.</li>
-        <li><strong>Agenzia</strong> <span class="badge badge-ag">Solo Agenzia</span>: i dati restano sempre disponibili, finché l'abbonamento è attivo.</li>
+        <li><strong>Base e Pro</strong>: i dati degli iscritti e le richieste di contatto restano disponibili fino a 30 giorni dopo la data dell'evento, poi vengono eliminati. Se vuoi conservare gli iscritti, conviene esportarli prima.</li>
+        <li><strong>Agenzia e Punto Info</strong>: i dati restano disponibili finché l'abbonamento è attivo. Se l'abbonamento finisce, vale la regola spiegata in <a href="#abbonamento" class="lnk">Disdetta e fine abbonamento</a>.</li>
       </ul>
     </section>
 
@@ -492,6 +601,14 @@ a.term:hover{border-bottom-style:solid}
         <div class="g-term">Lista d'attesa</div>
         <div class="g-def">Dove finiscono le iscrizioni quando l'evento è pieno, in attesa che si liberi un posto.</div>
       </div>
+      <div class="gloss-item" id="g-richiesta">
+        <div class="g-term">Richiesta di contatto (richiesta informazioni)</div>
+        <div class="g-def">Il messaggio che una persona ti lascia dalla pagina dell'evento per chiedere informazioni ed essere ricontattata. Non è un'iscrizione: non occupa posti.</div>
+      </div>
+      <div class="gloss-item" id="g-punto-info">
+        <div class="g-term">Punto Info</div>
+        <div class="g-def">L'abbonamento dedicato solo alla richiesta informazioni: eventi illimitati, pagine informative e richieste di contatto, senza iscrizioni.</div>
+      </div>
       <div class="gloss-item" id="g-gdpr">
         <div class="g-term">GDPR</div>
         <div class="g-def">La legge europea sulla protezione dei dati personali: regola come raccogliere e custodire i dati delle persone.</div>
@@ -520,6 +637,14 @@ a.term:hover{border-bottom-style:solid}
       <div class="faq-item">
         <div class="faq-q">Ho sbagliato un dato dell'evento.</div>
         <div class="faq-a">Nessun problema: apri le impostazioni dell'evento, correggi e salva. La pagina di iscrizione si aggiorna da sola.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Non mi arrivano gli avvisi delle richieste di informazioni.</div>
+        <div class="faq-a">Controlla nelle impostazioni dell'evento l'email di contatto (nel Punto Info: Email per gli avvisi) e guarda anche nello spam. Se hai scelto il riepilogo al giorno, l'email arriva solo all'orario scelto e solo se ci sono richieste nuove. In ogni caso le trovi sempre nella sezione Richieste di contatto dell'evento.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Ho disdetto l'abbonamento ma ho cambiato idea.</div>
+        <div class="faq-a">Se la data di fine non è ancora arrivata, dall'area personale premi "Gestisci abbonamento o riattiva" e riattivalo dal portale. Se è già passata, riabbonati dall'area personale con la stessa email: entro 12 mesi ritrovi i tuoi eventi e le loro pagine.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Non trovo una risposta qui.</div>
@@ -599,7 +724,7 @@ function efBack(){
   var b=document.getElementById('backBtn');
   if(!b)return;
   var dash=new URLSearchParams(location.search).get('dash');
-  var map={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html',demo:'demo.html'};
+  var map={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html',info:'info-dashboard.html',demo:'demo.html'};
   if(dash&&map[dash])b.setAttribute('href',map[dash]);
 })();
 </script>
