@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -411,34 +411,59 @@ function isClosed(ev) {
   return t >= d;
 }
 
+/* Legge l'ora scritta dall'organizzatore (testo libero) come la leggerebbe una persona:
+   "15" = 15:00, "21.30" o "21,30" o "21h30" = 21:30, "15-19" o "dalle 15 alle 19" = dalle 15 alle 19.
+   Se non si capisce restituisce null (l'evento andra' in calendario per tutto il giorno). */
+function leggiOraEvento(ora) {
+  var s = String(ora == null ? '' : ora).toLowerCase().replace(/[\u2013\u2014]/g, '-').replace(/\s+/g, ' ').trim();
+  if (!s) return null;
+  var T = '(\\d{1,2})(?:\\s?[:.,h]\\s?(\\d{2}))?';
+  var re = new RegExp('^(?:dalle ore|dalle|ore|h)?\\s?' + T + '\\s?(?:h|ore)?(?:\\s?(?:-|/|fino alle|alle|a)\\s?(?:ore\\s?)?' + T + '\\s?(?:h|ore)?)?$');
+  var m = s.match(re);
+  if (!m) return null;
+  var h1 = parseInt(m[1], 10), m1 = m[2] ? parseInt(m[2], 10) : 0;
+  if (h1 > 23 || m1 > 59) return null;
+  var r = { h1: h1, m1: m1, h2: null, m2: null };
+  if (m[3] !== undefined) {
+    var h2 = parseInt(m[3], 10), m2 = m[4] ? parseInt(m[4], 10) : 0;
+    if (h2 > 24 || m2 > 59 || (h2 === 24 && m2 > 0)) return null;
+    r.h2 = h2 === 24 ? 0 : h2; r.m2 = m2;
+  }
+  return r;
+}
+
+/* Date per il link di Google Calendar ("inizio/fine").
+   Con l'ora: inizio all'ora indicata, fine all'ora di fine indicata oppure 2 ore dopo
+   (se la fine cade dopo mezzanotte va al giorno dopo). Senza ora leggibile: tutto il giorno. */
+function dateGCal(dataIso, ora) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(dataIso || ''))) return null;
+  var base = new Date(dataIso + 'T00:00:00Z');
+  if (isNaN(base.getTime())) return null;
+  function d2(n) { return (n < 10 ? '0' : '') + n; }
+  function giorno(d) { return d.getUTCFullYear() + d2(d.getUTCMonth() + 1) + d2(d.getUTCDate()); }
+  function giornoOra(d) { return giorno(d) + 'T' + d2(d.getUTCHours()) + d2(d.getUTCMinutes()) + '00'; }
+  var t = leggiOraEvento(ora);
+  if (!t) return giorno(base) + '/' + giorno(new Date(base.getTime() + 86400000));
+  var ini = new Date(base.getTime() + (t.h1 * 60 + t.m1) * 60000);
+  var fin;
+  if (t.h2 !== null) {
+    fin = new Date(base.getTime() + (t.h2 * 60 + t.m2) * 60000);
+    if (fin.getTime() <= ini.getTime()) fin = new Date(fin.getTime() + 86400000);
+  } else {
+    fin = new Date(ini.getTime() + 2 * 3600000);
+  }
+  return giornoOra(ini) + '/' + giornoOra(fin);
+}
+
 /* Costruisce link Google Calendar con dati evento */
 function buildGCalLink(ev) {
   if (!ev || !ev.data_iso) return null;
-  /* Data inizio: YYYYMMDD */
-  var dateStr = ev.data_iso.replace(/-/g, '');
-  var startDt, endDt;
-  if (ev.ora) {
-    /* Con orario: formato YYYYMMDDTHHmmss */
-    var hm = ev.ora.replace(':', '');
-    if (hm.length === 4) hm = hm + '00';
-    startDt = dateStr + 'T' + hm;
-    /* Durata default 2 ore */
-    var startH = parseInt(ev.ora.split(':')[0], 10);
-    var startM = parseInt(ev.ora.split(':')[1] || '0', 10);
-    var endH = startH + 2; if (endH >= 24) endH = 23;
-    endDt = dateStr + 'T' + (endH < 10 ? '0' + endH : '' + endH) + (startM < 10 ? '0' + startM : '' + startM) + '00';
-  } else {
-    /* Tutto il giorno */
-    var nextDay = new Date(ev.data_iso);
-    nextDay.setDate(nextDay.getDate() + 1);
-    var nd = nextDay.toISOString().split('T')[0].replace(/-/g,'');
-    startDt = dateStr;
-    endDt = nd;
-  }
+  var dates = dateGCal(ev.data_iso, ev.ora);
+  if (!dates) return null;
   var params = new URLSearchParams({
     action: 'TEMPLATE',
     text: ev.nome,
-    dates: startDt + '/' + endDt,
+    dates: dates,
     details: (ev.descrizione || '') + '\n\n' + termWords(ev.terminologia).N + ' gestita con EventsFun -- eventsfun.com',
     location: ev.evento_online ? ('Evento online' + (ev.luogo ? ' - ' + ev.luogo : '')) : (ev.luogo || '')
   });
