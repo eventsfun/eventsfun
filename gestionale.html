@@ -1,625 +1,261 @@
 <!DOCTYPE html>
+<!-- EventsFun | Gestionale | v2.0 04/10/2026 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Gestionale -- EventsFun</title>
+<meta name="theme-color" content="#0A0A0A">
+<title>Gestionale EventsFun</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0A0A0A;
-  --card:#121212;
-  --card2:#171717;
-  --gold:#C9A96E;
-  --txt:rgb(245,240,232);
-  --muted:rgba(245,240,232,0.75);
-  --dim:rgba(245,240,232,0.6);
-  --line:rgba(245,240,232,0.12);
-  --ok:#4ADE80;
-  --warn:#FBBF24;
-  --bad:#F87171;
-  --info:#7DD3FC;
+  --bg:#0A0A0A; --card:#121212; --card2:#171717; --nav:#0d0d0d;
+  --gold:#C9A96E; --gold2:#E2C792;
+  --txt:rgb(245,240,232); --muted:rgba(245,240,232,0.75); --dim:rgba(245,240,232,0.6); --faint:rgba(245,240,232,0.45);
+  --line:rgba(245,240,232,0.12); --line2:rgba(245,240,232,0.08);
+  --ok:#4ADE80; --warn:#FBBF24; --bad:#F87171; --base:#7DD3FC; --ag:#C4B5FD; --info:#5EEAD4;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{
-  background:var(--bg);
-  color:var(--txt);
-  font-family:'DM Sans',system-ui,sans-serif;
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
-}
-h1,h2,h3,.syne{font-family:'Syne',sans-serif}
-a{color:var(--gold)}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:'DM Sans',system-ui,sans-serif;font-size:14px;line-height:1.45;min-height:100vh}
+a{color:var(--gold)}a:hover{color:var(--gold2)}
+button,input,select,textarea{font-family:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+[hidden]{display:none !important}
 
-/* ---------- LOGIN ---------- */
-#loginView{
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:24px 16px;
-}
-.login-box{
-  width:100%;
-  max-width:400px;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:16px;
-  padding:32px 24px;
-}
-.login-box h1{font-size:24px;margin-bottom:6px}
-.login-box .sub{color:var(--dim);font-size:14px;margin-bottom:24px}
-.field{margin-bottom:16px}
-.field label{
-  display:block;
-  font-size:13px;
-  color:var(--muted);
-  margin-bottom:6px;
-  font-weight:500;
-}
-.field input{
-  width:100%;
-  background:#0d0d0d;
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:13px 14px;
-  color:var(--txt);
-  font-family:inherit;
-  font-size:16px;
-}
-.field input:focus{outline:none;border-color:var(--gold)}
-.btn{
-  display:inline-block;
-  width:100%;
-  background:var(--gold);
-  color:#0A0A0A;
-  border:none;
-  border-radius:10px;
-  padding:14px;
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:15px;
-  cursor:pointer;
-  text-align:center;
-  text-decoration:none;
-}
-.btn:disabled{opacity:0.5;cursor:default}
-.msg{
-  margin-top:14px;
-  padding:11px 13px;
-  border-radius:9px;
-  font-size:14px;
-  display:none;
-  line-height:1.45;
-}
-.msg.err{display:block;background:rgba(248,113,113,0.12);color:var(--bad);border:1px solid rgba(248,113,113,0.3)}
-.msg.ok{display:block;background:rgba(74,222,128,0.12);color:var(--ok);border:1px solid rgba(74,222,128,0.3)}
+/* ---------- accesso ---------- */
+.splash{min-height:100vh;display:flex;align-items:center;justify-content:center;color:var(--dim)}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 16px}
+.login-box{width:100%;max-width:380px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:28px 22px}
+.login-box h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;margin:0 0 6px}
+.login-box h1 span{color:var(--gold)}
+.login-box p{margin:0 0 20px;color:var(--dim);font-size:13px}
 
-/* ---------- APP ---------- */
-#appView{display:none;padding-bottom:60px}
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:20;
-  background:rgba(10,10,10,0.96);
-  backdrop-filter:blur(8px);
-  border-bottom:1px solid var(--line);
-  padding:14px 16px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-}
-.topbar .brand{font-family:'Syne',sans-serif;font-weight:800;font-size:17px}
-.topbar .brand span{color:var(--gold)}
-.topbar .who{font-size:12px;color:var(--dim);margin-top:2px}
-.topbar-actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
-.mini{
-  background:transparent;
-  border:1px solid var(--line);
-  color:var(--muted);
-  border-radius:8px;
-  padding:8px 11px;
-  font-size:13px;
-  font-family:inherit;
-  cursor:pointer;
-}
-.mini:hover{border-color:var(--gold);color:var(--gold)}
+/* ---------- barra in alto ---------- */
+.top{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));background:rgba(10,10,10,0.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{font-family:'Syne',sans-serif;font-weight:800;font-size:17px;color:var(--txt);text-decoration:none}
+.brand span{color:var(--gold)}
+.who{font-size:12px;color:var(--dim);margin-top:2px}
+.top-act{display:flex;gap:8px}
+.ibtn{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid rgba(245,240,232,0.14);background:transparent;color:rgba(245,240,232,0.8);cursor:pointer;padding:0;flex-shrink:0}
+.ibtn:hover{border-color:rgba(201,169,110,0.5);color:var(--gold)}
+.ibtn.gira svg{animation:gira 0.9s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
 
-.wrap{max-width:1000px;margin:0 auto;padding:16px}
+/* ---------- impaginazione ---------- */
+.shell{display:block}
+.side{display:none}
+.vista{max-width:720px;margin:0 auto;padding:0 0 calc(96px + env(safe-area-inset-bottom))}
+.sec{padding:18px 16px 4px}
+.h1{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;line-height:1.2;margin:0;word-break:break-word}
+.h2{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin:0 0 10px;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.h2 small{font-family:'DM Sans',sans-serif;font-weight:500;font-size:12px;color:var(--dim)}
+.tag{font-size:12px;color:var(--dim)}
+.note{font-size:12.5px;color:rgba(245,240,232,0.65);line-height:1.5}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.card.gold{border-color:rgba(201,169,110,0.55);background:#14110c}
+.card.pad{padding:14px}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-top:1px solid var(--line2);text-decoration:none;color:var(--txt);min-height:44px}
+.row:first-child{border-top:0}
+a.row:hover,button.row:hover{background:rgba(245,240,232,0.04);color:var(--txt)}
+button.row{width:100%;background:transparent;border-left:0;border-right:0;border-bottom:0;font:inherit;text-align:left;cursor:pointer}
+.card > button.row:first-child{border-top:0}
+.row.top-al{align-items:flex-start}
+.grow{flex:1;min-width:0}
+.t{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t.wrap{white-space:normal;word-break:break-word}
+.s{font-size:12px;color:rgba(245,240,232,0.62);margin-top:2px;word-break:break-word}
+.s.chiaro{color:rgba(245,240,232,0.82)}
+.estratto{font-size:12.5px;color:rgba(245,240,232,0.72);margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.chev{color:rgba(245,240,232,0.4);flex-shrink:0;display:flex}
+.importo{font-weight:700;white-space:nowrap;text-align:right}
+.vuoto{padding:16px 14px;color:var(--dim);font-size:13px}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-block;border-radius:999px;padding:2px 8px;font-size:10.5px;font-weight:700;letter-spacing:0.3px;white-space:nowrap;line-height:1.5}
+.p-base{background:rgba(125,211,252,0.15);color:var(--base);border:1px solid rgba(125,211,252,0.35)}
+.p-pro{background:rgba(201,169,110,0.15);color:var(--gold);border:1px solid rgba(201,169,110,0.4)}
+.p-ag{background:rgba(196,181,253,0.15);color:var(--ag);border:1px solid rgba(196,181,253,0.35)}
+.p-info{background:rgba(94,234,212,0.13);color:var(--info);border:1px solid rgba(94,234,212,0.35)}
+.p-ok{background:rgba(74,222,128,0.14);color:var(--ok);border:1px solid rgba(74,222,128,0.32)}
+.p-warn{background:rgba(251,191,36,0.14);color:var(--warn);border:1px solid rgba(251,191,36,0.32)}
+.p-bad{background:rgba(248,113,113,0.14);color:var(--bad);border:1px solid rgba(248,113,113,0.32)}
+.p-neu{background:rgba(245,240,232,0.08);color:var(--muted);border:1px solid rgba(245,240,232,0.14)}
+.p-gold{background:var(--gold);color:#0A0A0A;border:1px solid var(--gold)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px;flex-shrink:0}
+.d-ok{background:var(--ok)}.d-warn{background:var(--warn)}.d-bad{background:var(--bad)}.d-neu{background:rgba(245,240,232,0.45)}.d-gold{background:var(--gold)}
+.nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.num{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;text-decoration:none;color:var(--txt);display:block;min-width:0}
+.num:hover{border-color:rgba(201,169,110,0.45);color:var(--txt)}
+.num .n{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--gold);line-height:1.1;word-break:break-word}
+.num .l{font-size:12px;color:rgba(245,240,232,0.7);margin-top:4px}
+.num .x{font-size:11.5px;color:rgba(245,240,232,0.55);margin-top:6px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 16px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex-shrink:0;background:var(--card);border:1px solid rgba(245,240,232,0.14);color:rgba(245,240,232,0.8);border-radius:999px;padding:0 14px;height:38px;font-family:'Syne',sans-serif;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;text-decoration:none}
+.chip b{font-family:'DM Sans',sans-serif;font-size:11px;opacity:0.75}
+.chip.on{background:var(--gold);border-color:var(--gold);color:#0A0A0A}
+.chip.filtro{border-color:rgba(201,169,110,0.55);color:var(--gold)}
+.field{display:block;width:100%;background:var(--card);border:1px solid rgba(245,240,232,0.14);border-radius:10px;padding:12px 14px;color:var(--txt);font-size:16px;min-height:44px}
+.field:focus{border-color:rgba(201,169,110,0.6);outline:none}
+textarea.field{resize:vertical;min-height:96px;line-height:1.5}
+select.field{appearance:auto}
+input[type=date].field{color-scheme:dark}
+.lbl{display:block;font-size:12px;color:rgba(245,240,232,0.7);margin-bottom:6px;font-weight:500}
+.campo{margin-bottom:12px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:10px;border:0;background:var(--gold);color:#0A0A0A;font-family:'Syne',sans-serif;font-weight:700;font-size:14px;text-decoration:none;cursor:pointer;text-align:center}
+.btn:hover{background:var(--gold2);color:#0A0A0A}
+.btn.sec2{background:transparent;color:var(--txt);border:1px solid rgba(245,240,232,0.2)}
+.btn.sec2:hover{border-color:rgba(201,169,110,0.55);color:var(--gold)}
+.btn.rosso{background:transparent;color:var(--bad);border:1px solid rgba(248,113,113,0.4)}
+.btn.piccolo{min-height:36px;padding:0 12px;font-size:12.5px}
+.btn:disabled{opacity:0.55;cursor:default}
+.btn.pieno{width:100%}
+.bottoni{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.back{display:inline-flex;align-items:center;gap:6px;min-height:44px;color:rgba(245,240,232,0.75);text-decoration:none;font-size:14px;padding:0 16px}
+.back:hover{color:var(--gold)}
+.kv{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line2)}
+.kv > div{background:var(--card);padding:11px 14px;min-width:0}
+.k{font-size:11px;color:var(--dim)}
+.v{font-size:14px;font-weight:700;margin-top:2px;word-break:break-word}
+.seg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.seg.q4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.seg button{min-height:44px;border-radius:10px;border:1px solid rgba(245,240,232,0.14);background:var(--card);color:rgba(245,240,232,0.8);font-family:'Syne',sans-serif;font-weight:600;font-size:13px;cursor:pointer;padding:4px 6px}
+.seg button b{font-family:'DM Sans',sans-serif;font-size:11px;opacity:0.75;margin-left:4px}
+.seg button.on{background:var(--gold);border-color:var(--gold);color:#0A0A0A}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;font-size:14px;cursor:pointer}
+.chk input{width:20px;height:20px;accent-color:var(--gold);flex-shrink:0}
+.msgx{display:none;margin-top:10px;border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5}
+.msgx.err{display:block;background:rgba(248,113,113,0.1);border:1px solid rgba(248,113,113,0.35);color:#fca5a5}
+.msgx.ok{display:block;background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.32);color:#86efac}
+.msgx.info{display:block;background:rgba(245,240,232,0.05);border:1px solid var(--line);color:var(--muted)}
+.caricamento{padding:40px 16px;text-align:center;color:var(--dim)}
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-.stat{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px 12px;
-  text-align:center;
-}
-.stat .n{font-family:'Syne',sans-serif;font-weight:800;font-size:22px;color:var(--gold)}
-.stat .l{font-size:11px;color:var(--dim);margin-top:3px;letter-spacing:0.3px}
+/* conversazione */
+.bolla{border-radius:14px;padding:12px 14px;font-size:14px;line-height:1.5;margin-bottom:10px}
+.b-in{background:var(--card2);border:1px solid var(--line);margin-right:28px}
+.b-out{background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.35);margin-left:28px}
+.bh{display:flex;justify-content:space-between;gap:8px;font-size:11.5px;color:var(--dim);margin-bottom:6px;flex-wrap:wrap}
+.btesto{white-space:pre-wrap;word-break:break-word}
+.allegati{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.allegato{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 12px;border-radius:999px;border:1px solid rgba(245,240,232,0.2);background:transparent;color:var(--txt);font-size:12.5px;cursor:pointer;max-width:100%}
+.allegato span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.allegato:hover{border-color:var(--gold);color:var(--gold)}
 
-.tabs{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:8px;
-  margin-bottom:16px;
-}
-.tab-btn{
-  background:var(--card);
-  border:1px solid var(--line);
-  color:var(--muted);
-  border-radius:10px;
-  padding:11px 8px;
-  font-family:'Syne',sans-serif;
-  font-weight:600;
-  font-size:13px;
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:5px;
-}
-.tab-btn.on{background:var(--gold);color:#0A0A0A;border-color:var(--gold)}
-.tab-btn .badge{
-  background:rgba(248,113,113,0.9);
-  color:#fff;
-  border-radius:999px;
-  font-size:10px;
-  padding:1px 6px;
-  font-family:'DM Sans',sans-serif;
-  font-weight:700;
-}
-.tab-btn.on .badge{background:#0A0A0A;color:var(--gold)}
+/* pagamenti apribili */
+details.pag{border-top:1px solid var(--line2)}
+.card > details.pag:first-child{border-top:0}
+details.pag > summary{list-style:none;cursor:pointer}
+details.pag > summary::-webkit-details-marker{display:none}
+details.pag[open] > summary{background:rgba(245,240,232,0.03)}
+.pag-det{padding:4px 14px 14px;font-size:12.5px;color:var(--muted)}
+.pag-det .riga{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line2)}
+.pag-det .bottoni{margin-top:12px}
+details.blocco{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+details.blocco > summary{list-style:none;cursor:pointer;padding:12px 14px;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:700}
+details.blocco > summary::-webkit-details-marker{display:none}
+details.blocco > summary::after{content:'';width:8px;height:8px;border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:rotate(45deg);margin-right:4px;flex-shrink:0}
+details.blocco[open] > summary::after{transform:rotate(-135deg)}
 
-.ev-filtro{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
-.ev-chip{
-  background:var(--card);
-  border:1px solid var(--line);
-  color:var(--muted);
-  border-radius:999px;
-  padding:8px 14px;
-  font-family:'Syne',sans-serif;
-  font-weight:600;
-  font-size:13px;
-  cursor:pointer;
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-}
-.ev-chip:hover{border-color:rgba(201,169,110,0.5)}
-.ev-chip.on{background:var(--gold);color:#0A0A0A;border-color:var(--gold)}
-.ev-chip .cnt2{font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;opacity:0.75}
+/* newsletter e venditori */
+.nl-check{display:flex;align-items:center;gap:10px;min-height:44px;padding:4px 14px;border-top:1px solid var(--line2);cursor:pointer}
+.nl-check:first-child{border-top:0}
+.nl-check input{width:20px;height:20px;accent-color:var(--gold);flex-shrink:0}
+.nl-check .grow{font-size:14px}
+.nl-n{font-weight:700;color:var(--gold)}
+.nl-lista{max-height:320px;overflow-y:auto;border-top:1px solid var(--line2)}
+.nl-dest{display:flex;align-items:center;gap:10px;padding:8px 14px;border-top:1px solid var(--line2);cursor:pointer}
+.nl-dest:first-child{border-top:0}
+.nl-dest input{width:18px;height:18px;accent-color:var(--gold);flex-shrink:0}
+.nl-badge{display:inline-block;font-size:10px;padding:1px 6px;border-radius:999px;background:rgba(245,240,232,0.08);color:var(--muted);margin-left:4px}
+.tok{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:11.5px;color:var(--dim);word-break:break-all}
 
-.searchbar{margin-bottom:14px}
-.searchbar input{
-  width:100%;
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px 14px;
-  color:var(--txt);
-  font-family:inherit;
-  font-size:15px;
-}
-.searchbar input:focus{outline:none;border-color:var(--gold)}
+/* barra in basso (telefono e tablet) */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:50;height:calc(68px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--nav);border-top:1px solid var(--line)}
+.nav a{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;color:rgba(245,240,232,0.6);text-decoration:none;min-width:0}
+.nav a.on{color:var(--gold)}
+.nb{position:absolute;top:6px;left:50%;margin-left:6px;background:var(--bad);color:#fff;border-radius:999px;font-size:10px;font-weight:700;padding:1px 6px;line-height:1.4}
+.toast{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:60;background:#1d1a14;border:1px solid rgba(201,169,110,0.5);color:var(--txt);border-radius:12px;padding:10px 16px;font-size:13.5px;max-width:calc(100% - 32px);box-shadow:0 8px 30px rgba(0,0,0,0.5);display:none}
+.toast.on{display:block}
+.toast.err{border-color:rgba(248,113,113,0.6)}
 
-.item{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:12px;
-}
-.item.clic{cursor:pointer}
-.item.clic:hover{border-color:rgba(201,169,110,0.5)}
-.item-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:10px;
-  margin-bottom:10px;
-}
-.item-title{font-family:'Syne',sans-serif;font-weight:700;font-size:16px;word-break:break-word;line-height:1.3}
-.item-sub{font-size:13px;color:var(--dim);margin-top:3px;word-break:break-word}
+/* riepilogo a due colonne sul computer */
+.rgrid{display:block}
 
-.pill{
-  display:inline-block;
-  border-radius:999px;
-  padding:3px 10px;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:0.4px;
-  flex-shrink:0;
-  white-space:nowrap;
+@media (min-width:900px){
+  .top{padding:14px 24px}
+  .shell{display:flex;gap:24px;max-width:1360px;margin:0 auto;padding:24px}
+  .side{display:flex;flex-direction:column;gap:4px;flex:0 0 220px;position:sticky;top:96px;align-self:flex-start}
+  .side a{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:42px;padding:0 12px;border-radius:9px;text-decoration:none;font-size:14px;font-weight:500;color:rgba(245,240,232,0.78)}
+  .side a:hover{background:rgba(245,240,232,0.04);color:var(--txt)}
+  .side a.on{background:rgba(201,169,110,0.14);color:var(--gold)}
+  .side hr{border:0;border-top:1px solid var(--line);margin:8px 0;width:100%}
+  .vista{flex:1;min-width:0;max-width:1060px;margin:0;padding:0 0 40px}
+  .vista .sec{padding-left:0;padding-right:0}
+  .vista .chips{padding-left:0;padding-right:0}
+  .vista .back{padding-left:0}
+  .nav{display:none}
+  .toast{bottom:28px}
+  .nums.q4{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .rgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0 24px;align-items:start}
+  .stretta{max-width:760px}
 }
-.pill.base{background:rgba(125,211,252,0.15);color:var(--info);border:1px solid rgba(125,211,252,0.35)}
-.pill.pro{background:rgba(201,169,110,0.15);color:var(--gold);border:1px solid rgba(201,169,110,0.4)}
-.pill.agenzia{background:rgba(196,181,253,0.15);color:#C4B5FD;border:1px solid rgba(196,181,253,0.35)}
-.pill.ok{background:rgba(74,222,128,0.14);color:var(--ok);border:1px solid rgba(74,222,128,0.32)}
-.pill.warn{background:rgba(251,191,36,0.14);color:var(--warn);border:1px solid rgba(251,191,36,0.32)}
-.pill.bad{background:rgba(248,113,113,0.14);color:var(--bad);border:1px solid rgba(248,113,113,0.32)}
-.pill.neutral{background:rgba(245,240,232,0.08);color:var(--muted);border:1px solid var(--line)}
-
-.rows{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(120px,1fr));
-  gap:8px;
-  margin:12px 0;
-  padding:12px 0;
-  border-top:1px solid var(--line);
-  border-bottom:1px solid var(--line);
-}
-.row-k{font-size:11px;color:var(--dim);letter-spacing:0.3px}
-.row-v{font-size:14px;color:var(--txt);margin-top:2px;font-weight:500;word-break:break-word}
-
-.acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.act{
-  flex:1 1 auto;
-  min-width:140px;
-  background:transparent;
-  border:1px solid var(--gold);
-  color:var(--gold);
-  border-radius:9px;
-  padding:10px 12px;
-  font-size:13px;
-  font-weight:700;
-  font-family:'DM Sans',sans-serif;
-  cursor:pointer;
-  text-align:center;
-  text-decoration:none;
-  display:inline-block;
-}
-.act.sec{border-color:var(--line);color:var(--muted)}
-.act:hover{background:rgba(201,169,110,0.1)}
-
-.tok{
-  font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-  font-size:11px;
-  color:var(--dim);
-  word-break:break-all;
-  background:#0d0d0d;
-  border:1px solid var(--line);
-  border-radius:6px;
-  padding:6px 8px;
-  margin-top:6px;
-}
-
-.empty{
-  text-align:center;
-  padding:40px 20px;
-  color:var(--dim);
-  font-size:14px;
-}
-.loading{text-align:center;padding:50px 20px;color:var(--muted)}
-
-.note{
-  background:rgba(251,191,36,0.08);
-  border:1px solid rgba(251,191,36,0.25);
-  border-radius:10px;
-  padding:12px 14px;
-  font-size:13px;
-  color:var(--muted);
-  line-height:1.5;
-  margin-bottom:16px;
-}
-.note b{color:var(--warn)}
-
-.sec-title{
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:15px;
-  margin:22px 0 10px;
-  color:var(--txt);
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-.sec-title .cnt{
-  font-family:'DM Sans',sans-serif;
-  font-size:12px;
-  color:var(--dim);
-  font-weight:400;
-}
-
-/* ---------- SCHEDA CLIENTE ---------- */
-.back{
-  background:transparent;
-  border:1px solid var(--line);
-  color:var(--muted);
-  border-radius:9px;
-  padding:9px 14px;
-  font-size:13px;
-  font-family:inherit;
-  cursor:pointer;
-  margin-bottom:16px;
-}
-.back:hover{border-color:var(--gold);color:var(--gold)}
-
-.scheda-hd{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  padding:18px 16px;
-  margin-bottom:6px;
-}
-.scheda-hd h2{font-size:20px;word-break:break-word;line-height:1.25}
-.scheda-hd .em{color:var(--muted);font-size:14px;margin-top:4px;word-break:break-word}
-.scheda-hd .pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
-
-.dati{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
-  gap:2px;
-  background:var(--line);
-  border:1px solid var(--line);
-  border-radius:12px;
-  overflow:hidden;
-  margin-bottom:6px;
-}
-.dato{background:var(--card);padding:12px 14px}
-.dato .k{font-size:11px;color:var(--dim);letter-spacing:0.3px}
-.dato .v{font-size:14px;margin-top:3px;font-weight:500;word-break:break-word}
-
-.pag{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px 14px;
-  margin-bottom:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-}
-.pag .sx .t{font-weight:700;font-size:14px}
-.pag .sx .d{font-size:12px;color:var(--dim);margin-top:2px}
-.pag .dx{
-  font-family:'Syne',sans-serif;
-  font-weight:800;
-  font-size:16px;
-  color:var(--gold);
-  white-space:nowrap;
-}
-.pag .dx.zero{color:var(--dim)}
-
-.nota-box{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:10px;
-}
-.nota-box textarea{
-  width:100%;
-  background:#0d0d0d;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:11px 12px;
-  color:var(--txt);
-  font-family:inherit;
-  font-size:15px;
-  resize:vertical;
-  min-height:80px;
-}
-.nota-box textarea:focus{outline:none;border-color:var(--gold)}
-.nota-box .sotto{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px}
-.nota-box .cnt-car{font-size:12px;color:var(--dim)}
-.btn-sm{
-  background:var(--gold);
-  color:#0A0A0A;
-  border:none;
-  border-radius:9px;
-  padding:10px 18px;
-  font-family:'Syne',sans-serif;
-  font-weight:700;
-  font-size:13px;
-  cursor:pointer;
-}
-.btn-sm:disabled{opacity:0.5;cursor:default}
-
-.attr-box{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:14px;
-  margin-bottom:10px;
-}
-.attr-row{display:flex;flex-wrap:wrap;gap:12px}
-.attr-field{flex:1;min-width:180px;display:flex;flex-direction:column;gap:6px}
-.attr-lab{font-size:11px;color:var(--dim);letter-spacing:0.3px;text-transform:uppercase}
-.attr-box select{
-  width:100%;
-  background:#0d0d0d;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:11px 12px;
-  color:var(--txt);
-  font-family:inherit;
-  font-size:15px;
-}
-.attr-box select:focus{outline:none;border-color:var(--gold)}
-.attr-box .attr-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:12px}
-.attr-hint{font-size:12px;color:var(--dim)}
-.pill.vend{background:rgba(201,169,110,0.15);color:var(--gold);border:1px solid rgba(201,169,110,0.4)}
-.attr-box input[type=text]{
-  width:100%;
-  background:#0d0d0d;
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:11px 12px;
-  color:var(--txt);
-  font-family:inherit;
-  font-size:15px;
-  box-sizing:border-box;
-}
-.attr-box input[type=text]:focus{outline:none;border-color:var(--gold)}
-.vend-riga{display:flex;align-items:center;justify-content:space-between;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.vend-riga.off{opacity:0.55}
-.vend-nome{font-weight:600}
-.vend-meta{font-size:12px;color:var(--dim);margin-top:2px}
-.btn-sm.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
-.btn-sm.ghost:hover{border-color:var(--gold);color:var(--gold)}
-.vuoto{color:var(--dim);text-align:center;padding:24px}
-
-.attr-box textarea{
-  width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:9px;
-  padding:11px 12px;color:var(--txt);font-family:inherit;font-size:15px;
-  resize:vertical;min-height:150px;box-sizing:border-box;
-}
-.attr-box textarea:focus{outline:none;border-color:var(--gold)}
-.attr-box input[type=email]{
-  width:100%;background:#0d0d0d;border:1px solid var(--line);border-radius:9px;
-  padding:11px 12px;color:var(--txt);font-family:inherit;font-size:15px;box-sizing:border-box;
-}
-.attr-box input[type=email]:focus{outline:none;border-color:var(--gold)}
-.nl-check{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
-.nl-check input{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
-.nl-check .nl-lab{flex:1;font-size:14px}
-.nl-check .nl-n{font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;color:var(--gold);min-width:22px;text-align:right}
-.nl-consenso{display:flex;align-items:center;gap:10px;margin:6px 0 4px;font-size:13px;color:var(--muted);cursor:pointer}
-.nl-consenso input{width:17px;height:17px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
-.nl-count{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;align-items:baseline;gap:8px;margin-top:8px}
-.nl-count .n{font-family:'Syne',sans-serif;font-weight:800;font-size:24px;color:var(--gold)}
-.nl-count .l{font-size:13px;color:var(--muted)}
-.nl-lista{margin-top:10px}
-.nl-lista-vuota{font-size:13px;color:var(--dim);padding:8px 2px}
-.nl-lista-tit{font-size:11px;color:var(--dim);letter-spacing:0.3px;text-transform:uppercase;margin:4px 0 8px}
-.nl-dest{display:flex;align-items:center;gap:10px;padding:9px 12px;background:#0d0d0d;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;cursor:pointer}
-.nl-dest input{width:18px;height:18px;accent-color:var(--gold);cursor:pointer;flex-shrink:0}
-.nl-dest-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
-.nl-dest-nome{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nl-dest-mail{font-size:12px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.nl-badges{display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-end}
-.nl-badge{font-size:10px;font-weight:700;letter-spacing:0.3px;color:var(--gold);background:rgba(201,169,110,0.15);border:1px solid rgba(201,169,110,0.4);border-radius:6px;padding:2px 6px}
-.nl-stor{background:#0d0d0d;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:8px}
-.nl-stor-top{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
-.nl-stor-ogg{font-weight:600;font-size:14px}
-.nl-stor-data{font-size:12px;color:var(--dim);white-space:nowrap;flex-shrink:0}
-.nl-stor-meta{font-size:12px;color:var(--muted);margin-top:4px}
-.nl-stor-det{margin-top:8px}
-.nl-stor-det summary{font-size:12px;color:var(--gold);cursor:pointer}
-.nl-stor-corpo{margin-top:8px;padding:10px 12px;background:var(--card2);border:1px solid var(--line);border-radius:8px;font-size:13px;color:var(--txt);white-space:pre-wrap;word-break:break-word}
-
-.nota-riga{
-  background:var(--card2);
-  border:1px solid var(--line);
-  border-radius:10px;
-  padding:12px 14px;
-  margin-bottom:8px;
-}
-.nota-riga .testo{font-size:14px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
-.nota-riga .meta{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-  margin-top:8px;
-  font-size:11px;
-  color:var(--dim);
-}
-.del-nota{
-  background:transparent;
-  border:1px solid rgba(248,113,113,0.4);
-  color:var(--bad);
-  border-radius:7px;
-  padding:4px 10px;
-  font-size:11px;
-  font-family:inherit;
-  cursor:pointer;
-  flex-shrink:0;
-}
-.del-nota:hover{background:rgba(248,113,113,0.12)}
-
-@media(max-width:600px){
-  .stats{grid-template-columns:repeat(3,1fr)}
-  .wrap{padding:14px 12px}
-  .item{padding:14px}
-  .act{min-width:100%}
-  .pag{flex-direction:column;align-items:flex-start;gap:6px}
-  .pag .dx{align-self:flex-end}
-}
+@media (prefers-reduced-motion:reduce){.ibtn.gira svg{animation:none}}
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
-<div id="loginView">
+<div id="splash" class="splash">Caricamento...</div>
+
+<!-- ACCESSO -->
+<div id="loginView" class="login" hidden>
   <div class="login-box">
-    <h1>Gestionale <span style="color:#C9A96E">EventsFun</span></h1>
-    <p class="sub">Area riservata. Accedi con le tue credenziali.</p>
-    <div class="field">
-      <label for="lg_email">Email</label>
-      <input type="email" id="lg_email" autocomplete="username" inputmode="email" placeholder="tua@email.it">
-    </div>
-    <div class="field">
-      <label for="lg_pw">Password</label>
-      <input type="password" id="lg_pw" autocomplete="current-password" placeholder="La tua password">
-    </div>
-    <button class="btn" id="lg_btn">Accedi</button>
-    <div class="msg" id="lg_msg"></div>
+    <h1>Gestionale <span>EventsFun</span></h1>
+    <p>Accesso riservato.</p>
+    <div class="campo"><label class="lbl" for="lg_email">Email</label><input class="field" type="email" id="lg_email" autocomplete="username"></div>
+    <div class="campo"><label class="lbl" for="lg_pw">Password</label><input class="field" type="password" id="lg_pw" autocomplete="current-password"></div>
+    <button class="btn pieno" id="lg_btn" type="button">Accedi</button>
+    <div class="msgx" id="lg_msg"></div>
   </div>
 </div>
 
-<!-- ============ APP ============ -->
-<div id="appView">
-  <div class="topbar">
-    <div>
-      <div class="brand">Gestionale <span>EventsFun</span></div>
-      <div class="who" id="who"></div>
+<!-- APP -->
+<div id="appView" hidden>
+  <header class="top">
+    <div><a class="brand" href="#riepilogo">Gestionale <span>EventsFun</span></a><div class="who" id="who"></div></div>
+    <div class="top-act">
+      <button class="ibtn" id="btnAggiorna" type="button" aria-label="Aggiorna i dati" title="Aggiorna i dati"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 5.7"></path><path d="M20 5v6h-6"></path></svg></button>
+      <button class="ibtn" id="btnEsci" type="button" aria-label="Esci" title="Esci"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h4v16h-4"></path><path d="M10 8l-4 4 4 4"></path><path d="M6 12h10"></path></svg></button>
     </div>
-    <div class="topbar-actions">
-      <button class="mini" id="btnRefresh">Aggiorna</button>
-      <button class="mini" id="btnLogout">Esci</button>
-    </div>
+  </header>
+  <div class="shell">
+    <nav class="side" id="side" aria-label="Sezioni">
+      <a href="#riepilogo" data-v="riepilogo">Riepilogo</a>
+      <a href="#clienti" data-v="clienti">Clienti</a>
+      <a href="#incassi" data-v="incassi">Incassi</a>
+      <a href="#assistenza" data-v="assistenza">Assistenza<span class="pill p-bad" id="sbAss" hidden></span></a>
+      <hr>
+      <a href="#eventi" data-v="eventi">Eventi</a>
+      <a href="#messaggi" data-v="messaggi">Messaggi dal sito<span class="pill p-warn" id="sbMsg" hidden></span></a>
+      <a href="#venditori" data-v="venditori">Venditori</a>
+      <a href="#newsletter" data-v="newsletter">Newsletter</a>
+      <a href="#controllo" data-v="controllo">Da controllare<span class="pill p-bad" id="sbCtrl" hidden></span></a>
+    </nav>
+    <main class="vista" id="vista"></main>
   </div>
-
-  <div class="wrap">
-    <div id="loadingBox" class="loading">Caricamento dati...</div>
-
-    <!-- ---- elenco ---- -->
-    <div id="content" style="display:none">
-      <div class="stats">
-        <div class="stat"><div class="n" id="st_clienti">0</div><div class="l">CLIENTI</div></div>
-        <div class="stat"><div class="n" id="st_eventi">0</div><div class="l">EVENTI</div></div>
-        <div class="stat"><div class="n" id="st_iscritti">0</div><div class="l">ISCRITTI</div></div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab-btn on" data-tab="clienti">Clienti</button>
-        <button class="tab-btn" data-tab="eventi">Eventi</button>
-        <button class="tab-btn" data-tab="controllo">Da controllare <span class="badge" id="badgeCtrl" style="display:none">0</span></button>
-        <button class="tab-btn" data-tab="venditori">Venditori</button>
-        <button class="tab-btn" data-tab="newsletter">Newsletter</button>
-      </div>
-
-      <div class="searchbar" id="searchWrap">
-        <input type="text" id="q" placeholder="Cerca per nome, email o evento...">
-      </div>
-
-      <div id="tab_clienti"></div>
-      <div id="tab_eventi" style="display:none"></div>
-      <div id="tab_controllo" style="display:none"></div>
-      <div id="tab_venditori" style="display:none"></div>
-      <div id="tab_newsletter" style="display:none"></div>
-    </div>
-
-    <!-- ---- scheda cliente ---- -->
-    <div id="schedaView" style="display:none">
-      <button class="back" id="btnBack">Torna all'elenco</button>
-      <div id="schedaBody"></div>
-    </div>
-
-    <div class="msg" id="app_msg"></div>
-  </div>
+  <nav class="nav" id="nav" aria-label="Sezioni">
+    <a href="#riepilogo" data-v="riepilogo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg>Riepilogo</a>
+    <a href="#clienti" data-v="clienti"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.8-3.6 3.4-5.5 6.5-5.5s5.7 1.9 6.5 5.5"></path><path d="M16 4.6a3.5 3.5 0 0 1 0 6.8"></path><path d="M18 14.8c2 .7 3.2 2.4 3.6 5.2"></path></svg>Clienti</a>
+    <a href="#incassi" data-v="incassi"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.5 6.5A7 7 0 1 0 17.5 17.5"></path><path d="M4 10.5h9M4 13.5h9"></path></svg>Incassi</a>
+    <a href="#assistenza" data-v="assistenza"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"></path><path d="M9.5 9a2.5 2.5 0 0 1 4.9.7c0 1.6-2.4 1.8-2.4 3.3"></path><path d="M12 15.2v.1"></path></svg>Assistenza<span class="nb" id="nbAss" hidden></span></a>
+    <a href="#altro" data-v="altro"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5" cy="12" r="1.2"></circle><circle cx="12" cy="12" r="1.2"></circle><circle cx="19" cy="12" r="1.2"></circle></svg>Altro<span class="nb" id="nbAltro" hidden></span></a>
+  </nav>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -630,158 +266,269 @@ a{color:var(--gold)}
   var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
   var SB_ANON = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
   var FN_URL = SB_URL + '/functions/v1/gestionale-api';
-
   var sb = window.supabase.createClient(SB_URL, SB_ANON);
 
-  var DATI = null;
-  var SCHEDA = null;
-  var TAB = 'clienti';
-  var FILTRO_EV = 'attivi';   // 'attivi' | 'terminati' | 'tutti'
-  var FILTRO_CLI = 'tutti';   // 'tutti' | 'base' | 'pro' | 'agenzia'
+  var DATI = null;        // riepilogo generale (gest_snapshot)
+  var ME = {};
+  var VENDITORI = [];
+  var SCHEDA = null;      // scheda cliente aperta
+  var RICH = null;        // richiesta di assistenza aperta
+  var INC = null;         // incassi caricati
+  var ULTIMA_ROTTA = '';
+  var F = {
+    cli: 'tutti', cliOrd: 'recenti', q: '',
+    ev: 'corso', evQ: '',
+    ass: 'gestire', msg: 'gestire',
+    incPer: 'mese', incDal: '', incAl: '', incPiano: '', incSconto: false
+  };
 
-  // ---------- utilita' ----------
+  var ARGOMENTI = {
+    accesso: 'Accesso e password',
+    evento: 'Creare o modificare un evento',
+    iscrizioni: 'Iscrizioni e partecipanti',
+    email: 'Email e newsletter',
+    info: 'Pagina informazioni e richieste',
+    pagamenti: 'Pagamenti e abbonamento',
+    altro: 'Altro'
+  };
+  var PREZZI = { base: 2900, pro: 7900, agenzia_mensile: 6900, agenzia_annuale: 58800, info_mensile: 990, info_annuale: 7900 };
+  var MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  var GIORNI = ['domenica','lunedì','martedì','mercoledì','giovedì','venerdì','sabato'];
+
+  var ICO_CHEV = '<span class="chev"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></span>';
+  var ICO_BACK = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"></path></svg>';
+  var ICO_CERCA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M20 20l-4.2-4.2"></path></svg>';
+  var ICO_CLIP = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5l-7.6 7.6a5 5 0 0 1-7.1-7.1l8.1-8.1a3.4 3.4 0 0 1 4.8 4.8l-8 8a1.7 1.7 0 0 1-2.4-2.4l7.3-7.3"></path></svg>';
+  var ICO_PENNA = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"></path></svg>';
+
+  // ---------------- utilita' ----------------
   function $(id){ return document.getElementById(id); }
-
   function esc(s){
     if(s === null || s === undefined) return '';
-    return String(s)
-      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
   }
-
-  // Riservata: reintrodurre gli importi (INCASSATO, PAGATO, sezione Pagamenti)
-  // quando ci saranno incassi reali. Al momento non e' richiamata.
-  function euro(cent){
-    var n = Number(cent || 0) / 100;
-    return n.toLocaleString('it-IT', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' euro';
+  function euro(c){
+    var n = Number(c || 0) / 100;
+    return n.toLocaleString('it-IT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   }
-
-  function dataIt(iso){
-    if(!iso) return '--';
-    var p = String(iso).slice(0,10).split('-');
-    if(p.length !== 3) return String(iso);
-    return p[2] + '/' + p[1] + '/' + p[0];
+  function euroCorto(c){
+    var n = Number(c || 0) / 100;
+    if(Math.round(n) === n) return n.toLocaleString('it-IT') + ' €';
+    return euro(c);
   }
-
-  function dataOraIt(iso){
-    if(!iso) return '--';
-    var d = new Date(iso);
-    if(isNaN(d.getTime())) return dataIt(iso);
-    var gg = String(d.getDate()).padStart(2,'0');
-    var mm = String(d.getMonth()+1).padStart(2,'0');
-    var hh = String(d.getHours()).padStart(2,'0');
-    var mi = String(d.getMinutes()).padStart(2,'0');
-    return gg + '/' + mm + '/' + d.getFullYear() + ' alle ' + hh + ':' + mi;
+  function numCsv(c){
+    if(c === null || c === undefined || c === '') return '';
+    return (Number(c) / 100).toFixed(2).replace('.', ',');
   }
-
-  function oggiIso(){
-    var d = new Date();
-    var m = String(d.getMonth()+1).padStart(2,'0');
-    var g = String(d.getDate()).padStart(2,'0');
-    return d.getFullYear() + '-' + m + '-' + g;
+  var FMT_GIORNO = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Rome', year: 'numeric', month: '2-digit', day: '2-digit' });
+  var FMT_ORA = new Intl.DateTimeFormat('it-IT', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit' });
+  function giornoRoma(d){ return FMT_GIORNO.format(d); }
+  function oggi(){ return (DATI && DATI.oggi) ? String(DATI.oggi) : giornoRoma(new Date()); }
+  function parteData(s){
+    var m = String(s || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? { a: Number(m[1]), m: Number(m[2]), g: Number(m[3]), iso: m[0] } : null;
   }
-
+  // giorno (AAAA-MM-GG) di un valore: date semplici restano tali, i momenti vanno in ora italiana
+  function giornoDi(v){
+    if(!v) return '';
+    var s = String(v);
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    var d = new Date(s);
+    if(isNaN(d.getTime())) return s.slice(0, 10);
+    return giornoRoma(d);
+  }
+  function diffGiorni(a, b){
+    var pa = parteData(a), pb = parteData(b);
+    if(!pa || !pb) return null;
+    return Math.round((Date.UTC(pb.a, pb.m - 1, pb.g) - Date.UTC(pa.a, pa.m - 1, pa.g)) / 86400000);
+  }
+  function dataLunga(v){
+    var p = parteData(giornoDi(v));
+    if(!p) return 'n.d.';
+    return p.g + ' ' + MESI[p.m - 1] + ' ' + p.a;
+  }
+  function dataBreve(v){
+    var p = parteData(giornoDi(v));
+    if(!p) return 'n.d.';
+    var anno = Number(oggi().slice(0, 4));
+    return p.g + ' ' + MESI[p.m - 1] + (p.a !== anno ? ' ' + p.a : '');
+  }
+  function oraDi(v){
+    var d = new Date(v);
+    return isNaN(d.getTime()) ? '' : FMT_ORA.format(d);
+  }
+  function quando(v){
+    if(!v) return '';
+    var g = giornoDi(v);
+    var dd = diffGiorni(g, oggi());
+    var ora = oraDi(v);
+    if(dd === 0) return 'Oggi ' + ora;
+    if(dd === 1) return 'Ieri ' + ora;
+    return dataBreve(v) + (ora ? ', ' + ora : '');
+  }
+  function fa(v){
+    var t = new Date(v).getTime();
+    if(isNaN(t)) return '';
+    var min = Math.round((Date.now() - t) / 60000);
+    if(min < 1) return 'adesso';
+    if(min < 60) return min === 1 ? '1 minuto fa' : min + ' minuti fa';
+    var ore = Math.round(min / 60);
+    if(ore < 24) return ore === 1 ? '1 ora fa' : ore + ' ore fa';
+    var gg = Math.round(ore / 24);
+    return gg === 1 ? 'ieri' : gg + ' giorni fa';
+  }
+  // "il 8" diventa "l'8", "fino al 11" diventa "fino all'11"
+  function art(prep, txt){
+    var el = /^(8|11)(\s|$)/.test(String(txt));
+    var m = { il: ['il ', 'l\''], al: ['al ', 'all\''], dal: ['dal ', 'dall\''], Dal: ['Dal ', 'Dall\''] };
+    return (el ? m[prep][1] : m[prep][0]) + txt;
+  }
+  function quandoFrase(v){
+    if(!v) return '';
+    var dd = diffGiorni(giornoDi(v), oggi());
+    var ora = oraDi(v);
+    if(dd === 0) return 'oggi alle ' + ora;
+    if(dd === 1) return 'ieri alle ' + ora;
+    return art('il', dataBreve(v)) + (ora ? ' alle ' + ora : '');
+  }
+  function giornoEvento(d){
+    var dd = diffGiorni(oggi(), d);
+    if(dd === 0) return 'oggi';
+    if(dd === 1) return 'domani, ' + dataBreve(d);
+    return art('il', dataBreve(d));
+  }
+  function dimensione(b){
+    var n = Number(b || 0);
+    if(!n) return '';
+    if(n < 1024 * 1024) return Math.max(1, Math.round(n / 1024)) + ' KB';
+    return (n / 1048576).toFixed(1).replace('.', ',') + ' MB';
+  }
+  function nomeCliente(c){
+    var n = [c.nome, c.cognome].filter(function(x){ return x && String(x).trim(); }).join(' ');
+    return n || c.email || 'Cliente senza nome';
+  }
+  function nomePiano(p){
+    p = String(p || '').toLowerCase();
+    return p === 'base' ? 'Base' : p === 'pro' ? 'Pro' : p === 'agenzia' ? 'Agenzia' : p === 'info' ? 'Punto Info' : 'n.d.';
+  }
+  function pianoPill(p){
+    p = String(p || '').toLowerCase();
+    var cls = p === 'base' ? 'p-base' : p === 'pro' ? 'p-pro' : p === 'agenzia' ? 'p-ag' : p === 'info' ? 'p-info' : 'p-neu';
+    return '<span class="pill ' + cls + '">' + esc(nomePiano(p).toUpperCase()) + '</span>';
+  }
+  function abbonamento(p){ p = String(p || '').toLowerCase(); return p === 'agenzia' || p === 'info'; }
   function dashUrl(piano, token){
     var p = String(piano || '').toLowerCase();
-    var file = 'base-dashboard.html';
-    if(p === 'pro') file = 'pro-dashboard.html';
-    else if(p === 'agenzia') file = 'agenzia-dashboard.html';
-    return file + '?token=' + encodeURIComponent(token);
+    var f = p === 'pro' ? 'pro-dashboard.html' : p === 'agenzia' ? 'agenzia-dashboard.html' : p === 'info' ? 'info-dashboard.html' : 'base-dashboard.html';
+    return f + '?token=' + encodeURIComponent(token);
   }
-
   function landingUrl(ev){
     if(ev.slug) return 'landing.html?slug=' + encodeURIComponent(ev.slug);
     return 'landing.html?id=' + encodeURIComponent(ev.id);
   }
-
-  function pianoPill(piano){
-    var p = String(piano || '').toLowerCase();
-    var cls = (p === 'pro' || p === 'agenzia' || p === 'base') ? p : 'neutral';
-    return '<span class="pill ' + cls + '">' + esc((piano || 'n.d.').toUpperCase()) + '</span>';
+  function codiceStato(c){ return (c && c.stato && c.stato.codice) ? c.stato.codice : ''; }
+  var CODICI_ATTIVI = ['attivo','manuale','disdetta_programmata','pagamento_non_riuscito','annullato_senza_data','senza_evento','evento_in_arrivo','concluso'];
+  var CODICI_ABB_ATTIVI = ['attivo','manuale','disdetta_programmata','pagamento_non_riuscito','annullato_senza_data'];
+  function clienteAttivo(c){ return CODICI_ATTIVI.indexOf(codiceStato(c)) >= 0; }
+  function abbonamentoAttivo(c){ return abbonamento(c.piano) && CODICI_ABB_ATTIVI.indexOf(codiceStato(c)) >= 0; }
+  function accessoManuale(c){ return Number(c.n_pagamenti_reali || 0) === 0; }
+  function rinnovoEntro7(c){
+    if(!abbonamento(c.piano) || codiceStato(c) !== 'attivo' || !c.subscription_renews_at) return false;
+    var t = new Date(c.subscription_renews_at).getTime();
+    return t >= Date.now() && t <= Date.now() + 7 * 86400000;
   }
-
-  // registro venditori: caricato dal database (chiedi('venditori_lista'))
-  var VENDITORI = [];
-
-  async function caricaVenditori(){
-    try{
-      var res = await chiedi('venditori_lista');
-      VENDITORI = res.venditori || [];
-    }catch(e){
-      VENDITORI = [];
+  // testo e colore dello stato di un cliente
+  function statoInfo(c){
+    var st = (c && c.stato) || {};
+    switch(st.codice){
+      case 'attivo': return { dot: 'd-ok', pill: 'p-ok', breve: 'Abbonamento attivo', testo: st.rinnovo ? 'Attivo, si rinnova ' + art('il', dataBreve(st.rinnovo)) : 'Abbonamento attivo' };
+      case 'manuale': return { dot: 'd-ok', pill: 'p-neu', breve: 'Accesso manuale', testo: 'Accesso manuale, senza abbonamento' };
+      case 'disdetta_programmata': return { dot: 'd-warn', pill: 'p-warn', breve: 'Disdetta programmata', testo: 'Disdetta programmata, attivo fino ' + art('al', dataBreve(st.fino_al)) };
+      case 'pagamento_non_riuscito': return { dot: 'd-bad', pill: 'p-bad', breve: 'Pagamento non riuscito', testo: 'Pagamento non riuscito, Stripe sta riprovando' };
+      case 'fine_accesso': return { dot: 'd-neu', pill: 'p-warn', breve: 'Annullato', testo: 'Annullato, accesso fino ' + art('al', dataBreve(st.fino_al)) };
+      case 'scaduto': return { dot: 'd-neu', pill: 'p-neu', breve: 'Scaduto', testo: 'Scaduto ' + art('il', dataBreve(st.fino_al)) };
+      case 'annullato_senza_data': return { dot: 'd-warn', pill: 'p-warn', breve: 'Annullato senza data', testo: 'Annullato, senza data di fine: da controllare' };
+      case 'senza_evento': return { dot: 'd-neu', pill: 'p-neu', breve: 'Nessun evento', testo: 'Nessun evento creato' };
+      case 'evento_in_arrivo': return { dot: 'd-gold', pill: 'p-ok', breve: 'Evento in arrivo', testo: 'Evento ' + giornoEvento(st.evento_data) };
+      case 'concluso': return { dot: 'd-neu', pill: 'p-neu', breve: 'Evento concluso', testo: 'Evento concluso, dati fino ' + art('al', dataBreve(st.dati_fino_al)) };
+      case 'archiviato': return { dot: 'd-neu', pill: 'p-neu', breve: 'Dati cancellati', testo: 'Evento concluso, dati cancellati ' + art('il', dataBreve(st.dati_fino_al)) };
+      default: return { dot: 'd-neu', pill: 'p-neu', breve: 'Stato non indicato', testo: 'Stato non indicato' };
     }
   }
-
-  function venditoreLabel(code){
-    if(!code) return '';
-    for(var i=0;i<VENDITORI.length;i++){
-      if(VENDITORI[i].code === code) return VENDITORI[i].nome;
-    }
-    return code;
-  }
-
-  function venditorePill(code){
-    if(!code) return '';
-    return '<span class="pill vend">Venditore: ' + esc(venditoreLabel(code)) + '</span>';
-  }
-
-  function statoCliente(c){
+  function pianoConPrezzo(c, periodo){
     var p = String(c.piano || '').toLowerCase();
-    if(p !== 'agenzia'){
-      return '<span class="pill neutral">Pagamento unico</span>';
+    if(p === 'base') return 'Base, ' + euroCorto(PREZZI.base);
+    if(p === 'pro') return 'Pro, ' + euroCorto(PREZZI.pro);
+    if(abbonamento(p)){
+      var nome = nomePiano(p);
+      if(periodo === 'mensile' || periodo === 'annuale'){
+        return nome + ' ' + periodo + ', ' + euroCorto(PREZZI[p + '_' + periodo]);
+      }
+      return codiceStato(c) === 'manuale' ? nome + ', accesso manuale' : nome;
     }
-    var s = String(c.subscription_status || '').toLowerCase();
-    if(s === 'active')   return '<span class="pill ok">Abbonamento attivo</span>';
-    if(s === 'past_due') return '<span class="pill bad">Insoluto</span>';
-    if(s === 'canceled' || s === 'cancelled') return '<span class="pill bad">Disdetto</span>';
-    if(s === 'trialing') return '<span class="pill warn">In prova</span>';
-    if(!s) return '<span class="pill neutral">Stato non indicato</span>';
-    return '<span class="pill neutral">' + esc(s) + '</span>';
+    return nomePiano(p);
+  }
+  // richieste di assistenza
+  function daGestire(r){ return r.stato !== 'risolta' && r.ultimo_mittente === 'cliente'; }
+  function inAttesa(r){ return r.stato !== 'risolta' && r.ultimo_mittente === 'staff'; }
+  function rango(r){ return r.urgente ? 0 : (String(r.piano) === 'agenzia' ? 1 : 2); }
+  function ordinaRichieste(lista, piuVecchiePrima){
+    return lista.slice().sort(function(a, b){
+      var d = rango(a) - rango(b);
+      if(d) return d;
+      var ta = new Date(a.ultimo_messaggio_at).getTime(), tb = new Date(b.ultimo_messaggio_at).getTime();
+      return piuVecchiePrima ? ta - tb : tb - ta;
+    });
+  }
+  function nomeRichiesta(r){ return r.cliente_nome || r.nome || r.email || 'Cliente'; }
+  function statoRichiestaPill(r){
+    if(r.stato === 'risolta') return '<span class="pill p-ok">Risolta</span>';
+    if(daGestire(r)) return r.stato === 'nuova' ? '<span class="pill p-warn">Nuova</span>' : '<span class="pill p-warn">Risposta nuova</span>';
+    return '<span class="pill p-neu">In attesa del cliente</span>';
+  }
+  function pillsRichiesta(r){
+    var h = '';
+    if(r.urgente) h += '<span class="pill p-bad">Urgente</span>';
+    if(String(r.piano) === 'agenzia') h += '<span class="pill p-gold">Prioritaria</span>';
+    if(r.piano) h += pianoPill(r.piano);
+    return h;
+  }
+  function anomalieTot(){
+    var an = (DATI && DATI.anomalie) || {}, n = 0;
+    Object.keys(an).forEach(function(k){ n += (an[k] || []).length; });
+    return n;
+  }
+  function msgDaGestire(){ return ((DATI && DATI.messaggi_sito) || []).filter(function(m){ return !m.gestito_at; }); }
+  function assDaGestire(){ return ((DATI && DATI.assistenza) || []).filter(daGestire); }
+
+  function mostraMsg(el, testo, tipo){ if(!el) return; el.className = 'msgx ' + (tipo || 'err'); el.textContent = testo; }
+  function nascondiMsg(el){ if(!el) return; el.className = 'msgx'; el.textContent = ''; }
+  var toastTimer = null;
+  function toast(testo, errore){
+    var t = $('toast');
+    t.textContent = testo;
+    t.className = 'toast on' + (errore ? ' err' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.className = 'toast'; }, 3500);
   }
 
-  function statoEvento(ev){
-    if(ev.bozza) return '<span class="pill warn">Bozza</span>';
-    if(ev.data_iso && String(ev.data_iso) < oggiIso()) return '<span class="pill neutral">Concluso</span>';
-    if(ev.attivo === false) return '<span class="pill bad">Chiuso</span>';
-    return '<span class="pill ok">Attivo</span>';
+  // ---------------- accesso ----------------
+  function mostraLogin(messaggio){
+    $('splash').hidden = true;
+    $('appView').hidden = true;
+    $('loginView').hidden = false;
+    $('lg_btn').disabled = false;
+    $('lg_btn').textContent = 'Accedi';
+    if(messaggio) mostraMsg($('lg_msg'), messaggio, 'err');
   }
-
-  // Categoria per il filtro Eventi:
-  // 'terminato' = data passata (concluso) oppure chiuso manualmente
-  // 'bozza'     = evento in bozza (visibile solo nel filtro "Tutti")
-  // 'attivo'    = tutto il resto (in corso / futuro e aperto)
-  function categoriaEvento(ev){
-    if(ev.bozza) return 'bozza';
-    if(ev.data_iso && String(ev.data_iso) < oggiIso()) return 'terminato';
-    if(ev.attivo === false) return 'terminato';
-    return 'attivo';
-  }
-
-  function mostraMsg(el, testo, tipo){
-    el.className = 'msg ' + (tipo || 'err');
-    el.textContent = testo;
-  }
-
-  function nascondiMsg(el){
-    el.className = 'msg';
-    el.textContent = '';
-  }
-
-  // ---------- login ----------
   async function accedi(){
     var email = $('lg_email').value.trim();
     var pw = $('lg_pw').value;
     var msg = $('lg_msg');
     nascondiMsg(msg);
-
-    if(!email || !pw){
-      mostraMsg(msg, 'Inserisci email e password.', 'err');
-      return;
-    }
-
+    if(!email || !pw){ mostraMsg(msg, 'Inserisci email e password.', 'err'); return; }
     $('lg_btn').disabled = true;
     $('lg_btn').textContent = 'Accesso in corso...';
-
     try{
       var res = await sb.auth.signInWithPassword({ email: email, password: pw });
       if(res.error){
@@ -790,6 +537,7 @@ a{color:var(--gold)}
         $('lg_btn').textContent = 'Accedi';
         return;
       }
+      $('lg_pw').value = '';
       await avvia();
     }catch(e){
       mostraMsg(msg, 'Errore di collegamento. Riprova.', 'err');
@@ -797,37 +545,27 @@ a{color:var(--gold)}
       $('lg_btn').textContent = 'Accedi';
     }
   }
-
   async function esci(){
     try{ await sb.auth.signOut(); }catch(e){}
+    location.hash = '';
     location.reload();
   }
 
-  // ---------- chiamata al portiere ----------
+  // ---------------- portiere ----------------
   async function chiedi(azione, extra){
     var s = await sb.auth.getSession();
     var token = s && s.data && s.data.session ? s.data.session.access_token : null;
-    if(!token) throw new Error('NO_SESSION');
-
+    if(!token){ var e0 = new Error('NO_SESSION'); e0.status = 401; throw e0; }
     var payload = { action: azione };
-    if(extra){
-      for(var k in extra){
-        if(Object.prototype.hasOwnProperty.call(extra, k)) payload[k] = extra[k];
-      }
+    if(extra){ for(var k in extra){ if(Object.prototype.hasOwnProperty.call(extra, k)) payload[k] = extra[k]; } }
+    var r;
+    try{
+      r = await fetch(FN_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
+    }catch(errRete){
+      throw new Error('Connessione assente o instabile. Riprova tra poco.');
     }
-
-    var r = await fetch(FN_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      },
-      body: JSON.stringify(payload)
-    });
-
     var j = null;
     try{ j = await r.json(); }catch(e){ j = null; }
-
     if(!r.ok){
       var err = new Error((j && j.error) ? j.error : ('Errore ' + r.status));
       err.status = r.status;
@@ -835,952 +573,1256 @@ a{color:var(--gold)}
     }
     return j;
   }
-
+  // gestisce sessione scaduta e accesso negato; true se l'errore e' stato gestito
   function gestisciErrore(e){
-    if(e.status === 403){
-      mostraMsg($('app_msg'), 'Questo account non e\' autorizzato ad accedere al gestionale.', 'err');
+    if(e && (e.status === 401 || e.message === 'NO_SESSION')){
+      sb.auth.signOut().catch(function(){});
+      mostraLogin('Sessione scaduta. Accedi di nuovo.');
       return true;
     }
-    if(e.status === 401 || e.message === 'NO_SESSION'){
+    if(e && e.status === 403 && /autorizzato/i.test(e.message || '')){
       sb.auth.signOut().catch(function(){});
-      $('appView').style.display = 'none';
-      $('loginView').style.display = 'flex';
-      $('lg_btn').disabled = false;
-      $('lg_btn').textContent = 'Accedi';
-      mostraMsg($('lg_msg'), 'Sessione scaduta. Accedi di nuovo.', 'err');
+      mostraLogin('Questo account non è autorizzato ad accedere al gestionale.');
       return true;
     }
     return false;
   }
 
-  // ---------- avvio ----------
+  // ---------------- avvio e dati ----------------
   async function avvia(){
-    $('loginView').style.display = 'none';
-    $('appView').style.display = 'block';
-    await carica();
+    $('splash').hidden = true;
+    $('loginView').hidden = true;
+    $('appView').hidden = false;
+    $('vista').innerHTML = '<div class="caricamento">Caricamento dei dati...</div>';
+    try{
+      await caricaTutto();
+      disegnaRotta(true);
+    }catch(e){
+      if(!gestisciErrore(e)){
+        $('vista').innerHTML = '<div class="sec"><div class="msgx err">Errore nel caricamento: ' + esc(e.message) + '</div><div style="margin-top:12px"><button class="btn sec2" type="button" data-az="riprova">Riprova</button></div></div>';
+      }
+    }
   }
-
-  async function carica(){
-    mostraElenco();
-    $('loadingBox').style.display = 'block';
-    $('content').style.display = 'none';
-    nascondiMsg($('app_msg'));
-
+  async function caricaTutto(){
+    var res = await chiedi('snapshot');
+    DATI = res.dati || {};
+    ME = res.me || {};
+    $('who').textContent = (ME.nome || ME.email || '') + (ME.ruolo ? ', ' + ME.ruolo : '');
+    try{ var v = await chiedi('venditori_lista'); VENDITORI = v.venditori || []; }catch(e){ VENDITORI = []; }
+    aggiornaBadge();
+  }
+  // ricarica il riepilogo senza cambiare schermata (dopo un'azione)
+  async function aggiornaDati(ridisegna){
     try{
       var res = await chiedi('snapshot');
-      DATI = res.dati;
-      await caricaVenditori();
-      var me = res.me || {};
-      $('who').textContent = (me.nome || me.email || '') + ' -- ' + (me.ruolo || '');
-      disegna();
-      $('loadingBox').style.display = 'none';
-      $('content').style.display = 'block';
-    }catch(e){
-      $('loadingBox').style.display = 'none';
-      if(!gestisciErrore(e)){
-        mostraMsg($('app_msg'), 'Errore nel caricamento: ' + e.message, 'err');
-      }
-    }
+      DATI = res.dati || DATI;
+      aggiornaBadge();
+      if(ridisegna) disegnaRotta(false);
+    }catch(e){ gestisciErrore(e); }
   }
-
-  // ---------- disegno elenco ----------
-  function disegna(){
-    if(!DATI) return;
-    var t = DATI.totali || {};
-    $('st_clienti').textContent = t.clienti || 0;
-    $('st_eventi').textContent = t.eventi || 0;
-    $('st_iscritti').textContent = t.iscritti || 0;
-
-    var an = DATI.anomalie || {};
-    var nAn = (an.eventi_orfani || []).length + (an.ordini_senza_email || []).length;
-    var badge = $('badgeCtrl');
-    if(nAn > 0){
-      badge.style.display = 'inline-block';
-      badge.textContent = nAn;
-    }else{
-      badge.style.display = 'none';
-    }
-
-    disegnaClienti();
-    disegnaEventi();
-    disegnaControllo();
-  }
-
-  function filtro(){
-    return $('q').value.trim().toLowerCase();
-  }
-
-  function disegnaClienti(){
-    var q = filtro();
-    var base = (DATI.clienti || []).filter(function(c){
-      if(!q) return true;
-      var s = [c.email, c.nome, c.cognome, c.piano].join(' ').toLowerCase();
-      return s.indexOf(q) !== -1;
-    });
-
-    // conteggi per i chip (calcolati sul risultato della ricerca corrente)
-    var nBase = 0, nPro = 0, nAg = 0;
-    base.forEach(function(c){
-      var p = String(c.piano || '').toLowerCase();
-      if(p === 'base') nBase++;
-      else if(p === 'pro') nPro++;
-      else if(p === 'agenzia') nAg++;
-    });
-    var nTot = base.length;
-
-    function chip(val, etichetta, cnt){
-      return '<button class="ev-chip' + (FILTRO_CLI === val ? ' on' : '') + '" data-fcli="' + val + '">' +
-             etichetta + '<span class="cnt2">' + cnt + '</span></button>';
-    }
-    var barra = '<div class="ev-filtro">' +
-      chip('tutti', 'Tutti', nTot) +
-      chip('base', 'Base', nBase) +
-      chip('pro', 'Pro', nPro) +
-      chip('agenzia', 'Agenzia', nAg) +
-      '</div>';
-
-    // lista filtrata per tipologia selezionata
-    var lista = base.filter(function(c){
-      if(FILTRO_CLI === 'tutti') return true;
-      return String(c.piano || '').toLowerCase() === FILTRO_CLI;
-    });
-
-    if(lista.length === 0){
-      $('tab_clienti').innerHTML = barra + '<div class="empty">Nessun cliente in questa vista.</div>';
-      return;
-    }
-
-    var h = barra;
-    lista.forEach(function(c){
-      var nomeCompleto = [c.nome, c.cognome].filter(Boolean).join(' ');
-      var titolo = nomeCompleto || c.email || 'Cliente senza nome';
-      var tokens = c.token || [];
-
-      h += '<div class="item clic" data-cliente="' + esc(c.id) + '">';
-      h += '<div class="item-head"><div>';
-      h += '<div class="item-title">' + esc(titolo) + '</div>';
-      h += '<div class="item-sub">' + (c.email ? esc(c.email) : '<span style="color:#F87171">email mancante</span>') + '</div>';
-      h += '</div>' + pianoPill(c.piano) + '</div>';
-
-      h += '<div style="display:flex;flex-wrap:wrap;gap:6px">' + statoCliente(c) + venditorePill(c.sales_agent) + '</div>';
-
-      h += '<div class="rows">';
-      h += '<div><div class="row-k">CLIENTE DAL</div><div class="row-v">' + dataIt(c.created_at) + '</div></div>';
-      h += '<div><div class="row-k">EVENTI</div><div class="row-v">' + (c.n_eventi || 0) + '</div></div>';
-      h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (c.n_iscritti || 0) + '</div></div>';
-      h += '</div>';
-
-      h += '<div class="acts">';
-      h += '<span class="act">Apri scheda cliente</span>';
-      tokens.forEach(function(tk, i){
-        var etichetta = tokens.length > 1 ? ('Dashboard ' + (i+1)) : 'Dashboard';
-        h += '<a class="act sec" target="_blank" rel="noopener" data-stop="1" href="' + esc(dashUrl(c.piano, tk.token)) + '">' + etichetta + '</a>';
-      });
-      h += '</div>';
-
-      h += '</div>';
-    });
-
-    $('tab_clienti').innerHTML = h;
-  }
-
-  function disegnaEventi(){
-    var q = filtro();
-    var base = (DATI.eventi || []).filter(function(e){
-      if(!q) return true;
-      var s = [e.nome, e.luogo, e.cliente_email, e.cliente_nome, e.cliente_cognome, e.slug].join(' ').toLowerCase();
-      return s.indexOf(q) !== -1;
-    });
-
-    // conteggi per i chip (calcolati sul risultato della ricerca corrente)
-    var nAtt = 0, nTerm = 0;
-    base.forEach(function(e){
-      var cat = categoriaEvento(e);
-      if(cat === 'attivo') nAtt++;
-      else if(cat === 'terminato') nTerm++;
-    });
-    var nTot = base.length;
-
-    // barra filtro, sempre visibile (anche quando la vista corrente e' vuota)
-    function chip(val, etichetta, cnt){
-      return '<button class="ev-chip' + (FILTRO_EV === val ? ' on' : '') + '" data-fev="' + val + '">' +
-             etichetta + '<span class="cnt2">' + cnt + '</span></button>';
-    }
-    var barra = '<div class="ev-filtro">' +
-      chip('attivi', 'Attivi', nAtt) +
-      chip('terminati', 'Terminati', nTerm) +
-      chip('tutti', 'Tutti', nTot) +
-      '</div>';
-
-    // lista filtrata per categoria selezionata
-    var lista = base.filter(function(e){
-      if(FILTRO_EV === 'tutti') return true;
-      var cat = categoriaEvento(e);
-      if(FILTRO_EV === 'attivi') return cat === 'attivo';
-      if(FILTRO_EV === 'terminati') return cat === 'terminato';
-      return true;
-    });
-
-    if(lista.length === 0){
-      $('tab_eventi').innerHTML = barra + '<div class="empty">Nessun evento in questa vista.</div>';
-      return;
-    }
-
-    var clientiById = {};
-    (DATI.clienti || []).forEach(function(c){ clientiById[c.id] = c; });
-
-    var h = '';
-    lista.forEach(function(e){
-      var cli = e.cliente_id ? clientiById[e.cliente_id] : null;
-      var pianoEv = e.piano || (cli ? cli.piano : null);
-      var orgNome = cli ? ([cli.nome, cli.cognome].filter(Boolean).join(' ') || cli.email) : null;
-
-      h += '<div class="item">';
-      h += '<div class="item-head"><div>';
-      h += '<div class="item-title">' + esc(e.nome || 'Evento senza nome') + '</div>';
-      h += '<div class="item-sub">' + dataIt(e.data_iso) + (e.ora ? ' alle ' + esc(e.ora) : '') +
-           (e.evento_online ? ' -- online' : (e.luogo ? ' -- ' + esc(e.luogo) : '')) + '</div>';
-      h += '</div>' + pianoPill(pianoEv) + '</div>';
-
-      h += '<div style="display:flex;flex-wrap:wrap;gap:6px">' + statoEvento(e) + '</div>';
-
-      h += '<div class="rows">';
-      h += '<div><div class="row-k">ORGANIZZATORE</div><div class="row-v">' +
-           (orgNome ? esc(orgNome) : '<span style="color:#FBBF24">non collegato</span>') + '</div></div>';
-      h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) +
-           (e.capienza ? ' / ' + e.capienza : '') + '</div></div>';
-      if(e.n_attesa > 0){
-        h += '<div><div class="row-k">IN ATTESA</div><div class="row-v">' + e.n_attesa + '</div></div>';
-      }
-      h += '<div><div class="row-k">PRESENTI</div><div class="row-v">' + (e.n_presenti || 0) + '</div></div>';
-      h += '</div>';
-
-      h += '<div class="acts">';
-      h += '<a class="act" target="_blank" rel="noopener" href="' + esc(dashUrl(pianoEv, e.activation_token)) + '">Apri come organizzatore</a>';
-      h += '<a class="act sec" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '">Vedi pagina pubblica</a>';
-      h += '</div>';
-
-      h += '</div>';
-    });
-
-    $('tab_eventi').innerHTML = barra + h;
-  }
-
-  function disegnaControllo(){
-    var an = DATI.anomalie || {};
-    var orfani = an.eventi_orfani || [];
-    var senzaMail = an.ordini_senza_email || [];
-
-    var h = '';
-
-    h += '<div class="note">Questa schermata raccoglie le cose che non tornano. ' +
-         '<b>Non sono errori del sito</b>: sono situazioni da guardare e decidere cosa farne.</div>';
-
-    h += '<div class="sec-title">Ordini senza email <span class="cnt">(' + senzaMail.length + ')</span></div>';
-    if(senzaMail.length === 0){
-      h += '<div class="empty">Nessuno. Tutti gli ordini hanno un contatto.</div>';
-    }else{
-      senzaMail.forEach(function(o){
-        h += '<div class="item">';
-        h += '<div class="item-head"><div>';
-        h += '<div class="item-title">Pagamento senza contatto</div>';
-        h += '<div class="item-sub">Ricevuto il ' + dataIt(o.created_at) + ' -- nessun accesso e\' stato creato</div>';
-        h += '</div>' + pianoPill(o.piano) + '</div>';
-        h += '<div class="rows">';
-        h += '<div><div class="row-k">RIFERIMENTO STRIPE</div><div class="row-v" style="font-size:12px">' + esc(o.stripe_id || '--') + '</div></div>';
-        h += '</div>';
-        h += '<div style="font-size:13px;color:rgba(245,240,232,0.75);line-height:1.5">Se era una persona vera, ha pagato e non ha ricevuto nulla. Cerca il riferimento Stripe qui sopra nel tuo pannello Stripe per risalire a chi era.</div>';
-        h += '</div>';
-      });
-    }
-
-    h += '<div class="sec-title">Eventi senza cliente <span class="cnt">(' + orfani.length + ')</span></div>';
-    if(orfani.length === 0){
-      h += '<div class="empty">Nessuno. Tutti gli eventi sono collegati a un cliente.</div>';
-    }else{
-      h += '<div class="note" style="background:rgba(245,240,232,0.04);border-color:rgba(245,240,232,0.12)">' +
-           'Sono eventi il cui accesso non esiste piu\' nell\'archivio. Quasi sempre sono residui di prove vecchie.</div>';
-      orfani.forEach(function(e){
-        h += '<div class="item">';
-        h += '<div class="item-head"><div>';
-        h += '<div class="item-title">' + esc(e.nome || 'Evento senza nome') + '</div>';
-        h += '<div class="item-sub">Data evento: ' + dataIt(e.data_iso) + ' -- creato il ' + dataIt(e.created_at) + '</div>';
-        h += '</div><span class="pill warn">Orfano</span></div>';
-        h += '<div class="rows">';
-        h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) + '</div></div>';
-        h += '</div>';
-        h += '<div class="row-k">ACCESSO COLLEGATO (non esiste piu\')</div>';
-        h += '<div class="tok">' + esc(e.activation_token) + '</div>';
-        h += '</div>';
-      });
-    }
-
-    $('tab_controllo').innerHTML = h;
-  }
-
-  // ---------- scheda cliente ----------
-  function mostraElenco(){
-    $('schedaView').style.display = 'none';
-    $('content').style.display = DATI ? 'block' : 'none';
-    SCHEDA = null;
-  }
-
-  async function apriCliente(orderId){
-    nascondiMsg($('app_msg'));
-    $('content').style.display = 'none';
-    $('schedaView').style.display = 'block';
-    $('schedaBody').innerHTML = '<div class="loading">Caricamento scheda...</div>';
-    window.scrollTo(0, 0);
-
+  async function aggiornaTutto(){
+    var b = $('btnAggiorna');
+    b.classList.add('gira'); b.disabled = true;
     try{
-      var res = await chiedi('cliente', { order_id: orderId });
+      await caricaTutto();
+      var r = rotta();
+      if(r.v === 'cliente') SCHEDA = null;
+      if(r.v === 'richiesta') RICH = null;
+      if(r.v === 'incassi') INC = null;
+      disegnaRotta(false);
+      toast('Dati aggiornati');
+    }catch(e){
+      if(!gestisciErrore(e)) toast('Aggiornamento non riuscito: ' + e.message, true);
+    }
+    b.classList.remove('gira'); b.disabled = false;
+  }
+  function badge(id, n){
+    var el = $(id); if(!el) return;
+    if(n > 0){ el.textContent = n; el.hidden = false; } else { el.hidden = true; }
+  }
+  function aggiornaBadge(){
+    var nA = assDaGestire().length, nM = msgDaGestire().length, nC = anomalieTot();
+    badge('nbAss', nA); badge('sbAss', nA);
+    badge('sbMsg', nM); badge('sbCtrl', nC);
+    badge('nbAltro', nM + nC);
+  }
+
+  // ---------------- rotte ----------------
+  function rotta(){
+    var h = decodeURIComponent(location.hash.replace(/^#/, '')) || 'riepilogo';
+    var i = h.indexOf('/');
+    return { v: i >= 0 ? h.slice(0, i) : h, id: i >= 0 ? h.slice(i + 1) : '' };
+  }
+  function vai(h){
+    if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
+  }
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo' };
+  function disegnaRotta(inCima){
+    if(!DATI) return;
+    var r = rotta();
+    var chiave = r.v + '/' + r.id;
+    if(chiave !== ULTIMA_ROTTA) inCima = true;
+    ULTIMA_ROTTA = chiave;
+    var nav = SEZIONE_NAV[r.v] || 'riepilogo';
+    var side = SEZIONE_SIDE[r.v] || 'riepilogo';
+    Array.prototype.forEach.call(document.querySelectorAll('#nav a'), function(a){
+      var on = a.getAttribute('data-v') === nav;
+      a.classList.toggle('on', on);
+      if(on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('#side a'), function(a){
+      var on = a.getAttribute('data-v') === side;
+      a.classList.toggle('on', on);
+      if(on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
+    switch(r.v){
+      case 'clienti': vistaClienti(r.id); break;
+      case 'cliente': vistaCliente(r.id); break;
+      case 'incassi': vistaIncassi(); break;
+      case 'assistenza': vistaAssistenza(); break;
+      case 'richiesta': vistaRichiesta(r.id); break;
+      case 'altro': vistaAltro(); break;
+      case 'eventi': vistaEventi(); break;
+      case 'messaggi': vistaMessaggi(); break;
+      case 'venditori': vistaVenditori(); break;
+      case 'newsletter': vistaNewsletter(); break;
+      case 'controllo': vistaControllo(); break;
+      default: vistaRiepilogo();
+    }
+    if(inCima) window.scrollTo(0, 0);
+  }
+  function metti(h){ $('vista').innerHTML = h; }
+
+  // ---------------- RIEPILOGO ----------------
+  function vistaRiepilogo(){
+    var cl = DATI.clienti || [];
+    var rp = DATI.riepilogo || {};
+    var h = '';
+    var o = parteData(oggi());
+    var dow = new Date(Date.UTC(o.a, o.m - 1, o.g)).getUTCDay();
+    h += '<div class="sec" style="padding-bottom:0"><div class="tag">' + GIORNI[dow].charAt(0).toUpperCase() + GIORNI[dow].slice(1) + ' ' + dataLunga(oggi()) + '</div></div>';
+
+    // numeri
+    var attivi = cl.filter(clienteAttivo);
+    var paganti = attivi.filter(function(c){ return !accessoManuale(c); }).length;
+    var abb = cl.filter(abbonamentoAttivo);
+    var abbAg = abb.filter(function(c){ return c.piano === 'agenzia'; }).length;
+    var abbInfo = abb.filter(function(c){ return c.piano === 'info'; }).length;
+    var abbMan = abb.filter(function(c){ return codiceStato(c) === 'manuale'; }).length;
+    var mese = MESI[o.m - 1], meseScorso = MESI[(o.m + 10) % 12];
+    var numeri = '<div class="nums q4">';
+    numeri += '<a class="num" href="#clienti/attivi"><div class="n">' + attivi.length + '</div><div class="l">Clienti attivi</div><div class="x">' + paganti + ' paganti, +' + (rp.clienti_nuovi_mese || 0) + ' questo mese</div></a>';
+    numeri += '<a class="num" href="#incassi"><div class="n">' + esc(euro(rp.incassato_mese)) + '</div><div class="l">Incassato a ' + mese + '</div><div class="x">' + meseScorso.charAt(0).toUpperCase() + meseScorso.slice(1) + ': ' + esc(euro(rp.incassato_mese_scorso)) + '</div></a>';
+    numeri += '<a class="num" href="#clienti/abbonamenti"><div class="n">' + abb.length + '</div><div class="l">Abbonamenti attivi</div><div class="x">' + abbAg + ' Agenzia, ' + abbInfo + ' Punto Info' + (abbMan ? ', ' + abbMan + (abbMan === 1 ? ' manuale' : ' manuali') : '') + '</div></a>';
+    numeri += '<a class="num" href="#eventi"><div class="n">' + (rp.eventi_in_corso || 0) + '</div><div class="l">Eventi in corso</div><div class="x">' + (rp.iscritti_eventi_in_corso || 0) + ' iscritti in totale</div></a>';
+    numeri += '</div>';
+
+    // da fare adesso
+    var fare = [];
+    ordinaRichieste(assDaGestire(), true).forEach(function(r){
+      var sotto = esc(nomeRichiesta(r));
+      if(r.urgente && r.evento_vicino) sotto += ', evento ' + esc(giornoEvento(r.evento_vicino.data));
+      sotto += ', ' + esc(Number(r.n_messaggi) > 1 ? 'ha risposto ' + fa(r.ultimo_messaggio_at) : fa(r.ultimo_messaggio_at));
+      fare.push('<a class="row" href="#richiesta/' + esc(r.id) + '"><div class="grow"><div class="pills" style="margin-bottom:4px">' + pillsRichiesta(r) + '</div><div class="t">' + esc(ARGOMENTI[r.argomento] || 'Richiesta') + ' (n. ' + esc(r.numero) + ')</div><div class="s">' + sotto + '</div></div>' + ICO_CHEV + '</a>');
+    });
+    msgDaGestire().forEach(function(m){
+      var cosa = m.piano ? 'interessato a: ' + m.piano : (m.messaggio ? String(m.messaggio).slice(0, 80) : 'senza messaggio');
+      fare.push('<a class="row" href="#messaggi"><div class="grow"><div class="t">Nuovo messaggio dal sito</div><div class="s">' + esc((m.nome || '') + ' ' + (m.cognome || '')) + ', ' + esc(cosa) + '</div></div>' + ICO_CHEV + '</a>');
+    });
+    var nC = anomalieTot();
+    if(nC) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nC === 1 ? '1 cosa da controllare' : nC + ' cose da controllare') + '</div><div class="s">Situazioni che non tornano nei dati</div></div>' + ICO_CHEV + '</a>');
+    var daFare = '<div class="sec"><div class="h2">Da fare adesso <small>' + (fare.length === 1 ? '1 cosa' : fare.length + ' cose') + '</small></div>';
+    daFare += fare.length ? '<div class="card gold">' + fare.join('') + '</div>' : '<div class="card"><div class="vuoto">Niente da fare adesso.</div></div>';
+    daFare += '</div>';
+
+    // abbonamenti
+    var nR = cl.filter(rinnovoEntro7).length;
+    var nD = cl.filter(function(c){ return abbonamento(c.piano) && codiceStato(c) === 'disdetta_programmata'; }).length;
+    var nP = cl.filter(function(c){ return abbonamento(c.piano) && codiceStato(c) === 'pagamento_non_riuscito'; }).length;
+    var nF = cl.filter(function(c){ return abbonamento(c.piano) && codiceStato(c) === 'fine_accesso'; }).length;
+    var rigaAbb = function(dot, testo, n, filtro){
+      return '<a class="row" href="#clienti/' + filtro + '"><span class="dot ' + dot + '"></span><div class="grow"><div class="t" style="font-weight:500">' + testo + '</div></div><b>' + n + '</b>' + ICO_CHEV + '</a>';
+    };
+    var abbH = '<div class="sec"><div class="h2">Abbonamenti <small>Agenzia e Punto Info</small></div><div class="card">';
+    abbH += rigaAbb('d-ok', 'Si rinnovano nei prossimi 7 giorni', nR, 'rinnovi7');
+    abbH += rigaAbb('d-warn', 'Disdette programmate', nD, 'disdetta_programmata');
+    abbH += rigaAbb('d-bad', 'Pagamenti non riusciti', nP, 'pagamento_non_riuscito');
+    abbH += rigaAbb('d-neu', 'Finiti, ultimi 7 giorni di accesso', nF, 'fine_accesso');
+    abbH += '</div></div>';
+
+    // novita'
+    var nov = DATI.novita || [];
+    var novH = '<div class="sec"><div class="h2">Ultime novità <small>ultimi 30 giorni</small></div><div class="card">';
+    if(!nov.length) novH += '<div class="vuoto">Nessuna novità negli ultimi 30 giorni.</div>';
+    nov.forEach(function(n){
+      var dett = [quando(n.quando)];
+      if(n.tipo === 'nuovo_cliente' || n.tipo === 'rinnovo'){
+        dett.push(nomePiano(n.piano) + (n.periodo ? ' ' + n.periodo : ''));
+        if(n.importo !== null && n.importo !== undefined) dett.push(euroCorto(n.importo));
+        var tit = (n.tipo === 'nuovo_cliente' ? 'Nuovo cliente: ' : 'Rinnovo: ') + (n.nome || n.email || 'cliente');
+        novH += '<a class="row" href="#cliente/' + esc(n.order_id) + '"><div class="grow"><div class="t">' + esc(tit) + '</div><div class="s">' + esc(dett.join(', ')) + '</div></div>' + ICO_CHEV + '</a>';
+      }else{
+        dett.push(n.nome || n.email || '');
+        novH += '<a class="row" href="#assistenza"><div class="grow"><div class="t">Richiesta n. ' + esc(n.numero) + ' risolta</div><div class="s">' + esc(dett.filter(Boolean).join(', ')) + '</div></div>' + ICO_CHEV + '</a>';
+      }
+    });
+    novH += '</div></div>';
+
+    h += '<div class="sec"><div class="h2">I numeri</div>' + numeri + '</div>';
+    h += '<div class="rgrid"><div>' + daFare + '</div><div>' + abbH + novH + '</div></div>';
+    metti(h);
+  }
+
+  // ---------------- CLIENTI ----------------
+  var FILTRI_STATO = {
+    attivi: { testo: 'Clienti attivi', f: clienteAttivo },
+    abbonamenti: { testo: 'Abbonamenti attivi', f: abbonamentoAttivo },
+    rinnovi7: { testo: 'Si rinnovano nei prossimi 7 giorni', f: rinnovoEntro7 },
+    disdetta_programmata: { testo: 'Disdette programmate', f: function(c){ return abbonamento(c.piano) && codiceStato(c) === 'disdetta_programmata'; } },
+    pagamento_non_riuscito: { testo: 'Pagamenti non riusciti', f: function(c){ return abbonamento(c.piano) && codiceStato(c) === 'pagamento_non_riuscito'; } },
+    fine_accesso: { testo: 'Finiti, ultimi 7 giorni di accesso', f: function(c){ return abbonamento(c.piano) && codiceStato(c) === 'fine_accesso'; } }
+  };
+  function eventiPerCliente(){
+    var m = {};
+    (DATI.eventi || []).forEach(function(e){ if(e.cliente_id){ (m[e.cliente_id] = m[e.cliente_id] || []).push(String(e.nome || '').toLowerCase()); } });
+    return m;
+  }
+  function vistaClienti(filtroStato){
+    var h = '';
+    h += '<div class="sec"><div style="position:relative"><span style="position:absolute;left:13px;top:13px;color:rgba(245,240,232,0.5)">' + ICO_CERCA + '</span><input class="field" style="padding-left:40px" type="search" id="cli_q" aria-label="Cerca un cliente" placeholder="Cerca per nome, email o evento" value="' + esc(F.q) + '"></div></div>';
+    h += '<div class="chips" style="padding-top:12px" id="cli_chips"></div>';
+    h += '<div class="sec" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;flex-wrap:wrap"><div class="tag" id="cli_n"></div>';
+    h += '<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(245,240,232,0.75)">Ordina <select class="field" id="cli_ord" style="width:auto;padding:8px 10px;font-size:14px;min-height:40px">';
+    [['recenti','Più recenti'],['nome','Nome'],['rinnovo','Prossimo rinnovo'],['incassato','Incassato']].forEach(function(o){
+      h += '<option value="' + o[0] + '"' + (F.cliOrd === o[0] ? ' selected' : '') + '>' + o[1] + '</option>';
+    });
+    h += '</select></label></div>';
+    h += '<div class="sec" style="padding-top:8px"><div class="card" id="cli_lista"></div></div>';
+    metti(h);
+    $('cli_q').addEventListener('input', function(){ F.q = this.value; listaClienti(filtroStato); });
+    $('cli_ord').addEventListener('change', function(){ F.cliOrd = this.value; listaClienti(filtroStato); });
+    listaClienti(filtroStato);
+  }
+  function listaClienti(filtroStato){
+    var tutti = DATI.clienti || [];
+    var fs = FILTRI_STATO[filtroStato] || null;
+    var base = fs ? tutti.filter(fs.f) : tutti;
+    var conta = function(fn){ return base.filter(fn).length; };
+    var chipsDef = [
+      ['tutti', 'Tutti', function(){ return true; }],
+      ['base', 'Base', function(c){ return c.piano === 'base'; }],
+      ['pro', 'Pro', function(c){ return c.piano === 'pro'; }],
+      ['agenzia', 'Agenzia', function(c){ return c.piano === 'agenzia'; }],
+      ['info', 'Punto Info', function(c){ return c.piano === 'info'; }],
+      ['manuali', 'Accessi manuali', accessoManuale]
+    ];
+    var ch = '';
+    if(fs) ch += '<a class="chip filtro" href="#clienti" aria-label="Togli il filtro">' + esc(fs.testo) + ' <span aria-hidden="true">&#10005;</span></a>';
+    var filtroPiano = function(){ return true; };
+    chipsDef.forEach(function(d){
+      if(F.cli === d[0]) filtroPiano = d[2];
+      ch += '<button class="chip' + (F.cli === d[0] ? ' on' : '') + '" type="button" data-fcli="' + d[0] + '">' + d[1] + ' <b>' + conta(d[2]) + '</b></button>';
+    });
+    $('cli_chips').innerHTML = ch;
+    var q = F.q.trim().toLowerCase();
+    var evMap = q ? eventiPerCliente() : {};
+    var lista = base.filter(filtroPiano).filter(function(c){
+      if(!q) return true;
+      var testo = (nomeCliente(c) + ' ' + (c.email || '')).toLowerCase();
+      if(testo.indexOf(q) >= 0) return true;
+      return (evMap[c.id] || []).some(function(n){ return n.indexOf(q) >= 0; });
+    });
+    lista.sort(function(a, b){
+      if(F.cliOrd === 'nome') return nomeCliente(a).localeCompare(nomeCliente(b), 'it', { sensitivity: 'base' });
+      if(F.cliOrd === 'rinnovo'){
+        var ra = a.subscription_renews_at ? new Date(a.subscription_renews_at).getTime() : Infinity;
+        var rb = b.subscription_renews_at ? new Date(b.subscription_renews_at).getTime() : Infinity;
+        if(ra !== rb) return ra - rb;
+      }
+      if(F.cliOrd === 'incassato'){
+        var d = Number(b.incassato_reale || 0) - Number(a.incassato_reale || 0);
+        if(d) return d;
+      }
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    $('cli_n').textContent = lista.length === 1 ? '1 cliente' : lista.length + ' clienti';
+    var h = '';
+    if(!lista.length) h = '<div class="vuoto">Nessun cliente con questi filtri.</div>';
+    lista.forEach(function(c){
+      var si = statoInfo(c);
+      var extra = '';
+      if(F.cliOrd === 'incassato') extra = '<div class="importo" style="font-size:13px">' + esc(euro(c.incassato_reale)) + '</div>';
+      h += '<a class="row" href="#cliente/' + esc(c.id) + '"><div class="grow"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="t">' + esc(nomeCliente(c)) + '</div>' + pianoPill(c.piano) + '</div>';
+      h += '<div class="s">' + (c.email ? esc(c.email) : '<span style="color:var(--bad)">email mancante</span>') + '</div>';
+      h += '<div class="s chiaro"><span class="dot ' + si.dot + '"></span>' + esc(si.testo) + (Number(c.assistenza_aperte) ? ', <span style="color:var(--warn)">assistenza aperta</span>' : '') + '</div></div>' + extra + ICO_CHEV + '</a>';
+    });
+    $('cli_lista').innerHTML = h;
+  }
+
+  // ---------------- SCHEDA CLIENTE ----------------
+  async function vistaCliente(id){
+    if(SCHEDA && SCHEDA.cliente && SCHEDA.cliente.id === id){ disegnaScheda(); return; }
+    metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="caricamento">Caricamento della scheda...</div>');
+    try{
+      var res = await chiedi('cliente', { order_id: id });
+      if(rotta().v !== 'cliente' || rotta().id !== id) return;
       SCHEDA = res.dati;
       disegnaScheda();
     }catch(e){
-      if(!gestisciErrore(e)){
-        $('schedaBody').innerHTML = '<div class="empty">Errore nel caricamento della scheda: ' + esc(e.message) + '</div>';
-      }
+      if(!gestisciErrore(e)) metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="sec"><div class="msgx err">Scheda non disponibile: ' + esc(e.message) + '</div></div>');
     }
   }
-
-  function disegnaScheda(){
-    if(!SCHEDA || !SCHEDA.cliente){
-      $('schedaBody').innerHTML = '<div class="empty">Scheda non disponibile.</div>';
-      return;
-    }
-    var c = SCHEDA.cliente;
-    var accessi = SCHEDA.accessi || [];
-    var eventi = SCHEDA.eventi || [];
-    var note = SCHEDA.note || [];
-
-    var nomeCompleto = [c.nome, c.cognome].filter(Boolean).join(' ');
-    var titolo = nomeCompleto || c.email || 'Cliente senza nome';
-    var h = '';
-
-    // intestazione
-    h += '<div class="scheda-hd">';
-    h += '<h2>' + esc(titolo) + '</h2>';
-    h += '<div class="em">' + (c.email ? esc(c.email) : '<span style="color:#F87171">email mancante</span>') + '</div>';
-    h += '<div class="pills">' + pianoPill(c.piano) + statoCliente(c) + venditorePill(c.sales_agent) + '</div>';
-    h += '</div>';
-
-    // dati principali
-    h += '<div class="dati">';
-    h += '<div class="dato"><div class="k">CLIENTE DAL</div><div class="v">' + dataIt(c.created_at) + '</div></div>';
-    h += '<div class="dato"><div class="k">EVENTI</div><div class="v">' + eventi.length + '</div></div>';
-    h += '<div class="dato"><div class="k">NEWSLETTER</div><div class="v">' + (c.newsletter ? 'Si' : 'No') + '</div></div>';
-
-    if(String(c.piano || '').toLowerCase() === 'agenzia'){
-      if(c.subscription_renews_at){
-        h += '<div class="dato"><div class="k">SI RINNOVA IL</div><div class="v">' + dataIt(c.subscription_renews_at) + '</div></div>';
-      }
-      if(c.subscription_expires_at){
-        h += '<div class="dato"><div class="k">ACCESSO FINO AL</div><div class="v" style="color:#FBBF24">' + dataIt(c.subscription_expires_at) + '</div></div>';
-      }
-    }
-    h += '</div>';
-
-    // attribuzione commerciale
-    var agentCorr = c.sales_agent || '';
-    var optCorr = c.commission_option || '';
-    var isAg = String(c.piano || '').toLowerCase() === 'agenzia';
-
-    h += '<div class="sec-title">Attribuzione commerciale</div>';
-    h += '<div class="attr-box">';
-    h += '<div class="attr-row">';
-    h += '<div class="attr-field"><label class="attr-lab">Venditore</label>';
-    h += '<select id="attr_agent"><option value="">Nessuno</option>';
-    var trovatoCorr = false;
-    VENDITORI.forEach(function(v){
-      if(!v.attivo) return;
-      var sel = (v.code === agentCorr);
-      if(sel) trovatoCorr = true;
-      h += '<option value="' + esc(v.code) + '"' + (sel ? ' selected' : '') + '>' + esc(v.nome) + '</option>';
-    });
-    if(agentCorr && !trovatoCorr){
-      h += '<option value="' + esc(agentCorr) + '" selected>' + esc(venditoreLabel(agentCorr)) + ' (disattivato)</option>';
-    }
-    h += '</select></div>';
-    if(isAg){
-      h += '<div class="attr-field" id="attr_opt_wrap"><label class="attr-lab">Modalita provvigione</label>';
-      h += '<select id="attr_option">';
-      h += '<option value="A"' + (optCorr === 'A' ? ' selected' : '') + '>A - 30% una tantum</option>';
-      h += '<option value="B"' + (optCorr === 'B' ? ' selected' : '') + '>B - 20% sui rinnovi</option>';
-      h += '</select></div>';
-    }
-    h += '</div>';
-    h += '<div class="attr-foot">';
-    h += '<span class="attr-hint">' + (isAg ? 'Agenzia: scegli A o B' : 'Base e Pro: 30% una tantum') + '</span>';
-    h += '<button class="btn-sm" id="attr_btn">Salva attribuzione</button>';
-    h += '</div>';
-    h += '<div class="msg" id="attr_msg"></div>';
-    h += '</div>';
-
-    // accessi
-    h += '<div class="sec-title">Accessi <span class="cnt">(' + accessi.length + ')</span></div>';
-    accessi.forEach(function(a){
-      var chiuso = String(a.stato || '') === 'closed';
-      h += '<div class="item" style="margin-bottom:8px">';
-      h += '<div class="item-head"><div>';
-      h += '<div class="item-title" style="font-size:14px">' + (chiuso ? 'Accesso chiuso' : 'Accesso attivo') + '</div>';
-      h += '<div class="item-sub">' + (a.n_eventi || 0) + ' eventi -- creato il ' + dataIt(a.created_at) + '</div>';
-      h += '</div>';
-      h += chiuso ? '<span class="pill neutral">CHIUSO</span>' : '<span class="pill ok">ATTIVO</span>';
-      h += '</div>';
-      h += '<div class="tok">' + esc(a.token) + '</div>';
-      if(!chiuso){
-        h += '<div class="acts"><a class="act" target="_blank" rel="noopener" href="' +
-             esc(dashUrl(c.piano, a.token)) + '">Apri come organizzatore</a></div>';
-      }
-      h += '</div>';
-    });
-
-    // eventi
-    h += '<div class="sec-title">Eventi <span class="cnt">(' + eventi.length + ')</span></div>';
-    if(eventi.length === 0){
-      h += '<div class="empty">Nessun evento creato.</div>';
-    }else{
-      eventi.forEach(function(e){
-        h += '<div class="item" style="margin-bottom:8px">';
-        h += '<div class="item-head"><div>';
-        h += '<div class="item-title" style="font-size:15px">' + esc(e.nome || 'Evento senza nome') + '</div>';
-        h += '<div class="item-sub">' + dataIt(e.data_iso) +
-             (e.evento_online ? ' -- online' : (e.luogo ? ' -- ' + esc(e.luogo) : '')) + '</div>';
-        h += '</div>' + statoEvento(e) + '</div>';
-        h += '<div class="rows">';
-        h += '<div><div class="row-k">ISCRITTI</div><div class="row-v">' + (e.n_iscritti || 0) +
-             (e.capienza ? ' / ' + e.capienza : '') + '</div></div>';
-        h += '<div><div class="row-k">PRESENTI</div><div class="row-v">' + (e.n_presenti || 0) + '</div></div>';
-        h += '</div>';
-        h += '<div class="acts"><a class="act sec" target="_blank" rel="noopener" href="' +
-             esc(landingUrl(e)) + '">Vedi pagina pubblica</a></div>';
-        h += '</div>';
-      });
-    }
-
-    // note
-    h += '<div class="sec-title">Note interne <span class="cnt">(' + note.length + ')</span></div>';
-    h += '<div class="nota-box">';
-    h += '<textarea id="nota_txt" maxlength="5000" placeholder="Scrivi una nota su questo cliente. La vedi solo tu."></textarea>';
-    h += '<div class="sotto"><span class="cnt-car" id="nota_cnt">0 / 5000</span>';
-    h += '<button class="btn-sm" id="nota_btn">Salva nota</button></div>';
-    h += '<div class="msg" id="nota_msg"></div>';
-    h += '</div>';
-
-    if(note.length === 0){
-      h += '<div class="empty">Nessuna nota. Le note sono private e il cliente non le vede mai.</div>';
-    }else{
-      note.forEach(function(n){
-        h += '<div class="nota-riga">';
-        h += '<div class="testo">' + esc(n.testo) + '</div>';
-        h += '<div class="meta"><span>' + esc(n.autore || '') + ' -- ' + dataOraIt(n.created_at) + '</span>';
-        h += '<button class="del-nota" data-nota="' + esc(n.id) + '">Elimina</button></div>';
-        h += '</div>';
-      });
-    }
-
-    $('schedaBody').innerHTML = h;
-
-    // collego i comandi della scheda
-    var txt = $('nota_txt');
-    txt.addEventListener('input', function(){
-      $('nota_cnt').textContent = txt.value.length + ' / 5000';
-    });
-    $('nota_btn').addEventListener('click', salvaNota);
-
-    var dels = document.querySelectorAll('.del-nota');
-    for(var i=0;i<dels.length;i++){
-      dels[i].addEventListener('click', function(){
-        eliminaNota(this.getAttribute('data-nota'));
-      });
-    }
-
-    var attrBtn = $('attr_btn');
-    if(attrBtn){
-      var agentSel = $('attr_agent');
-      var optWrap = $('attr_opt_wrap');
-      var sincAttrOpt = function(){
-        if(!optWrap) return;
-        var vuoto = !agentSel.value;
-        optWrap.style.opacity = vuoto ? '0.45' : '1';
-        var os = $('attr_option');
-        if(os) os.disabled = vuoto;
-      };
-      agentSel.addEventListener('change', sincAttrOpt);
-      sincAttrOpt();
-      attrBtn.addEventListener('click', salvaAttribuzione);
-    }
-  }
-
-  async function salvaNota(){
-    var txt = $('nota_txt');
-    var msg = $('nota_msg');
-    var testo = txt.value.trim();
-    nascondiMsg(msg);
-
-    if(!testo){
-      mostraMsg(msg, 'Scrivi qualcosa prima di salvare.', 'err');
-      return;
-    }
-
-    $('nota_btn').disabled = true;
-    $('nota_btn').textContent = 'Salvataggio...';
-
-    try{
-      await chiedi('nota_aggiungi', { order_id: SCHEDA.cliente.id, testo: testo });
-      await apriCliente(SCHEDA.cliente.id);
-    }catch(e){
-      $('nota_btn').disabled = false;
-      $('nota_btn').textContent = 'Salva nota';
-      if(!gestisciErrore(e)){
-        mostraMsg(msg, 'Nota non salvata: ' + e.message, 'err');
-      }
-    }
-  }
-
-  async function salvaAttribuzione(){
-    var msg = $('attr_msg');
-    var btn = $('attr_btn');
-    nascondiMsg(msg);
-
-    var agent = $('attr_agent') ? $('attr_agent').value : '';
-    var optEl = $('attr_option');
-
-    var extra = { order_id: SCHEDA.cliente.id, sales_agent: agent };
-    if(agent && optEl) extra.commission_option = optEl.value;
-
-    btn.disabled = true;
-    btn.textContent = 'Salvataggio...';
-
-    try{
-      await chiedi('attribuisci', extra);
-      await apriCliente(SCHEDA.cliente.id);
-    }catch(e){
-      btn.disabled = false;
-      btn.textContent = 'Salva attribuzione';
-      if(!gestisciErrore(e)){
-        mostraMsg(msg, 'Attribuzione non salvata: ' + e.message, 'err');
-      }
-    }
-  }
-
-  async function eliminaNota(id){
-    if(!window.confirm('Eliminare questa nota? L\'operazione non si puo\' annullare.')) return;
-    try{
-      await chiedi('nota_elimina', { nota_id: id });
-      await apriCliente(SCHEDA.cliente.id);
-    }catch(e){
-      if(!gestisciErrore(e)){
-        mostraMsg($('app_msg'), 'Nota non eliminata: ' + e.message, 'err');
-      }
-    }
-  }
-
-  // ---------- tab ----------
-  function apriTab(nome){
-    TAB = nome;
-    var btns = document.querySelectorAll('.tab-btn');
-    for(var i=0;i<btns.length;i++){
-      btns[i].classList.toggle('on', btns[i].getAttribute('data-tab') === nome);
-    }
-    $('tab_clienti').style.display   = (nome === 'clienti')   ? 'block' : 'none';
-    $('tab_eventi').style.display    = (nome === 'eventi')    ? 'block' : 'none';
-    $('tab_controllo').style.display = (nome === 'controllo') ? 'block' : 'none';
-    $('tab_venditori').style.display = (nome === 'venditori') ? 'block' : 'none';
-    $('tab_newsletter').style.display = (nome === 'newsletter') ? 'block' : 'none';
-    $('searchWrap').style.display    = (nome === 'clienti' || nome === 'eventi') ? 'block' : 'none';
-    if(nome === 'venditori') disegnaVenditori();
-    if(nome === 'newsletter') disegnaNewsletter();
-  }
-
-  // ---------- venditori UI ----------
-  function disegnaVenditori(){
-    var box = $('tab_venditori');
-    var h = '';
-
-    h += '<div class="attr-box">';
-    h += '<div class="sec-title" style="margin-top:0">Aggiungi venditore</div>';
-    h += '<div class="attr-row">';
-    h += '<div class="attr-field"><label class="attr-lab">Nome</label><input type="text" id="vend_nome" placeholder="Es. Mario Rossi"></div>';
-    h += '<div class="attr-field"><label class="attr-lab">Coupon</label><input type="text" id="vend_coupon" placeholder="Es. MARIO10"></div>';
-    h += '</div>';
-    h += '<div class="attr-row" style="margin-top:12px">';
-    h += '<div class="attr-field"><label class="attr-lab">Email (per la newsletter)</label><input type="email" id="vend_email" placeholder="Es. mario@email.it"></div>';
-    h += '</div>';
-    h += '<div class="attr-foot">';
-    h += '<span class="attr-hint">Coupon per l\'attribuzione, email per ricevere le comunicazioni</span>';
-    h += '<button class="btn-sm" id="vend_add_btn">Aggiungi</button>';
-    h += '</div>';
-    h += '<div class="msg" id="vend_msg"></div>';
-    h += '</div>';
-
-    if(!VENDITORI.length){
-      h += '<div class="vuoto">Nessun venditore nel registro.</div>';
-    }else{
-      VENDITORI.forEach(function(v){
-        h += '<div class="vend-riga' + (v.attivo ? '' : ' off') + '">';
-        h += '<div class="vend-info"><div class="vend-nome">' + esc(v.nome) + '</div>';
-        h += '<div class="vend-meta">Coupon ' + esc(v.coupon) + ' -- ' + (v.email ? esc(v.email) : '<span style="color:#FBBF24">email mancante</span>') + (v.attivo ? '' : ' -- disattivato') + '</div></div>';
-        h += '<button class="btn-sm ghost" data-vend="' + esc(v.code) + '" data-attivo="' + (v.attivo ? '1' : '0') + '">' + (v.attivo ? 'Disattiva' : 'Riattiva') + '</button>';
-        h += '</div>';
-      });
-    }
-
-    box.innerHTML = h;
-
-    var addBtn = $('vend_add_btn');
-    if(addBtn) addBtn.addEventListener('click', aggiungiVenditore);
-
-    var toggles = box.querySelectorAll('[data-vend]');
-    for(var i=0;i<toggles.length;i++){
-      toggles[i].addEventListener('click', function(){
-        cambiaStatoVenditore(this.getAttribute('data-vend'), this.getAttribute('data-attivo') !== '1');
-      });
-    }
-  }
-
-  async function aggiungiVenditore(){
-    var msg = $('vend_msg');
-    var btn = $('vend_add_btn');
-    nascondiMsg(msg);
-
-    var nome = $('vend_nome') ? $('vend_nome').value.trim() : '';
-    var coupon = $('vend_coupon') ? $('vend_coupon').value.trim() : '';
-    var email = $('vend_email') ? $('vend_email').value.trim() : '';
-    if(!nome || !coupon){
-      mostraMsg(msg, 'Inserisci nome e coupon', 'err');
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Aggiungo...';
-
-    try{
-      await chiedi('venditore_aggiungi', { nome: nome, coupon: coupon, email: email });
-      await caricaVenditori();
-      disegnaVenditori();
-    }catch(e){
-      btn.disabled = false;
-      btn.textContent = 'Aggiungi';
-      if(!gestisciErrore(e)){
-        mostraMsg($('vend_msg'), e.message, 'err');
-      }
-    }
-  }
-
-  async function cambiaStatoVenditore(code, nuovoStato){
-    nascondiMsg($('vend_msg'));
-    try{
-      await chiedi('venditore_stato', { code: code, attivo: nuovoStato });
-      await caricaVenditori();
-      disegnaVenditori();
-    }catch(e){
-      if(!gestisciErrore(e)){
-        mostraMsg($('vend_msg'), e.message, 'err');
-      }
-    }
-  }
-
-  // ---------- newsletter interna UI ----------
-  var NL_SEG = [
-    { code: 'clienti_base',    label: 'Clienti Base' },
-    { code: 'clienti_pro',     label: 'Clienti Pro' },
-    { code: 'clienti_agenzia', label: 'Clienti Agenzia' },
-    { code: 'venditori',       label: 'Venditori' }
-  ];
-  var nlSeq = 0;
-  var nlDest = [];        // destinatari risolti: [{email, nome, segmenti}]
-  var nlEsclusi = {};     // email escluse -> true (persistono tra i ricalcoli)
-
-  function nlSegBreve(code){
-    if(code === 'clienti_base') return 'Base';
-    if(code === 'clienti_pro') return 'Pro';
-    if(code === 'clienti_agenzia') return 'Agenzia';
-    if(code === 'venditori') return 'Venditore';
+  function venditoreNome(code){
+    if(!code) return 'Nessuno';
+    for(var i = 0; i < VENDITORI.length; i++){ if(VENDITORI[i].code === code) return VENDITORI[i].nome; }
     return code;
   }
+  function etichettaEvento(e){
+    if(e.bozza) return '<span class="pill p-warn">Bozza</span>';
+    if(e.concluso) return '<span class="pill p-neu">Concluso</span>';
+    if(e.attivo === false) return '<span class="pill p-bad">Chiuso</span>';
+    return '<span class="pill p-ok">Attivo</span>';
+  }
+  function numeriEvento(e){
+    var mod = e.modalita || 'iscrizioni';
+    var ric = Number(e.n_richieste || 0);
+    var testoRic = ric === 1 ? '1 richiesta' : ric + ' richieste';
+    if(mod === 'info') return 'solo informazioni, ' + testoRic;
+    var t = (e.n_iscritti || 0) + (e.capienza ? ' iscritti su ' + e.capienza : ' iscritti');
+    if(Number(e.n_attesa || 0)) t += ', ' + e.n_attesa + ' in lista d\'attesa';
+    if(mod === 'entrambe') t += ', ' + testoRic;
+    return t;
+  }
+  function disegnaScheda(){
+    var d = SCHEDA || {};
+    var c = d.cliente;
+    if(!c){ metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="sec"><div class="msgx err">Scheda non disponibile.</div></div>'); return; }
+    var si = statoInfo(c);
+    var accessi = d.accessi || [], eventi = d.eventi || [], pag = d.pagamenti || [], ass = d.assistenza || [], note = d.note || [];
+    var h = '<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a>';
+    h += '<div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">' + esc(nomeCliente(c)) + '</h1>';
+    h += '<div class="s" style="font-size:13px">' + (c.email ? esc(c.email) : '<span style="color:var(--bad)">email mancante</span>') + '</div>';
+    h += '<div class="pills" style="margin-top:10px">' + pianoPill(c.piano) + '<span class="pill ' + si.pill + '">' + esc(si.breve) + '</span>' + (accessoManuale({ n_pagamenti_reali: pag.filter(function(p){ return p.categoria === 'reale' && p.tipo !== 'rimborso'; }).length }) ? '<span class="pill p-neu">Nessun pagamento reale</span>' : '') + '</div>';
+    h += '<div class="s chiaro" style="margin-top:8px"><span class="dot ' + si.dot + '"></span>' + esc(si.testo) + '</div></div>';
 
-  function disegnaNewsletter(){
-    var box = $('tab_newsletter');
-    var h = '';
+    // dati chiave
+    var rinnovo = abbonamento(c.piano) ? (c.subscription_renews_at && codiceStato(c) === 'attivo' ? dataLunga(c.subscription_renews_at) : 'Nessuno') : 'Pagamento unico';
+    var disdetta = c.subscription_cancel_at ? 'Programmata, fino ' + art('al', dataBreve(c.subscription_cancel_at)) : (c.subscription_expires_at && (codiceStato(c) === 'fine_accesso' || codiceStato(c) === 'scaduto') ? 'Annullato, accesso fino ' + art('al', dataBreve(c.subscription_expires_at)) : 'Nessuna');
+    h += '<div class="sec"><div class="card"><div class="kv">';
+    h += '<div><div class="k">Piano</div><div class="v">' + esc(pianoConPrezzo(c, c.periodo)) + '</div></div>';
+    h += '<div><div class="k">Prossimo rinnovo</div><div class="v">' + esc(rinnovo) + '</div></div>';
+    h += '<div><div class="k">Cliente dal</div><div class="v">' + esc(dataLunga(c.created_at)) + '</div></div>';
+    h += '<div><div class="k">Incassato in totale</div><div class="v">' + esc(euro(d.totale_pagato)) + '</div></div>';
+    h += '<div><div class="k">Disdetta</div><div class="v">' + esc(disdetta) + '</div></div>';
+    h += '<div><div class="k">Venditore</div><div class="v">' + esc(venditoreNome(c.sales_agent)) + '</div></div>';
+    h += '<div><div class="k">Area personale</div><div class="v">' + (c.ha_accesso_al_sito ? 'Password impostata' : 'Mai entrato') + '</div></div>';
+    h += '<div><div class="k">Newsletter</div><div class="v">' + (c.newsletter ? 'Consenso dato' : 'Nessun consenso') + '</div></div>';
+    h += '</div></div>';
+    // azioni
+    h += '<div class="bottoni" style="margin-top:10px">';
+    if(accessi.length === 1){
+      h += '<a class="btn" target="_blank" rel="noopener" href="' + esc(dashUrl(c.piano, accessi[0].token)) + '">Apri la sua dashboard</a>';
+    }else if(!accessi.length){
+      h += '<button class="btn" type="button" disabled>Nessun accesso attivo</button>';
+    }else{
+      h += '<a class="btn" target="_blank" rel="noopener" href="' + esc(dashUrl(c.piano, accessi[0].token)) + '">Apri la dashboard (accesso 1)</a>';
+    }
+    h += '<button class="btn sec2" type="button" data-az="scrivi"' + (c.email ? '' : ' disabled') + '>' + ICO_PENNA + 'Scrivi</button>';
+    h += '</div>';
+    if(accessi.length > 1){
+      h += '<div class="bottoni" style="margin-top:8px">';
+      accessi.slice(1).forEach(function(a, i){
+        h += '<a class="btn sec2" target="_blank" rel="noopener" href="' + esc(dashUrl(c.piano, a.token)) + '">Apri la dashboard (accesso ' + (i + 2) + ')</a>';
+      });
+      h += '</div><div class="note" style="margin-top:6px">Questo cliente ha ' + accessi.length + ' accessi aperti.</div>';
+    }
+    // scrivi al cliente (nuova conversazione)
+    h += '<div class="card pad" id="scrivi_box" style="margin-top:10px" hidden>';
+    h += '<div class="h2" style="margin-bottom:6px">Scrivi a ' + esc(nomeCliente(c)) + '</div>';
+    h += '<div class="note" style="margin-bottom:12px">Parte un\'email da info@eventsfun.com. Se il cliente risponde, la risposta arriva nella conversazione in Assistenza.</div>';
+    h += '<div class="campo"><label class="lbl" for="nv_arg">Argomento</label><select class="field" id="nv_arg">';
+    Object.keys(ARGOMENTI).forEach(function(k){ h += '<option value="' + k + '"' + (k === 'altro' ? ' selected' : '') + '>' + ARGOMENTI[k] + '</option>'; });
+    h += '</select></div>';
+    h += '<div class="campo"><label class="lbl" for="nv_txt">Messaggio</label><textarea class="field" id="nv_txt" rows="6" maxlength="10000"></textarea></div>';
+    h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="scrivi_annulla">Annulla</button><button class="btn" type="button" data-az="scrivi_invia" id="nv_btn">Invia messaggio</button></div>';
+    h += '<div class="msgx" id="nv_msg"></div></div>';
+    h += '</div>';
 
-    // Destinatari
-    h += '<div class="attr-box">';
-    h += '<div class="sec-title" style="margin-top:0">Destinatari</div>';
-    NL_SEG.forEach(function(s){
-      h += '<label class="nl-check">';
-      h += '<input type="checkbox" class="nl-seg" value="' + s.code + '">';
-      h += '<span class="nl-lab">' + s.label + '</span>';
-      h += '<span class="nl-n" id="nln_' + s.code + '">--</span>';
-      h += '</label>';
+    // eventi
+    h += '<div class="sec"><div class="h2">Eventi <small>' + eventi.length + '</small></div><div class="card">';
+    if(!eventi.length) h += '<div class="vuoto">Nessun evento creato.</div>';
+    eventi.forEach(function(e){
+      var sotto = e.bozza ? 'Bozza' : (dataBreve(e.data_iso) + ', ' + numeriEvento(e));
+      if(e.dati_fino_al && e.concluso) sotto += ', dati fino ' + art('al', dataBreve(e.dati_fino_al));
+      if(e.bozza){
+        h += '<div class="row"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</div>';
+      }else{
+        h += '<a class="row" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '" title="Apri la pagina pubblica"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</a>';
+      }
     });
-    h += '<label class="nl-consenso"><input type="checkbox" id="nl_consenso"> Invia solo ai clienti che hanno dato il consenso newsletter</label>';
-    h += '<div class="attr-hint">Il consenso vale solo per i clienti. I venditori vengono sempre inclusi.</div>';
-    h += '<div id="nl_lista" class="nl-lista"></div>';
-    h += '<div class="nl-count"><span class="n" id="nl_tot">0</span><span class="l">destinatari selezionati</span></div>';
+    h += '</div>' + (eventi.some(function(e){ return !e.bozza; }) ? '<div class="note" style="margin-top:6px">Tocca un evento per aprire la sua pagina pubblica.</div>' : '') + '</div>';
+
+    // assistenza
+    h += '<div class="sec"><div class="h2">Assistenza <small>' + (ass.length === 1 ? '1 richiesta' : ass.length + ' richieste') + '</small></div><div class="card">';
+    if(!ass.length) h += '<div class="vuoto">Nessuna richiesta di assistenza.</div>';
+    ass.forEach(function(r){
+      h += '<a class="row" href="#richiesta/' + esc(r.id) + '"><div class="grow"><div class="t">n. ' + esc(r.numero) + ', ' + esc(ARGOMENTI[r.argomento] || 'Richiesta') + '</div><div class="s">' + esc(quando(r.ultimo_messaggio_at)) + '</div></div>' + statoRichiestaPill(r) + '</a>';
+    });
+    h += '</div></div>';
+
+    // pagamenti
+    h += '<div class="sec"><div class="h2">Pagamenti <small>' + pag.length + '</small></div><div class="card">';
+    if(!pag.length) h += '<div class="vuoto">Nessun pagamento registrato.</div>';
+    pag.forEach(function(p){
+      var tipo = p.tipo === 'rinnovo' ? 'Rinnovo' : p.tipo === 'rimborso' ? 'Rimborso' : p.tipo === 'manuale' ? 'Registrato a mano' : (abbonamento(p.piano) ? 'Primo pagamento' : 'Acquisto');
+      var cat = p.categoria === 'prova' ? '<span class="pill p-neu">Prova</span>' : p.categoria === 'omaggio' ? '<span class="pill p-neu">Omaggio</span>' : '';
+      var sotto = dataBreve(p.pagato_il) + (p.periodo ? ', ' + p.periodo : '') + (p.codice_sconto ? ', codice ' + p.codice_sconto : '');
+      h += '<div class="row"><div class="grow"><div class="t">' + esc(tipo) + '</div><div class="s">' + esc(sotto) + '</div></div>' + cat + '<div class="importo">' + esc(euro(p.importo)) + '</div></div>';
+    });
+    h += '</div><div class="note" style="margin-top:6px">Nel totale contano solo i pagamenti reali, non prove e omaggi.</div></div>';
+
+    // attribuzione
+    var isAg = String(c.piano) === 'agenzia';
+    h += '<div class="sec"><div class="h2">Attribuzione commerciale</div><div class="card pad">';
+    h += '<div class="campo"><label class="lbl" for="attr_agent">Venditore</label><select class="field" id="attr_agent"><option value="">Nessuno</option>';
+    var trovato = false;
+    VENDITORI.forEach(function(v){
+      if(!v.attivo) return;
+      var sel = v.code === c.sales_agent; if(sel) trovato = true;
+      h += '<option value="' + esc(v.code) + '"' + (sel ? ' selected' : '') + '>' + esc(v.nome) + '</option>';
+    });
+    if(c.sales_agent && !trovato) h += '<option value="' + esc(c.sales_agent) + '" selected>' + esc(venditoreNome(c.sales_agent)) + ' (disattivato)</option>';
+    h += '</select></div>';
+    if(isAg){
+      h += '<div class="campo" id="attr_opt_wrap"><label class="lbl" for="attr_option">Modalità del compenso</label><select class="field" id="attr_option">';
+      h += '<option value="A"' + (c.commission_option !== 'B' ? ' selected' : '') + '>A: 30% una tantum</option>';
+      h += '<option value="B"' + (c.commission_option === 'B' ? ' selected' : '') + '>B: 20% sui rinnovi</option>';
+      h += '</select></div>';
+    }
+    h += '<div class="note" style="margin-bottom:10px">' + (isAg ? 'Agenzia: scegli la modalità A o B.' : 'Base, Pro e Punto Info: 30% una tantum.') + '</div>';
+    h += '<button class="btn sec2" type="button" data-az="attr_salva" id="attr_btn">Salva</button><div class="msgx" id="attr_msg"></div>';
+    h += '</div></div>';
+
+    // note
+    h += '<div class="sec"><div class="h2">Note interne <small>le vedi solo tu</small></div><div class="card pad">';
+    note.forEach(function(n){
+      h += '<div class="note" style="margin-bottom:12px;border-bottom:1px solid var(--line2);padding-bottom:10px"><b style="color:var(--txt)">' + esc(dataBreve(n.created_at)) + '</b><br><span style="white-space:pre-wrap;word-break:break-word">' + esc(n.testo) + '</span><br><button class="btn rosso piccolo" type="button" style="margin-top:8px" data-az="nota_elimina" data-id="' + esc(n.id) + '">Elimina</button></div>';
+    });
+    h += '<label class="lbl" for="nota_txt">Nuova nota</label><textarea class="field" id="nota_txt" rows="3" maxlength="5000"></textarea>';
+    h += '<div style="margin-top:10px"><button class="btn sec2" type="button" data-az="nota_salva" id="nota_btn">Aggiungi nota</button></div><div class="msgx" id="nota_msg"></div>';
+    h += '</div></div>';
     h += '</div>';
-
-    // Messaggio
-    h += '<div class="attr-box">';
-    h += '<div class="sec-title" style="margin-top:0">Messaggio</div>';
-    h += '<div class="attr-row"><div class="attr-field"><label class="attr-lab">Oggetto</label><input type="text" id="nl_oggetto" maxlength="200" placeholder="Es. Novita su EventsFun"></div></div>';
-    h += '<div class="attr-row" style="margin-top:12px">';
-    h += '<div class="attr-field"><label class="attr-lab">Nome mittente</label><input type="text" id="nl_from" maxlength="60" value="EventsFun"></div>';
-    h += '<div class="attr-field"><label class="attr-lab">Email di risposta</label><input type="email" id="nl_reply" value="info@eventsfun.com"></div>';
-    h += '</div>';
-    h += '<div class="attr-row" style="margin-top:12px"><div class="attr-field"><label class="attr-lab">Testo del messaggio</label><textarea id="nl_corpo" maxlength="100000" placeholder="Scrivi qui la comunicazione..."></textarea></div></div>';
-    h += '<div class="attr-hint">Testo semplice: gli a-capo diventano righe e i link http vengono resi cliccabili. Le email partono con l\'intestazione EventsFun.</div>';
-    h += '<div style="margin-top:14px;text-align:right"><button class="btn-sm" id="nl_invia_btn">Invia newsletter</button></div>';
-    h += '<div class="msg" id="nl_msg"></div>';
-    h += '</div>';
-
-    // Storico invii
-    h += '<div class="attr-box">';
-    h += '<div class="sec-title" style="margin-top:0">Storico invii</div>';
-    h += '<div id="nl_storico"><div class="vuoto">Caricamento...</div></div>';
-    h += '</div>';
-
-    box.innerHTML = h;
-
-    var checks = box.querySelectorAll('.nl-seg');
-    for(var i=0;i<checks.length;i++){ checks[i].addEventListener('change', aggiornaListaNl); }
-    var cons = $('nl_consenso');
-    if(cons) cons.addEventListener('change', aggiornaListaNl);
-    var btn = $('nl_invia_btn');
-    if(btn) btn.addEventListener('click', inviaNewsletter);
-
-    aggiornaListaNl();
-    caricaStorico();
+    metti(h);
+    sincronizzaAttr();
+    var ag = $('attr_agent'); if(ag) ag.addEventListener('change', sincronizzaAttr);
+  }
+  function sincronizzaAttr(){
+    var ag = $('attr_agent'), w = $('attr_opt_wrap'), o = $('attr_option');
+    if(!ag || !w || !o) return;
+    var vuoto = !ag.value;
+    w.style.opacity = vuoto ? '0.45' : '1';
+    o.disabled = vuoto;
+  }
+  async function salvaAttribuzione(){
+    var msg = $('attr_msg'), btn = $('attr_btn');
+    nascondiMsg(msg);
+    var agent = $('attr_agent') ? $('attr_agent').value : '';
+    var extra = { order_id: SCHEDA.cliente.id, sales_agent: agent };
+    if(agent && $('attr_option')) extra.commission_option = $('attr_option').value;
+    btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      await chiedi('attribuisci', extra);
+      SCHEDA = null;
+      toast('Attribuzione salvata');
+      aggiornaDati(false);
+      await vistaCliente(extra.order_id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva';
+      if(!gestisciErrore(e)) mostraMsg(msg, 'Attribuzione non salvata: ' + e.message, 'err');
+    }
+  }
+  async function salvaNota(){
+    var txt = $('nota_txt'), msg = $('nota_msg'), btn = $('nota_btn');
+    nascondiMsg(msg);
+    var testo = txt.value.trim();
+    if(!testo){ mostraMsg(msg, 'Scrivi qualcosa prima di salvare.', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      var id = SCHEDA.cliente.id;
+      await chiedi('nota_aggiungi', { order_id: id, testo: testo });
+      SCHEDA = null;
+      toast('Nota aggiunta');
+      await vistaCliente(id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Aggiungi nota';
+      if(!gestisciErrore(e)) mostraMsg(msg, 'Nota non salvata: ' + e.message, 'err');
+    }
+  }
+  async function eliminaNota(notaId){
+    if(!window.confirm('Eliminare questa nota? Non si può annullare.')) return;
+    try{
+      var id = SCHEDA.cliente.id;
+      await chiedi('nota_elimina', { nota_id: notaId });
+      SCHEDA = null;
+      toast('Nota eliminata');
+      await vistaCliente(id);
+    }catch(e){
+      if(!gestisciErrore(e)) toast('Nota non eliminata: ' + e.message, true);
+    }
+  }
+  async function inviaNuovaConversazione(){
+    var msg = $('nv_msg'), btn = $('nv_btn');
+    nascondiMsg(msg);
+    var testo = $('nv_txt').value.trim();
+    if(!testo){ mostraMsg(msg, 'Scrivi il messaggio.', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Invio in corso...';
+    try{
+      var res = await chiedi('assistenza_nuova', { order_id: SCHEDA.cliente.id, argomento: $('nv_arg').value, testo: testo });
+      SCHEDA = null;
+      RICH = res.dati || null;
+      toast('Messaggio inviato');
+      await aggiornaDati(false);
+      vai('richiesta/' + res.richiesta_id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Invia messaggio';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
   }
 
-  function letturaSegmentiNl(){
+  // ---------------- INCASSI ----------------
+  function periodo(per){
+    var o = parteData(oggi());
+    var due = function(n){ return String(n).padStart(2, '0'); };
+    if(per === 'mese') return { dal: o.a + '-' + due(o.m) + '-01', al: oggi() };
+    if(per === 'mese_scorso'){
+      var a = o.m === 1 ? o.a - 1 : o.a, m = o.m === 1 ? 12 : o.m - 1;
+      var ultimo = new Date(Date.UTC(a, m, 0)).getUTCDate();
+      return { dal: a + '-' + due(m) + '-01', al: a + '-' + due(m) + '-' + due(ultimo) };
+    }
+    if(per === 'anno') return { dal: o.a + '-01-01', al: oggi() };
+    return { dal: F.incDal || (o.a + '-' + due(o.m) + '-01'), al: F.incAl || oggi() };
+  }
+  function vistaIncassi(){
+    var p = periodo(F.incPer);
+    F.incDal = p.dal; F.incAl = p.al;
+    var h = '<div class="stretta">';
+    h += '<div class="sec" style="padding-bottom:12px"><h1 class="h1">Incassi</h1><div class="note" style="margin-top:4px">Solo i pagamenti reali: prove e omaggi sono tenuti a parte.</div></div>';
+    h += '<div class="chips">';
+    [['mese','Questo mese'],['mese_scorso','Mese scorso'],['anno','Quest\'anno'],['date','Da data a data']].forEach(function(x){
+      h += '<button class="chip' + (F.incPer === x[0] ? ' on' : '') + '" type="button" data-per="' + x[0] + '">' + x[1] + '</button>';
+    });
+    h += '</div>';
+    h += '<div class="sec" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-top:12px">';
+    h += '<div><label class="lbl" for="inc_dal">Dal</label><input class="field" id="inc_dal" type="date" value="' + esc(p.dal) + '"></div>';
+    h += '<div><label class="lbl" for="inc_al">Al</label><input class="field" id="inc_al" type="date" value="' + esc(p.al) + '"></div></div>';
+    h += '<div class="chips" style="padding-top:12px">';
+    [['','Tutti i pacchetti'],['base','Base'],['pro','Pro'],['agenzia','Agenzia'],['info','Punto Info']].forEach(function(x){
+      h += '<button class="chip' + (F.incPiano === x[0] ? ' on' : '') + '" type="button" data-piano="' + x[0] + '">' + x[1] + '</button>';
+    });
+    h += '</div>';
+    h += '<div class="sec" style="padding-top:8px"><label class="chk"><input type="checkbox" id="inc_sconto"' + (F.incSconto ? ' checked' : '') + '>Solo pagamenti con sconto</label></div>';
+    h += '<div id="inc_corpo"><div class="caricamento">Caricamento degli incassi...</div></div>';
+    h += '</div>';
+    metti(h);
+    $('inc_dal').addEventListener('change', function(){ F.incPer = 'date'; F.incDal = this.value; INC = null; vistaIncassi(); });
+    $('inc_al').addEventListener('change', function(){ F.incPer = 'date'; F.incAl = this.value; INC = null; vistaIncassi(); });
+    $('inc_sconto').addEventListener('change', function(){ F.incSconto = this.checked; INC = null; caricaIncassi(); });
+    caricaIncassi();
+  }
+  function chiaveIncassi(){ return [F.incDal, F.incAl, F.incPiano, F.incSconto].join('|'); }
+  async function caricaIncassi(){
+    var corpo = $('inc_corpo');
+    if(!F.incDal || !F.incAl){ corpo.innerHTML = '<div class="sec"><div class="msgx err">Scegli le due date.</div></div>'; return; }
+    if(F.incDal > F.incAl){ corpo.innerHTML = '<div class="sec"><div class="msgx err">La data "Dal" è dopo la data "Al".</div></div>'; return; }
+    var chiave = chiaveIncassi();
+    if(INC && INC.chiave === chiave){ disegnaIncassi(); return; }
+    corpo.innerHTML = '<div class="caricamento">Caricamento degli incassi...</div>';
+    try{
+      var res = await chiedi('incassi', { dal: F.incDal, al: F.incAl, piano: F.incPiano, solo_sconto: F.incSconto });
+      if(chiave !== chiaveIncassi() || rotta().v !== 'incassi') return;
+      INC = { chiave: chiave, d: res.dati || {} };
+      disegnaIncassi();
+    }catch(e){
+      if(!gestisciErrore(e)) corpo.innerHTML = '<div class="sec"><div class="msgx err">Incassi non disponibili: ' + esc(e.message) + '</div></div>';
+    }
+  }
+  function tipoPagamento(p){
+    if(p.tipo === 'rinnovo') return 'rinnovo';
+    if(p.tipo === 'rimborso') return 'rimborso';
+    if(p.tipo === 'manuale') return 'registrato a mano';
+    return abbonamento(p.piano) ? 'primo pagamento' : 'acquisto';
+  }
+  function rigaPagamento(p, reale){
+    var sconto = Number(p.sconto || 0) > 0 ? '<span style="color:var(--warn)">' + esc((p.codice_sconto ? p.codice_sconto + ' ' : '') + '-' + euro(p.sconto)) + '</span>' : 'nessuno';
+    var sotto = dataBreve(p.pagato_il) + ', ' + tipoPagamento(p) + (p.periodo ? ', ' + p.periodo : '');
+    var h = '<details class="pag"><summary class="row top-al"><div class="grow"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="t">' + esc(p.cliente_nome || p.cliente_email || 'Cliente non collegato') + '</div>' + pianoPill(p.piano) + '</div>';
+    h += '<div class="s">' + esc(sotto) + '</div>';
+    if(p.tipo !== 'rimborso') h += '<div class="s">Listino ' + esc(euro(p.listino)) + ', sconto ' + sconto + '</div>';
+    if(!p.completato && p.tipo !== 'rimborso') h += '<div class="s" style="color:var(--warn)">Dettagli Stripe in arrivo</div>';
+    h += '</div><div class="importo"' + (Number(p.importo) < 0 ? ' style="color:var(--bad)"' : '') + '>' + esc(euro(p.importo)) + '</div></summary>';
+    h += '<div class="pag-det">';
+    if(p.tipo !== 'rimborso') h += '<div class="riga"><span>Commissioni Stripe</span><b>' + (p.commissioni === null || p.commissioni === undefined ? 'non ancora lette' : '-' + esc(euro(p.commissioni))) + '</b></div>';
+    if(p.commissioni !== null && p.commissioni !== undefined) h += '<div class="riga"><span>Arrivato a te</span><b>' + esc(euro(Number(p.importo) - Number(p.commissioni))) + '</b></div>';
+    if(p.cliente_email) h += '<div class="riga"><span>Email</span><span>' + esc(p.cliente_email) + '</span></div>';
+    h += '<div class="riga"><span>Riferimento Stripe</span><span class="tok">' + esc(p.stripe_id || 'nessuno') + '</span></div>';
+    var spostabile = !(p.tipo === 'rimborso' && p.rimborso_di) && ME.ruolo === 'admin';
+    h += '<div class="bottoni">';
+    if(p.cliente_id) h += '<a class="btn sec2 piccolo" href="#cliente/' + esc(p.cliente_id) + '">Scheda cliente</a>';
+    if(spostabile){
+      if(reale) h += '<button class="btn sec2 piccolo" type="button" data-az="cat" data-id="' + esc(p.id) + '" data-cat="prova">Sposta in prove e omaggi</button>';
+      else h += '<button class="btn sec2 piccolo" type="button" data-az="cat" data-id="' + esc(p.id) + '" data-cat="reale">Riporta negli incassi reali</button>';
+    }
+    h += '</div>';
+    if(p.tipo === 'rimborso' && p.rimborso_di) h += '<div class="note" style="margin-top:8px">Un rimborso segue il pagamento a cui è collegato.</div>';
+    h += '</div></details>';
+    return h;
+  }
+  function disegnaIncassi(){
+    var d = INC.d || {};
+    var r = d.riepilogo || {};
+    var righe = d.righe || [];
+    var reali = righe.filter(function(p){ return p.categoria === 'reale'; });
+    var prove = righe.filter(function(p){ return p.categoria !== 'reale'; });
+    var h = '';
+    h += '<div class="sec" style="padding-top:4px"><div class="card gold">';
+    h += '<div class="row"><div class="grow">Prezzo di listino</div><b>' + esc(euro(r.listino)) + '</b></div>';
+    h += '<div class="row"><div class="grow">Sconti applicati</div><b style="color:var(--warn)">' + (Number(r.sconti) ? '-' : '') + esc(euro(r.sconti)) + '</b></div>';
+    h += '<div class="row"><div class="grow"><b>Pagato dai clienti</b></div><b style="font-family:\'Syne\',sans-serif;font-size:20px;color:var(--gold)">' + esc(euro(r.pagato)) + '</b></div>';
+    if(Number(r.rimborsi)) h += '<div class="row"><div class="grow">Rimborsi</div><b style="color:var(--bad)">' + esc(euro(r.rimborsi)) + '</b></div>';
+    h += '<div class="row"><div class="grow">Commissioni Stripe</div><b>' + (Number(r.commissioni) ? '-' : '') + esc(euro(r.commissioni)) + '</b></div>';
+    h += '<div class="row"><div class="grow"><b>Arrivato a te</b></div><b>' + esc(euro(r.netto)) + '</b></div>';
+    h += '</div>';
+    var np = Number(r.n_pagamenti || 0);
+    var testoP = (np === 1 ? '1 pagamento' : np + ' pagamenti') + (Number(r.n_rimborsi) ? ' e ' + (r.n_rimborsi === 1 ? '1 rimborso' : r.n_rimborsi + ' rimborsi') : '') + ' ' + art('dal', dataLunga(F.incDal)) + ' ' + art('al', dataLunga(F.incAl)) + '.';
+    h += '<div class="note" style="margin-top:8px">' + esc(testoP) + '</div>';
+    if(Number(r.n_in_completamento)) h += '<div class="note" style="margin-top:4px;color:var(--warn)">' + (r.n_in_completamento === 1 ? '1 pagamento appena arrivato: sconto e commissioni' : r.n_in_completamento + ' pagamenti appena arrivati: sconti e commissioni') + ' si completano da soli entro un\'ora circa.</div>';
+    h += '</div>';
+
+    var pp = d.per_pacchetto || [];
+    if(pp.length){
+      h += '<div class="sec"><div class="h2">Per pacchetto</div><div class="card">';
+      pp.forEach(function(x){
+        var parti = [];
+        if(Number(x.nuovi)) parti.push(abbonamento(x.piano) ? (x.nuovi === 1 ? '1 nuovo' : x.nuovi + ' nuovi') : (x.nuovi === 1 ? '1 acquisto' : x.nuovi + ' acquisti'));
+        if(Number(x.rinnovi)) parti.push(x.rinnovi === 1 ? '1 rinnovo' : x.rinnovi + ' rinnovi');
+        if(Number(x.rimborsi)) parti.push('rimborsi ' + euro(x.rimborsi));
+        h += '<div class="row">' + pianoPill(x.piano) + '<div class="grow s" style="margin:0">' + esc(parti.join(', ')) + '</div><b>' + esc(euro(Number(x.pagato) + Number(x.rimborsi || 0))) + '</b></div>';
+      });
+      h += '</div></div>';
+    }
+    var cod = d.codici || [];
+    if(cod.length){
+      h += '<div class="sec"><div class="h2">Codici sconto usati</div><div class="card">';
+      cod.forEach(function(x){
+        var piani = (x.piani || []).map(nomePiano).join(', ');
+        h += '<div class="row"><div class="grow"><div class="t">' + esc(x.codice) + '</div><div class="s">' + (x.n === 1 ? '1 volta' : x.n + ' volte') + (piani ? ', ' + esc(piani) : '') + '</div></div><b style="color:var(--warn)">-' + esc(euro(x.sconto)) + '</b></div>';
+      });
+      h += '</div></div>';
+    }
+    h += '<div class="sec"><div class="h2">Pagamenti <small>' + reali.length + '</small></div><div class="card">';
+    if(!reali.length) h += '<div class="vuoto">Nessun pagamento reale in questo periodo.</div>';
+    reali.forEach(function(p){ h += rigaPagamento(p, true); });
+    h += '</div>' + (reali.length ? '<div class="note" style="margin-top:6px">Tocca un pagamento per vedere commissioni e riferimenti.</div>' : '') + '</div>';
+    if(prove.length){
+      h += '<div class="sec"><details class="blocco"><summary>Prove e omaggi <span class="pill p-neu" style="margin-left:auto">' + prove.length + '</span></summary><div style="border-top:1px solid var(--line2)">';
+      prove.forEach(function(p){ h += rigaPagamento(p, false); });
+      h += '</div></details><div class="note" style="margin-top:6px">Non entrano nei totali: sono pagamenti di prova, coupon al 100% e accessi regalati.</div></div>';
+    }
+    h += '<div class="sec"><button class="btn sec2 pieno" type="button" data-az="csv"' + (righe.length ? '' : ' disabled') + '>Scarica in Excel (CSV)</button><div class="note" style="margin-top:6px">Il file contiene tutti i pagamenti del periodo scelto, con una colonna che distingue incassi reali, prove e omaggi.</div></div>';
+    $('inc_corpo').innerHTML = h;
+  }
+  async function cambiaCategoria(id, cat){
+    var domanda = cat === 'reale' ? 'Riportare questo pagamento negli incassi reali?' : 'Spostare questo pagamento in prove e omaggi? Non conterà più nei totali.';
+    if(!window.confirm(domanda)) return;
+    try{
+      await chiedi('pagamento_categoria', { payment_id: id, categoria: cat });
+      INC = null;
+      toast(cat === 'reale' ? 'Pagamento riportato negli incassi' : 'Pagamento spostato in prove e omaggi');
+      caricaIncassi();
+      aggiornaDati(false);
+    }catch(e){
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+  function scaricaCsv(){
+    if(!INC || !INC.d) return;
+    var righe = INC.d.righe || [];
+    var cella = function(v){
+      var s = (v === null || v === undefined) ? '' : String(v);
+      return /[";\r\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    };
+    var out = [['Data','Cliente','Email','Pacchetto','Periodo','Tipo','Listino','Sconto','Codice sconto','Pagato','Commissioni Stripe','Arrivato a te','Categoria','Riferimento Stripe'].join(';')];
+    righe.slice().reverse().forEach(function(p){
+      var netto = (p.commissioni === null || p.commissioni === undefined) ? '' : numCsv(Number(p.importo) - Number(p.commissioni));
+      out.push([
+        dataLunga(p.pagato_il), p.cliente_nome || '', p.cliente_email || '', nomePiano(p.piano), p.periodo || '',
+        tipoPagamento(p), p.tipo === 'rimborso' ? '' : numCsv(p.listino), numCsv(p.sconto || 0), p.codice_sconto || '',
+        numCsv(p.importo), numCsv(p.commissioni), netto,
+        p.categoria === 'reale' ? 'Incasso reale' : p.categoria === 'prova' ? 'Prova' : 'Omaggio', p.stripe_id || ''
+      ].map(cella).join(';'));
+    });
+    var blob = new Blob(['\ufeff' + out.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'incassi-eventsfun_' + F.incDal + '_' + F.incAl + '.csv';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+
+  // ---------------- ASSISTENZA ----------------
+  function vistaAssistenza(){
+    var tutte = DATI.assistenza || [];
+    var gruppi = {
+      gestire: { t: 'Da gestire', l: ordinaRichieste(tutte.filter(daGestire), true) },
+      attesa: { t: 'In attesa del cliente', l: ordinaRichieste(tutte.filter(inAttesa), false) },
+      risolte: { t: 'Risolte', l: tutte.filter(function(r){ return r.stato === 'risolta'; }) },
+      tutte: { t: 'Tutte', l: ordinaRichieste(tutte, false) }
+    };
+    var h = '<div class="stretta">';
+    h += '<div class="sec" style="padding-bottom:6px"><h1 class="h1">Assistenza</h1><div class="note" style="margin-top:4px">In cima le urgenti (evento entro 2 giorni), poi l\'Agenzia, poi le altre.</div></div>';
+    h += '<div class="sec" style="padding-top:8px"><div class="seg q4">';
+    ['gestire','attesa','risolte','tutte'].forEach(function(k){
+      h += '<button type="button" class="' + (F.ass === k ? 'on' : '') + '" data-ass="' + k + '">' + gruppi[k].t + '<b>' + gruppi[k].l.length + '</b></button>';
+    });
+    h += '</div></div>';
+    var lista = gruppi[F.ass] ? gruppi[F.ass].l : gruppi.gestire.l;
+    h += '<div class="sec" style="padding-top:10px"><div class="card">';
+    if(!lista.length){
+      h += '<div class="vuoto">' + (F.ass === 'gestire' ? 'Nessuna richiesta da gestire.' : 'Nessuna richiesta.') + '</div>';
+    }
+    lista.forEach(function(r){
+      var meta = Number(r.n_messaggi) > 1 && r.ultimo_mittente === 'cliente' && r.stato !== 'risolta' ? 'Il cliente ha risposto ' + fa(r.ultimo_messaggio_at) : quando(r.ultimo_messaggio_at);
+      if(r.urgente && r.evento_vicino) meta += ', evento ' + giornoEvento(r.evento_vicino.data);
+      h += '<a class="row top-al" href="#richiesta/' + esc(r.id) + '"><div class="grow">';
+      h += '<div class="pills" style="margin-bottom:4px">' + pillsRichiesta(r) + '</div>';
+      h += '<div class="t">' + esc(ARGOMENTI[r.argomento] || 'Richiesta') + '</div>';
+      h += '<div class="s">n. ' + esc(r.numero) + ', ' + esc(nomeRichiesta(r)) + '</div>';
+      if(r.ultimo_testo) h += '<div class="estratto">' + (r.ultimo_mittente === 'staff' ? 'Tu: ' : '') + esc(r.ultimo_testo) + '</div>';
+      h += '<div class="s" style="margin-top:6px">' + esc(meta) + (Number(r.n_allegati) ? ', ' + r.n_allegati + (r.n_allegati === 1 ? ' allegato' : ' allegati') : '') + '</div>';
+      h += '</div>' + statoRichiestaPill(r) + '</a>';
+    });
+    h += '</div></div></div>';
+    metti(h);
+  }
+
+  async function vistaRichiesta(id){
+    if(RICH && RICH.richiesta && RICH.richiesta.id === id){ disegnaRichiesta(); return; }
+    metti('<a class="back" href="#assistenza">' + ICO_BACK + 'Assistenza</a><div class="caricamento">Caricamento della richiesta...</div>');
+    try{
+      var res = await chiedi('assistenza_dettaglio', { richiesta_id: id });
+      if(rotta().v !== 'richiesta' || rotta().id !== id) return;
+      RICH = res.dati;
+      disegnaRichiesta();
+    }catch(e){
+      if(!gestisciErrore(e)) metti('<a class="back" href="#assistenza">' + ICO_BACK + 'Assistenza</a><div class="sec"><div class="msgx err">Richiesta non disponibile: ' + esc(e.message) + '</div></div>');
+    }
+  }
+  var CANALI = { modulo: 'dal modulo', email: 'per email', gestionale: 'dal gestionale', chat: 'in chat' };
+  function disegnaRichiesta(){
+    var d = RICH || {};
+    var r = d.richiesta;
+    if(!r){ metti('<a class="back" href="#assistenza">' + ICO_BACK + 'Assistenza</a><div class="sec"><div class="msgx err">Richiesta non trovata.</div></div>'); return; }
+    var urg = r.stato !== 'risolta' && !!r.evento_vicino;
+    var h = '<a class="back" href="#assistenza">' + ICO_BACK + 'Assistenza</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><div class="pills" style="margin-bottom:8px">' + pillsRichiesta({ urgente: urg, piano: r.piano }) + '<span class="pill p-neu">n. ' + esc(r.numero) + '</span>' + statoRichiestaPill(r) + '</div>';
+    h += '<h1 class="h1">' + esc(ARGOMENTI[r.argomento] || 'Richiesta di assistenza') + '</h1></div>';
+
+    // chi e' il cliente
+    var nome = r.cliente_nome || r.nome || r.email;
+    var origine = r.origine === 'dashboard' ? 'scritta dalla dashboard ' + nomePiano(r.piano) : r.origine === 'guida' ? 'scritta dalla guida' : r.origine === 'gestionale' ? 'conversazione aperta da te' : 'scritta dal modulo';
+    h += '<div class="sec"><div class="card">';
+    h += '<div class="row top-al"><div class="grow"><div class="t wrap">' + esc(nome) + '</div><div class="s">' + esc(r.email) + '</div><div class="s">Aperta ' + esc(quandoFrase(r.created_at)) + ', ' + esc(origine) + '</div>';
+    if(r.riconoscimento === 'email') h += '<div class="s" style="color:var(--warn)">Riconosciuto dall\'email dell\'acquisto: non è entrato dalla dashboard.</div>';
+    h += '</div></div>';
+    if(r.evento_nome) h += '<div class="row"><div class="grow"><div class="k">Evento indicato</div><div class="v">' + esc(r.evento_nome) + (r.evento_data ? ', ' + esc(dataBreve(r.evento_data)) : '') + '</div></div></div>';
+    if(urg && (!r.evento_nome || r.evento_vicino.nome !== r.evento_nome)) h += '<div class="row"><div class="grow"><div class="k">Evento vicino</div><div class="v" style="color:var(--bad)">' + esc(r.evento_vicino.nome || '') + ', ' + esc(giornoEvento(r.evento_vicino.data)) + '</div></div></div>';
+    if(r.cliente_stato) h += '<div class="row"><div class="grow"><div class="k">Stato del cliente</div><div class="v"><span class="dot ' + statoInfo({ stato: r.cliente_stato }).dot + '"></span>' + esc(statoInfo({ stato: r.cliente_stato }).testo) + '</div></div></div>';
+    if(r.order_id) h += '<a class="row" href="#cliente/' + esc(r.order_id) + '"><div class="grow"><div class="t" style="font-weight:500">Apri la scheda cliente</div></div>' + ICO_CHEV + '</a>';
+    h += '</div></div>';
+
+    // conversazione
+    var mess = d.messaggi || [];
+    h += '<div class="sec"><div class="h2">Conversazione <small>' + mess.length + (mess.length === 1 ? ' messaggio' : ' messaggi') + '</small></div>';
+    mess.forEach(function(m){
+      var mio = m.mittente === 'staff';
+      var chi = mio ? ((m.autore && m.autore !== (ME.nome || '')) ? m.autore : 'Tu') : (nome + ', ' + (CANALI[m.canale] || ''));
+      h += '<div class="bolla ' + (mio ? 'b-out' : 'b-in') + '"><div class="bh"><span>' + esc(chi) + '</span><span>' + esc(quando(m.created_at)) + '</span></div>';
+      h += '<div class="btesto">' + esc(m.testo) + '</div>';
+      var al = m.allegati || [];
+      if(al.length){
+        h += '<div class="allegati">';
+        al.forEach(function(a){
+          h += '<button class="allegato" type="button" data-az="allegato" data-mid="' + esc(m.id) + '" data-aid="' + esc(a.id) + '" title="Scarica l\'allegato">' + ICO_CLIP + '<span>' + esc(a.nome || 'allegato') + '</span>' + (a.dimensione ? '<small style="opacity:0.7">' + esc(dimensione(a.dimensione)) + '</small>' : '') + '</button>';
+        });
+        h += '</div>';
+      }
+      h += '</div>';
+    });
+    h += '</div>';
+
+    // risposta
+    h += '<div class="sec"><div class="card pad">';
+    h += '<label class="lbl" for="rp_txt">La tua risposta</label><textarea class="field" id="rp_txt" rows="6" maxlength="10000"></textarea>';
+    h += '<label class="chk" style="margin-top:8px"><input type="checkbox" id="rp_risolvi">Segna come risolta dopo l\'invio</label>';
+    h += '<button class="btn pieno" type="button" data-az="rispondi" id="rp_btn" style="margin-top:6px">Invia risposta</button>';
+    h += '<div class="note" style="margin-top:8px">Il cliente riceve la risposta per email a ' + esc(r.email) + '. Se risponde, il messaggio torna qui.</div>';
+    h += '<div class="msgx" id="rp_msg"></div></div></div>';
+
+    // stato e nota
+    h += '<div class="sec"><div class="h2">Stato</div><div class="seg">';
+    [['nuova','Nuova'],['in_corso','In corso'],['risolta','Risolta']].forEach(function(s){
+      h += '<button type="button" class="' + (r.stato === s[0] ? 'on' : '') + '" data-az="stato" data-stato="' + s[0] + '">' + s[1] + '</button>';
+    });
+    h += '</div></div>';
+    h += '<div class="sec"><label class="lbl" for="nt_txt">Nota interna (il cliente non la vede)</label><textarea class="field" id="nt_txt" rows="3" maxlength="4000">' + esc(r.nota_interna || '') + '</textarea>';
+    h += '<div style="margin-top:10px"><button class="btn sec2" type="button" data-az="nota_int" id="nt_btn">Salva nota</button></div><div class="msgx" id="nt_msg"></div></div>';
+    h += '</div>';
+    metti(h);
+  }
+  async function inviaRisposta(){
+    var msg = $('rp_msg'), btn = $('rp_btn');
+    nascondiMsg(msg);
+    var testo = $('rp_txt').value.trim();
+    if(!testo){ mostraMsg(msg, 'Scrivi la risposta.', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Invio in corso...';
+    try{
+      var id = RICH.richiesta.id;
+      var res = await chiedi('assistenza_rispondi', { richiesta_id: id, testo: testo, risolvi: $('rp_risolvi').checked });
+      RICH = res.dati || null;
+      toast('Risposta inviata');
+      await aggiornaDati(false);
+      if(rotta().v === 'richiesta') vistaRichiesta(id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Invia risposta';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function cambiaStatoRichiesta(stato){
+    if(!RICH || !RICH.richiesta || RICH.richiesta.stato === stato) return;
+    try{
+      var id = RICH.richiesta.id;
+      await chiedi('assistenza_stato', { richiesta_id: id, stato: stato });
+      RICH.richiesta.stato = stato;
+      toast('Stato aggiornato');
+      await aggiornaDati(false);
+      RICH = null;
+      if(rotta().v === 'richiesta') vistaRichiesta(id);
+    }catch(e){
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+  async function salvaNotaInterna(){
+    var msg = $('nt_msg'), btn = $('nt_btn');
+    nascondiMsg(msg);
+    btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      var res = await chiedi('assistenza_nota', { richiesta_id: RICH.richiesta.id, nota: $('nt_txt').value });
+      RICH.richiesta.nota_interna = res.richiesta ? res.richiesta.nota_interna : $('nt_txt').value;
+      btn.disabled = false; btn.textContent = 'Salva nota';
+      mostraMsg(msg, 'Nota salvata.', 'ok');
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva nota';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function apriAllegato(mid, aid){
+    // la finestra si apre subito (i telefoni bloccano quelle aperte dopo un'attesa)
+    var w = null;
+    try{ w = window.open('', '_blank'); }catch(e){ w = null; }
+    if(w){ try{ w.document.write('<p style="font-family:sans-serif;padding:20px">Apertura dell\'allegato...</p>'); }catch(e){} }
+    try{
+      var res = await chiedi('assistenza_allegato', { messaggio_id: mid, allegato_id: aid });
+      if(w && !w.closed){ w.location.href = res.url; }
+      else { window.location.href = res.url; }
+    }catch(e){
+      if(w && !w.closed) w.close();
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+
+  // ---------------- ALTRO ----------------
+  function vistaAltro(){
+    var ev = DATI.eventi || [];
+    var inCorso = ev.filter(function(e){ return !e.bozza && !e.concluso; }).length;
+    var conclusi = ev.filter(function(e){ return !e.bozza && e.concluso; }).length;
+    var ms = DATI.messaggi_sito || [];
+    var nNuovi = msgDaGestire().length;
+    var nCons = ms.filter(function(m){ return m.consenso_aggiornamenti; }).length;
+    var nVend = VENDITORI.filter(function(v){ return v.attivo; }).length;
+    var nC = anomalieTot();
+    var h = '<div class="sec"><h1 class="h1">Altro</h1></div><div class="sec"><div class="card">';
+    h += '<a class="row" href="#eventi"><div class="grow"><div class="t">Eventi</div><div class="s">' + inCorso + ' in corso, ' + conclusi + ' conclusi</div></div>' + ICO_CHEV + '</a>';
+    h += '<a class="row" href="#messaggi"><div class="grow"><div class="t">Messaggi dal sito</div><div class="s">' + (nNuovi === 1 ? '1 da gestire' : nNuovi + ' da gestire') + ', ' + nCons + ' con il consenso agli aggiornamenti</div></div>' + (nNuovi ? '<span class="pill p-warn">' + nNuovi + '</span>' : '') + ICO_CHEV + '</a>';
+    h += '<a class="row" href="#venditori"><div class="grow"><div class="t">Venditori</div><div class="s">' + (nVend === 1 ? '1 attivo' : nVend + ' attivi') + '</div></div>' + ICO_CHEV + '</a>';
+    h += '<a class="row" href="#newsletter"><div class="grow"><div class="t">Newsletter</div><div class="s">Comunicazioni a clienti, contatti dal sito e venditori</div></div>' + ICO_CHEV + '</a>';
+    h += '<a class="row" href="#controllo"><div class="grow"><div class="t">Da controllare</div><div class="s">' + (nC ? (nC === 1 ? '1 cosa da guardare' : nC + ' cose da guardare') : 'Tutto in ordine') + '</div></div>' + (nC ? '<span class="pill p-bad">' + nC + '</span>' : '') + ICO_CHEV + '</a>';
+    h += '</div></div>';
+    h += '<div class="sec"><div class="card"><div class="row"><div class="grow"><div class="t">' + esc(ME.nome || ME.email || '') + '</div><div class="s">' + esc(ME.email || '') + (ME.ruolo ? ', ' + esc(ME.ruolo) : '') + '</div></div><button class="btn sec2 piccolo" type="button" data-az="esci">Esci</button></div></div></div>';
+    metti(h);
+  }
+
+  // ---------------- EVENTI ----------------
+  function vistaEventi(){
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Eventi</h1></div>';
+    h += '<div class="sec"><div style="position:relative"><span style="position:absolute;left:13px;top:13px;color:rgba(245,240,232,0.5)">' + ICO_CERCA + '</span><input class="field" style="padding-left:40px" type="search" id="ev_q" aria-label="Cerca un evento" placeholder="Cerca per evento, luogo o cliente" value="' + esc(F.evQ) + '"></div></div>';
+    h += '<div class="chips" style="padding-top:12px" id="ev_chips"></div>';
+    h += '<div class="sec" style="padding-top:10px"><div class="card" id="ev_lista"></div></div></div>';
+    metti(h);
+    $('ev_q').addEventListener('input', function(){ F.evQ = this.value; listaEventi(); });
+    listaEventi();
+  }
+  function listaEventi(){
+    var ev = DATI.eventi || [];
+    var cat = function(e){ return e.bozza ? 'bozza' : (e.concluso || e.attivo === false) ? 'conclusi' : 'corso'; };
+    var defs = [['corso','In corso'],['conclusi','Conclusi'],['tutti','Tutti']];
+    var ch = '';
+    defs.forEach(function(d){
+      var n = d[0] === 'tutti' ? ev.length : ev.filter(function(e){ return cat(e) === d[0]; }).length;
+      ch += '<button class="chip' + (F.ev === d[0] ? ' on' : '') + '" type="button" data-fev="' + d[0] + '">' + d[1] + ' <b>' + n + '</b></button>';
+    });
+    $('ev_chips').innerHTML = ch;
+    var q = F.evQ.trim().toLowerCase();
+    var lista = ev.filter(function(e){ return F.ev === 'tutti' || cat(e) === F.ev; }).filter(function(e){
+      if(!q) return true;
+      return [e.nome, e.luogo, e.cliente_nome, e.cliente_cognome, e.cliente_email].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    if(F.ev === 'corso') lista = lista.slice().sort(function(a, b){ return String(a.data_iso || '').localeCompare(String(b.data_iso || '')); });
+    var h = '';
+    if(!lista.length) h = '<div class="vuoto">Nessun evento.</div>';
+    lista.forEach(function(e){
+      var cliente = [e.cliente_nome, e.cliente_cognome].filter(Boolean).join(' ') || e.cliente_email || 'nessun cliente collegato';
+      var sotto = (e.bozza ? 'Bozza' : dataBreve(e.data_iso)) + (e.evento_online ? ', online' : (e.luogo ? ', ' + e.luogo : ''));
+      h += '<div class="row top-al"><div class="grow"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div>' + pianoPill(e.piano) + '</div>';
+      h += '<div class="s">' + esc(sotto) + '</div><div class="s chiaro">' + esc(numeriEvento(e)) + '</div>';
+      h += '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">';
+      if(e.cliente_id) h += '<a class="btn sec2 piccolo" href="#cliente/' + esc(e.cliente_id) + '">' + esc(cliente) + '</a>';
+      else h += '<span class="s">' + esc(cliente) + '</span>';
+      if(!e.bozza) h += '<a class="btn sec2 piccolo" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '">Pagina pubblica</a>';
+      h += '</div></div>' + etichettaEvento(e) + '</div>';
+    });
+    $('ev_lista').innerHTML = h;
+  }
+
+  // ---------------- MESSAGGI DAL SITO ----------------
+  function vistaMessaggi(){
+    var ms = DATI.messaggi_sito || [];
+    var gruppi = { gestire: ms.filter(function(m){ return !m.gestito_at; }), gestiti: ms.filter(function(m){ return !!m.gestito_at; }), tutti: ms };
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Messaggi dal sito</h1><div class="note" style="margin-top:4px">Chi ha scritto dal modulo "Hai domande?" del sito. Chi ha dato il consenso agli aggiornamenti riceve anche la newsletter (gruppo Contatti dal sito).</div></div>';
+    h += '<div class="sec" style="padding-top:8px"><div class="seg">';
+    [['gestire','Da gestire'],['gestiti','Gestiti'],['tutti','Tutti']].forEach(function(x){
+      h += '<button type="button" class="' + (F.msg === x[0] ? 'on' : '') + '" data-fmsg="' + x[0] + '">' + x[1] + '<b>' + gruppi[x[0]].length + '</b></button>';
+    });
+    h += '</div></div>';
+    var lista = gruppi[F.msg] || gruppi.gestire;
+    h += '<div class="sec" style="padding-top:10px">';
+    if(!lista.length) h += '<div class="card"><div class="vuoto">' + (F.msg === 'gestire' ? 'Nessun messaggio da gestire.' : 'Nessun messaggio.') + '</div></div>';
+    lista.forEach(function(m){
+      var nome = [m.nome, m.cognome].filter(Boolean).join(' ') || m.email;
+      h += '<div class="card pad" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;gap:10px;align-items:flex-start"><div class="grow"><div class="t wrap">' + esc(nome) + '</div><div class="s">' + esc(quando(m.created_at)) + '</div></div>';
+      h += '<div class="pills" style="justify-content:flex-end">' + (m.gestito_at ? '<span class="pill p-ok">Gestito</span>' : '<span class="pill p-warn">Da gestire</span>') + (m.e_cliente ? '<span class="pill p-neu">Già cliente</span>' : '') + (m.consenso_aggiornamenti ? '<span class="pill p-neu">Consenso aggiornamenti</span>' : '') + '</div></div>';
+      h += '<div class="kv" style="margin:10px -14px 0;border-top:1px solid var(--line2)">';
+      h += '<div><div class="k">Email</div><div class="v" style="font-weight:500"><a href="mailto:' + esc(m.email) + '">' + esc(m.email) + '</a></div></div>';
+      h += '<div><div class="k">Telefono</div><div class="v" style="font-weight:500">' + (m.telefono ? '<a href="tel:' + esc(String(m.telefono).replace(/\s/g, '')) + '">' + esc(m.telefono) + '</a>' : 'non indicato') + '</div></div>';
+      h += '<div><div class="k">Interessato a</div><div class="v" style="font-weight:500">' + esc(m.piano || 'non indicato') + '</div></div>';
+      h += '<div><div class="k">Tipo di evento</div><div class="v" style="font-weight:500">' + esc(m.tipo_evento || 'non indicato') + '</div></div>';
+      h += '</div>';
+      if(m.messaggio) h += '<div class="btesto" style="margin-top:12px;font-size:14px">' + esc(m.messaggio) + '</div>';
+      h += '<div class="bottoni" style="margin-top:12px"><a class="btn sec2 piccolo" href="mailto:' + esc(m.email) + '?subject=' + encodeURIComponent('EventsFun: risposta alla tua richiesta') + '">Rispondi per email</a>';
+      h += '<button class="btn ' + (m.gestito_at ? 'sec2' : '') + ' piccolo" type="button" data-az="msg_gestito" data-id="' + esc(m.id) + '" data-val="' + (m.gestito_at ? '0' : '1') + '">' + (m.gestito_at ? 'Rimetti da gestire' : 'Segna come gestito') + '</button></div>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+    metti(h);
+  }
+  async function segnaMessaggio(id, gestito){
+    try{
+      await chiedi('messaggio_sito_gestito', { messaggio_id: id, gestito: gestito });
+      (DATI.messaggi_sito || []).forEach(function(m){ if(m.id === id) m.gestito_at = gestito ? new Date().toISOString() : null; });
+      aggiornaBadge();
+      toast(gestito ? 'Segnato come gestito' : 'Rimesso da gestire');
+      disegnaRotta(false);
+    }catch(e){
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+
+  // ---------------- DA CONTROLLARE ----------------
+  function vistaControllo(){
+    var an = DATI.anomalie || {};
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Da controllare</h1><div class="note" style="margin-top:4px">Le situazioni che non tornano nei dati. Non sono errori del sito: sono cose da guardare e decidere cosa farne.</div></div>';
+    var blocco = function(titolo, spiega, lista, riga){
+      var x = '<div class="sec"><div class="h2">' + titolo + ' <small>' + lista.length + '</small></div><div class="card">';
+      if(!lista.length) x += '<div class="vuoto">Nessuno.</div>';
+      else x += '<div class="row"><div class="grow note">' + spiega + '</div></div>';
+      lista.forEach(function(o){ x += riga(o); });
+      return x + '</div></div>';
+    };
+    h += blocco('Ordini senza email', 'Se era una persona vera, ha pagato e non ha ricevuto nulla. Cerca il riferimento nel pannello Stripe per risalire a chi era.', an.ordini_senza_email || [], function(o){
+      return '<div class="row top-al"><div class="grow"><div class="t">Pagamento senza contatto</div><div class="s">Ricevuto ' + esc(art('il', dataLunga(o.created_at))) + ', ' + esc(euro(o.importo)) + '</div><div class="tok">' + esc(o.stripe_id || 'nessun riferimento') + '</div></div>' + pianoPill(o.piano) + '</div>';
+    });
+    h += blocco('Clienti senza accesso', 'Ordini senza un accesso aperto alla dashboard: il cliente non può entrare.', an.ordini_senza_accesso || [], function(o){
+      return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
+    });
+    h += blocco('Abbonamenti annullati senza data di fine', 'Risultano annullati ma senza la data in cui finisce l\'accesso: il sistema li tratta ancora come validi.', an.annullati_senza_data || [], function(o){
+      return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
+    });
+    h += blocco('Pagamenti senza dettagli da Stripe', 'Dopo 24 ore Stripe non ha ancora dato sconto e commissioni: controlla il pagamento nel pannello Stripe.', an.pagamenti_bloccati || [], function(p){
+      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+    });
+    h += blocco('Pagamenti senza cliente', 'Pagamenti registrati che non sono collegati a nessun cliente.', an.pagamenti_senza_cliente || [], function(p){
+      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+    });
+    h += blocco('Rimborsi non collegati', 'Rimborsi fatti su Stripe che non si è riusciti a collegare al pagamento originale.', an.rimborsi_scollegati || [], function(p){
+      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+    });
+    h += blocco('Eventi senza cliente', 'Eventi il cui accesso non esiste più nell\'archivio. Quasi sempre sono residui di prove vecchie.', an.eventi_orfani || [], function(e){
+      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">Data evento ' + esc(dataLunga(e.data_iso)) + ', creato ' + esc(art('il', dataLunga(e.created_at))) + ', ' + (e.n_iscritti === 1 ? '1 iscritto' : (e.n_iscritti || 0) + ' iscritti') + '</div></div><span class="pill p-warn">Senza cliente</span></div>';
+    });
+    h += '</div>';
+    metti(h);
+  }
+
+  // ---------------- VENDITORI ----------------
+  function vistaVenditori(){
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Venditori</h1></div>';
+    h += '<div class="sec"><div class="card">';
+    if(!VENDITORI.length) h += '<div class="vuoto">Nessun venditore nel registro.</div>';
+    VENDITORI.forEach(function(v){
+      h += '<div class="row"' + (v.attivo ? '' : ' style="opacity:0.6"') + '><div class="grow"><div class="t">' + esc(v.nome) + '</div><div class="s">Codice sconto ' + esc(v.coupon) + ', ' + (v.email ? esc(v.email) : '<span style="color:var(--warn)">email mancante</span>') + (v.attivo ? '' : ', disattivato') + '</div></div>';
+      if(ME.ruolo === 'admin') h += '<button class="btn sec2 piccolo" type="button" data-az="vend_stato" data-code="' + esc(v.code) + '" data-val="' + (v.attivo ? '0' : '1') + '">' + (v.attivo ? 'Disattiva' : 'Riattiva') + '</button>';
+      h += '</div>';
+    });
+    h += '</div></div>';
+    if(ME.ruolo === 'admin'){
+      h += '<div class="sec"><div class="h2">Aggiungi venditore</div><div class="card pad">';
+      h += '<div class="campo"><label class="lbl" for="vend_nome">Nome</label><input class="field" type="text" id="vend_nome" maxlength="80"></div>';
+      h += '<div class="campo"><label class="lbl" for="vend_coupon">Codice sconto</label><input class="field" type="text" id="vend_coupon" maxlength="40" autocapitalize="characters"></div>';
+      h += '<div class="campo"><label class="lbl" for="vend_email">Email (per la newsletter)</label><input class="field" type="email" id="vend_email" maxlength="120"></div>';
+      h += '<div class="note" style="margin-bottom:10px">Il codice sconto serve ad attribuire le vendite; l\'email a mandargli le comunicazioni.</div>';
+      h += '<button class="btn sec2" type="button" data-az="vend_aggiungi" id="vend_btn">Aggiungi</button><div class="msgx" id="vend_msg"></div></div></div>';
+    }
+    h += '</div>';
+    metti(h);
+  }
+  async function ricaricaVenditori(){
+    try{ var v = await chiedi('venditori_lista'); VENDITORI = v.venditori || []; }catch(e){ if(!gestisciErrore(e)) throw e; }
+  }
+  async function aggiungiVenditore(){
+    var msg = $('vend_msg'), btn = $('vend_btn');
+    nascondiMsg(msg);
+    var nome = $('vend_nome').value.trim(), coupon = $('vend_coupon').value.trim(), email = $('vend_email').value.trim();
+    if(!nome || !coupon){ mostraMsg(msg, 'Inserisci nome e codice sconto.', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Aggiungo...';
+    try{
+      await chiedi('venditore_aggiungi', { nome: nome, coupon: coupon, email: email });
+      await ricaricaVenditori();
+      toast('Venditore aggiunto');
+      vistaVenditori();
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Aggiungi';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function statoVenditore(code, attivo){
+    try{
+      await chiedi('venditore_stato', { code: code, attivo: attivo });
+      await ricaricaVenditori();
+      toast(attivo ? 'Venditore riattivato' : 'Venditore disattivato');
+      vistaVenditori();
+    }catch(e){
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+
+  // ---------------- NEWSLETTER ----------------
+  var NL_SEG = [
+    { code: 'clienti_base', label: 'Clienti Base', breve: 'Base' },
+    { code: 'clienti_pro', label: 'Clienti Pro', breve: 'Pro' },
+    { code: 'clienti_agenzia', label: 'Clienti Agenzia', breve: 'Agenzia' },
+    { code: 'clienti_info', label: 'Clienti Punto Info', breve: 'Punto Info' },
+    { code: 'contatti_sito', label: 'Contatti dal sito (con consenso)', breve: 'Contatto dal sito' },
+    { code: 'venditori', label: 'Venditori', breve: 'Venditore' }
+  ];
+  var nlSeq = 0, nlDest = [], nlEsclusi = {}, nlScelti = {};
+  function nlBreve(code){ for(var i = 0; i < NL_SEG.length; i++){ if(NL_SEG[i].code === code) return NL_SEG[i].breve; } return code; }
+  function vistaNewsletter(){
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Newsletter</h1></div>';
+    if(ME.ruolo !== 'admin'){ metti(h + '<div class="sec"><div class="msgx info">La newsletter è riservata all\'amministratore.</div></div></div>'); return; }
+    h += '<div class="sec"><div class="h2">Destinatari</div><div class="card">';
+    NL_SEG.forEach(function(s){
+      h += '<label class="nl-check"><input type="checkbox" class="nl-seg" value="' + s.code + '"' + (nlScelti[s.code] ? ' checked' : '') + '><span class="grow">' + s.label + '</span><span class="nl-n" id="nln_' + s.code + '">..</span></label>';
+    });
+    h += '</div>';
+    h += '<label class="chk" style="margin-top:8px"><input type="checkbox" id="nl_consenso">Ai clienti solo se hanno dato il consenso newsletter</label>';
+    h += '<div class="note">Il consenso riguarda i clienti. I contatti dal sito sono solo quelli che hanno dato il consenso agli aggiornamenti; i venditori sono sempre inclusi.</div>';
+    h += '<div class="card" style="margin-top:12px"><div class="row"><div class="grow"><b id="nl_tot">0</b> destinatari selezionati</div></div><div class="nl-lista" id="nl_lista"></div></div></div>';
+    h += '<div class="sec"><div class="h2">Messaggio</div><div class="card pad">';
+    h += '<div class="campo"><label class="lbl" for="nl_oggetto">Oggetto</label><input class="field" type="text" id="nl_oggetto" maxlength="200"></div>';
+    h += '<div class="campo"><label class="lbl" for="nl_from">Nome del mittente</label><input class="field" type="text" id="nl_from" maxlength="60" value="EventsFun"></div>';
+    h += '<div class="campo"><label class="lbl" for="nl_reply">Email per le risposte</label><input class="field" type="email" id="nl_reply" value="info@eventsfun.com"></div>';
+    h += '<div class="campo"><label class="lbl" for="nl_corpo">Testo del messaggio</label><textarea class="field" id="nl_corpo" rows="8" maxlength="100000"></textarea></div>';
+    h += '<div class="note" style="margin-bottom:12px">Testo semplice: gli a capo diventano righe e i link http diventano cliccabili. Le email partono con l\'intestazione EventsFun.</div>';
+    h += '<button class="btn pieno" type="button" data-az="nl_invia" id="nl_btn">Invia newsletter</button><div class="msgx" id="nl_msg"></div></div></div>';
+    h += '<div class="sec"><div class="h2">Invii precedenti</div><div class="card" id="nl_storico"><div class="vuoto">Caricamento...</div></div></div>';
+    h += '</div>';
+    metti(h);
+    Array.prototype.forEach.call(document.querySelectorAll('.nl-seg'), function(c){
+      c.addEventListener('change', function(){ nlScelti[this.value] = this.checked; aggiornaListaNl(); });
+    });
+    $('nl_consenso').addEventListener('change', aggiornaListaNl);
+    aggiornaListaNl();
+    caricaStoricoNl();
+  }
+  function segmentiNl(){
     var out = [];
-    var checks = document.querySelectorAll('#tab_newsletter .nl-seg');
-    for(var i=0;i<checks.length;i++){ if(checks[i].checked) out.push(checks[i].value); }
+    Array.prototype.forEach.call(document.querySelectorAll('.nl-seg'), function(c){ if(c.checked) out.push(c.value); });
     return out;
   }
-
-  // Ricalcola il totale (destinatari non esclusi) e aggiorna il contatore.
-  function aggiornaTotaleNl(){
+  function totaleNl(){
     var n = 0;
     nlDest.forEach(function(d){ if(!nlEsclusi[d.email]) n++; });
-    var tot = $('nl_tot');
-    if(tot) tot.textContent = n;
+    if($('nl_tot')) $('nl_tot').textContent = n;
+    return n;
   }
-
-  // Disegna l'elenco nominativo dei destinatari con le spunte per escludere.
-  function renderDestinatariNl(){
-    var cont = $('nl_lista');
-    if(!cont) return;
-    if(nlDest.length === 0){
-      cont.innerHTML = '<div class="nl-lista-vuota">Seleziona un gruppo per vedere chi ricevera la newsletter.</div>';
-      aggiornaTotaleNl();
-      return;
-    }
-    var h = '<div class="nl-lista-tit">Chi ricevera (togli la spunta per escludere)</div>';
+  function disegnaDestNl(){
+    var cont = $('nl_lista'); if(!cont) return;
+    if(!nlDest.length){ cont.innerHTML = '<div class="vuoto">Scegli un gruppo per vedere chi riceverà la newsletter.</div>'; totaleNl(); return; }
+    var h = '';
     nlDest.forEach(function(d){
-      var nome = d.nome || d.email;
-      var badges = '';
-      (d.segmenti || []).forEach(function(sc){ badges += '<span class="nl-badge">' + esc(nlSegBreve(sc)) + '</span>'; });
-      var checked = nlEsclusi[d.email] ? '' : ' checked';
-      h += '<label class="nl-dest">';
-      h += '<input type="checkbox" class="nl-desti" data-email="' + esc(d.email) + '"' + checked + '>';
-      h += '<span class="nl-dest-info"><span class="nl-dest-nome">' + esc(nome) + '</span><span class="nl-dest-mail">' + esc(d.email) + '</span></span>';
-      h += '<span class="nl-badges">' + badges + '</span>';
-      h += '</label>';
+      var badge = (d.segmenti || []).map(function(s){ return '<span class="nl-badge">' + esc(nlBreve(s)) + '</span>'; }).join('');
+      h += '<label class="nl-dest"><input type="checkbox" class="nl-desti" data-email="' + esc(d.email) + '"' + (nlEsclusi[d.email] ? '' : ' checked') + '><span class="grow" style="min-width:0"><span class="t" style="display:block">' + esc(d.nome || d.email) + '</span><span class="s" style="display:block">' + esc(d.email) + '</span></span><span>' + badge + '</span></label>';
     });
     cont.innerHTML = h;
-
-    var chks = cont.querySelectorAll('.nl-desti');
-    for(var i=0;i<chks.length;i++){
-      chks[i].addEventListener('change', function(){
+    Array.prototype.forEach.call(cont.querySelectorAll('.nl-desti'), function(c){
+      c.addEventListener('change', function(){
         var em = this.getAttribute('data-email');
-        if(this.checked){ delete nlEsclusi[em]; }
-        else { nlEsclusi[em] = true; }
-        aggiornaTotaleNl();
+        if(this.checked) delete nlEsclusi[em]; else nlEsclusi[em] = true;
+        totaleNl();
       });
-    }
-    aggiornaTotaleNl();
+    });
+    totaleNl();
   }
-
   async function aggiornaListaNl(){
-    var segmenti = letturaSegmentiNl();
-    var soloConsenso = $('nl_consenso') ? $('nl_consenso').checked : false;
-    var mySeq = ++nlSeq;
+    var seg = segmentiNl();
+    var cons = $('nl_consenso') ? $('nl_consenso').checked : false;
+    var mio = ++nlSeq;
     try{
-      var res = await chiedi('newsletter_lista', { segmenti: segmenti, solo_consenso: soloConsenso });
-      if(mySeq !== nlSeq) return; // una risposta piu' recente ha gia' aggiornato la UI
+      var res = await chiedi('newsletter_lista', { segmenti: seg, solo_consenso: cons });
+      if(mio !== nlSeq) return;
       var per = res.per_segmento || {};
-      NL_SEG.forEach(function(s){
-        var el = $('nln_' + s.code);
-        if(el) el.textContent = (per[s.code] != null ? per[s.code] : 0);
-      });
+      NL_SEG.forEach(function(s){ var el = $('nln_' + s.code); if(el) el.textContent = per[s.code] != null ? per[s.code] : 0; });
       nlDest = res.destinatari || [];
-      // mantieni le esclusioni solo per chi e' ancora presente nella lista
       var presenti = {};
       nlDest.forEach(function(d){ presenti[d.email] = true; });
       Object.keys(nlEsclusi).forEach(function(em){ if(!presenti[em]) delete nlEsclusi[em]; });
-      renderDestinatariNl();
+      disegnaDestNl();
     }catch(e){
-      if(mySeq !== nlSeq) return;
-      if(!gestisciErrore(e)){
-        NL_SEG.forEach(function(s){ var el = $('nln_' + s.code); if(el) el.textContent = '--'; });
-        nlDest = [];
-        renderDestinatariNl();
-      }
+      if(mio !== nlSeq) return;
+      if(!gestisciErrore(e)){ nlDest = []; disegnaDestNl(); toast('Destinatari non disponibili: ' + e.message, true); }
     }
   }
-
-  // Trasforma il testo semplice in HTML sicuro: escape, link cliccabili, a-capo.
-  function nlTestoAHtml(txt){
-    var e = esc(txt);
-    e = e.replace(/(https?:\/\/[^\s<]+)/g, function(u){ return '<a href="' + u + '">' + u + '</a>'; });
+  function testoInHtml(t){
+    var e = esc(t).replace(/(https?:\/\/[^\s<]+)/g, function(u){ return '<a href="' + u + '">' + u + '</a>'; });
     return e.replace(/\r\n|\r|\n/g, '<br>');
   }
-
-  async function caricaStorico(){
-    var cont = $('nl_storico');
-    if(!cont) return;
+  async function caricaStoricoNl(){
+    var cont = $('nl_storico'); if(!cont) return;
     try{
       var res = await chiedi('newsletter_storico', {});
-      var storico = res.storico || [];
-      if(storico.length === 0){ cont.innerHTML = '<div class="vuoto">Nessun invio registrato.</div>'; return; }
+      var st = res.storico || [];
+      if(!$('nl_storico')) return;
+      if(!st.length){ cont.innerHTML = '<div class="vuoto">Nessun invio registrato.</div>'; return; }
       var h = '';
-      storico.forEach(function(s){
-        var segs = (s.segmenti || []).map(function(sc){ return nlSegBreve(sc); }).join(', ');
-        var meta = (segs || 'nessun gruppo') + ' -- ' + (s.inviate || 0) + ' inviate su ' + (s.totale || 0);
-        if(s.fallite){ meta += ', ' + s.fallite + ' non riuscite'; }
-        if(s.esclusi){ meta += ', ' + s.esclusi + ' esclusi'; }
-        h += '<div class="nl-stor">';
-        h += '<div class="nl-stor-top"><div class="nl-stor-ogg">' + esc(s.oggetto || '(senza oggetto)') + '</div><div class="nl-stor-data">' + dataOraIt(s.created_at) + '</div></div>';
-        h += '<div class="nl-stor-meta">' + esc(meta) + '</div>';
-        if(s.corpo){
-          h += '<details class="nl-stor-det"><summary>Vedi testo</summary><div class="nl-stor-corpo">' + esc(s.corpo) + '</div></details>';
-        }
-        h += '</div>';
+      st.forEach(function(s){
+        var segs = (s.segmenti || []).map(nlBreve).join(', ');
+        var meta = (segs || 'nessun gruppo') + ', ' + (s.inviate || 0) + ' inviate su ' + (s.totale || 0) + (s.fallite ? ', ' + s.fallite + ' non riuscite' : '') + (s.esclusi ? ', ' + s.esclusi + ' esclusi' : '');
+        h += '<details class="pag"><summary class="row top-al"><div class="grow"><div class="t wrap">' + esc(s.oggetto || '(senza oggetto)') + '</div><div class="s">' + esc(quando(s.created_at)) + '</div><div class="s">' + esc(meta) + '</div></div></summary>';
+        h += '<div class="pag-det"><div class="btesto">' + esc(s.corpo || '(testo non salvato)') + '</div></div></details>';
       });
       cont.innerHTML = h;
     }catch(e){
-      if(!gestisciErrore(e)){
-        cont.innerHTML = '<div class="vuoto">Impossibile caricare lo storico.</div>';
-      }
+      if(!gestisciErrore(e) && $('nl_storico')) cont.innerHTML = '<div class="vuoto">Impossibile caricare gli invii precedenti.</div>';
     }
   }
-
   async function inviaNewsletter(){
-    var msg = $('nl_msg');
+    var msg = $('nl_msg'), btn = $('nl_btn');
     nascondiMsg(msg);
-
-    var segmenti = letturaSegmentiNl();
-    var soloConsenso = $('nl_consenso') ? $('nl_consenso').checked : false;
-    var oggetto = $('nl_oggetto') ? $('nl_oggetto').value.trim() : '';
-    var fromName = $('nl_from') ? $('nl_from').value.trim() : '';
-    var replyTo = $('nl_reply') ? $('nl_reply').value.trim() : '';
-    var corpo = $('nl_corpo') ? $('nl_corpo').value.trim() : '';
-
-    if(segmenti.length === 0){ mostraMsg(msg, 'Seleziona almeno un gruppo di destinatari.', 'err'); return; }
-    if(!oggetto){ mostraMsg(msg, 'Inserisci l\'oggetto.', 'err'); return; }
+    var seg = segmentiNl();
+    var cons = $('nl_consenso').checked;
+    var oggetto = $('nl_oggetto').value.trim(), from = $('nl_from').value.trim(), reply = $('nl_reply').value.trim(), corpo = $('nl_corpo').value.trim();
+    if(!seg.length){ mostraMsg(msg, 'Scegli almeno un gruppo di destinatari.', 'err'); return; }
+    if(!oggetto){ mostraMsg(msg, 'Scrivi l\'oggetto.', 'err'); return; }
     if(!corpo){ mostraMsg(msg, 'Scrivi il testo del messaggio.', 'err'); return; }
-
-    var totTxt = $('nl_tot') ? $('nl_tot').textContent : '?';
-    if(totTxt === '0'){ mostraMsg(msg, 'Nessun destinatario selezionato.', 'err'); return; }
-    if(!window.confirm('Stai per inviare a ' + totTxt + ' destinatari. Procedere?')) return;
-
-    var esclusi = Object.keys(nlEsclusi);
-
-    var btn = $('nl_invia_btn');
-    btn.disabled = true;
-    btn.textContent = 'Invio in corso...';
-
+    var n = totaleNl();
+    if(!n){ mostraMsg(msg, 'Nessun destinatario selezionato.', 'err'); return; }
+    if(!window.confirm('Stai per inviare a ' + n + (n === 1 ? ' destinatario' : ' destinatari') + '. Procedere?')) return;
+    btn.disabled = true; btn.textContent = 'Invio in corso...';
     try{
-      var res = await chiedi('newsletter_invia', {
-        segmenti: segmenti,
-        solo_consenso: soloConsenso,
-        oggetto: oggetto,
-        from_name: fromName,
-        reply_to: replyTo,
-        html: nlTestoAHtml(corpo),
-        corpo: corpo,
-        esclusi: esclusi
-      });
-      btn.disabled = false;
-      btn.textContent = 'Invia newsletter';
-      var inviate = res.inviate || 0;
-      var fallite = res.fallite || 0;
-      mostraMsg(msg, inviate + ' email inviate' + (fallite > 0 ? ', ' + fallite + ' non riuscite.' : '.'), fallite > 0 ? 'err' : 'ok');
-      if(fallite === 0){
-        if($('nl_oggetto')) $('nl_oggetto').value = '';
-        if($('nl_corpo')) $('nl_corpo').value = '';
-      }
-      caricaStorico();
+      var res = await chiedi('newsletter_invia', { segmenti: seg, solo_consenso: cons, oggetto: oggetto, from_name: from, reply_to: reply, html: testoInHtml(corpo), corpo: corpo, esclusi: Object.keys(nlEsclusi) });
+      btn.disabled = false; btn.textContent = 'Invia newsletter';
+      var inv = res.inviate || 0, fal = res.fallite || 0;
+      mostraMsg(msg, inv + (inv === 1 ? ' email inviata' : ' email inviate') + (fal ? ', ' + fal + ' non riuscite.' : '.'), fal ? 'err' : 'ok');
+      if(!fal){ $('nl_oggetto').value = ''; $('nl_corpo').value = ''; }
+      caricaStoricoNl();
     }catch(e){
-      btn.disabled = false;
-      btn.textContent = 'Invia newsletter';
-      if(!gestisciErrore(e)){
-        mostraMsg(msg, 'Invio non riuscito: ' + e.message, 'err');
-      }
+      btn.disabled = false; btn.textContent = 'Invia newsletter';
+      if(!gestisciErrore(e)) mostraMsg(msg, 'Invio non riuscito: ' + e.message, 'err');
     }
   }
 
-  // ---------- eventi UI ----------
-  document.addEventListener('DOMContentLoaded', function(){
-    $('lg_btn').addEventListener('click', accedi);
-    $('lg_pw').addEventListener('keydown', function(ev){ if(ev.key === 'Enter') accedi(); });
-    $('lg_email').addEventListener('keydown', function(ev){ if(ev.key === 'Enter') $('lg_pw').focus(); });
-    $('btnLogout').addEventListener('click', esci);
-    $('btnRefresh').addEventListener('click', carica);
-    $('btnBack').addEventListener('click', mostraElenco);
-
-    var btns = document.querySelectorAll('.tab-btn');
-    for(var i=0;i<btns.length;i++){
-      btns[i].addEventListener('click', function(){
-        apriTab(this.getAttribute('data-tab'));
-      });
+  // ---------------- comandi ----------------
+  document.addEventListener('click', function(ev){
+    var el = ev.target.closest('[data-az],[data-fcli],[data-per],[data-piano],[data-ass],[data-fev],[data-fmsg]');
+    if(!el || !$('vista').contains(el)) return;
+    if(el.hasAttribute('data-fcli')){ F.cli = el.getAttribute('data-fcli'); listaClienti(rotta().id); return; }
+    if(el.hasAttribute('data-per')){ F.incPer = el.getAttribute('data-per'); INC = null; vistaIncassi(); return; }
+    if(el.hasAttribute('data-piano')){ F.incPiano = el.getAttribute('data-piano'); INC = null; vistaIncassi(); return; }
+    if(el.hasAttribute('data-ass')){ F.ass = el.getAttribute('data-ass'); vistaAssistenza(); return; }
+    if(el.hasAttribute('data-fev')){ F.ev = el.getAttribute('data-fev'); listaEventi(); return; }
+    if(el.hasAttribute('data-fmsg')){ F.msg = el.getAttribute('data-fmsg'); vistaMessaggi(); return; }
+    var az = el.getAttribute('data-az');
+    switch(az){
+      case 'riprova': avvia(); break;
+      case 'esci': esci(); break;
+      case 'scrivi': $('scrivi_box').hidden = false; $('nv_txt').focus(); break;
+      case 'scrivi_annulla': $('scrivi_box').hidden = true; break;
+      case 'scrivi_invia': inviaNuovaConversazione(); break;
+      case 'attr_salva': salvaAttribuzione(); break;
+      case 'nota_salva': salvaNota(); break;
+      case 'nota_elimina': eliminaNota(el.getAttribute('data-id')); break;
+      case 'cat': ev.preventDefault(); cambiaCategoria(el.getAttribute('data-id'), el.getAttribute('data-cat')); break;
+      case 'csv': scaricaCsv(); break;
+      case 'rispondi': inviaRisposta(); break;
+      case 'stato': cambiaStatoRichiesta(el.getAttribute('data-stato')); break;
+      case 'nota_int': salvaNotaInterna(); break;
+      case 'allegato': apriAllegato(el.getAttribute('data-mid'), el.getAttribute('data-aid')); break;
+      case 'msg_gestito': segnaMessaggio(el.getAttribute('data-id'), el.getAttribute('data-val') === '1'); break;
+      case 'vend_aggiungi': aggiungiVenditore(); break;
+      case 'vend_stato': statoVenditore(el.getAttribute('data-code'), el.getAttribute('data-val') === '1'); break;
+      case 'nl_invia': inviaNewsletter(); break;
     }
-
-    $('q').addEventListener('input', function(){
-      if(!DATI) return;
-      disegnaClienti();
-      disegnaEventi();
-    });
-
-    // click su una card cliente -> apre la scheda
-    $('tab_clienti').addEventListener('click', function(ev){
-      var link = ev.target.closest('a[data-stop]');
-      if(link) return;
-      var card = ev.target.closest('[data-cliente]');
-      if(!card) return;
-      apriCliente(card.getAttribute('data-cliente'));
-    });
-
-    // click sui chip del filtro clienti (tutti / base / pro / agenzia)
-    $('tab_clienti').addEventListener('click', function(ev){
-      var chip = ev.target.closest('[data-fcli]');
-      if(!chip) return;
-      var val = chip.getAttribute('data-fcli');
-      if(val === FILTRO_CLI) return;
-      FILTRO_CLI = val;
-      disegnaClienti();
-    });
-
-    // click sui chip del filtro eventi (attivi / terminati / tutti)
-    $('tab_eventi').addEventListener('click', function(ev){
-      var chip = ev.target.closest('[data-fev]');
-      if(!chip) return;
-      var val = chip.getAttribute('data-fev');
-      if(val === FILTRO_EV) return;
-      FILTRO_EV = val;
-      disegnaEventi();
-    });
-
-    // sessione gia' attiva?
-    sb.auth.getSession().then(function(s){
-      if(s && s.data && s.data.session){
-        avvia();
-      }
-    }).catch(function(){});
   });
 
+  document.addEventListener('DOMContentLoaded', function(){
+    $('lg_btn').addEventListener('click', accedi);
+    $('lg_pw').addEventListener('keydown', function(e){ if(e.key === 'Enter') accedi(); });
+    $('lg_email').addEventListener('keydown', function(e){ if(e.key === 'Enter') $('lg_pw').focus(); });
+    $('btnEsci').addEventListener('click', esci);
+    $('btnAggiorna').addEventListener('click', aggiornaTutto);
+    window.addEventListener('hashchange', function(){ disegnaRotta(true); });
+    sb.auth.getSession().then(function(s){
+      if(s && s.data && s.data.session) avvia(); else mostraLogin();
+    }).catch(function(){ mostraLogin(); });
+  });
 })();
 </script>
 </body>
