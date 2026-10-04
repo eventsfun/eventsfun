@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.0 04/10/2026 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1225,12 +1225,12 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
     if(!reali.length) h += '<div class="vuoto">Nessun pagamento reale in questo periodo.</div>';
     reali.forEach(function(p){ h += rigaPagamento(p, true); });
     h += '</div>' + (reali.length ? '<div class="note" style="margin-top:6px">Tocca un pagamento per vedere commissioni e riferimenti.</div>' : '') + '</div>';
-    if(prove.length){
-      h += '<div class="sec"><details class="blocco"><summary>Prove e omaggi <span class="pill p-neu" style="margin-left:auto">' + prove.length + '</span></summary><div style="border-top:1px solid var(--line2)">';
-      prove.forEach(function(p){ h += rigaPagamento(p, false); });
-      h += '</div></details><div class="note" style="margin-top:6px">Non entrano nei totali: sono pagamenti di prova, coupon al 100% e accessi regalati.</div></div>';
-    }
-    h += '<div class="sec"><button class="btn sec2 pieno" type="button" data-az="csv"' + (righe.length ? '' : ' disabled') + '>Scarica in Excel (CSV)</button><div class="note" style="margin-top:6px">Il file contiene tutti i pagamenti del periodo scelto, con una colonna che distingue incassi reali, prove e omaggi.</div></div>';
+    h += '<div class="sec"><details class="blocco"><summary>Prove e omaggi <span class="pill p-neu" style="margin-left:auto">' + prove.length + '</span></summary><div style="border-top:1px solid var(--line2)">';
+    if(!prove.length) h += '<div class="vuoto">Nessuna prova o omaggio in questo periodo.</div>';
+    prove.forEach(function(p){ h += rigaPagamento(p, false); });
+    h += '</div></details><div class="note" style="margin-top:6px">Non entrano nei totali: sono pagamenti di prova, coupon al 100% e accessi regalati.</div></div>';
+    if(righe.length) h += '<div class="sec"><button class="btn sec2 pieno" type="button" data-az="csv">Scarica in Excel (CSV)</button><div class="note" style="margin-top:6px">Il file contiene tutti i pagamenti del periodo scelto, con una colonna che distingue incassi reali, prove e omaggi.</div></div>';
+    else h += '<div class="sec"><div class="note">Nessun pagamento da scaricare in questo periodo. Il file Excel (CSV) si può scaricare quando nel periodo scelto c\'è almeno un pagamento, anche di prova.</div></div>';
     $('inc_corpo').innerHTML = h;
   }
   async function cambiaCategoria(id, cat){
@@ -1429,17 +1429,15 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
       if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
     }
   }
+  // Resend consegna gli allegati come file da scaricare: si scarica direttamente,
+  // senza aprire schede nuove (la pagina del gestionale resta dov'e')
   async function apriAllegato(mid, aid){
-    // la finestra si apre subito (i telefoni bloccano quelle aperte dopo un'attesa)
-    var w = null;
-    try{ w = window.open('', '_blank'); }catch(e){ w = null; }
-    if(w){ try{ w.document.write('<p style="font-family:sans-serif;padding:20px">Apertura dell\'allegato...</p>'); }catch(e){} }
+    toast('Preparo l\'allegato...');
     try{
       var res = await chiedi('assistenza_allegato', { messaggio_id: mid, allegato_id: aid });
-      if(w && !w.closed){ w.location.href = res.url; }
-      else { window.location.href = res.url; }
+      window.location.href = res.url;
+      toast('Download dell\'allegato avviato');
     }catch(e){
-      if(w && !w.closed) w.close();
       if(!gestisciErrore(e)) toast(e.message, true);
     }
   }
