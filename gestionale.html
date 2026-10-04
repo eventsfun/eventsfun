@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -10,6 +10,7 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="manifest" href="gestionale.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
@@ -184,6 +185,18 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
 .toast.on{display:block}
 .toast.err{border-color:rgba(248,113,113,0.6)}
 
+/* Da controllare: azioni */
+.an{border-top:1px solid var(--line2)}
+.card > .an:first-child{border-top:0}
+.an > .row{border-top:0}
+.an-az{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:0 14px 12px}
+.an-az .s{width:100%;margin:0 0 2px}
+details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
+/* notifiche su questo dispositivo */
+.blk{padding:14px}
+.blk .note{margin-bottom:12px}
+.blk .note:last-child{margin-bottom:0}
+
 /* riepilogo a due colonne sul computer */
 .rgrid{display:block}
 
@@ -245,6 +258,8 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
       <a href="#venditori" data-v="venditori">Venditori</a>
       <a href="#newsletter" data-v="newsletter">Newsletter</a>
       <a href="#controllo" data-v="controllo">Da controllare<span class="pill p-bad" id="sbCtrl" hidden></span></a>
+      <hr>
+      <a href="#notifiche" data-v="notifiche">Notifiche</a>
     </nav>
     <main class="vista" id="vista"></main>
   </div>
@@ -266,6 +281,7 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
   var SB_URL = 'https://vousendridklswygvqpl.supabase.co';
   var SB_ANON = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
   var FN_URL = SB_URL + '/functions/v1/gestionale-api';
+  var AZ_URL = SB_URL + '/functions/v1/gestionale-azioni';
   var sb = window.supabase.createClient(SB_URL, SB_ANON);
 
   var DATI = null;        // riepilogo generale (gest_snapshot)
@@ -552,7 +568,7 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
   }
 
   // ---------------- portiere ----------------
-  async function chiedi(azione, extra){
+  async function chiedi(azione, extra, dove){
     var s = await sb.auth.getSession();
     var token = s && s.data && s.data.session ? s.data.session.access_token : null;
     if(!token){ var e0 = new Error('NO_SESSION'); e0.status = 401; throw e0; }
@@ -560,7 +576,7 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
     if(extra){ for(var k in extra){ if(Object.prototype.hasOwnProperty.call(extra, k)) payload[k] = extra[k]; } }
     var r;
     try{
-      r = await fetch(FN_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
+      r = await fetch(dove || FN_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify(payload) });
     }catch(errRete){
       throw new Error('Connessione assente o instabile. Riprova tra poco.');
     }
@@ -573,6 +589,8 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
     }
     return j;
   }
+  // azioni nuove (notifiche e Da controllare): stesso accesso, portiere gestionale-azioni
+  function chiediAz(azione, extra){ return chiedi(azione, extra, AZ_URL); }
   // gestisce sessione scaduta e accesso negato; true se l'errore e' stato gestito
   function gestisciErrore(e){
     if(e && (e.status === 401 || e.message === 'NO_SESSION')){
@@ -656,8 +674,8 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
   function vai(h){
     if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
   }
-  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro' };
-  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo' };
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro', notifiche: 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo', notifiche: 'notifiche' };
   function disegnaRotta(inCima){
     if(!DATI) return;
     var r = rotta();
@@ -688,6 +706,7 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
       case 'venditori': vistaVenditori(); break;
       case 'newsletter': vistaNewsletter(); break;
       case 'controllo': vistaControllo(); break;
+      case 'notifiche': vistaNotifiche(); break;
       default: vistaRiepilogo();
     }
     if(inCima) window.scrollTo(0, 0);
@@ -1459,8 +1478,10 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
     h += '<a class="row" href="#newsletter"><div class="grow"><div class="t">Newsletter</div><div class="s">Comunicazioni a clienti, contatti dal sito e venditori</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#controllo"><div class="grow"><div class="t">Da controllare</div><div class="s">' + (nC ? (nC === 1 ? '1 cosa da guardare' : nC + ' cose da guardare') : 'Tutto in ordine') + '</div></div>' + (nC ? '<span class="pill p-bad">' + nC + '</span>' : '') + ICO_CHEV + '</a>';
     h += '</div></div>';
+    h += riquadroNotifiche();
     h += '<div class="sec"><div class="card"><div class="row"><div class="grow"><div class="t">' + esc(ME.nome || ME.email || '') + '</div><div class="s">' + esc(ME.email || '') + (ME.ruolo ? ', ' + esc(ME.ruolo) : '') + '</div></div><button class="btn sec2 piccolo" type="button" data-az="esci">Esci</button></div></div></div>';
     metti(h);
+    apriRiquadroPush();
   }
 
   // ---------------- EVENTI ----------------
@@ -1551,40 +1572,325 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
   }
 
   // ---------------- DA CONTROLLARE ----------------
+  // ---------------- DA CONTROLLARE ----------------
+  // ogni anomalia: come si mostra la riga e quali azioni ha
+  var ANOMALIE = [
+    { tipo: 'ordini_senza_email', titolo: 'Ordini senza email',
+      spiega: 'Se era una persona vera, ha pagato e non ha ricevuto nulla. Cerca il riferimento nel pannello Stripe per risalire a chi era.',
+      riga: function(o){
+        return '<div class="row top-al"><div class="grow"><div class="t">Pagamento senza contatto</div><div class="s">Ricevuto ' + esc(art('il', dataLunga(o.created_at))) + ', ' + esc(euro(o.importo)) + '</div><div class="tok">' + esc(o.stripe_id || 'nessun riferimento') + '</div></div>' + pianoPill(o.piano) + '</div>';
+      } },
+    { tipo: 'ordini_senza_accesso', titolo: 'Clienti senza accesso',
+      spiega: 'Ordini senza un accesso aperto alla dashboard: il cliente non può entrare.',
+      riga: function(o){
+        return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
+      } },
+    { tipo: 'annullati_senza_data', titolo: 'Abbonamenti annullati senza data di fine',
+      spiega: 'Risultano annullati ma senza la data in cui finisce l\'accesso: il sistema li tratta ancora come validi.',
+      riga: function(o){
+        return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
+      } },
+    { tipo: 'pagamenti_bloccati', titolo: 'Pagamenti senza dettagli da Stripe',
+      spiega: 'Dopo 24 ore Stripe non ha ancora dato sconto e commissioni: controlla il pagamento nel pannello Stripe.',
+      riga: function(p){
+        return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+      } },
+    { tipo: 'pagamenti_senza_cliente', titolo: 'Pagamenti senza cliente',
+      spiega: 'Pagamenti registrati che non sono collegati a nessun cliente.',
+      riga: function(p){
+        return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+      } },
+    { tipo: 'rimborsi_scollegati', titolo: 'Rimborsi non collegati',
+      spiega: 'Rimborsi fatti su Stripe che non si è riusciti a collegare al pagamento originale.',
+      riga: function(p){
+        return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
+      } },
+    { tipo: 'eventi_orfani', titolo: 'Eventi senza cliente',
+      spiega: 'Eventi il cui accesso non esiste più nell\'archivio. Quasi sempre sono residui di prove vecchie.',
+      riga: function(e){
+        return '<div class="row top-al"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">Data evento ' + esc(dataLunga(e.data_iso)) + ', creato ' + esc(art('il', dataLunga(e.created_at))) + ', ' + (Number(e.n_iscritti) === 1 ? '1 iscritto' : (e.n_iscritti || 0) + ' iscritti') + '</div></div><span class="pill p-warn">Senza cliente</span></div>';
+      } }
+  ];
+  function azioniAnomalia(tipo, o, controllata){
+    if(ME.ruolo !== 'admin') return '';
+    var b = '<div class="an-az">';
+    if(controllata){
+      b += '<div class="s">Controllato ' + esc(art('il', dataBreve(o.controllata_at))) + (o.controllata_da ? ' da ' + esc(o.controllata_da) : '') + '</div>';
+      b += '<button class="btn sec2 piccolo" type="button" data-az="an_ctrl" data-tipo="' + esc(tipo) + '" data-rif="' + esc(o.id) + '" data-val="0">Rimetti da controllare</button>';
+    }else{
+      if(tipo === 'eventi_orfani') b += '<button class="btn rosso piccolo" type="button" data-az="an_elimina" data-id="' + esc(o.id) + '" data-nome="' + esc(o.nome || 'Evento senza nome') + '" data-n="' + esc(Number(o.n_iscritti || 0)) + '">Elimina</button>';
+      if(tipo === 'pagamenti_bloccati') b += '<button class="btn sec2 piccolo" type="button" data-az="an_riprova" data-id="' + esc(o.id) + '">Riprova</button>';
+      b += '<button class="btn sec2 piccolo" type="button" data-az="an_ctrl" data-tipo="' + esc(tipo) + '" data-rif="' + esc(o.id) + '" data-val="1">Segna come controllato</button>';
+    }
+    return b + '</div>';
+  }
   function vistaControllo(){
     var an = DATI.anomalie || {};
+    var ctrl = DATI.anomalie_controllate || {};
     var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
     h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Da controllare</h1><div class="note" style="margin-top:4px">Le situazioni che non tornano nei dati. Non sono errori del sito: sono cose da guardare e decidere cosa farne.</div></div>';
-    var blocco = function(titolo, spiega, lista, riga){
-      var x = '<div class="sec"><div class="h2">' + titolo + ' <small>' + lista.length + '</small></div><div class="card">';
-      if(!lista.length) x += '<div class="vuoto">Nessuno.</div>';
-      else x += '<div class="row"><div class="grow note">' + spiega + '</div></div>';
-      lista.forEach(function(o){ x += riga(o); });
-      return x + '</div></div>';
-    };
-    h += blocco('Ordini senza email', 'Se era una persona vera, ha pagato e non ha ricevuto nulla. Cerca il riferimento nel pannello Stripe per risalire a chi era.', an.ordini_senza_email || [], function(o){
-      return '<div class="row top-al"><div class="grow"><div class="t">Pagamento senza contatto</div><div class="s">Ricevuto ' + esc(art('il', dataLunga(o.created_at))) + ', ' + esc(euro(o.importo)) + '</div><div class="tok">' + esc(o.stripe_id || 'nessun riferimento') + '</div></div>' + pianoPill(o.piano) + '</div>';
+    ANOMALIE.forEach(function(a){
+      var lista = an[a.tipo] || [];
+      h += '<div class="sec"><div class="h2">' + a.titolo + ' <small>' + lista.length + '</small></div><div class="card">';
+      if(!lista.length) h += '<div class="vuoto">Nessuno.</div>';
+      else h += '<div class="row"><div class="grow note">' + a.spiega + '</div></div>';
+      lista.forEach(function(o){ h += '<div class="an">' + a.riga(o) + azioniAnomalia(a.tipo, o, false) + '</div>'; });
+      h += '</div></div>';
     });
-    h += blocco('Clienti senza accesso', 'Ordini senza un accesso aperto alla dashboard: il cliente non può entrare.', an.ordini_senza_accesso || [], function(o){
-      return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
-    });
-    h += blocco('Abbonamenti annullati senza data di fine', 'Risultano annullati ma senza la data in cui finisce l\'accesso: il sistema li tratta ancora come validi.', an.annullati_senza_data || [], function(o){
-      return '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.email || 'senza email') + '</div><div class="s">' + esc(art('Dal', dataLunga(o.created_at))) + '</div></div>' + pianoPill(o.piano) + ICO_CHEV + '</a>';
-    });
-    h += blocco('Pagamenti senza dettagli da Stripe', 'Dopo 24 ore Stripe non ha ancora dato sconto e commissioni: controlla il pagamento nel pannello Stripe.', an.pagamenti_bloccati || [], function(p){
-      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
-    });
-    h += blocco('Pagamenti senza cliente', 'Pagamenti registrati che non sono collegati a nessun cliente.', an.pagamenti_senza_cliente || [], function(p){
-      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + ', ' + esc(nomePiano(p.piano)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
-    });
-    h += blocco('Rimborsi non collegati', 'Rimborsi fatti su Stripe che non si è riusciti a collegare al pagamento originale.', an.rimborsi_scollegati || [], function(p){
-      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(euro(p.importo)) + '</div><div class="s">' + esc(dataLunga(p.pagato_il)) + '</div><div class="tok">' + esc(p.stripe_id || '') + '</div></div></div>';
-    });
-    h += blocco('Eventi senza cliente', 'Eventi il cui accesso non esiste più nell\'archivio. Quasi sempre sono residui di prove vecchie.', an.eventi_orfani || [], function(e){
-      return '<div class="row top-al"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">Data evento ' + esc(dataLunga(e.data_iso)) + ', creato ' + esc(art('il', dataLunga(e.created_at))) + ', ' + (e.n_iscritti === 1 ? '1 iscritto' : (e.n_iscritti || 0) + ' iscritti') + '</div></div><span class="pill p-warn">Senza cliente</span></div>';
-    });
+    var nCtrl = 0;
+    ANOMALIE.forEach(function(a){ nCtrl += (ctrl[a.tipo] || []).length; });
+    if(nCtrl){
+      h += '<div class="sec"><details class="blocco"><summary>Controllate (' + nCtrl + ')</summary>';
+      ANOMALIE.forEach(function(a){
+        var lista = ctrl[a.tipo] || [];
+        if(!lista.length) return;
+        h += '<div class="row" style="border-top:1px solid var(--line2)"><div class="grow note">' + a.titolo + '</div></div>';
+        lista.forEach(function(o){ h += '<div class="an">' + a.riga(o) + azioniAnomalia(a.tipo, o, true) + '</div>'; });
+      });
+      h += '</details></div>';
+    }
     h += '</div>';
     metti(h);
+  }
+  async function segnaAnomalia(tipo, rif, controllata, btn){
+    if(btn) btn.disabled = true;
+    try{
+      await chiediAz('anomalia_controllata', { tipo: tipo, rif: rif, controllata: controllata });
+      toast(controllata ? 'Segnato come controllato' : 'Rimesso da controllare');
+      await aggiornaDati(true);
+    }catch(e){
+      if(btn) btn.disabled = false;
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+  async function eliminaOrfano(btn){
+    var id = btn.getAttribute('data-id');
+    var nome = btn.getAttribute('data-nome') || 'Evento senza nome';
+    var n = Number(btn.getAttribute('data-n') || 0);
+    var frase = 'Eliminare l\'evento «' + nome + '»' + (n === 0 ? '' : n === 1 ? ' con il suo iscritto' : ' con i suoi ' + n + ' iscritti') + '? Non si può annullare.';
+    if(!window.confirm(frase)) return;
+    btn.disabled = true;
+    try{
+      await chiediAz('evento_orfano_elimina', { evento_id: id });
+      toast('Evento eliminato');
+      await aggiornaDati(true);
+    }catch(e){
+      btn.disabled = false;
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+  async function riprovaPagamento(id, btn){
+    if(btn) btn.disabled = true;
+    try{
+      await chiediAz('pagamento_riprova', { payment_id: id });
+      toast('Rimesso in coda: i dettagli arriveranno entro 30 minuti');
+      await aggiornaDati(true);
+    }catch(e){
+      if(btn) btn.disabled = false;
+      if(!gestisciErrore(e)) toast(e.message, true);
+    }
+  }
+
+  // ---------------- NOTIFICHE SU QUESTO DISPOSITIVO ----------------
+  // Le notifiche arrivano dal service worker del gestionale (gestionale-sw.js, ambito limitato al gestionale).
+  var PUSH = { regProm: null, sub: null, stato: null, errore: '', occupato: false, caricato: false };
+  function eIOS(){
+    var ua = navigator.userAgent || '';
+    return /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function eInstallata(){
+    try{ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true; }catch(e){ return false; }
+  }
+  function pushPossibile(){
+    return !!(window.isSecureContext && ('serviceWorker' in navigator) && ('PushManager' in window) && ('Notification' in window));
+  }
+  function registraSW(){
+    if(!('serviceWorker' in navigator) || !window.isSecureContext) return null;
+    if(!PUSH.regProm){
+      PUSH.regProm = navigator.serviceWorker.register('gestionale-sw.js', { scope: 'gestionale' })
+        .catch(function(e){ PUSH.regProm = null; throw e; });
+    }
+    return PUSH.regProm;
+  }
+  function chiaveInByte(b64){
+    var s = String(b64 || '').replace(/-/g, '+').replace(/_/g, '/');
+    s += '==='.slice((s.length + 3) % 4);
+    var bin = atob(s), out = new Uint8Array(bin.length);
+    for(var i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  // l'iscrizione del browser e' fatta con la chiave attuale del server?
+  function stessaChiave(sub, pub){
+    try{
+      var a = sub && sub.options && sub.options.applicationServerKey;
+      if(!a) return true;
+      var x = new Uint8Array(a), y = chiaveInByte(pub);
+      if(x.length !== y.length) return false;
+      for(var i = 0; i < x.length; i++){ if(x[i] !== y[i]) return false; }
+      return true;
+    }catch(e){ return true; }
+  }
+  function nomeDispositivo(){
+    var ua = navigator.userAgent || '';
+    var so = /Android/i.test(ua) ? 'Android'
+      : eIOS() ? (/iPhone|iPod/.test(ua) ? 'iPhone' : 'iPad')
+      : /Windows/i.test(ua) ? 'Windows'
+      : /CrOS/.test(ua) ? 'Chromebook'
+      : /Mac OS X|Macintosh/i.test(ua) ? 'Mac'
+      : /Linux/i.test(ua) ? 'Linux' : 'Dispositivo';
+    var br = /SamsungBrowser/i.test(ua) ? 'Samsung Internet'
+      : /Edg\//.test(ua) ? 'Edge'
+      : /OPR\//.test(ua) ? 'Opera'
+      : /Firefox\//.test(ua) ? 'Firefox'
+      : /Chrome\//.test(ua) ? 'Chrome'
+      : /Safari\//.test(ua) ? 'Safari' : '';
+    return (so + (br ? ', ' + br : '') + (eInstallata() ? ', app' : '')).slice(0, 120);
+  }
+  function riquadroNotifiche(){
+    if(ME.ruolo !== 'admin') return '';
+    return '<div class="sec"><div class="h2">Notifiche su questo dispositivo</div><div class="card" id="pushBox"><div class="vuoto">Controllo delle notifiche...</div></div></div>';
+  }
+  function apriRiquadroPush(){
+    if(!$('pushBox')) return;
+    PUSH.caricato = false;
+    disegnaPush();
+    caricaPush().then(disegnaPush);
+  }
+  async function caricaPush(){
+    PUSH.errore = '';
+    try{
+      PUSH.sub = null;
+      if(pushPossibile()){
+        var reg = await registraSW();
+        PUSH.sub = reg ? await reg.pushManager.getSubscription() : null;
+      }
+      var r = await chiediAz('push_stato', { endpoint: PUSH.sub ? PUSH.sub.endpoint : '' });
+      PUSH.stato = r.stato || { questo: false, dispositivi: [] };
+    }catch(e){
+      if(!gestisciErrore(e)) PUSH.errore = 'Stato delle notifiche non disponibile: ' + (e.message || e);
+    }
+    PUSH.caricato = true;
+  }
+  function disegnaPush(){
+    var box = $('pushBox');
+    if(!box) return;
+    var st = PUSH.stato;
+    var perm = ('Notification' in window) ? Notification.permission : 'default';
+    var dis = PUSH.occupato ? ' disabled' : '';
+    var h = '<div class="blk">';
+    if(!PUSH.caricato){
+      h += '<div class="note">Controllo delle notifiche...</div>';
+    }else if(!pushPossibile()){
+      if(eIOS() && !eInstallata()) h += '<div class="note">Su iPhone e iPad le notifiche arrivano solo se il gestionale è aggiunto alla schermata Home. In Safari tocca Condividi, poi Aggiungi alla schermata Home, e apri il gestionale dall\'icona. Serve iOS 16.4 o successivo.</div>';
+      else h += '<div class="note">Questo browser non può ricevere notifiche.</div>';
+    }else if(st && st.questo && PUSH.sub && perm === 'granted'){
+      h += '<div class="note">Le notifiche sono attive su questo dispositivo.</div>';
+      h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="push_prova"' + dis + '>Manda una notifica di prova</button><button class="btn sec2" type="button" data-az="push_disattiva"' + dis + '>Disattiva</button></div>';
+    }else if(perm === 'denied'){
+      h += '<div class="note">Le notifiche per questo sito sono bloccate nelle impostazioni del browser: riattivale da lì e poi riprova.</div>';
+    }else{
+      h += '<div class="note">Ricevi un avviso su questo dispositivo quando arriva un nuovo cliente, una richiesta o una risposta all\'assistenza, oppure un messaggio dal sito.</div>';
+      h += '<button class="btn pieno" type="button" data-az="push_attiva"' + dis + '>' + (PUSH.occupato ? 'Attivazione in corso...' : 'Attiva le notifiche') + '</button>';
+    }
+    if(PUSH.errore) h += '<div class="msgx err">' + esc(PUSH.errore) + '</div>';
+    h += '</div>';
+    var disp = (st && st.dispositivi) || [];
+    if(disp.length){
+      h += '<div class="row" style="border-top:1px solid var(--line2)"><div class="grow note">I tuoi dispositivi</div></div>';
+      disp.forEach(function(d){
+        var pills = '';
+        if(d.questo) pills += '<span class="pill p-gold">Questo dispositivo</span>';
+        if(Number(d.errori_consecutivi || 0) >= 3) pills += '<span class="pill p-warn">Non raggiungibile</span>';
+        h += '<div class="row"><div class="grow"><div class="t">' + esc(d.dispositivo || 'Dispositivo') + '</div><div class="s">Attivato ' + esc(art('il', dataBreve(d.created_at))) + '</div>' + (pills ? '<div class="pills" style="margin-top:6px">' + pills + '</div>' : '') + '</div>';
+        h += '<button class="btn sec2 piccolo" type="button" data-az="push_rimuovi" data-id="' + esc(d.id) + '"' + dis + '>Rimuovi</button></div>';
+      });
+    }
+    box.innerHTML = h;
+  }
+  async function iscriviSulServer(sub){
+    var j = sub.toJSON ? sub.toJSON() : {};
+    var k = j.keys || {};
+    var r = await chiediAz('push_iscrivi', { endpoint: sub.endpoint, p256dh: k.p256dh || '', auth: k.auth || '', dispositivo: nomeDispositivo() });
+    PUSH.stato = r.stato || PUSH.stato;
+  }
+  async function attivaPush(){
+    if(PUSH.occupato || !pushPossibile()) return;
+    PUSH.occupato = true; PUSH.errore = ''; disegnaPush();
+    try{
+      var perm = Notification.permission;
+      if(perm !== 'granted') perm = await Notification.requestPermission();
+      if(perm === 'granted'){
+        var reg = await registraSW();
+        if(!reg) throw new Error('servizio delle notifiche non disponibile');
+        var chiave = (await chiediAz('push_chiave')).pub;
+        var sub = await reg.pushManager.getSubscription();
+        if(sub && !stessaChiave(sub, chiave)){ try{ await sub.unsubscribe(); }catch(e1){} sub = null; }
+        if(!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: chiaveInByte(chiave) });
+        PUSH.sub = sub;
+        await iscriviSulServer(sub);
+        toast('Notifiche attivate');
+      }
+    }catch(e){
+      if(!gestisciErrore(e)) PUSH.errore = 'Attivazione non riuscita: ' + (e.message || e);
+    }
+    PUSH.occupato = false; disegnaPush();
+  }
+  async function disattivaPush(){
+    if(PUSH.occupato) return;
+    PUSH.occupato = true; PUSH.errore = ''; disegnaPush();
+    try{
+      if(PUSH.sub){
+        var r = await chiediAz('push_rimuovi', { endpoint: PUSH.sub.endpoint });
+        PUSH.stato = r.stato || PUSH.stato;
+        try{ await PUSH.sub.unsubscribe(); }catch(e1){}
+        PUSH.sub = null;
+      }
+      toast('Notifiche disattivate');
+    }catch(e){
+      if(!gestisciErrore(e)) PUSH.errore = 'Disattivazione non riuscita: ' + (e.message || e);
+    }
+    PUSH.occupato = false; disegnaPush();
+  }
+  async function provaPush(){
+    if(PUSH.occupato || !PUSH.sub) return;
+    PUSH.occupato = true; PUSH.errore = ''; disegnaPush();
+    var errore = '';
+    try{
+      await chiediAz('push_prova', { endpoint: PUSH.sub.endpoint });
+      toast('Notifica di prova inviata: arriva tra pochi secondi');
+    }catch(e){
+      if(!gestisciErrore(e)){
+        errore = e.message || String(e);
+        if(e.status === 404 || e.status === 502) await caricaPush();
+      }
+    }
+    PUSH.errore = errore;
+    PUSH.occupato = false; disegnaPush();
+  }
+  async function rimuoviDispositivo(id){
+    if(PUSH.occupato) return;
+    var d = ((PUSH.stato && PUSH.stato.dispositivi) || []).filter(function(x){ return x.id === id; })[0];
+    if(!d) return;
+    if(!window.confirm('Rimuovere ' + (d.questo ? 'questo dispositivo' : '"' + (d.dispositivo || 'Dispositivo') + '"') + '? Non riceverà più le notifiche.')) return;
+    PUSH.occupato = true; PUSH.errore = ''; disegnaPush();
+    try{
+      var r = await chiediAz('push_rimuovi', { id: id, endpoint: PUSH.sub ? PUSH.sub.endpoint : '' });
+      PUSH.stato = r.stato || PUSH.stato;
+      if(d.questo && PUSH.sub){ try{ await PUSH.sub.unsubscribe(); }catch(e1){} PUSH.sub = null; }
+      toast('Dispositivo rimosso');
+    }catch(e){
+      if(!gestisciErrore(e)) PUSH.errore = 'Rimozione non riuscita: ' + (e.message || e);
+    }
+    PUSH.occupato = false; disegnaPush();
+  }
+  function vistaNotifiche(){
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Notifiche</h1></div>';
+    if(ME.ruolo === 'admin') h += riquadroNotifiche();
+    else h += '<div class="sec"><div class="card"><div class="vuoto">Le notifiche sono riservate agli amministratori.</div></div></div>';
+    h += '</div>';
+    metti(h);
+    apriRiquadroPush();
   }
 
   // ---------------- VENDITORI ----------------
@@ -1807,6 +2113,13 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
       case 'vend_aggiungi': aggiungiVenditore(); break;
       case 'vend_stato': statoVenditore(el.getAttribute('data-code'), el.getAttribute('data-val') === '1'); break;
       case 'nl_invia': inviaNewsletter(); break;
+      case 'an_ctrl': segnaAnomalia(el.getAttribute('data-tipo'), el.getAttribute('data-rif'), el.getAttribute('data-val') === '1', el); break;
+      case 'an_elimina': eliminaOrfano(el); break;
+      case 'an_riprova': riprovaPagamento(el.getAttribute('data-id'), el); break;
+      case 'push_attiva': attivaPush(); break;
+      case 'push_disattiva': disattivaPush(); break;
+      case 'push_prova': provaPush(); break;
+      case 'push_rimuovi': rimuoviDispositivo(el.getAttribute('data-id')); break;
     }
   });
 
@@ -1817,6 +2130,21 @@ details.blocco[open] > summary::after{transform:rotate(-135deg)}
     $('btnEsci').addEventListener('click', esci);
     $('btnAggiorna').addEventListener('click', aggiornaTutto);
     window.addEventListener('hashchange', function(){ disegnaRotta(true); });
+    // service worker del gestionale (notifiche e installazione come app): nessuna copia delle pagine
+    var regSW = registraSW();
+    if(regSW) regSW.catch(function(){});
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.addEventListener('message', function(ev){
+        var d = ev.data || {};
+        if(d.tipo !== 'apri' || !d.url || !DATI) return;
+        var k = String(d.url).indexOf('#');
+        var dest = k >= 0 ? String(d.url).slice(k + 1) : '';
+        SCHEDA = null; RICH = null; INC = null;
+        aggiornaDati(false).then(function(){
+          if(dest && location.hash !== '#' + dest) location.hash = dest; else disegnaRotta(false);
+        });
+      });
+    }
     sb.auth.getSession().then(function(s){
       if(s && s.data && s.data.session) avvia(); else mostraLogin();
     }).catch(function(){ mostraLogin(); });
