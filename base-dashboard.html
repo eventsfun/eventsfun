@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Base Dashboard | v6.0 Supabase -->
+<!-- EventsFun | Base Dashboard | v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -24,7 +24,8 @@ body.light{--bg:#f4f3f0;--bg2:#fff;--bg3:#fafaf8;--border:rgba(0,0,0,0.1);--bord
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;transition:background .3s,color .3s}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:13px 24px;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50;backdrop-filter:blur(16px);gap:10px;flex-wrap:wrap}
 .nav-logo{font-family:"Syne",sans-serif;font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.3px}.nav-logo span{color:var(--gold)}
-.nav-r{display:flex;align-items:center;gap:10px}
+.nav-r{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.nav-r > a{white-space:nowrap}
 .nav-plan{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;letter-spacing:.5px;background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.25)}
 .theme-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--inp-bg);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
 .view{display:none}.view.on{display:block}
@@ -287,6 +288,7 @@ tbody td.xv{color:var(--gold)}
   <div class="nav-r">
     <span class="nav-plan">Base</span>
     <a href="https://eventsfun.com/guida.html?dash=base" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128214; Guida</a>
+    <a href="https://eventsfun.com/guida.html?dash=base#assistenza" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128172; Assistenza</a>
     <a href="https://eventsfun.com/area-personale.html" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">← Area personale</a>
     <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">🌙</button>
   </div>
@@ -2708,6 +2710,6 @@ applyOpts = function(ev) {
 
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.1 base</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.2 base</div>
 </body>
 </html>

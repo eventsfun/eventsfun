@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -89,8 +89,35 @@ a.term:hover{border-bottom-style:solid}
 .faq-q{font-weight:500;color:var(--text);font-size:15px;margin-bottom:6px}
 .faq-a{font-size:14.5px;color:var(--text-muted)}
 
+/* ASSISTENZA */
+[hidden]{display:none !important}
+.af{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:18px}
+.content .af-ric{font-size:14px;color:var(--green);margin:0 0 16px}
+.af-campo{margin-bottom:16px}
+.af label{display:block;font-size:13.5px;font-weight:500;color:var(--text);margin-bottom:6px}
+.af input,.af select,.af textarea{display:block;width:100%;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:16px;font-weight:400;min-height:46px}
+.af select{appearance:auto;color-scheme:dark}
+.af select option{background:#161616;color:var(--text)}
+.af textarea{resize:vertical;min-height:140px;line-height:1.55}
+.af input:focus,.af select:focus,.af textarea:focus{outline:none;border-color:rgba(201,169,110,0.65)}
+.af-aiuto{font-size:12.5px;color:var(--text-dim);margin-top:6px;line-height:1.5}
+.af-trappola{position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden}
+.af-btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 22px;border-radius:10px;border:0;background:var(--gold);color:#0A0A0A;font-family:"Syne",sans-serif;font-weight:700;font-size:14px;cursor:pointer;text-decoration:none}
+.af-btn:hover{background:#d8bb85;color:#0A0A0A}
+.af-btn:disabled{opacity:.6;cursor:default}
+.af-btn:focus-visible,.af input:focus-visible,.af select:focus-visible,.af textarea:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.af-sec{background:transparent;color:var(--text);border:1px solid var(--border)}
+.af-sec:hover{background:transparent;color:var(--gold);border-color:rgba(201,169,110,0.5)}
+.af-msg{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:14px;line-height:1.55;background:rgba(224,128,128,0.1);border:1px solid rgba(224,128,128,0.35);color:#f2b8b8}
+.af-msg a{color:var(--gold)}
+.af-ok{background:rgba(126,217,154,0.07);border:1px solid rgba(126,217,154,0.3);border-radius:14px;padding:20px 22px;margin-top:18px}
+.content .af-ok p{color:var(--text);margin-bottom:14px}
+.af-demo{margin-top:6px}
+
 /* MOBILE */
 @media(max-width:860px){
+  .af{padding:18px}
+  .af-btn{width:100%}
   .wrap{grid-template-columns:1fr;gap:0;padding:76px 18px 70px}
   .side{position:static;margin-bottom:28px;max-height:none;overflow:visible;padding-right:0}
   .side-toggle{display:flex;align-items:center;justify-content:space-between;width:100%;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer}
@@ -180,6 +207,7 @@ a.term:hover{border-bottom-style:solid}
           <div class="idx-group-name">Altro</div>
           <a href="#glossario">Glossario</a>
           <a href="#faq">Problemi comuni</a>
+          <a href="#assistenza">Assistenza</a>
         </div>
       </nav>
     </div>
@@ -648,7 +676,63 @@ a.term:hover{border-bottom-style:solid}
       </div>
       <div class="faq-item">
         <div class="faq-q">Non trovo una risposta qui.</div>
-        <div class="faq-a">Scrivici a info@eventsfun.com e ti aiutiamo.</div>
+        <div class="faq-a">Scrivici dalla sezione <a href="#assistenza" class="lnk">Assistenza</a>: ti rispondiamo per email.</div>
+      </div>
+    </section>
+
+    <section id="assistenza">
+      <h2>Assistenza <span class="badge badge-all">Tutti i piani</span></h2>
+      <div id="assDemo" class="af-demo" hidden>
+        <p>Stai provando la demo: l'assistenza è riservata a chi ha acquistato un piano. Per domande su EventsFun scrivici dal modulo contatti del sito.</p>
+        <a class="af-btn" href="index.html#contatti">Vai al modulo contatti</a>
+      </div>
+      <div id="assBox">
+        <p>Se in questa guida non trovi la risposta, scrivici da qui. La richiesta arriva direttamente all'assistenza di EventsFun e ti rispondiamo per email, all'indirizzo con cui hai fatto l'acquisto.</p>
+        <div class="note">Le richieste dei clienti Agenzia vengono gestite con precedenza.</div>
+        <form class="af" id="assForm" novalidate onsubmit="return false;">
+          <p class="af-ric" id="assRic" hidden>Ti abbiamo riconosciuto dal tuo accesso alla dashboard: non serve scrivere l'email.</p>
+          <div class="af-campo" id="assEmailCampo">
+            <label for="ass_email">Email dell'acquisto</label>
+            <input type="email" id="ass_email" autocomplete="email" maxlength="254" inputmode="email">
+            <div class="af-aiuto">L'indirizzo con cui hai acquistato EventsFun. L'assistenza è riservata a chi ha acquistato un piano.</div>
+          </div>
+          <div class="af-campo">
+            <label for="ass_arg">Argomento</label>
+            <select id="ass_arg">
+              <option value="">Scegli un argomento</option>
+              <option value="accesso">Accesso e password</option>
+              <option value="evento">Creare o modificare un evento</option>
+              <option value="iscrizioni">Iscrizioni e partecipanti</option>
+              <option value="email">Email e newsletter</option>
+              <option value="info">Pagina informazioni e richieste</option>
+              <option value="pagamenti">Pagamenti e abbonamento</option>
+              <option value="altro">Altro</option>
+            </select>
+          </div>
+          <div class="af-campo" id="assEvCampo" hidden>
+            <label for="ass_ev">Evento (facoltativo)</label>
+            <select id="ass_ev"><option value="">Nessun evento in particolare</option></select>
+          </div>
+          <div class="af-campo">
+            <label for="ass_nome">Il tuo nome (facoltativo)</label>
+            <input type="text" id="ass_nome" maxlength="120" autocomplete="name">
+          </div>
+          <div class="af-campo">
+            <label for="ass_msg">Messaggio</label>
+            <textarea id="ass_msg" rows="6" maxlength="5000" placeholder="Descrivi cosa succede: cosa stavi facendo, cosa ti aspettavi e cosa è successo invece."></textarea>
+            <div class="af-aiuto">Almeno 10 caratteri.</div>
+          </div>
+          <div class="af-trappola" aria-hidden="true">
+            <label for="ass_sito">Sito web</label>
+            <input type="text" id="ass_sito" tabindex="-1" autocomplete="off">
+          </div>
+          <button type="button" class="af-btn" id="assBtn" onclick="inviaAssistenza()">Invia la richiesta</button>
+          <div class="af-msg" id="assMsg" role="alert" hidden></div>
+        </form>
+        <div class="af-ok" id="assOk" role="status" hidden>
+          <p id="assOkTesto"></p>
+          <button type="button" class="af-btn af-sec" onclick="nuovaAssistenza()">Scrivi un'altra richiesta</button>
+        </div>
       </div>
     </section>
 
@@ -727,6 +811,144 @@ function efBack(){
   var map={base:'base-dashboard.html',pro:'pro-dashboard.html',agenzia:'agenzia-dashboard.html',info:'info-dashboard.html',demo:'demo.html'};
   if(dash&&map[dash])b.setAttribute('href',map[dash]);
 })();
+// ---------- Assistenza (v1.7): modulo verso la funzione assistenza-richiesta ----------
+// Il cliente arrivato dalla dashboard e' riconosciuto dal codice della dashboard (ef_token in questo browser);
+// gli altri scrivono l'email dell'acquisto. Dalla demo il modulo non c'e': rimando al modulo contatti del sito.
+var ASS_URL = 'https://vousendridklswygvqpl.supabase.co/functions/v1/assistenza-richiesta';
+var ASS_SB = 'https://vousendridklswygvqpl.supabase.co';
+var ASS_KEY = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
+var ASS_MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+var assToken = '';
+var assAperto = Date.now();
+var assDash = new URLSearchParams(location.search).get('dash') || '';
+
+function assEl(id){ return document.getElementById(id); }
+function assVal(id){ var e = assEl(id); return e ? String(e.value || '').trim() : ''; }
+function assData(iso){
+  var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+  return m ? Number(m[3]) + ' ' + ASS_MESI[Number(m[2]) - 1] + ' ' + m[1] : '';
+}
+function assIntest(t){ return { 'apikey': ASS_KEY, 'Authorization': 'Bearer ' + ASS_KEY, 'x-ef-token': t }; }
+function assModoEmail(){
+  assToken = '';
+  assEl('assRic').hidden = true;
+  assEl('assEmailCampo').hidden = false;
+  assEl('assEvCampo').hidden = true;
+}
+function assMostra(html){
+  var m = assEl('assMsg');
+  m.innerHTML = html;
+  m.hidden = false;
+}
+
+async function assPrepara(){
+  if(assDash === 'demo'){
+    assEl('assDemo').hidden = false;
+    assEl('assBox').hidden = true;
+    return;
+  }
+  var t = '';
+  try{ t = localStorage.getItem('ef_token') || ''; }catch(e){ t = ''; }
+  if(!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(t)) return;
+  try{
+    var r = await fetch(ASS_SB + '/rest/v1/activations?select=id&token=eq.' + encodeURIComponent(t), { headers: assIntest(t) });
+    if(!r.ok) return;
+    var righe = await r.json();
+    if(!righe || !righe.length) return;
+    assToken = t;
+    assEl('assEmailCampo').hidden = true;
+    assEl('assRic').hidden = false;
+    var e = await fetch(ASS_SB + '/rest/v1/events?select=id,nome,data_iso,bozza&activation_token=eq.' + encodeURIComponent(t) + '&order=data_iso.desc&limit=60', { headers: assIntest(t) });
+    if(!e.ok) return;
+    var ev = (await e.json() || []).filter(function(x){ return x && x.id && !x.bozza; });
+    if(!ev.length) return;
+    var sel = assEl('ass_ev');
+    ev.forEach(function(x){
+      var o = document.createElement('option');
+      o.value = x.id;
+      var d = assData(x.data_iso);
+      o.textContent = (x.nome || 'Evento senza nome') + (d ? ', ' + d : '');
+      sel.appendChild(o);
+    });
+    assEl('assEvCampo').hidden = false;
+  }catch(err){ /* senza collegamento si usa l'email dell'acquisto */ }
+}
+
+async function inviaAssistenza(){
+  var btn = assEl('assBtn');
+  if(btn.disabled) return;
+  assEl('assMsg').hidden = true;
+  var arg = assVal('ass_arg');
+  var testo = assVal('ass_msg');
+  var email = assVal('ass_email').toLowerCase();
+  if(!arg || !testo){ assMostra('Scegli l\'argomento e scrivi il messaggio.'); return; }
+  if(!assToken && !email){ assMostra('Scrivi l\'email con cui hai fatto l\'acquisto.'); return; }
+  if(!assToken && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ assMostra('L\'indirizzo email non sembra corretto: controllalo e riprova.'); return; }
+  if(testo.length < 10 || testo.length > 5000){ assMostra('Il messaggio deve avere almeno 10 caratteri (al massimo 5000).'); return; }
+  var dati = {
+    argomento: arg,
+    messaggio: testo,
+    nome: assVal('ass_nome'),
+    origine: ['base', 'pro', 'agenzia', 'info'].indexOf(assDash) >= 0 ? 'dashboard' : 'guida',
+    sito_web: assVal('ass_sito'),
+    aperto_ms: Date.now() - assAperto
+  };
+  if(assToken){
+    dati.token = assToken;
+    var ev = assVal('ass_ev');
+    if(ev) dati.evento_id = ev;
+  }else{
+    dati.email = email;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Invio in corso...';
+  var esito;
+  try{
+    var r = await fetch(ASS_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dati) });
+    var d = {};
+    try{ d = await r.json(); }catch(e1){ d = {}; }
+    esito = { ok: r.ok, d: d || {} };
+  }catch(e2){
+    esito = { ok: false, d: { errore: 'server' } };
+  }
+  btn.disabled = false;
+  btn.textContent = 'Invia la richiesta';
+  if(esito.ok && esito.d.ok === true){
+    var n = esito.d.numero;
+    assEl('assOkTesto').textContent = esito.d.conferma
+      ? 'Richiesta inviata (n. ' + n + '). Ti abbiamo mandato una conferma per email: se vuoi aggiungere qualcosa, rispondi a quella email.'
+      : 'Richiesta inviata (n. ' + n + '). Ti risponderemo all\'email del tuo acquisto.';
+    assEl('assForm').hidden = true;
+    assEl('assOk').hidden = false;
+    assEl('assOk').scrollIntoView({ block: 'nearest' });
+    return;
+  }
+  var c = esito.d.errore || '';
+  if(c === 'obbligatori'){
+    if(assToken){ assModoEmail(); assMostra('Scrivi l\'email con cui hai fatto l\'acquisto.'); }
+    else if(!email) assMostra('Scrivi l\'email con cui hai fatto l\'acquisto.');
+    else assMostra('Scegli l\'argomento e scrivi il messaggio.');
+  }
+  else if(c === 'email') assMostra('L\'indirizzo email non sembra corretto: controllalo e riprova.');
+  else if(c === 'lunghezza') assMostra('Il messaggio deve avere almeno 10 caratteri (al massimo 5000).');
+  else if(c === 'non_cliente') assMostra('Non troviamo un acquisto con questa email. Controlla di aver scritto l\'indirizzo usato per l\'acquisto. Se non sei ancora cliente, <a href="index.html#contatti">scrivici dal modulo contatti del sito</a>.');
+  else if(c === 'troppi') assMostra('Hai inviato molte richieste in poco tempo: riprova tra un\'ora.');
+  else if(c === 'demo'){ assEl('assDemo').hidden = false; assEl('assBox').hidden = true; }
+  else assMostra('Invio non riuscito per un problema tecnico. Riprova tra qualche minuto oppure scrivi a info@eventsfun.com.');
+}
+
+function nuovaAssistenza(){
+  assEl('ass_arg').value = '';
+  assEl('ass_msg').value = '';
+  assEl('ass_ev').value = '';
+  assEl('assMsg').hidden = true;
+  assEl('assOk').hidden = true;
+  assEl('assForm').hidden = false;
+  assAperto = Date.now();
+  assEl('ass_arg').focus();
+}
+
+assPrepara();
 </script>
 
 </body>
