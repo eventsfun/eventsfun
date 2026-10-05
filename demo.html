@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
+<!-- EventsFun | Demo Locale | v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -465,6 +465,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <a href="#" onclick="showView('newsletter');return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128231; Newsletter</a>
       <a href="#" onclick="showView('statistiche');return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128200; Statistiche</a>
       <a href="https://eventsfun.com/guida.html?dash=demo" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128214; Guida</a>
+      <a href="https://eventsfun.com/guida.html?dash=demo#assistenza" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128172; Assistenza</a>
       <button class="reset-btn" onclick="confirmReset()">&#128260; Reimposta</button>
       <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">&#127769;</button>
     </div>
@@ -475,6 +476,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <a href="#" class="nav-mob-item" onclick="showView('newsletter');closeMobMenu();return false;">&#128231; Newsletter</a>
       <a href="#" class="nav-mob-item" onclick="showView('statistiche');closeMobMenu();return false;">&#128200; Statistiche</a>
       <a href="https://eventsfun.com/guida.html?dash=demo" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" class="nav-mob-item" onclick="closeMobMenu()">&#128214; Guida</a>
+      <a href="https://eventsfun.com/guida.html?dash=demo#assistenza" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" class="nav-mob-item" onclick="closeMobMenu()">&#128172; Assistenza</a>
       <div style="height:1px;background:var(--border);margin:4px 0"></div>
       <button class="nav-mob-item" onclick="toggleTheme();closeMobMenu()">&#127769; Tema</button>
       <button class="nav-mob-item" style="color:var(--red)" onclick="confirmReset();closeMobMenu()">&#128260; Reimposta demo</button>
@@ -2921,7 +2923,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.5 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.6 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW

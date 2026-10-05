@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v1.1 -->
+<!-- EventsFun | Sito vetrina | v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1063,6 +1063,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Campi personalizzati</div>
           <div class="plan-feat">Dati disponibili 30 giorni dopo l'evento</div>
           <div class="plan-feat">Guida interattiva alla creazione del primo evento</div>
+          <div class="plan-feat">Assistenza via email</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export CSV</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export PDF lista presenze</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Sponsor con logo e link</div>
@@ -1101,6 +1102,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
           <div class="plan-feat">Dati disponibili 30 giorni dopo l'evento</div>
           <div class="plan-feat">Tema landing chiaro o scuro</div>
           <div class="plan-feat">Guida interattiva alla creazione del primo evento</div>
+          <div class="plan-feat">Assistenza via email</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Export PDF lista presenze</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Lista d'attesa automatica</div>
           <div style="display:flex;align-items:center;gap:10px;font-size:13px;color:var(--text-dim)"><span>✕</span>Multi-evento</div>
@@ -1173,6 +1175,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
             <div class="plan-feat">Avvisi via email, uno per richiesta o riepilogo giornaliero</div>
             <div class="plan-feat">Lista richieste con Chiama, WhatsApp, Email</div>
             <div class="plan-feat">Tema della pagina chiaro o scuro</div>
+            <div class="plan-feat">Assistenza via email</div>
             <div class="pi-no"><span>✕</span>Iscrizioni e check-in</div>
           </div>
         </div>
@@ -1320,11 +1323,19 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <div class="faq-a">Sì. Dopo ogni pagamento ricevi automaticamente la ricevuta via email. Per fattura con dati aziendali, inseriscili durante il checkout oppure scrivici dopo l'acquisto.</div>
       </div>
 
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Come ottengo assistenza?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Dalla tua dashboard premi Assistenza: si apre il modulo, scrivi cosa ti serve e ti rispondiamo per email. L'assistenza è inclusa in tutti i piani; le richieste dei clienti Agenzia vengono gestite con precedenza.</div>
+      </div>
+
     </div>
 
     <div style="text-align:center;margin-top:48px;padding:24px;border:1px solid var(--border);border-radius:12px;background:rgba(255,255,255,0.02)">
       <div style="font-size:14px;font-weight:500;margin-bottom:6px">Non hai trovato risposta?</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Scrivici nella sezione contatti qui sotto - rispondiamo entro 24 ore.</p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:16px">Scrivici dalla sezione contatti qui sotto: ti rispondiamo per email.</p>
       <a href="#contatti" style="display:inline-block;padding:10px 24px;border-radius:8px;border:1px solid rgba(201,169,110,0.3);color:var(--gold);font-size:13px;font-weight:600;text-decoration:none;transition:all .2s" onmouseover="this.style.background='rgba(201,169,110,0.08)'" onmouseout="this.style.background='transparent'">Scrivici →</a>
     </div>
 
@@ -1337,7 +1348,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     <div class="demo-header fade-up">
       <div class="section-label">Contatti</div>
       <h2 class="section-title">Hai domande?</h2>
-      <p class="section-sub" style="margin:12px auto 0">Per informazioni, personalizzazioni o casi particolari - scrivici. Rispondiamo entro 24 ore.</p>
+      <p class="section-sub" style="margin:12px auto 0">Per informazioni, personalizzazioni o casi particolari, scrivici: ti rispondiamo per email.</p>
     </div>
     <div class="demo-form fade-up" style="transition-delay:.1s" id="demoForm">
       <div class="form-row">
@@ -1414,7 +1425,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
     <div class="form-success" id="formSuccess">
       <div style="font-size:48px;margin-bottom:16px">✓</div>
       <h3>Messaggio ricevuto!</h3>
-      <p>Ti risponderemo entro 24 ore.</p>
+      <p>Ti risponderemo il prima possibile.</p>
     </div>
   </div>
 </section>
@@ -1606,6 +1617,6 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.6</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.7</div>
 </body>
 </html>
