@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
+<!-- EventsFun | Demo Locale | v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1667,7 +1667,25 @@ function selectStatOption(id){configStatSel=id;document.querySelectorAll('.stat-
 function confirmStatConfig(){if(configStatIdx===null||configStatSel===null)return;customStats[configStatIdx]=configStatSel;lsSet(LS_STATS,customStats);closeOv('ovStatConfig');renderDash();}
 function removeStatConfig(idx){customStats[idx]=null;lsSet(LS_STATS,customStats);renderDash();}
 
-function toggleAttesa(){attesaVisible=!attesaVisible;var panel=document.getElementById('panelAttesa');if(panel)panel.style.display=attesaVisible?'block':'none';var inA=currentRegs.filter(function(r){return!!r.in_lista_attesa;});var btnA=document.getElementById('btnAttesa');if(btnA)btnA.textContent=(attesaVisible?'▲ ':'⏳ ')+'Lista attesa'+(inA.length>0?' ('+inA.length+')':'');}
+/* B36 -- aprendo la lista d'attesa la pagina scorre da sola fino al riquadro
+   (sul telefono si apriva sotto la tabella senza che si vedesse). Tiene conto della barra in alto
+   se resta ferma durante lo scorrimento; senza animazione per chi ha chiesto meno movimento. */
+function scorriAlRiquadro(el) {
+  if (!el) return;
+  try {
+    var nav = document.getElementById('mainNav');
+    var off = 0;
+    if (nav) {
+      var cs = window.getComputedStyle(nav);
+      if (cs.display !== 'none' && (cs.position === 'sticky' || cs.position === 'fixed')) off = nav.getBoundingClientRect().height;
+    }
+    var y = el.getBoundingClientRect().top + (window.pageYOffset || document.documentElement.scrollTop || 0) - off - 12;
+    var piano = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: Math.max(0, y), behavior: piano ? 'auto' : 'smooth' });
+  } catch (e) {}
+}
+
+function toggleAttesa(){attesaVisible=!attesaVisible;var panel=document.getElementById('panelAttesa');if(panel)panel.style.display=attesaVisible?'block':'none';var inA=currentRegs.filter(function(r){return!!r.in_lista_attesa;});var btnA=document.getElementById('btnAttesa');if(btnA)btnA.textContent=(attesaVisible?'▲ ':'⏳ ')+'Lista attesa'+(inA.length>0?' ('+inA.length+')':'');if(panel&&attesaVisible)scorriAlRiquadro(panel);}
 function renderAttesa(ev,inA,closed){var panel=document.getElementById('panelAttesa');if(!panel)return;if(!ev||!inA.length){if(!attesaVisible)panel.style.display='none';setText('attesaSub','--');setHTML('attesaTable','<tr><td colspan="5" class="no-regs">Nessuno in lista d\'attesa</td></tr>');return;}if(attesaVisible)panel.style.display='block';setText('attesaSub',inA.length+' '+(inA.length===1?'persona in attesa':'persone in attesa')+' di posto');var postiOcc=calcPostiOccupati(ev,currentRegs);var postiL=ev.capienza?Math.max(0,ev.capienza-postiOcc):1;var tbody=document.getElementById('attesaTable');if(!tbody)return;tbody.innerHTML=inA.map(function(r){var puo=!closed&&postiL>0;return'<tr><td class="nm">'+escHtml(r.nome+' '+r.cognome)+'</td><td>'+escHtml(r.email)+'</td><td>'+escHtml(r.telefono||'--')+'</td><td class="dt">'+(r.created_at?new Date(r.created_at).toLocaleDateString('it-IT'):'--')+'</td><td><div class="act-cell">'+(puo?'<button class="btn-sm btn-sm-green" style="font-size:11px;padding:5px 10px" onclick="promuoviAttesa(\''+r.id+'\')">✓ Promuovi</button>':'')+'<button class="ic" onclick="openDel(\''+r.id+'\',\''+escHtml(r.nome+' '+r.cognome)+'\')">🗑️</button></div></td></tr>';}).join('');}
 
 function renderTable(ev,regs,closed){if(!ev){setHTML('tableHead','<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data</th><th></th></tr>');setHTML('regTable','<tr><td colspan="5" class="no-regs">Crea il tuo evento per visualizzare gli iscritti</td></tr>');setText('panel-title','Iscritti');setText('panel-sub','Crea un evento per visualizzare gli iscritti');setHTML('panelBtns','');return;}
@@ -2448,7 +2466,7 @@ function lpRichiestaFormHtml(ev, modo, closed, S) {
     + '</div></div>'
     + '<div class="lp-grid2">'
     + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_tel" id="q_tel_lbl">' + TXT_INFO.lblTel + '</label><input id="q_tel" style="' + S.inpS + '" type="tel" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="333 0000000"></div>'
-    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" style="' + S.inpS + '" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="mario@email.it"></div>'
+    + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" style="' + S.inpS + '" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="La tua email"></div>'
     + '</div>'
     + '<div style="margin-bottom:16px"><label style="' + S.lblS + '" for="q_msg">' + TXT_INFO.lblMsg + '</label><textarea id="q_msg" rows="4" maxlength="2000" placeholder="' + TXT_INFO.phMsg + '" style="' + S.inpS + ';resize:vertical;line-height:1.5"></textarea></div>'
     + '<label style="display:flex;align-items:center;gap:10px;font-size:13px;color:' + S.sub + ';cursor:pointer;margin-top:6px"><input type="checkbox" id="q_gdpr" style="accent-color:#C9A96E;width:15px;height:15px;flex-shrink:0"> <span>' + TXT_INFO.consensoPre + '<a href="https://eventsfun.com/privacy.html" target="_blank" rel="noopener" style="color:#C9A96E;text-decoration:underline">' + TXT_INFO.consensoLink + '</a> *</span></label>'
@@ -2681,7 +2699,7 @@ function renderLandingContent(ev,previewOnly){
 
   var formHtml;
   if(closed){formHtml='<div style="background:'+(dark?'rgba(160,64,64,.12)':'#f5e6e6')+';border:1px solid '+(dark?'rgba(160,64,64,.3)':'#e0a0a0')+';border-radius:10px;padding:14px;text-align:center;color:'+(dark?'#e07070':'#a04040')+';font-size:13px;font-weight:600">&#9940; Le '+TW.np+' per questo evento sono chiuse</div>';}
-  else{formHtml='<h2 style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;margin-bottom:20px;color:'+(dark?'#F5F0E8':'#1a1a1a')+'">'+TW.imp+'</h2><div id="lp_alert" style="'+alertS+'"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="margin-bottom:16px"><label style="'+lblS+'">Nome *</label><input id="lp_nome" style="'+inpS+'" placeholder="Mario"></div><div style="margin-bottom:16px"><label style="'+lblS+'">Cognome *</label><input id="lp_cognome" style="'+inpS+'" placeholder="Rossi"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="margin-bottom:16px"><label style="'+lblS+'">Email *</label><input id="lp_email" type="email" style="'+inpS+'" placeholder="mario@esempio.example"></div><div style="margin-bottom:16px"><label style="'+lblS+'">Telefono</label><input id="lp_tel" style="'+inpS+'" placeholder="333 0000000"></div></div>'+extraFields+nlHtml+gdprHtml+'<button onclick="lpSubmit()" style="width:100%;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit">'+TW.imp+' &rarr;</button>';}
+  else{formHtml='<h2 style="font-family:Syne,sans-serif;font-size:18px;font-weight:700;margin-bottom:20px;color:'+(dark?'#F5F0E8':'#1a1a1a')+'">'+TW.imp+'</h2><div id="lp_alert" style="'+alertS+'"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="margin-bottom:16px"><label style="'+lblS+'">Nome *</label><input id="lp_nome" style="'+inpS+'" placeholder="Mario"></div><div style="margin-bottom:16px"><label style="'+lblS+'">Cognome *</label><input id="lp_cognome" style="'+inpS+'" placeholder="Rossi"></div></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div style="margin-bottom:16px"><label style="'+lblS+'">Email *</label><input id="lp_email" type="email" style="'+inpS+'" placeholder="La tua email"></div><div style="margin-bottom:16px"><label style="'+lblS+'">Telefono</label><input id="lp_tel" style="'+inpS+'" placeholder="333 0000000"></div></div>'+extraFields+nlHtml+gdprHtml+'<button onclick="lpSubmit()" style="width:100%;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,#C9A96E,#8a6e3e);color:#0A0A0A;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;font-family:inherit">'+TW.imp+' &rarr;</button>';}
 
   var spHtml='';
   if((ev.sponsors||[]).length){spHtml='<div style="margin-top:32px;padding-top:28px;border-top:1px solid '+(dark?'rgba(255,255,255,.08)':'#e8e4de')+';text-align:center"><div style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:'+(dark?'rgba(245,240,232,.35)':'#aaa')+';margin-bottom:18px">Con il supporto di</div><div style="display:flex;flex-wrap:wrap;justify-content:center;gap:12px">'+ev.sponsors.map(function(s){return'<a href="'+(s.url||'#')+'" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 16px;background:'+(dark?'rgba(255,255,255,.05)':'#f8f7f5')+';border:1px solid '+(dark?'rgba(255,255,255,.08)':'#e8e4de')+';border-radius:10px;text-decoration:none;color:'+(dark?'rgba(245,240,232,.75)':'#333')+';font-size:13px;font-weight:600">'+(s.logo?'<img src="'+s.logo+'" style="width:28px;height:28px;border-radius:5px;object-fit:contain">':'')+'<span>'+escHtml(s.nome)+'</span></a>';}).join('')+'</div></div>';}
@@ -2923,7 +2941,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.6 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.8 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW

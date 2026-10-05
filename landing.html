@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -644,7 +644,7 @@ function buildRegFormHtml(closed, TW) {
       + '<div class="lp-fg"><label class="lp-lbl">Cognome *</label><input id="r_cognome" class="lp-inp" placeholder="Rossi"></div>'
       + '</div>'
       + '<div class="lp-grid">'
-      + '<div class="lp-fg"><label class="lp-lbl">Email *</label><input id="r_email" class="lp-inp" type="email" placeholder="mario@email.it"></div>'
+      + '<div class="lp-fg"><label class="lp-lbl">Email *</label><input id="r_email" class="lp-inp" type="email" placeholder="La tua email"></div>'
       + '<div class="lp-fg"><label class="lp-lbl">Telefono</label><input id="r_tel" class="lp-inp" placeholder="333 0000000"></div>'
       + '</div>'
       + extraFields
@@ -730,7 +730,7 @@ function richiestaFormHtml(modo, closed) {
     + '</div></div>'
     + '<div class="lp-grid">'
     + '<div class="lp-fg"><label class="lp-lbl" for="q_tel" id="q_tel_lbl">' + TXT_INFO.lblTel + '</label><input id="q_tel" class="lp-inp" type="tel" inputmode="tel" maxlength="40" autocomplete="tel" placeholder="333 0000000"></div>'
-    + '<div class="lp-fg"><label class="lp-lbl" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" class="lp-inp" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="mario@email.it"></div>'
+    + '<div class="lp-fg"><label class="lp-lbl" for="q_email" id="q_email_lbl">' + TXT_INFO.lblEmail + '</label><input id="q_email" class="lp-inp" type="email" inputmode="email" maxlength="254" autocomplete="email" placeholder="La tua email"></div>'
     + '</div>'
     + '<div class="lp-fg"><label class="lp-lbl" for="q_msg">' + TXT_INFO.lblMsg + '</label><textarea id="q_msg" class="lp-inp" rows="4" maxlength="2000" placeholder="' + TXT_INFO.phMsg + '" style="resize:vertical;font-family:inherit;font-size:14px;line-height:1.5;padding:10px 12px"></textarea></div>'
     + '<label class="lp-nl" style="margin-top:6px"><input type="checkbox" id="q_gdpr" style="accent-color:#C9A96E;width:15px;height:15px"> <span>' + TXT_INFO.consensoPre + '<a href="https://eventsfun.com/privacy.html" target="_blank" style="color:#C9A96E;text-decoration:underline">' + TXT_INFO.consensoLink + '</a> *</span></label>'
@@ -843,7 +843,7 @@ function updateAccompagnatoriForm() {
     html += '<div class="lp-fg"><label class="lp-lbl">Cognome *</label><input id="acc_' + i + '_cognome" class="lp-inp" placeholder="Rossi"></div>';
     html += '</div>';
     html += '<div class="lp-grid">';
-    html += '<div class="lp-fg"><label class="lp-lbl">Email' + emailObb + '</label><input id="acc_' + i + '_email" class="lp-inp" type="email" placeholder="mario@email.it"></div>';
+    html += '<div class="lp-fg"><label class="lp-lbl">Email' + emailObb + '</label><input id="acc_' + i + '_email" class="lp-inp" type="email" placeholder="Email dell\'accompagnatore"></div>';
     html += '<div class="lp-fg"><label class="lp-lbl">Telefono' + telObb + '</label><input id="acc_' + i + '_tel" class="lp-inp" placeholder="333 0000000"></div>';
     html += '</div>';
     html += '</div>';

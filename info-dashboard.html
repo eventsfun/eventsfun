@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -92,6 +92,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .closed-banner{background:linear-gradient(135deg,rgba(201,169,110,0.12),rgba(201,169,110,0.05));border:1px solid rgba(201,169,110,0.3);border-radius:16px;padding:24px 28px;margin-bottom:24px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
 .sub-banner{border-radius:14px;padding:18px 24px;margin-bottom:20px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
 .sub-banner-warn{background:linear-gradient(135deg,rgba(224,128,128,0.12),rgba(224,128,128,0.05));border:1px solid rgba(224,128,128,0.35)}
+.sub-banner-disd{background:linear-gradient(135deg,rgba(201,169,110,0.10),rgba(201,169,110,0.04));border:1px solid rgba(201,169,110,0.35)}
+body.light .sub-banner-disd .disd-oro{color:var(--gold-dark)!important}
 .sub-banner-exp{background:linear-gradient(135deg,rgba(200,80,80,0.18),rgba(200,80,80,0.08));border:1px solid rgba(200,80,80,0.45)}
 /* TABLE */
 .panel{background:var(--bg2);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:16px}
@@ -487,6 +489,18 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="sub-banner-azioni">
         <a href="https://eventsfun.com/area-personale.html" target="_blank" id="subBannerWarnBtn" style="padding:10px 18px;border-radius:8px;background:rgba(224,128,128,0.15);border:1px solid rgba(224,128,128,0.4);color:#e08080;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Riattiva abbonamento →</a>
         <a href="https://eventsfun.com/privacy.html#fine-abbonamento" target="_blank" id="subBannerWarnDett" class="sub-banner-dett">Tutti i dettagli</a>
+      </div>
+    </div>
+
+    <!-- BANNER DISDETTA PROGRAMMATA (B29) -->
+    <div class="sub-banner sub-banner-disd" id="subBannerDisd" style="display:none">
+      <div class="sub-banner-txt">
+        <p class="disd-oro" style="font-size:14px;font-weight:700;color:var(--gold);margin-bottom:3px">Disdetta programmata</p>
+        <p style="font-size:12px;color:var(--text-muted);line-height:1.6" id="subBannerDisdText"></p>
+      </div>
+      <div class="sub-banner-azioni">
+        <a class="disd-oro" href="https://eventsfun.com/area-personale.html" target="_blank" style="padding:10px 18px;border-radius:8px;background:rgba(201,169,110,0.12);border:1px solid rgba(201,169,110,0.4);color:var(--gold);font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap">Gestisci o riattiva →</a>
+        <a href="https://eventsfun.com/privacy.html#fine-abbonamento" target="_blank" class="sub-banner-dett">Tutti i dettagli</a>
       </div>
     </div>
 
@@ -1661,6 +1675,15 @@ function mostraBannerTolleranza(expires, now) {
   document.getElementById('subBannerWarnDett').style.display = '';
   if (el) el.style.display = 'flex';
 }
+/* B29 -- disdetta programmata: il cliente ha disdetto dal portale ma e' ancora nel periodo pagato.
+   Avviso discreto color oro, stesso testo dell'area personale. */
+function mostraBannerDisdetta(fine) {
+  var el = document.getElementById('subBannerDisd');
+  var t = document.getElementById('subBannerDisdText');
+  if (!el || !t) return;
+  t.textContent = 'Hai disdetto l\'abbonamento: resta attivo fino al ' + fmtDataSub(fine) + ' e non si rinnoverà. Fino a quella data puoi usare tutto come prima, e dopo avrai ancora 7 giorni per consultare e scaricare quello che ti serve.';
+  el.style.display = 'flex';
+}
 function mostraBannerPagamento() {
   var el = document.getElementById('subBannerWarn');
   document.getElementById('subBannerWarnTitle').innerHTML = '&#9888;&#65039; Pagamento non riuscito';
@@ -1703,7 +1726,7 @@ async function init() {
 
   /* STEP 1: verifica token */
   var rows;
-  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,nome,cognome)'); }
+  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,subscription_cancel_at,nome,cognome)'); }
   catch(e) { rows = null; }
   if (rows === null) {
     PIANO = 'info';
@@ -1737,6 +1760,10 @@ async function init() {
         mostraScaduto(expires);
         return;
       }
+    } else {
+      /* B29 -- disdetta programmata a fine periodo: avviso discreto finche' l'abbonamento e' attivo */
+      var subCancelAt = rows[0].orders ? rows[0].orders.subscription_cancel_at : null;
+      if (subCancelAt && new Date(subCancelAt) > new Date()) mostraBannerDisdetta(new Date(subCancelAt));
     }
   }
 
@@ -4594,6 +4621,6 @@ openEditEvent = function() { _openEditEventAgenzia(); if (currentEv) piApriInfo(
 init();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.2 punto info</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.3 punto info</div>
 </body>
 </html>
