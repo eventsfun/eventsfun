@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -218,6 +218,47 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   .rgrid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:0 24px;align-items:start}
   .stretta{max-width:760px}
 }
+/* ---------- v2.3 fatture e scheda cliente ---------- */
+.chips.schede{flex-wrap:wrap;overflow-x:visible}
+.campi2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 10px}
+.campi3{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr) minmax(0,0.8fr);gap:0 10px}
+.err-campo{font-size:12px;color:#fca5a5;margin-top:4px}
+.field.sbagliato{border-color:rgba(248,113,113,0.7)}
+.avviso{border-radius:10px;padding:10px 12px;font-size:13px;line-height:1.5;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.35);color:#fcd34d}
+.tot{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-top:1px solid var(--line2);align-items:baseline}
+.tot:first-child{border-top:0}
+.storia{font-size:12.5px;color:var(--muted);padding:10px 14px;border-top:1px solid var(--line2)}
+.storia:first-child{border-top:0}
+.foglio{background:#ffffff;color:#1c1c1c;border-radius:12px;padding:20px 18px;font-size:13px;line-height:1.5}
+.foglio .fh{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;border-bottom:2px solid #1c1c1c;padding-bottom:12px;margin-bottom:14px}
+.foglio .ftit{font-family:'Syne',sans-serif;font-weight:800;font-size:20px;margin:0}
+.foglio .fsub{color:#555;font-size:12px}
+.foglio .fparti{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.foglio .fparti > div{min-width:0;word-break:break-word}
+.foglio .fk{font-size:11px;color:#666;font-weight:700;letter-spacing:0.2px;margin-bottom:2px}
+.foglio .ftab{overflow-x:auto;margin:6px 0 12px}
+.foglio table{width:100%;border-collapse:collapse;min-width:420px}
+.foglio th{font-size:11px;color:#666;text-align:left;border-bottom:1px solid #ccc;padding:6px 4px}
+.foglio td{padding:8px 4px;border-bottom:1px solid #e3e3e3;vertical-align:top}
+.foglio .dx{text-align:right;white-space:nowrap}
+.foglio .ftot{margin-left:auto;max-width:300px}
+.foglio .ftot div{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.foglio .ftot .gr{font-weight:700;font-size:15px;border-top:2px solid #1c1c1c;padding-top:6px;margin-top:4px}
+.foglio .fnote{margin-top:14px;font-size:12px;color:#333;border-top:1px solid #ddd;padding-top:10px}
+@media (max-width:520px){
+  .foglio table{min-width:0}
+  .foglio thead{display:none}
+  .foglio tr{display:block;border-bottom:1px solid #e3e3e3;padding:6px 0}
+  .foglio td{display:flex;justify-content:space-between;gap:10px;border:0;padding:3px 0;text-align:right}
+  .foglio td::before{content:attr(data-l);color:#666;font-size:11px;font-weight:700;text-align:left}
+  .foglio td.descr{display:block;text-align:left}
+  .foglio td.descr::before{display:block;margin-bottom:2px}
+}
+@media (max-width:420px){
+  .campi3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .campi3 .c-com{grid-column:1 / -1;order:-1}
+  .foglio .fparti{grid-template-columns:1fr}
+}
 @media (prefers-reduced-motion:reduce){.ibtn.gira svg{animation:none}}
 </style>
 </head>
@@ -251,6 +292,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       <a href="#riepilogo" data-v="riepilogo">Riepilogo</a>
       <a href="#clienti" data-v="clienti">Clienti</a>
       <a href="#incassi" data-v="incassi">Incassi</a>
+      <a href="#fatture" data-v="fatture">Fatture<span class="pill p-warn" id="sbFatt" hidden></span></a>
       <a href="#assistenza" data-v="assistenza">Assistenza<span class="pill p-bad" id="sbAss" hidden></span></a>
       <hr>
       <a href="#eventi" data-v="eventi">Eventi</a>
@@ -282,12 +324,15 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   var SB_ANON = 'sb_publishable_E1TzusZXAVuEY5aFqqsv6g_ilytdBP1';
   var FN_URL = SB_URL + '/functions/v1/gestionale-api';
   var AZ_URL = SB_URL + '/functions/v1/gestionale-azioni';
+  var FT_URL = SB_URL + '/functions/v1/gestionale-fatture';
   var sb = window.supabase.createClient(SB_URL, SB_ANON);
 
   var DATI = null;        // riepilogo generale (gest_snapshot)
   var ME = {};
   var VENDITORI = [];
   var SCHEDA = null;      // scheda cliente aperta
+  var SCHEDA_F = null, SCHEDA_F_ID = '';  // fatture e dati di fatturazione della scheda aperta
+  var FATT = null, FATT_ALTRO = null;     // elenco delle fatture (anno in corso / altro anno)
   var RICH = null;        // richiesta di assistenza aperta
   var INC = null;         // incassi caricati
   var ULTIMA_ROTTA = '';
@@ -295,7 +340,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     cli: 'tutti', cliOrd: 'recenti', q: '',
     ev: 'corso', evQ: '',
     ass: 'gestire', msg: 'gestire',
-    incPer: 'mese', incDal: '', incAl: '', incPiano: '', incSconto: false
+    incPer: 'mese', incDal: '', incAl: '', incPiano: '', incSconto: false,
+    tabCli: 'eventi', modificaFatt: false, fattAnno: 0
   };
 
   var ARGOMENTI = {
@@ -627,6 +673,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     ME = res.me || {};
     $('who').textContent = (ME.nome || ME.email || '') + (ME.ruolo ? ', ' + ME.ruolo : '');
     try{ var v = await chiedi('venditori_lista'); VENDITORI = v.venditori || []; }catch(e){ VENDITORI = []; }
+    await caricaFatture();
     aggiornaBadge();
   }
   // ricarica il riepilogo senza cambiare schermata (dopo un'azione)
@@ -644,7 +691,9 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     try{
       await caricaTutto();
       var r = rotta();
-      if(r.v === 'cliente') SCHEDA = null;
+      if(r.v === 'cliente'){ SCHEDA = null; SCHEDA_F = null; }
+      if(r.v === 'fattura' || r.v === 'anteprima') FDET = null;
+      FATT_ALTRO = null;
       if(r.v === 'richiesta') RICH = null;
       if(r.v === 'incassi') INC = null;
       disegnaRotta(false);
@@ -662,7 +711,9 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var nA = assDaGestire().length, nM = msgDaGestire().length, nC = anomalieTot();
     badge('nbAss', nA); badge('sbAss', nA);
     badge('sbMsg', nM); badge('sbCtrl', nC);
-    badge('nbAltro', nM + nC);
+    var nF = fattureDaFare();
+    badge('sbFatt', nF);
+    badge('nbAltro', nM + nC + nF);
   }
 
   // ---------------- rotte ----------------
@@ -674,13 +725,13 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function vai(h){
     if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
   }
-  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro', notifiche: 'altro' };
-  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo', notifiche: 'notifiche' };
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
   function disegnaRotta(inCima){
     if(!DATI) return;
     var r = rotta();
     var chiave = r.v + '/' + r.id;
-    if(chiave !== ULTIMA_ROTTA) inCima = true;
+    if(chiave !== ULTIMA_ROTTA){ inCima = true; UIF.scarto = false; UIF.correggi = false; F.modificaFatt = false; }
     ULTIMA_ROTTA = chiave;
     var nav = SEZIONE_NAV[r.v] || 'riepilogo';
     var side = SEZIONE_SIDE[r.v] || 'riepilogo';
@@ -707,6 +758,11 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'newsletter': vistaNewsletter(); break;
       case 'controllo': vistaControllo(); break;
       case 'notifiche': vistaNotifiche(); break;
+      case 'fatture': vistaFatture(); break;
+      case 'fattura': vistaFattura(r.id); break;
+      case 'prepara': vistaPrepara(r.id); break;
+      case 'anteprima': vistaAnteprimaF(r.id); break;
+      case 'fatture-impostazioni': vistaImpostazioniF(); break;
       default: vistaRiepilogo();
     }
     if(inCima) window.scrollTo(0, 0);
@@ -751,6 +807,10 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     });
     var nC = anomalieTot();
     if(nC) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nC === 1 ? '1 cosa da controllare' : nC + ' cose da controllare') + '</div><div class="s">Situazioni che non tornano nei dati</div></div>' + ICO_CHEV + '</a>');
+    var nFt = contaFatture();
+    if(nFt.prep) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.prep === 1 ? '1 fattura da preparare' : nFt.prep + ' fatture da preparare') + '</div><div class="s">Pagamenti arrivati senza fattura</div></div>' + ICO_CHEV + '</a>');
+    if(nFt.car) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.car === 1 ? '1 fattura da caricare' : nFt.car + ' fatture da caricare') + '</div><div class="s">Pronte, da caricare sul portale Fatture e Corrispettivi</div></div>' + ICO_CHEV + '</a>');
+    if(nFt.scar) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.scar === 1 ? '1 fattura scartata dallo SdI' : nFt.scar + ' fatture scartate dallo SdI') + '</div><div class="s">Da correggere e caricare di nuovo</div></div>' + ICO_CHEV + '</a>');
     var daFare = '<div class="sec"><div class="h2">Da fare adesso <small>' + (fare.length === 1 ? '1 cosa' : fare.length + ' cose') + '</small></div>';
     daFare += fare.length ? '<div class="card gold">' + fare.join('') + '</div>' : '<div class="card"><div class="vuoto">Niente da fare adesso.</div></div>';
     daFare += '</div>';
@@ -880,38 +940,26 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   }
 
   // ---------------- SCHEDA CLIENTE ----------------
+  // v2.3: tutti i dati di prima, piu' dati di fatturazione e fatture (dal portiere gestionale-fatture),
+  // un riquadro con le cose da fare per il cliente e le sezioni a schede (una alla volta, numeri sempre in vista).
   async function vistaCliente(id){
-    if(SCHEDA && SCHEDA.cliente && SCHEDA.cliente.id === id){ disegnaScheda(); return; }
+    if(SCHEDA && SCHEDA.cliente && SCHEDA.cliente.id === id && SCHEDA_F && SCHEDA_F_ID === id){ disegnaScheda(); return; }
     metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="caricamento">Caricamento della scheda...</div>');
     try{
-      var res = await chiedi('cliente', { order_id: id });
+      var esiti = await Promise.all([
+        chiedi('cliente', { order_id: id }),
+        chiediF('cliente_fatturazione', { order_id: id }).then(function(r){ return r.dati || {}; }, function(e){
+          if(e && (e.status === 401 || e.message === 'NO_SESSION')) throw e;
+          return { errore_caricamento: e.message || 'non disponibile' };
+        })
+      ]);
       if(rotta().v !== 'cliente' || rotta().id !== id) return;
-      SCHEDA = res.dati;
+      SCHEDA = esiti[0].dati;
+      SCHEDA_F = esiti[1]; SCHEDA_F_ID = id;
       disegnaScheda();
     }catch(e){
       if(!gestisciErrore(e)) metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="sec"><div class="msgx err">Scheda non disponibile: ' + esc(e.message) + '</div></div>');
     }
-  }
-  function venditoreNome(code){
-    if(!code) return 'Nessuno';
-    for(var i = 0; i < VENDITORI.length; i++){ if(VENDITORI[i].code === code) return VENDITORI[i].nome; }
-    return code;
-  }
-  function etichettaEvento(e){
-    if(e.bozza) return '<span class="pill p-warn">Bozza</span>';
-    if(e.concluso) return '<span class="pill p-neu">Concluso</span>';
-    if(e.attivo === false) return '<span class="pill p-bad">Chiuso</span>';
-    return '<span class="pill p-ok">Attivo</span>';
-  }
-  function numeriEvento(e){
-    var mod = e.modalita || 'iscrizioni';
-    var ric = Number(e.n_richieste || 0);
-    var testoRic = ric === 1 ? '1 richiesta' : ric + ' richieste';
-    if(mod === 'info') return 'solo informazioni, ' + testoRic;
-    var t = (e.n_iscritti || 0) + (e.capienza ? ' iscritti su ' + e.capienza : ' iscritti');
-    if(Number(e.n_attesa || 0)) t += ', ' + e.n_attesa + ' in lista d\'attesa';
-    if(mod === 'entrambe') t += ', ' + testoRic;
-    return t;
   }
   function disegnaScheda(){
     var d = SCHEDA || {};
@@ -919,6 +967,11 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     if(!c){ metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="sec"><div class="msgx err">Scheda non disponibile.</div></div>'); return; }
     var si = statoInfo(c);
     var accessi = d.accessi || [], eventi = d.eventi || [], pag = d.pagamenti || [], ass = d.assistenza || [], note = d.note || [];
+    var sf = SCHEDA_F || {};
+    var fErr = !!sf.errore_caricamento;
+    var sueF = sf.fatture || [], prepF = sf.da_preparare || [];
+    var scartate = sueF.filter(function(f){ return f.stato === 'scartata'; });
+    var assAperte = ass.filter(function(r){ return r.stato !== 'risolta'; });
     var h = '<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a>';
     h += '<div class="stretta">';
     h += '<div class="sec" style="padding-top:2px"><h1 class="h1">' + esc(nomeCliente(c)) + '</h1>';
@@ -969,73 +1022,148 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     h += '<div class="msgx" id="nv_msg"></div></div>';
     h += '</div>';
 
-    // eventi
-    h += '<div class="sec"><div class="h2">Eventi <small>' + eventi.length + '</small></div><div class="card">';
-    if(!eventi.length) h += '<div class="vuoto">Nessun evento creato.</div>';
-    eventi.forEach(function(e){
-      var sotto = e.bozza ? 'Bozza' : (dataBreve(e.data_iso) + ', ' + numeriEvento(e));
-      if(e.dati_fino_al && e.concluso) sotto += ', dati fino ' + art('al', dataBreve(e.dati_fino_al));
-      if(e.bozza){
-        h += '<div class="row"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</div>';
-      }else{
-        h += '<a class="row" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '" title="Apri la pagina pubblica"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</a>';
-      }
-    });
-    h += '</div>' + (eventi.some(function(e){ return !e.bozza; }) ? '<div class="note" style="margin-top:6px">Tocca un evento per aprire la sua pagina pubblica.</div>' : '') + '</div>';
-
-    // assistenza
-    h += '<div class="sec"><div class="h2">Assistenza <small>' + (ass.length === 1 ? '1 richiesta' : ass.length + ' richieste') + '</small></div><div class="card">';
-    if(!ass.length) h += '<div class="vuoto">Nessuna richiesta di assistenza.</div>';
-    ass.forEach(function(r){
-      h += '<a class="row" href="#richiesta/' + esc(r.id) + '"><div class="grow"><div class="t">n. ' + esc(r.numero) + ', ' + esc(ARGOMENTI[r.argomento] || 'Richiesta') + '</div><div class="s">' + esc(quando(r.ultimo_messaggio_at)) + '</div></div>' + statoRichiestaPill(r) + '</a>';
-    });
-    h += '</div></div>';
-
-    // pagamenti
-    h += '<div class="sec"><div class="h2">Pagamenti <small>' + pag.length + '</small></div><div class="card">';
-    if(!pag.length) h += '<div class="vuoto">Nessun pagamento registrato.</div>';
-    pag.forEach(function(p){
-      var tipo = p.tipo === 'rinnovo' ? 'Rinnovo' : p.tipo === 'rimborso' ? 'Rimborso' : p.tipo === 'manuale' ? 'Registrato a mano' : (abbonamento(p.piano) ? 'Primo pagamento' : 'Acquisto');
-      var cat = p.categoria === 'prova' ? '<span class="pill p-neu">Prova</span>' : p.categoria === 'omaggio' ? '<span class="pill p-neu">Omaggio</span>' : '';
-      var sotto = dataBreve(p.pagato_il) + (p.periodo ? ', ' + p.periodo : '') + (p.codice_sconto ? ', codice ' + p.codice_sconto : '');
-      h += '<div class="row"><div class="grow"><div class="t">' + esc(tipo) + '</div><div class="s">' + esc(sotto) + '</div></div>' + cat + '<div class="importo">' + esc(euro(p.importo)) + '</div></div>';
-    });
-    h += '</div><div class="note" style="margin-top:6px">Nel totale contano solo i pagamenti reali, non prove e omaggi.</div></div>';
-
-    // attribuzione
-    var isAg = String(c.piano) === 'agenzia';
-    h += '<div class="sec"><div class="h2">Attribuzione commerciale</div><div class="card pad">';
-    h += '<div class="campo"><label class="lbl" for="attr_agent">Venditore</label><select class="field" id="attr_agent"><option value="">Nessuno</option>';
-    var trovato = false;
-    VENDITORI.forEach(function(v){
-      if(!v.attivo) return;
-      var sel = v.code === c.sales_agent; if(sel) trovato = true;
-      h += '<option value="' + esc(v.code) + '"' + (sel ? ' selected' : '') + '>' + esc(v.nome) + '</option>';
-    });
-    if(c.sales_agent && !trovato) h += '<option value="' + esc(c.sales_agent) + '" selected>' + esc(venditoreNome(c.sales_agent)) + ' (disattivato)</option>';
-    h += '</select></div>';
-    if(isAg){
-      h += '<div class="campo" id="attr_opt_wrap"><label class="lbl" for="attr_option">Modalità del compenso</label><select class="field" id="attr_option">';
-      h += '<option value="A"' + (c.commission_option !== 'B' ? ' selected' : '') + '>A: 30% una tantum</option>';
-      h += '<option value="B"' + (c.commission_option === 'B' ? ' selected' : '') + '>B: 20% sui rinnovi</option>';
-      h += '</select></div>';
+    // da fare per questo cliente
+    var fare = [];
+    if(!fErr && sf.errore && (prepF.length || sueF.length)) fare.push(['fatturazione', 'Dati di fatturazione da completare', 'p-warn', '!']);
+    if(prepF.length) fare.push(['fatture', prepF.length === 1 ? '1 fattura da preparare' : prepF.length + ' fatture da preparare', 'p-warn', prepF.length]);
+    if(scartate.length) fare.push(['fatture', scartate.length === 1 ? '1 fattura scartata da correggere' : scartate.length + ' fatture scartate da correggere', 'p-bad', scartate.length]);
+    if(assAperte.length) fare.push(['assistenza', assAperte.length === 1 ? '1 richiesta di assistenza aperta' : assAperte.length + ' richieste di assistenza aperte', 'p-warn', assAperte.length]);
+    if(fare.length){
+      h += '<div class="sec"><div class="h2">Da fare per questo cliente</div><div class="card gold">';
+      fare.forEach(function(x){ h += '<button class="row" type="button" data-az="tab_cli" data-tab="' + x[0] + '"><div class="grow"><div class="t wrap">' + esc(x[1]) + '</div></div><span class="pill ' + x[2] + '">' + esc(x[3]) + '</span>' + ICO_CHEV + '</button>'; });
+      h += '</div></div>';
     }
-    h += '<div class="note" style="margin-bottom:10px">' + (isAg ? 'Agenzia: scegli la modalità A o B.' : 'Base, Pro e Punto Info: 30% una tantum.') + '</div>';
-    h += '<button class="btn sec2" type="button" data-az="attr_salva" id="attr_btn">Salva</button><div class="msgx" id="attr_msg"></div>';
-    h += '</div></div>';
 
-    // note
-    h += '<div class="sec"><div class="h2">Note interne <small>le vedi solo tu</small></div><div class="card pad">';
-    note.forEach(function(n){
-      h += '<div class="note" style="margin-bottom:12px;border-bottom:1px solid var(--line2);padding-bottom:10px"><b style="color:var(--txt)">' + esc(dataBreve(n.created_at)) + '</b><br><span style="white-space:pre-wrap;word-break:break-word">' + esc(n.testo) + '</span><br><button class="btn rosso piccolo" type="button" style="margin-top:8px" data-az="nota_elimina" data-id="' + esc(n.id) + '">Elimina</button></div>';
-    });
-    h += '<label class="lbl" for="nota_txt">Nuova nota</label><textarea class="field" id="nota_txt" rows="3" maxlength="5000"></textarea>';
-    h += '<div style="margin-top:10px"><button class="btn sec2" type="button" data-az="nota_salva" id="nota_btn">Aggiungi nota</button></div><div class="msgx" id="nota_msg"></div>';
-    h += '</div></div>';
+    // sezioni a schede
+    var TAB = [['eventi', 'Eventi', eventi.length], ['pagamenti', 'Pagamenti', pag.length], ['fatture', 'Fatture', fErr ? '!' : sueF.length + prepF.length],
+      ['fatturazione', 'Dati di fatturazione', fErr || sf.errore ? '!' : ''], ['assistenza', 'Assistenza', ass.length], ['note', 'Note', note.length], ['venditore', 'Venditore', '']];
+    var tab = F.tabCli || 'eventi';
+    h += '<div class="chips schede" role="tablist" aria-label="Sezioni della scheda" style="padding-top:14px">';
+    TAB.forEach(function(t){ h += '<button class="chip' + (t[0] === tab ? ' on' : '') + '" type="button" role="tab" aria-selected="' + (t[0] === tab) + '" data-az="tab_cli" data-tab="' + t[0] + '">' + esc(t[1]) + (t[2] !== '' ? ' <b>' + esc(t[2]) + '</b>' : '') + '</button>'; });
+    h += '</div><div class="sec" style="padding-top:10px">';
+    var erroreF = '<div class="msgx err" style="margin-top:0">Fatture e dati di fatturazione non disponibili: ' + esc(sf.errore_caricamento || '') + '</div><div style="margin-top:10px"><button class="btn sec2" type="button" data-az="f_ricarica_cli">Riprova</button></div>';
+
+    if(tab === 'eventi'){
+      h += '<div class="card">';
+      if(!eventi.length) h += '<div class="vuoto">Nessun evento creato.</div>';
+      eventi.forEach(function(e){
+        var sotto = e.bozza ? 'Bozza' : (dataBreve(e.data_iso) + ', ' + numeriEvento(e));
+        if(e.dati_fino_al && e.concluso) sotto += ', dati fino ' + art('al', dataBreve(e.dati_fino_al));
+        if(e.bozza){
+          h += '<div class="row"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</div>';
+        }else{
+          h += '<a class="row" target="_blank" rel="noopener" href="' + esc(landingUrl(e)) + '" title="Apri la pagina pubblica"><div class="grow"><div class="t">' + esc(e.nome || 'Evento senza nome') + '</div><div class="s">' + esc(sotto) + '</div></div>' + etichettaEvento(e) + '</a>';
+        }
+      });
+      h += '</div>' + (eventi.some(function(e){ return !e.bozza; }) ? '<div class="note" style="margin-top:6px">Tocca un evento per aprire la sua pagina pubblica.</div>' : '');
+    } else if(tab === 'pagamenti'){
+      var perPag = {};
+      sueF.forEach(function(f){ perPag[f.payment_id] = { f: f }; });
+      prepF.forEach(function(p){ perPag[p.id] = { p: p }; });
+      h += '<div class="card">';
+      if(!pag.length) h += '<div class="vuoto">Nessun pagamento registrato.</div>';
+      pag.forEach(function(p){
+        var tipo = p.tipo === 'rinnovo' ? 'Rinnovo' : p.tipo === 'rimborso' ? 'Rimborso' : p.tipo === 'manuale' ? 'Registrato a mano' : (abbonamento(p.piano) ? 'Primo pagamento' : 'Acquisto');
+        var cat = p.categoria === 'prova' ? '<span class="pill p-neu">Prova</span>' : p.categoria === 'omaggio' ? '<span class="pill p-neu">Omaggio</span>' : '';
+        var sotto = dataBreve(p.pagato_il) + (p.periodo ? ', ' + p.periodo : '') + (p.codice_sconto ? ', codice ' + p.codice_sconto : '');
+        var x = perPag[p.id] || {};
+        var extra = '', href = '';
+        if(x.f){ href = '#fattura/' + x.f.id; extra = (x.f.numero_stripe ? '<div class="s">Rif. Stripe ' + esc(x.f.numero_stripe) + '</div>' : '') + '<div class="s">Fattura ' + esc(numFattura(x.f)) + ', ' + esc(testoStatoF(x.f.stato)) + '</div>'; }
+        else if(x.p){ href = '#prepara/' + x.p.id; extra = (x.p.numero_stripe ? '<div class="s">Rif. Stripe ' + esc(x.p.numero_stripe) + '</div>' : '') + '<div class="s" style="color:var(--warn)">Fattura da preparare</div>'; }
+        var dentro = '<div class="grow"><div class="t">' + esc(tipo) + '</div><div class="s">' + esc(sotto) + '</div>' + extra + '</div>' + cat + '<div class="importo">' + esc(euro(p.importo)) + '</div>';
+        h += href ? '<a class="row top-al" href="' + esc(href) + '">' + dentro + ICO_CHEV + '</a>' : '<div class="row">' + dentro + '</div>';
+      });
+      h += '</div><div class="note" style="margin-top:6px">Nel totale contano solo i pagamenti reali, non prove e omaggi.' + (Object.keys(perPag).length ? ' Tocca un pagamento per aprire la sua fattura.' : '') + '</div>';
+    } else if(tab === 'fatture'){
+      if(fErr) h += erroreF;
+      else {
+        h += '<div class="card">';
+        if(!sueF.length && !prepF.length) h += '<div class="vuoto">Nessuna fattura per questo cliente.</div>';
+        prepF.forEach(function(p){ h += rigaPreparaF(p, true); });
+        sueF.forEach(function(f){ h += rigaFatturaF(f, true); });
+        h += '</div>' + (sueF.length || prepF.length ? '<div class="note" style="margin-top:6px">Tocca una fattura per aprirla.</div>' : '');
+      }
+    } else if(tab === 'fatturazione'){
+      if(fErr) h += erroreF;
+      else {
+        var fonteTxt = sf.scheda ? (sf.fonte === 'gestionale' ? 'corretti da te il ' : 'presi da Stripe il ') + dataNum(sf.aggiornata) : 'non ancora inseriti';
+        h += '<div class="h2" style="margin-top:4px">Dati di fatturazione <small>' + esc(fonteTxt) + '</small></div>';
+        if(F.modificaFatt && puoScrivere()){
+          h += moduloClienteF(sf.scheda || (sf.stripe ? schedaDaStripeF(sf.stripe) : {}));
+          h += '<div class="bottoni" style="margin-top:10px"><button class="btn sec2" type="button" data-az="f_scheda_annulla">Annulla</button><button class="btn" type="button" data-az="f_scheda_salva" id="f_scheda_btn">Salva i dati</button></div><div class="msgx" id="f_msg"></div>';
+          h += '<div class="note" style="margin-top:6px">Valgono per le prossime fatture di questo cliente, rinnovi compresi. Le fatture già create non cambiano.</div>';
+        } else {
+          if(sf.scheda) h += datiClienteF(sf.scheda);
+          else h += '<div class="card"><div class="vuoto">Nessun dato di fatturazione: arrivano da Stripe con il prossimo pagamento, oppure puoi inserirli tu.</div></div>';
+          if(sf.scheda && sf.errore) h += '<div class="avviso" style="margin-top:8px">Da completare prima della prossima fattura: ' + esc(sf.errore) + '</div>';
+          if(puoScrivere()) h += '<div style="margin-top:8px"><button class="btn sec2 pieno" type="button" data-az="f_scheda_modifica">' + (sf.scheda ? 'Modifica i dati di fatturazione' : 'Inserisci i dati di fatturazione') + '</button></div>';
+          h += datiStripeF(sf.stripe);
+        }
+      }
+    } else if(tab === 'assistenza'){
+      h += '<div class="card">';
+      if(!ass.length) h += '<div class="vuoto">Nessuna richiesta di assistenza.</div>';
+      ass.forEach(function(r){
+        h += '<a class="row" href="#richiesta/' + esc(r.id) + '"><div class="grow"><div class="t">n. ' + esc(r.numero) + ', ' + esc(ARGOMENTI[r.argomento] || 'Richiesta') + '</div><div class="s">' + esc(quando(r.ultimo_messaggio_at)) + '</div></div>' + statoRichiestaPill(r) + '</a>';
+      });
+      h += '</div>';
+    } else if(tab === 'note'){
+      h += '<div class="h2" style="margin-top:4px">Note interne <small>le vedi solo tu</small></div><div class="card pad">';
+      note.forEach(function(n){
+        h += '<div class="note" style="margin-bottom:12px;border-bottom:1px solid var(--line2);padding-bottom:10px"><b style="color:var(--txt)">' + esc(dataBreve(n.created_at)) + '</b><br><span style="white-space:pre-wrap;word-break:break-word">' + esc(n.testo) + '</span><br><button class="btn rosso piccolo" type="button" style="margin-top:8px" data-az="nota_elimina" data-id="' + esc(n.id) + '">Elimina</button></div>';
+      });
+      h += '<label class="lbl" for="nota_txt">Nuova nota</label><textarea class="field" id="nota_txt" rows="3" maxlength="5000"></textarea>';
+      h += '<div style="margin-top:10px"><button class="btn sec2" type="button" data-az="nota_salva" id="nota_btn">Aggiungi nota</button></div><div class="msgx" id="nota_msg"></div>';
+      h += '</div>';
+    } else if(tab === 'venditore'){
+      var isAg = String(c.piano) === 'agenzia';
+      h += '<div class="h2" style="margin-top:4px">Attribuzione commerciale</div><div class="card pad">';
+      h += '<div class="campo"><label class="lbl" for="attr_agent">Venditore</label><select class="field" id="attr_agent"><option value="">Nessuno</option>';
+      var trovato = false;
+      VENDITORI.forEach(function(v){
+        if(!v.attivo) return;
+        var sel = v.code === c.sales_agent; if(sel) trovato = true;
+        h += '<option value="' + esc(v.code) + '"' + (sel ? ' selected' : '') + '>' + esc(v.nome) + '</option>';
+      });
+      if(c.sales_agent && !trovato) h += '<option value="' + esc(c.sales_agent) + '" selected>' + esc(venditoreNome(c.sales_agent)) + ' (disattivato)</option>';
+      h += '</select></div>';
+      if(isAg){
+        h += '<div class="campo" id="attr_opt_wrap"><label class="lbl" for="attr_option">Modalità del compenso</label><select class="field" id="attr_option">';
+        h += '<option value="A"' + (c.commission_option !== 'B' ? ' selected' : '') + '>A: 30% una tantum</option>';
+        h += '<option value="B"' + (c.commission_option === 'B' ? ' selected' : '') + '>B: 20% sui rinnovi</option>';
+        h += '</select></div>';
+      }
+      h += '<div class="note" style="margin-bottom:10px">' + (isAg ? 'Agenzia: scegli la modalità A o B.' : 'Base, Pro e Punto Info: 30% una tantum.') + '</div>';
+      h += '<button class="btn sec2" type="button" data-az="attr_salva" id="attr_btn">Salva</button><div class="msgx" id="attr_msg"></div>';
+      h += '</div>';
+    }
+    h += '</div>';
     h += '</div>';
     metti(h);
     sincronizzaAttr();
     var ag = $('attr_agent'); if(ag) ag.addEventListener('change', sincronizzaAttr);
+    if(tab === 'fatturazione' && F.modificaFatt) collegaModuloF();
+  }
+  function venditoreNome(code){
+    if(!code) return 'Nessuno';
+    for(var i = 0; i < VENDITORI.length; i++){ if(VENDITORI[i].code === code) return VENDITORI[i].nome; }
+    return code;
+  }
+  function etichettaEvento(e){
+    if(e.bozza) return '<span class="pill p-warn">Bozza</span>';
+    if(e.concluso) return '<span class="pill p-neu">Concluso</span>';
+    if(e.attivo === false) return '<span class="pill p-bad">Chiuso</span>';
+    return '<span class="pill p-ok">Attivo</span>';
+  }
+  function numeriEvento(e){
+    var mod = e.modalita || 'iscrizioni';
+    var ric = Number(e.n_richieste || 0);
+    var testoRic = ric === 1 ? '1 richiesta' : ric + ' richieste';
+    if(mod === 'info') return 'solo informazioni, ' + testoRic;
+    var t = (e.n_iscritti || 0) + (e.capienza ? ' iscritti su ' + e.capienza : ' iscritti');
+    if(Number(e.n_attesa || 0)) t += ', ' + e.n_attesa + ' in lista d\'attesa';
+    if(mod === 'entrambe') t += ', ' + testoRic;
+    return t;
   }
   function sincronizzaAttr(){
     var ag = $('attr_agent'), w = $('attr_opt_wrap'), o = $('attr_option');
@@ -1161,7 +1289,15 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     try{
       var res = await chiedi('incassi', { dal: F.incDal, al: F.incAl, piano: F.incPiano, solo_sconto: F.incSconto });
       if(chiave !== chiaveIncassi() || rotta().v !== 'incassi') return;
-      INC = { chiave: chiave, d: res.dati || {} };
+      INC = { chiave: chiave, d: res.dati || {}, fatt: null };
+      try{
+        var idsF = ((INC.d.righe) || []).map(function(p){ return p.id; }).filter(Boolean).slice(0, 1000);
+        if(idsF.length){ var rf = await chiediF('fatture_pagamenti', { payment_ids: idsF }); INC.fatt = rf.fatture || {}; } else INC.fatt = {};
+      }catch(eF){
+        if(gestisciErrore(eF)) return;
+        INC.fatt = null;
+      }
+      if(chiave !== chiaveIncassi() || rotta().v !== 'incassi') return;
       disegnaIncassi();
     }catch(e){
       if(!gestisciErrore(e)) corpo.innerHTML = '<div class="sec"><div class="msgx err">Incassi non disponibili: ' + esc(e.message) + '</div></div>';
@@ -1180,15 +1316,22 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     h += '<div class="s">' + esc(sotto) + '</div>';
     if(p.tipo !== 'rimborso') h += '<div class="s">Listino ' + esc(euro(p.listino)) + ', sconto ' + sconto + '</div>';
     if(!p.completato && p.tipo !== 'rimborso') h += '<div class="s" style="color:var(--warn)">Dettagli Stripe in arrivo</div>';
+    var fx = (INC && INC.fatt) ? INC.fatt[p.id] : null;
+    var daFatt = !!(fx && !fx.fattura_id && reale && p.tipo !== 'rimborso' && Number(p.importo) > 0);
+    if(fx && fx.fattura_id) h += '<div class="s">Fattura ' + esc(fx.lettere + '-' + quattro(fx.numero)) + ', ' + esc(testoStatoF(fx.stato)) + '</div>';
+    else if(daFatt) h += '<div class="s" style="color:var(--warn)">Fattura da preparare</div>';
     h += '</div><div class="importo"' + (Number(p.importo) < 0 ? ' style="color:var(--bad)"' : '') + '>' + esc(euro(p.importo)) + '</div></summary>';
     h += '<div class="pag-det">';
     if(p.tipo !== 'rimborso') h += '<div class="riga"><span>Commissioni Stripe</span><b>' + (p.commissioni === null || p.commissioni === undefined ? 'non ancora lette' : '-' + esc(euro(p.commissioni))) + '</b></div>';
     if(p.commissioni !== null && p.commissioni !== undefined) h += '<div class="riga"><span>Arrivato a te</span><b>' + esc(euro(Number(p.importo) - Number(p.commissioni))) + '</b></div>';
     if(p.cliente_email) h += '<div class="riga"><span>Email</span><span>' + esc(p.cliente_email) + '</span></div>';
+    if(fx && fx.numero_stripe) h += '<div class="riga"><span>Documento Stripe</span><b>' + esc(fx.numero_stripe) + '</b></div>';
     h += '<div class="riga"><span>Riferimento Stripe</span><span class="tok">' + esc(p.stripe_id || 'nessuno') + '</span></div>';
     var spostabile = !(p.tipo === 'rimborso' && p.rimborso_di) && ME.ruolo === 'admin';
     h += '<div class="bottoni">';
     if(p.cliente_id) h += '<a class="btn sec2 piccolo" href="#cliente/' + esc(p.cliente_id) + '">Scheda cliente</a>';
+    if(fx && fx.fattura_id) h += '<a class="btn sec2 piccolo" href="#fattura/' + esc(fx.fattura_id) + '">Apri la fattura</a>';
+    else if(daFatt) h += '<a class="btn piccolo" href="#prepara/' + esc(p.id) + '">Prepara la fattura</a>';
     if(spostabile){
       if(reale) h += '<button class="btn sec2 piccolo" type="button" data-az="cat" data-id="' + esc(p.id) + '" data-cat="prova">Sposta in prove e omaggi</button>';
       else h += '<button class="btn sec2 piccolo" type="button" data-az="cat" data-id="' + esc(p.id) + '" data-cat="reale">Riporta negli incassi reali</button>';
@@ -1472,6 +1615,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var nVend = VENDITORI.filter(function(v){ return v.attivo; }).length;
     var nC = anomalieTot();
     var h = '<div class="sec"><h1 class="h1">Altro</h1></div><div class="sec"><div class="card">';
+    var nFa = fattureDaFare();
+    h += '<a class="row" href="#fatture"><div class="grow"><div class="t">Fatture</div><div class="s">' + (FATT ? (nFa ? (nFa === 1 ? '1 cosa da fare' : nFa + ' cose da fare') : 'Tutto in ordine') : 'Fatture elettroniche da preparare e caricare') + '</div></div>' + (nFa ? '<span class="pill p-warn">' + nFa + '</span>' : '') + ICO_CHEV + '</a>';
     h += '<a class="row" href="#eventi"><div class="grow"><div class="t">Eventi</div><div class="s">' + inCorso + ' in corso, ' + conclusi + ' conclusi</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#messaggi"><div class="grow"><div class="t">Messaggi dal sito</div><div class="s">' + (nNuovi === 1 ? '1 da gestire' : nNuovi + ' da gestire') + ', ' + nCons + ' con il consenso agli aggiornamenti</div></div>' + (nNuovi ? '<span class="pill p-warn">' + nNuovi + '</span>' : '') + ICO_CHEV + '</a>';
     h += '<a class="row" href="#venditori"><div class="grow"><div class="t">Venditori</div><div class="s">' + (nVend === 1 ? '1 attivo' : nVend + ' attivi') + '</div></div>' + ICO_CHEV + '</a>';
@@ -2083,6 +2228,680 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     }
   }
 
+  // ---------------- FATTURE (v2.3) ----------------
+  // Dati dal portiere gestionale-fatture. FATT = elenco dell'anno in corso (serve anche ai contatori),
+  // FATT_ALTRO = elenco di un anno diverso scelto dalle schede in alto.
+  var SOGLIA_BOLLO = 7747;
+  var DICITURA_F = "Operazione senza applicazione dell'IVA ai sensi dell'art. 1, commi da 54 a 89, Legge n. 190/2014 - Regime forfettario";
+  var RIF_NORM_F = 'Art. 1, commi 54-89, L. 190/2014 - Regime forfettario';
+  function chiediF(azione, extra){ return chiedi(azione, extra, FT_URL); }
+  function puoScrivere(){ return ME.ruolo === 'admin'; }
+  function annoCorrente(){ return Number(oggi().slice(0, 4)); }
+  function quattro(n){ return ('000' + Number(n || 0)).slice(-4); }
+  function numFattura(f){ return (f.lettere || '') + '-' + quattro(f.numero); }
+  function progressivoFile(n){ var s = Math.floor(Number(n) || 0).toString(36).toUpperCase(); while(s.length < 4) s = '0' + s; return 'E' + s; }
+  var TITOLARE = null;   // dati fissi del titolare (restano anche mentre l'elenco si ricarica)
+  function nomeFileF(f){
+    var t = TITOLARE || {};
+    return 'IT' + (t.codice_fiscale || t.partita_iva || '') + '_' + progressivoFile(f.invio_n) + '.xml';
+  }
+  function dataNum(v){
+    var p = parteData(giornoDi(v));
+    return p ? ('0' + p.g).slice(-2) + '/' + ('0' + p.m).slice(-2) + '/' + p.a : '';
+  }
+  function euroTesto(c){ return (Number(c || 0) / 100).toFixed(2).replace('.', ',') + ' euro'; }
+  function nomeFatt(c){
+    if(!c) return 'Cliente';
+    return c.tipo === 'persona' ? [c.nome, c.cognome].filter(Boolean).join(' ') : (c.denominazione || '');
+  }
+  function testoStatoF(s){ return { da_caricare: 'da caricare', caricata: 'caricata', scartata: 'scartata dallo SdI' }[s] || s; }
+  function pillStatoF(s){
+    if(s === 'da_caricare') return '<span class="pill p-gold">DA CARICARE</span>';
+    if(s === 'caricata') return '<span class="pill p-ok">CARICATA</span>';
+    if(s === 'scartata') return '<span class="pill p-bad">SCARTATA</span>';
+    return '';
+  }
+  function piuGiorniIso(iso, g){
+    var p = parteData(iso);
+    return new Date(Date.UTC(p.a, p.m - 1, p.g + g)).toISOString().slice(0, 10);
+  }
+  function piuMesiIso(iso, m){
+    var p = parteData(iso);
+    var d = new Date(Date.UTC(p.a, p.m - 1 + m, 1));
+    var ultimo = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+    return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), Math.min(p.g, ultimo))).toISOString().slice(0, 10);
+  }
+  // Descrizione proposta per la riga della fattura (niente simbolo dell'euro: il tracciato non lo accetta)
+  function descrizioneProposta(p){
+    var t = 'EventsFun, ';
+    if(abbonamento(p.piano)){
+      t += 'abbonamento ' + nomePiano(p.piano) + (p.periodo ? ' ' + p.periodo : '');
+      if(p.periodo){
+        var inizio = giornoDi(p.pagato_il);
+        var fine = piuGiorniIso(piuMesiIso(inizio, p.periodo === 'annuale' ? 12 : 1), -1);
+        t += '. Periodo dal ' + dataNum(inizio) + ' al ' + dataNum(fine);
+      }
+      t += '.';
+    } else {
+      t += 'pacchetto Evento ' + nomePiano(p.piano) + '.';
+    }
+    if(Number(p.sconto) > 0) t += ' Prezzo di listino ' + euroTesto(p.listino) + ', sconto' + (p.codice_sconto ? ' con il codice ' + p.codice_sconto : '') + ' di ' + euroTesto(p.sconto) + '.';
+    return t;
+  }
+  // Scheda proposta dai dati grezzi di Stripe (stessa regola del webhook v15)
+  function schedaDaStripeF(d){
+    d = d || {};
+    var ind = d.indirizzo || {};
+    var idf = String(d.id_fiscale || '').toUpperCase().replace(/\s/g, '');
+    var sdi = String(d.sdi_o_pec || '').trim();
+    var cod = '', pec = '';
+    if(sdi.indexOf('@') >= 0) pec = sdi.replace(/\s/g, '').toLowerCase();
+    else if(/^[A-Za-z0-9]{7}$/.test(sdi.replace(/\s/g, ''))) cod = sdi.replace(/\s/g, '').toUpperCase();
+    var prov = String(ind.provincia || '').trim().toUpperCase();
+    var c = { tipo: 'ente', denominazione: String(d.ragione_sociale || ''), nome: '', cognome: '', id_fiscale: idf, tipo_id: idf.length === 16 ? 'cf' : '',
+      indirizzo: [ind.riga1, ind.riga2].filter(Boolean).join(', '), cap: String(ind.cap || ''), comune: String(ind.citta || ''),
+      provincia: /^[A-Z]{2}$/.test(prov) ? prov : '', nazione: String(ind.nazione || 'IT') || 'IT', codice_destinatario: cod, pec: pec };
+    if(!c.denominazione && idf.length === 16){
+      var parti = String(d.nome || '').split(' ').filter(Boolean);
+      c.tipo = 'persona'; c.nome = parti[0] || ''; c.cognome = parti.slice(1).join(' ');
+    } else if(!c.denominazione) c.denominazione = String(d.nome || '');
+    return c;
+  }
+
+  // controlli dei numeri fiscali (gli stessi del database)
+  function controllo11(s){
+    if(!/^\d{11}$/.test(s)) return false;
+    var t = 0;
+    for(var i = 0; i < 10; i++){ var d = +s[i]; if(i % 2){ d *= 2; if(d > 9) d -= 9; } t += d; }
+    return (10 - t % 10) % 10 === +s[10];
+  }
+  var CF_DISPARI = { '0':1,'1':0,'2':5,'3':7,'4':9,'5':13,'6':15,'7':17,'8':19,'9':21,'A':1,'B':0,'C':5,'D':7,'E':9,'F':13,'G':15,'H':17,'I':19,'J':21,'K':2,'L':4,'M':18,'N':20,'O':11,'P':3,'Q':6,'R':8,'S':12,'T':14,'U':16,'V':10,'W':22,'X':25,'Y':24,'Z':23 };
+  function controllo16(s){
+    if(!/^[A-Z]{6}[0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{2}[A-Z][0-9LMNPQRSTUV]{3}[A-Z]$/.test(s)) return false;
+    var t = 0;
+    for(var i = 0; i < 15; i++){ var ch = s[i]; t += (i % 2 === 0) ? CF_DISPARI[ch] : (/\d/.test(ch) ? +ch : ch.charCodeAt(0) - 65); }
+    return String.fromCharCode(65 + t % 26) === s[15];
+  }
+  // elenco di [campo, messaggio]; stesse regole del database (che resta comunque l'ultimo controllo)
+  function controllaClienteF(c){
+    var e = [];
+    var naz = String(c.nazione || 'IT').toUpperCase();
+    if(c.tipo === 'persona'){
+      if(!String(c.nome || '').trim()) e.push(['nome', 'Scrivi il nome.']);
+      if(!String(c.cognome || '').trim()) e.push(['cognome', 'Scrivi il cognome.']);
+    } else if(!String(c.denominazione || '').trim()) e.push(['denominazione', 'Scrivi la ragione sociale o il nome dell\'ente.']);
+    if(String(c.denominazione || '').trim().length > 80) e.push(['denominazione', 'Al massimo 80 caratteri.']);
+    var idf = String(c.id_fiscale || '').toUpperCase().replace(/\s/g, '');
+    if(naz === 'IT'){
+      if(!idf) e.push(['id_fiscale', 'Scrivi la partita IVA o il codice fiscale.']);
+      else if(/^\d{11}$/.test(idf)){
+        if(c.tipo_id !== 'piva' && c.tipo_id !== 'cf') e.push(['id_fiscale', 'Il numero ha 11 cifre: scegli qui sotto se è una partita IVA o un codice fiscale.']);
+        else if(!controllo11(idf)) e.push(['id_fiscale', 'Il numero non è valido: controlla di averlo copiato bene.']);
+      } else if(idf.length === 16){
+        if(!controllo16(idf)) e.push(['id_fiscale', 'Il codice fiscale non è valido: controlla di averlo copiato bene.']);
+      } else e.push(['id_fiscale', 'Serve una partita IVA (11 cifre) o un codice fiscale (16 caratteri o 11 cifre).']);
+      if(!/^\d{5}$/.test(String(c.cap || ''))) e.push(['cap', 'Il CAP ha 5 cifre.']);
+      if(!/^[A-Za-z]{2}$/.test(String(c.provincia || ''))) e.push(['provincia', 'La provincia sono 2 lettere.']);
+    } else if(!idf) e.push(['id_fiscale', 'Serve l\'identificativo fiscale del cliente.']);
+    if(!String(c.indirizzo || '').trim() || String(c.indirizzo).trim().length > 60) e.push(['indirizzo', 'Indirizzo obbligatorio, al massimo 60 caratteri.']);
+    if(!String(c.comune || '').trim() || String(c.comune).trim().length > 60) e.push(['comune', 'Comune obbligatorio, al massimo 60 caratteri.']);
+    if(c.codice_destinatario && !/^[A-Za-z0-9]{7}$/.test(c.codice_destinatario)) e.push(['codice_destinatario', 'Il codice destinatario ha 7 caratteri tra lettere e numeri.']);
+    if(c.pec && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.pec)) e.push(['pec', 'La PEC non sembra un indirizzo email.']);
+    return e;
+  }
+
+  // ---- modulo dei dati del cliente (uno solo per pagina) ----
+  var FORM = null;
+  function campoF(id, etichetta, valore, extra){
+    return '<div class="campo"><label class="lbl" for="c_' + id + '">' + etichetta + '</label><input class="field" id="c_' + id + '" value="' + esc(valore || '') + '"' + (extra || '') + '><div class="err-campo" id="e_c_' + id + '" hidden></div></div>';
+  }
+  function moduloClienteF(c){
+    c = c || {};
+    FORM = { tipo: c.tipo === 'persona' ? 'persona' : 'ente', tipoId: c.tipo_id || '', nazione: c.nazione || 'IT' };
+    var pers = FORM.tipo === 'persona';
+    var undici = /^\d{11}$/.test(String(c.id_fiscale || ''));
+    var h = '<div class="card pad">';
+    h += '<div class="lbl">Il cliente è</div><div class="seg q4" style="margin-bottom:14px">';
+    h += '<button type="button" data-az="f_tipo_cli" data-val="ente" class="' + (!pers ? 'on' : '') + '" aria-pressed="' + (!pers) + '">Ente o azienda</button>';
+    h += '<button type="button" data-az="f_tipo_cli" data-val="persona" class="' + (pers ? 'on' : '') + '" aria-pressed="' + pers + '">Professionista</button></div>';
+    h += '<div id="blk_ente"' + (pers ? ' hidden' : '') + '>' + campoF('denominazione', 'Ragione sociale o nome dell\'ente', c.denominazione, ' maxlength="80"') + '</div>';
+    h += '<div id="blk_persona" class="campi2"' + (pers ? '' : ' hidden') + '>' + campoF('nome', 'Nome', c.nome, ' maxlength="60"') + campoF('cognome', 'Cognome', c.cognome, ' maxlength="60"') + '</div>';
+    h += campoF('id_fiscale', 'Partita IVA o codice fiscale', c.id_fiscale, ' autocapitalize="characters" spellcheck="false" maxlength="28"');
+    h += '<div id="blk_tipoid"' + (undici ? '' : ' hidden') + ' style="margin:-4px 0 14px"><div class="note" style="margin-bottom:6px">11 cifre possono essere una partita IVA oppure il codice fiscale di un ente senza partita IVA (associazioni, parrocchie, comitati). Nella fattura vanno in due caselle diverse.</div>';
+    h += '<div class="seg q4"><button type="button" data-az="f_tipo_id" data-val="piva" class="' + (FORM.tipoId === 'piva' ? 'on' : '') + '" aria-pressed="' + (FORM.tipoId === 'piva') + '">È una partita IVA</button>';
+    h += '<button type="button" data-az="f_tipo_id" data-val="cf" class="' + (FORM.tipoId === 'cf' ? 'on' : '') + '" aria-pressed="' + (FORM.tipoId === 'cf') + '">È un codice fiscale</button></div></div>';
+    h += campoF('indirizzo', 'Indirizzo', c.indirizzo, ' maxlength="60"');
+    h += '<div class="campi3"><div>' + campoF('cap', 'CAP', c.cap, ' inputmode="numeric" maxlength="5"') + '</div><div class="c-com">' + campoF('comune', 'Comune', c.comune, ' maxlength="60"') + '</div><div>' + campoF('provincia', 'Provincia', c.provincia, ' maxlength="2" autocapitalize="characters"') + '</div></div>';
+    h += '<div class="campi2">' + campoF('codice_destinatario', 'Codice destinatario', c.codice_destinatario, ' maxlength="7" autocapitalize="characters" spellcheck="false"') + campoF('pec', 'PEC', c.pec, ' type="email" inputmode="email" spellcheck="false" maxlength="256"') + '</div>';
+    h += '<div class="note">Se il cliente non ha indicato né il codice destinatario né la PEC, la fattura gli arriva comunque nella sua area riservata del sito dell\'Agenzia delle Entrate.</div>';
+    h += '</div>';
+    return h;
+  }
+  function collegaModuloF(){
+    var f = $('c_id_fiscale');
+    if(f) f.addEventListener('input', function(){ $('blk_tipoid').hidden = !/^\d{11}$/.test(this.value.replace(/\s/g, '')); });
+  }
+  function leggiModuloF(){
+    var v = function(id){ var el = $('c_' + id); return el ? el.value.trim() : ''; };
+    var c = {
+      tipo: FORM.tipo, denominazione: FORM.tipo === 'persona' ? '' : v('denominazione'),
+      nome: FORM.tipo === 'persona' ? v('nome') : '', cognome: FORM.tipo === 'persona' ? v('cognome') : '',
+      id_fiscale: v('id_fiscale').toUpperCase().replace(/\s/g, ''), tipo_id: '',
+      indirizzo: v('indirizzo'), cap: v('cap'), comune: v('comune'), provincia: v('provincia').toUpperCase(),
+      nazione: String(FORM.nazione || 'IT').toUpperCase(), codice_destinatario: v('codice_destinatario').toUpperCase(), pec: v('pec')
+    };
+    if(/^\d{11}$/.test(c.id_fiscale)) c.tipo_id = FORM.tipoId; else if(c.id_fiscale.length === 16) c.tipo_id = 'cf'; else c.tipo_id = FORM.tipoId || '';
+    return c;
+  }
+  function mostraErroriF(err){
+    ['denominazione','nome','cognome','id_fiscale','indirizzo','cap','comune','provincia','codice_destinatario','pec'].forEach(function(k){
+      var el = $('e_c_' + k), f = $('c_' + k);
+      if(el){ el.hidden = true; el.textContent = ''; }
+      if(f) f.classList.remove('sbagliato');
+    });
+    err.forEach(function(x){
+      var el = $('e_c_' + x[0]), f = $('c_' + x[0]);
+      if(el){ el.hidden = false; el.textContent = x[1]; }
+      if(f) f.classList.add('sbagliato');
+    });
+    if(err.length){ var primo = $('c_' + err[0][0]); if(primo){ primo.scrollIntoView({ block: 'center' }); primo.focus({ preventScroll: true }); } }
+  }
+  function sceltaSeg(el, attr){
+    Array.prototype.forEach.call(document.querySelectorAll('[data-az="' + attr + '"]'), function(b){ var on = b === el; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+  }
+  function rigaDatoF(k, v){
+    return '<div class="tot" style="align-items:flex-start"><span class="s" style="flex-shrink:0;margin:0">' + esc(k) + '</span><span style="text-align:right;word-break:break-word">' + v + '</span></div>';
+  }
+  function recapitoF(c){
+    if(!c) return '';
+    if(c.codice_destinatario) return 'Codice ' + c.codice_destinatario;
+    if(c.pec) return 'PEC ' + c.pec;
+    return 'Area riservata del cliente (codice 0000000)';
+  }
+  function datiClienteF(c){
+    var undici = /^\d{11}$/.test(String(c.id_fiscale || ''));
+    var h = '<div class="card">';
+    h += rigaDatoF(c.tipo === 'persona' ? 'Professionista' : 'Ragione sociale', esc(nomeFatt(c) || 'mancante'));
+    h += rigaDatoF(undici && !c.tipo_id ? 'Partita IVA o codice fiscale' : (c.tipo_id === 'cf' ? 'Codice fiscale' : 'Partita IVA'), esc(c.id_fiscale || 'mancante') + (undici && !c.tipo_id ? '<br><span style="color:var(--warn)">da scegliere quale dei due</span>' : ''));
+    h += rigaDatoF('Indirizzo', esc(c.indirizzo || 'mancante') + '<br>' + esc([c.cap, c.comune].filter(Boolean).join(' ') + (c.provincia ? ' (' + c.provincia + ')' : '')));
+    h += rigaDatoF('Recapito per lo SdI', esc(recapitoF(c)));
+    h += '</div>';
+    return h;
+  }
+  function datiStripeF(d){
+    if(!d) return '';
+    var ind = d.indirizzo || {};
+    var h = '<details class="blocco" style="margin-top:10px"><summary>Cosa ha scritto il cliente su Stripe</summary><div style="border-top:1px solid var(--line2)">';
+    h += rigaDatoF('Nome', esc(d.nome || 'vuoto'));
+    h += rigaDatoF('Ragione sociale', esc(d.ragione_sociale || 'vuoto'));
+    h += rigaDatoF('Partita IVA o codice fiscale', esc(d.id_fiscale || 'vuoto'));
+    h += rigaDatoF('Codice destinatario o PEC', esc(d.sdi_o_pec || 'vuoto'));
+    h += rigaDatoF('Indirizzo', esc([ind.riga1, ind.riga2, [ind.cap, ind.citta].filter(Boolean).join(' '), ind.provincia, ind.nazione].filter(Boolean).join(', ') || 'vuoto'));
+    h += '</div></details>';
+    return h;
+  }
+  function importiF(importo){
+    var b = Number(importo) > SOGLIA_BOLLO;
+    var h = '<div class="card">';
+    h += '<div class="tot"><span>Importo</span><b>' + esc(euro(importo)) + '</b></div>';
+    h += '<div class="tot"><span>IVA</span><span class="s" style="margin:0">non applicata, regime forfettario</span></div>';
+    h += '<div class="tot"><span>Bollo virtuale</span>' + (b ? '<b>2,00 € a tuo carico</b>' : '<span class="s" style="margin:0">non dovuto, importo fino a 77,47 €</span>') + '</div>';
+    h += '<div class="tot"><b>Totale della fattura</b><b style="font-family:\'Syne\',sans-serif;font-size:18px;color:var(--gold)">' + esc(euro(importo)) + '</b></div>';
+    h += '</div>';
+    if(b) h += '<div class="note" style="margin-top:6px">Il bollo è dichiarato dentro il file e non si aggiunge al totale del cliente. Lo paghi con l\'F24 che l\'Agenzia delle Entrate prepara ogni trimestre.</div>';
+    return h;
+  }
+
+  // ---- caricamento e contatori ----
+  async function caricaFatture(){
+    try{
+      FATT = await chiediF('fatture_lista');
+      if(FATT && FATT.titolare) TITOLARE = FATT.titolare;
+    }catch(e){
+      if(gestisciErrore(e)) throw e;
+      // se l'elenco non arriva si tiene quello di prima (se c'e')
+    }
+    aggiornaBadge();
+    return FATT;
+  }
+  function contaFatture(){
+    var d = (FATT && FATT.dati) || {};
+    var lista = d.fatture || [];
+    return {
+      prep: (d.da_preparare || []).length,
+      car: lista.filter(function(f){ return f.stato === 'da_caricare'; }).length,
+      scar: lista.filter(function(f){ return f.stato === 'scartata'; }).length
+    };
+  }
+  function fattureDaFare(){ var n = contaFatture(); return n.prep + n.car + n.scar; }
+  // dopo una modifica: l'elenco si ricarica (quello vecchio resta in vista finche' arriva il nuovo)
+  function dopoModificaF(){
+    FATT_ALTRO = null; SCHEDA_F = null; INC = null;
+    caricaFatture().then(function(){
+      var v = rotta().v;
+      if(v === 'fatture' || v === 'riepilogo' || v === 'altro') disegnaRotta(false);
+    }).catch(function(){});
+  }
+
+  // ---- elenco ----
+  function rigaFatturaF(f, senzaNome){
+    var sotto = dataNum(f.data_fattura) + ', ' + nomePiano(f.piano) + (f.periodo ? ' ' + f.periodo : '');
+    var h = '<a class="row top-al" href="#fattura/' + esc(f.id) + '"><div class="grow"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="t">' + esc(numFattura(f)) + '</div>' + pillStatoF(f.stato) + '</div>';
+    if(!senzaNome) h += '<div class="s chiaro">' + esc(nomeFatt(f.cliente)) + '</div>';
+    h += '<div class="s">' + esc(sotto) + '</div>';
+    if(f.numero_stripe) h += '<div class="s">Rif. Stripe ' + esc(f.numero_stripe) + '</div>';
+    if(f.stato === 'da_caricare') h += '<div class="s" style="color:var(--warn)">Da caricare entro il ' + esc(dataNum(f.scadenza)) + '</div>';
+    if(f.stato === 'scartata') h += '<div class="s" style="color:var(--bad)">' + esc(f.motivo_scarto || 'Scartata dallo SdI') + '</div>';
+    h += '</div><div class="importo">' + esc(euro(f.importo)) + '</div>' + ICO_CHEV + '</a>';
+    return h;
+  }
+  function rigaPreparaF(p, senzaNome){
+    var nome = p.scheda ? nomeFatt(p.scheda) : (p.email || 'Cliente');
+    var tipo = p.tipo === 'rinnovo' ? 'rinnovo' : p.tipo === 'manuale' ? 'registrato a mano' : (abbonamento(p.piano) ? 'primo pagamento' : 'acquisto');
+    var h = '<a class="row top-al" href="#prepara/' + esc(p.id) + '"><div class="grow"><div style="display:flex;align-items:center;gap:8px;min-width:0"><div class="t">' + esc(senzaNome ? dataNum(p.pagato_il) : nome) + '</div>' + (senzaNome ? '<span class="pill p-warn">DA PREPARARE</span>' : pianoPill(p.piano)) + '</div>';
+    h += '<div class="s">' + esc((senzaNome ? 'Pagamento ' + nomePiano(p.piano) : 'Pagato il ' + dataNum(p.pagato_il)) + ', ' + tipo + (p.periodo ? ', ' + p.periodo : '')) + '</div>';
+    if(p.numero_stripe) h += '<div class="s">Rif. Stripe ' + esc(p.numero_stripe) + '</div>';
+    if(!p.completo) h += '<div class="s" style="color:var(--warn)">Dettagli da Stripe in arrivo (entro mezz\'ora circa)</div>';
+    else if(p.scheda_errore) h += '<div class="s" style="color:var(--warn)">Dati di fatturazione da completare</div>';
+    h += '</div><div class="importo">' + esc(euro(p.importo)) + '</div>' + ICO_CHEV + '</a>';
+    return h;
+  }
+  async function vistaFatture(){
+    var annoV = F.fattAnno || annoCorrente();
+    var corr = annoV === annoCorrente();
+    var sorgente = corr ? FATT : (FATT_ALTRO && FATT_ALTRO.dati && FATT_ALTRO.dati.anno === annoV ? FATT_ALTRO : null);
+    if(!sorgente){
+      metti('<div class="stretta"><div class="sec"><h1 class="h1">Fatture</h1></div><div class="caricamento">Caricamento delle fatture...</div></div>');
+      try{
+        if(corr) sorgente = await caricaFatture();
+        else { FATT_ALTRO = await chiediF('fatture_lista', { anno: annoV }); sorgente = FATT_ALTRO; }
+        if(rotta().v !== 'fatture') return;
+      }catch(e){
+        if(!gestisciErrore(e)) metti('<div class="stretta"><div class="sec"><h1 class="h1">Fatture</h1></div><div class="sec"><div class="msgx err">Fatture non disponibili: ' + esc(e.message) + '</div><div style="margin-top:12px"><button class="btn sec2" type="button" data-az="f_riprova">Riprova</button></div></div></div>');
+        return;
+      }
+      if(!sorgente){ metti('<div class="stretta"><div class="sec"><h1 class="h1">Fatture</h1></div><div class="sec"><div class="msgx err">Fatture non disponibili in questo momento.</div><div style="margin-top:12px"><button class="btn sec2" type="button" data-az="f_riprova">Riprova</button></div></div></div>'); return; }
+    }
+    var d = sorgente.dati || {};
+    var lista = d.fatture || [];
+    var prep = d.da_preparare || [];
+    var car = lista.filter(function(f){ return f.stato === 'da_caricare'; });
+    var scar = lista.filter(function(f){ return f.stato === 'scartata'; });
+    var fatte = lista.filter(function(f){ return f.stato === 'caricata'; });
+    var serie = d.serie;
+    var trim = Math.floor((Number(oggi().slice(5, 7)) - 1) / 3);
+    var NOMI_TRIM = ['gennaio-marzo', 'aprile-giugno', 'luglio-settembre', 'ottobre-dicembre'];
+    var bolli = corr ? Number(((d.bolli_trimestri || [])[trim] || {}).n || 0) : (d.bolli_trimestri || []).reduce(function(t, x){ return t + Number(x.n || 0); }, 0);
+    var h = '<div class="stretta">';
+    h += '<div class="sec" style="padding-bottom:12px"><h1 class="h1">Fatture</h1><div class="note" style="margin-top:4px">Fatture elettroniche di EventsFun, da caricare sul portale Fatture e Corrispettivi dell\'Agenzia delle Entrate.</div></div>';
+    var anni = (d.anni || []).map(Number);
+    if(anni.indexOf(annoCorrente()) < 0) anni.unshift(annoCorrente());
+    if(anni.length > 1){
+      h += '<div class="chips">';
+      anni.sort(function(a, b){ return b - a; }).forEach(function(a){ h += '<button class="chip' + (a === annoV ? ' on' : '') + '" type="button" data-az="f_anno" data-anno="' + a + '">' + a + '</button>'; });
+      h += '</div>';
+    }
+    if(corr && !serie) h += '<div class="sec"><div class="avviso">Prima di creare la prima fattura del ' + annoV + ' scegli le lettere della serie. <a href="#fatture-impostazioni" style="color:inherit;font-weight:700">Vai alle impostazioni</a></div></div>';
+    h += '<div class="sec" style="padding-top:8px"><div class="nums q4">';
+    h += '<div class="num"><div class="n">' + prep.length + '</div><div class="l">Da preparare</div><div class="x">Pagamenti senza fattura</div></div>';
+    h += '<div class="num"><div class="n">' + car.length + '</div><div class="l">Da caricare</div><div class="x">Pronte per il portale</div></div>';
+    h += '<div class="num"><div class="n">' + (corr ? (serie ? esc(serie.lettere + '-' + quattro(Number(serie.ultimo_numero) + 1)) : 'da scegliere') : lista.length) + '</div><div class="l">' + (corr ? 'Prossimo numero' : 'Fatture del ' + annoV) + '</div><div class="x">' + (corr ? 'Serie EventsFun ' + annoV : 'Anno chiuso o passato') + '</div></div>';
+    h += '<div class="num"><div class="n">' + esc(euro(bolli * 200)) + '</div><div class="l">Bollo virtuale</div><div class="x">' + (corr ? NOMI_TRIM[trim] + ': ' : 'In tutto il ' + annoV + ': ') + (bolli === 1 ? '1 fattura' : bolli + ' fatture') + '</div></div>';
+    h += '</div></div>';
+
+    h += '<div class="sec"><div class="h2">Da preparare <small>' + prep.length + '</small></div><div class="card">';
+    if(!prep.length) h += '<div class="vuoto">Nessun pagamento da fatturare.</div>';
+    prep.forEach(function(p){ h += rigaPreparaF(p, false); });
+    h += '</div><div class="note" style="margin-top:6px">Compaiono solo i pagamenti reali: prove e omaggi a zero non si fatturano e non usano numeri.</div></div>';
+    if(scar.length){
+      h += '<div class="sec"><div class="h2">Scartate dallo SdI <small>' + scar.length + '</small></div><div class="card">';
+      scar.forEach(function(f){ h += rigaFatturaF(f); });
+      h += '</div><div class="note" style="margin-top:6px">Si correggono e si caricano di nuovo con lo stesso numero e la stessa data.</div></div>';
+    }
+    h += '<div class="sec"><div class="h2">Da caricare sul portale <small>' + car.length + '</small></div><div class="card">';
+    if(!car.length) h += '<div class="vuoto">Nessuna fattura da caricare.</div>';
+    car.forEach(function(f){ h += rigaFatturaF(f); });
+    h += '</div></div>';
+    h += '<div class="sec"><details class="blocco"' + (!corr ? ' open' : '') + '><summary>Caricate nel ' + annoV + ' <span class="pill p-neu" style="margin-left:auto">' + fatte.length + '</span></summary><div style="border-top:1px solid var(--line2)">';
+    if(!fatte.length) h += '<div class="vuoto">Nessuna fattura caricata nel ' + annoV + '.</div>';
+    fatte.forEach(function(f){ h += rigaFatturaF(f); });
+    h += '</div></details></div>';
+    h += '<div class="sec"><div class="card"><a class="row" href="#fatture-impostazioni"><div class="grow"><div class="t">Impostazioni delle fatture</div><div class="s">Lettere della serie, dati del titolare, dicitura e bollo</div></div>' + ICO_CHEV + '</a></div>';
+    h += '<div class="note" style="margin-top:8px">Il documento valido è il file XML caricato sul portale. Le fatture e le ricevute di Stripe restano solo documenti di cortesia per il cliente.</div></div>';
+    h += '</div>';
+    metti(h);
+  }
+
+  // ---- prepara la fattura di un pagamento ----
+  var PREP = null;
+  async function vistaPrepara(id){
+    metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="caricamento">Caricamento del pagamento...</div>');
+    try{
+      var res = await chiediF('fattura_pagamento', { payment_id: id });
+      if(rotta().v !== 'prepara' || rotta().id !== id) return;
+      PREP = res.pagamento;
+      if(!FATT) await caricaFatture();
+    }catch(e){
+      if(!gestisciErrore(e)) metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="sec"><div class="msgx err">Pagamento non disponibile: ' + esc(e.message) + '</div></div>');
+      return;
+    }
+    if(rotta().v !== 'prepara' || rotta().id !== id) return;
+    var p = PREP;
+    if(p.fattura_id){ location.replace('#fattura/' + p.fattura_id); return; }
+    var cliHref = p.order_id ? '#cliente/' + p.order_id : '#fatture';
+    var h = '<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="stretta">';
+    var nome = p.scheda ? nomeFatt(p.scheda) : (p.email || 'Cliente');
+    h += '<div class="sec" style="padding-top:0"><h1 class="h1">Prepara la fattura</h1><div class="note" style="margin-top:4px">' + esc(nome) + ', pagamento del ' + esc(dataNum(p.pagato_il)) + '</div></div>';
+    if(!p.fatturabile){
+      h += '<div class="sec"><div class="msgx info" style="margin-top:0">Questo pagamento non si fattura: è una prova, un omaggio, un rimborso o un importo a zero.</div></div></div>';
+      metti(h); return;
+    }
+    h += '<div class="sec"><div class="card"><div class="kv">';
+    h += '<div><div class="k">Pacchetto</div><div class="v">' + esc(nomePiano(p.piano) + (p.periodo ? ' ' + p.periodo : '')) + '</div></div>';
+    h += '<div><div class="k">Pagato</div><div class="v">' + esc(euro(p.importo)) + '</div></div>';
+    h += '<div><div class="k">Listino</div><div class="v">' + (p.listino !== null && p.listino !== undefined ? esc(euro(p.listino)) : 'in arrivo') + '</div></div>';
+    h += '<div><div class="k">Sconto</div><div class="v">' + (Number(p.sconto) ? esc((p.codice_sconto ? p.codice_sconto + ' ' : '') + '-' + euro(p.sconto)) : 'nessuno') + '</div></div>';
+    h += '<div><div class="k">Rif. Stripe</div><div class="v">' + esc(p.numero_stripe || (p.completo ? 'nessuno' : 'in arrivo')) + '</div></div>';
+    h += '<div><div class="k">Data del pagamento</div><div class="v">' + esc(dataNum(p.pagato_il)) + '</div></div>';
+    h += '</div></div><div style="margin-top:8px"><a class="btn sec2 pieno" href="' + esc(cliHref) + '">Scheda cliente</a></div></div>';
+    if(!p.completo) h += '<div class="sec"><div class="avviso">I dettagli del pagamento (sconto, commissioni e numero del documento Stripe) stanno ancora arrivando da Stripe: di solito servono fino a 30 minuti. La fattura si potrà creare appena arrivano.</div></div>';
+    var cli = p.scheda || (p.dati_stripe ? schedaDaStripeF(p.dati_stripe) : {});
+    var err = controllaClienteF(cli);
+    if(err.length) h += '<div class="sec"><div class="avviso">Prima di creare la fattura controlla i dati del cliente: quello che non torna è segnato in rosso quando premi Crea.</div></div>';
+    h += '<div class="sec"><div class="h2">Dati del cliente <small>' + (p.scheda ? (p.scheda_fonte === 'gestionale' ? 'corretti da te' : 'presi da Stripe') + ', correggibili' : 'da completare') + '</small></div>' + moduloClienteF(cli);
+    h += '<div class="note" style="margin-top:6px">Le correzioni restano salvate per questo cliente e servono anche per le fatture dei rinnovi.</div>' + datiStripeF(p.dati_stripe) + '</div>';
+    var serie = p.serie;
+    var minData = giornoDi(p.pagato_il);
+    if(p.ultima_data && String(p.ultima_data) > minData) minData = String(p.ultima_data);
+    var oggiS = oggi();
+    var proposta = minData > oggiS ? oggiS : minData;
+    h += '<div class="sec"><div class="h2">La fattura</div><div class="card pad">';
+    h += '<div class="campo"><div class="lbl">Numero</div><div class="note">' + (serie ? 'Viene assegnato quando premi Crea: sarà <b style="color:var(--gold)">' + esc(serie.lettere + '-' + quattro(Number(serie.ultimo_numero) + 1)) + '</b>.' : '<span style="color:var(--warn)">Prima scegli le lettere della serie nelle <a href="#fatture-impostazioni" style="color:inherit">impostazioni delle fatture</a>.</span>') + '</div></div>';
+    h += '<div class="campo"><label class="lbl" for="f_data">Data della fattura</label><input class="field" id="f_data" type="date" value="' + esc(proposta) + '" min="' + esc(minData) + '" max="' + esc(oggiS) + '"><div class="err-campo" id="e_f_data" hidden></div>';
+    h += '<div class="note" style="margin-top:6px">Di solito il giorno del pagamento. Non può essere prima del pagamento' + (p.ultima_data ? ' o dell\'ultima fattura creata (' + esc(dataNum(p.ultima_data)) + ')' : '') + ', né dopo oggi. Va caricata sul portale entro 12 giorni dal pagamento.</div></div>';
+    h += '<div class="campo"><div class="lbl">Causale</div><div class="note">' + esc(DICITURA_F) + '.' + (p.numero_stripe ? '<br>Rif. pagamento Stripe n. ' + esc(p.numero_stripe) + '.' : '') + '</div></div>';
+    h += '<div class="campo"><label class="lbl" for="f_descr">Descrizione</label><textarea class="field" id="f_descr" rows="4" maxlength="1000">' + esc(descrizioneProposta(p)) + '</textarea></div>';
+    h += '</div></div>';
+    h += '<div class="sec"><div class="h2">Importi</div>' + importiF(p.importo) + '</div>';
+    h += '<div class="sec">';
+    if(puoScrivere()){
+      h += '<button class="btn pieno" type="button" data-az="f_crea" id="f_crea_btn"' + (!p.completo || !serie ? ' disabled' : '') + '>Crea la fattura' + (serie ? ' ' + esc(serie.lettere + '-' + quattro(Number(serie.ultimo_numero) + 1)) : '') + '</button>';
+      h += '<div class="msgx" id="f_msg"></div><div class="note" style="margin-top:8px">Dopo la creazione il numero non cambia più. Poi scarichi il file e lo carichi sul portale.</div>';
+    } else h += '<div class="note">Solo l\'amministratore può creare le fatture.</div>';
+    h += '</div></div>';
+    metti(h);
+    collegaModuloF();
+  }
+  async function creaFatturaF(){
+    var p = PREP;
+    if(!p) return;
+    var msg = $('f_msg'), btn = $('f_crea_btn');
+    nascondiMsg(msg);
+    var c = leggiModuloF();
+    var err = controllaClienteF(c);
+    mostraErroriF(err);
+    var dt = $('f_data').value, eD = $('e_f_data');
+    eD.hidden = true;
+    if(!dt || dt < $('f_data').min || dt > $('f_data').max){
+      eD.hidden = false; eD.textContent = 'Scegli una data tra il ' + dataNum($('f_data').min) + ' e oggi.';
+      if(!err.length) $('f_data').scrollIntoView({ block: 'center' });
+      err.push(['data', '']);
+    }
+    var descr = $('f_descr').value.trim();
+    if(!descr){ err.push(['descr', '']); mostraMsg(msg, 'Scrivi la descrizione della fattura.', 'err'); }
+    if(err.length){ toast('Controlla i campi segnati in rosso.', true); return; }
+    var num = p.serie ? p.serie.lettere + '-' + quattro(Number(p.serie.ultimo_numero) + 1) : '';
+    if(!window.confirm('Creare la fattura ' + num + '? Il numero non si potrà più cambiare.')) return;
+    btn.disabled = true; btn.textContent = 'Creazione in corso...';
+    try{
+      var res = await chiediF('fattura_crea', { payment_id: p.id, data: dt, descrizione: descr, cliente: c });
+      toast('Fattura ' + numFattura(res.fattura) + ' creata');
+      PREP = null;
+      dopoModificaF();
+      vai('fattura/' + res.fattura.id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Crea la fattura ' + num;
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+
+  // ---- una fattura ----
+  var FDET = null;
+  var UIF = { scarto: false, correggi: false };
+  async function vistaFattura(id){
+    if(!(FDET && FDET.id === id)){
+      metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="caricamento">Caricamento della fattura...</div>');
+      try{
+        var res = await chiediF('fattura_dettaglio', { fattura_id: id });
+        if(rotta().v !== 'fattura' || rotta().id !== id) return;
+        FDET = res.fattura;
+        if(!FATT) await caricaFatture();
+      }catch(e){
+        if(!gestisciErrore(e)) metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="sec"><div class="msgx err">Fattura non disponibile: ' + esc(e.message) + '</div></div>');
+        return;
+      }
+      if(rotta().v !== 'fattura' || rotta().id !== id) return;
+    }
+    var f = FDET;
+    var h = '<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:0"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><h1 class="h1">Fattura ' + esc(numFattura(f)) + '</h1>' + pillStatoF(f.stato) + '</div>';
+    h += '<div class="note" style="margin-top:4px">' + esc(nomeFatt(f.cliente)) + ', del ' + esc(dataNum(f.data_fattura)) + '</div></div>';
+    var scrive = puoScrivere();
+    if(f.stato === 'da_caricare'){
+      h += '<div class="sec"><div class="card gold pad"><div class="t wrap" style="margin-bottom:4px">Da caricare sul portale entro il ' + esc(dataNum(f.scadenza)) + '</div><div class="note" style="margin-bottom:12px">Scarica il file, caricalo sul portale Fatture e Corrispettivi e poi segna qui che è caricata.</div>';
+      h += '<button class="btn pieno" type="button" data-az="f_xml" id="f_xml_btn">Scarica il file XML</button>';
+      h += '<div class="bottoni" style="margin-top:8px"><a class="btn sec2" href="#anteprima/' + esc(f.id) + '">Anteprima</a>' + (scrive ? '<button class="btn sec2" type="button" data-az="f_caricata">Segna come caricata</button>' : '') + '</div>';
+      if(scrive && !UIF.correggi) h += '<div style="margin-top:8px"><button class="btn sec2 pieno" type="button" data-az="f_correggi_apri">Correggi i dati prima di caricarla</button></div>';
+      h += '<div class="msgx" id="f_msg"></div></div></div>';
+    } else if(f.stato === 'caricata'){
+      h += '<div class="sec"><div class="card pad"><div class="note" style="margin-bottom:12px">Caricata sul portale. Se lo SdI la scarta, la notifica arriva entro 5 giorni dal caricamento: in quel caso segnalo qui.</div>';
+      h += '<div class="bottoni"><a class="btn sec2" href="#anteprima/' + esc(f.id) + '">Anteprima</a><button class="btn sec2" type="button" data-az="f_xml" id="f_xml_btn">Scarica di nuovo il file</button></div>';
+      if(scrive){
+        if(UIF.scarto){
+          h += '<div style="margin-top:12px"><label class="lbl" for="s_motivo">Motivo scritto nella notifica di scarto (facoltativo)</label><input class="field" id="s_motivo" maxlength="300"><div class="bottoni" style="margin-top:8px"><button class="btn sec2" type="button" data-az="f_scarto_annulla">Annulla</button><button class="btn rosso" type="button" data-az="f_scarto_conferma">Conferma lo scarto</button></div></div>';
+        } else h += '<div style="margin-top:8px"><button class="btn rosso pieno" type="button" data-az="f_scarto_apri">Lo SdI l\'ha scartata</button></div>';
+      }
+      h += '<div class="msgx" id="f_msg"></div></div></div>';
+    } else if(f.stato === 'scartata'){
+      h += '<div class="sec"><div class="msgx err" style="margin-top:0">Scartata dallo SdI' + (f.motivo_scarto ? ': ' + esc(f.motivo_scarto) : '') + '.</div><div class="note" style="margin-top:8px">Correggi i dati e caricala di nuovo entro 5 giorni dalla notifica di scarto, con lo stesso numero e la stessa data. Una fattura scartata per lo SdI non è mai stata emessa, quindi il numero resta suo.</div></div>';
+    }
+    if(scrive && (f.stato === 'scartata' || (f.stato === 'da_caricare' && UIF.correggi))){
+      h += '<div class="sec"><div class="h2">Dati del cliente <small>da correggere</small></div>' + moduloClienteF(f.cliente) + '</div>';
+      h += '<div class="sec"><div class="card pad"><label class="lbl" for="f_descr">Descrizione</label><textarea class="field" id="f_descr" rows="4" maxlength="1000">' + esc(f.descrizione) + '</textarea></div></div>';
+      h += '<div class="sec"><div class="bottoni">' + (f.stato === 'da_caricare' ? '<button class="btn sec2" type="button" data-az="f_correggi_annulla">Annulla</button>' : '') + '<button class="btn' + (f.stato === 'da_caricare' ? '' : ' pieno') + '" type="button" data-az="f_correggi" id="f_corr_btn">Salva e prepara di nuovo il file</button></div><div class="msgx" id="f_msg2"></div>';
+      h += '<div class="note" style="margin-top:8px">Il numero e la data restano gli stessi; il file avrà un nome nuovo, come chiede lo SdI.</div></div>';
+    }
+    h += '<div class="sec"><div class="h2">Riepilogo</div><div class="card"><div class="kv">';
+    h += '<div><div class="k">Numero</div><div class="v">' + esc(numFattura(f)) + '</div></div>';
+    h += '<div><div class="k">Data</div><div class="v">' + esc(dataNum(f.data_fattura)) + '</div></div>';
+    h += '<div><div class="k">Cliente</div><div class="v">' + esc(nomeFatt(f.cliente)) + '</div></div>';
+    h += '<div><div class="k">' + (f.cliente && f.cliente.tipo_id === 'cf' ? 'Codice fiscale' : 'Partita IVA') + '</div><div class="v">' + esc((f.cliente || {}).id_fiscale || '') + '</div></div>';
+    h += '<div><div class="k">Recapito per lo SdI</div><div class="v">' + esc(recapitoF(f.cliente)) + '</div></div>';
+    h += '<div><div class="k">Pacchetto</div><div class="v">' + esc(nomePiano(f.piano) + (f.periodo ? ' ' + f.periodo : '')) + '</div></div>';
+    h += '<div><div class="k">Rif. Stripe</div><div class="v">' + esc(f.numero_stripe || 'nessuno') + '</div></div>';
+    h += '<div><div class="k">Importo</div><div class="v">' + esc(euro(f.importo)) + '</div></div>';
+    h += '</div><div class="tot"><span class="s" style="margin:0">Nome del file per lo SdI</span><span class="tok" style="text-align:right">' + esc(nomeFileF(f)) + '</span></div></div>';
+    h += '<div style="margin-top:8px"><a class="btn sec2 pieno" href="' + esc(f.order_id ? '#cliente/' + f.order_id : '#fatture') + '">Scheda cliente</a></div></div>';
+    h += '<div class="sec"><div class="h2">Importi</div>' + importiF(f.importo) + '</div>';
+    h += '<div class="sec"><div class="h2">Cronologia</div><div class="card">';
+    (f.storia || []).forEach(function(s){ h += '<div class="storia">' + esc(quando(s.quando)) + ': ' + esc(s.evento) + (s.autore ? ' (' + esc(s.autore) + ')' : '') + '</div>'; });
+    h += '</div></div></div>';
+    metti(h);
+    if(scrive && (f.stato === 'scartata' || (f.stato === 'da_caricare' && UIF.correggi))) collegaModuloF();
+  }
+  function scaricaTesto(nome, testo, tipo){
+    var blob = new Blob([testo], { type: tipo });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = nome;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); a.remove(); }, 1500);
+  }
+  async function scaricaXmlF(){
+    var f = FDET; if(!f) return;
+    var btn = $('f_xml_btn'), testo = btn ? btn.textContent : '';
+    if(btn){ btn.disabled = true; btn.textContent = 'Preparazione del file...'; }
+    try{
+      var res = await chiediF('fattura_xml', { fattura_id: f.id });
+      scaricaTesto(res.nome_file, res.xml, 'application/xml');
+      toast('File ' + res.nome_file + ' scaricato');
+    }catch(e){
+      if(!gestisciErrore(e)) toast('File non preparato: ' + e.message, true);
+    }
+    if(btn){ btn.disabled = false; btn.textContent = testo; }
+  }
+  async function statoFatturaF(stato){
+    var f = FDET; if(!f) return;
+    var motivo = '';
+    if(stato === 'caricata' && !window.confirm('Hai caricato la fattura ' + numFattura(f) + ' sul portale?')) return;
+    if(stato === 'scartata') motivo = $('s_motivo') ? $('s_motivo').value.trim() : '';
+    try{
+      var res = await chiediF('fattura_stato', { fattura_id: f.id, stato: stato, motivo: motivo });
+      FDET = res.fattura; UIF.scarto = false;
+      toast('Fattura ' + numFattura(FDET) + (stato === 'caricata' ? ' segnata come caricata' : ' segnata come scartata'));
+      dopoModificaF();
+      vistaFattura(FDET.id);
+    }catch(e){
+      if(!gestisciErrore(e)) mostraMsg($('f_msg'), e.message, 'err');
+    }
+  }
+  async function correggiFatturaF(){
+    var f = FDET; if(!f) return;
+    var c = leggiModuloF();
+    var err = controllaClienteF(c);
+    mostraErroriF(err);
+    if(err.length){ toast('Controlla i campi segnati in rosso.', true); return; }
+    var btn = $('f_corr_btn'); btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      var res = await chiediF('fattura_correggi', { fattura_id: f.id, cliente: c, descrizione: $('f_descr').value.trim() });
+      FDET = res.fattura; UIF.correggi = false;
+      toast('Dati salvati: scarica il file nuovo della fattura ' + numFattura(FDET));
+      dopoModificaF();
+      vistaFattura(FDET.id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva e prepara di nuovo il file';
+      if(!gestisciErrore(e)) mostraMsg($('f_msg2'), e.message, 'err');
+    }
+  }
+
+  // ---- anteprima leggibile ----
+  async function vistaAnteprimaF(id){
+    if(!(FDET && FDET.id === id)){
+      metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="caricamento">Caricamento della fattura...</div>');
+      try{
+        var res = await chiediF('fattura_dettaglio', { fattura_id: id });
+        if(rotta().v !== 'anteprima' || rotta().id !== id) return;
+        FDET = res.fattura;
+        if(!FATT) await caricaFatture();
+      }catch(e){
+        if(!gestisciErrore(e)) metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="sec"><div class="msgx err">Fattura non disponibile: ' + esc(e.message) + '</div></div>');
+        return;
+      }
+      if(rotta().v !== 'anteprima' || rotta().id !== id) return;
+    }
+    var f = FDET, c = f.cliente || {}, t = TITOLARE || {}, b = Number(f.importo) > SOGLIA_BOLLO;
+    var h = '<a class="back" href="#fattura/' + esc(f.id) + '">' + ICO_BACK + 'Fattura ' + esc(numFattura(f)) + '</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:0"><div class="note">Anteprima leggibile. Il documento valido è il file XML caricato sul portale.</div></div>';
+    h += '<div class="sec"><div class="foglio">';
+    h += '<div class="fh"><div><p class="ftit">Fattura ' + esc(numFattura(f)) + '</p><div class="fsub">Fattura elettronica, tipo documento TD01</div></div><div><div class="fk">Data</div><div>' + esc(dataNum(f.data_fattura)) + '</div></div></div>';
+    h += '<div style="margin:-4px 0 14px"><div class="fk">Causale</div><div>' + esc(DICITURA_F) + (f.numero_stripe ? '<br>Rif. pagamento Stripe n. ' + esc(f.numero_stripe) : '') + '</div></div>';
+    h += '<div class="fparti"><div><div class="fk">Da</div><b>' + esc([t.nome, t.cognome].filter(Boolean).join(' ')) + '</b><br>' + esc([t.indirizzo, t.numero_civico].filter(Boolean).join(' ')) + '<br>' + esc((t.cap || '') + ' ' + (t.comune || '') + (t.provincia ? ' (' + t.provincia + ')' : '')) + '<br>Partita IVA ' + esc(t.partita_iva || '') + (t.codice_fiscale ? '<br>Codice fiscale ' + esc(t.codice_fiscale) : '') + '<br>Regime forfettario</div>';
+    h += '<div><div class="fk">A</div><b>' + esc(nomeFatt(c)) + '</b><br>' + esc(c.indirizzo || '') + '<br>' + esc((c.cap || '') + ' ' + (c.comune || '') + (c.provincia ? ' (' + c.provincia + ')' : '')) + '<br>' + (c.tipo_id === 'cf' ? 'Codice fiscale ' : 'Partita IVA ') + esc(c.id_fiscale || '') + '<br>' + esc(c.codice_destinatario ? 'Codice destinatario ' + c.codice_destinatario : c.pec ? 'PEC ' + c.pec : 'Codice destinatario 0000000') + '</div></div>';
+    h += '<div class="ftab"><table><thead><tr><th>Descrizione</th><th class="dx">Quantità</th><th class="dx">Prezzo</th><th class="dx">IVA</th><th class="dx">Totale</th></tr></thead><tbody>';
+    h += '<tr><td class="descr" data-l="Descrizione">' + esc(f.descrizione) + '</td><td class="dx" data-l="Quantità">1</td><td class="dx" data-l="Prezzo">' + esc(euro(f.importo)) + '</td><td class="dx" data-l="IVA">0% (N2.2)</td><td class="dx" data-l="Totale">' + esc(euro(f.importo)) + '</td></tr>';
+    h += '</tbody></table></div>';
+    h += '<div class="ftot"><div><span>Imponibile</span><span>' + esc(euro(f.importo)) + '</span></div><div><span>IVA</span><span>' + esc(euro(0)) + '</span></div>';
+    if(b) h += '<div><span>Bollo virtuale (a carico dell\'emittente)</span><span>2,00 €</span></div>';
+    h += '<div class="gr"><span>Totale</span><span>' + esc(euro(f.importo)) + '</span></div></div>';
+    h += '<div class="fnote">Riferimento normativo: ' + esc(RIF_NORM_F) + '.' + (b ? '<br>Imposta di bollo assolta in modo virtuale.' : '') + '</div>';
+    h += '</div></div>';
+    h += '<div class="sec"><a class="btn sec2 pieno" href="#fattura/' + esc(f.id) + '">Torna alla fattura</a></div>';
+    h += '</div>';
+    metti(h);
+  }
+
+  // ---- impostazioni ----
+  async function vistaImpostazioniF(){
+    if(!FATT){
+      metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="caricamento">Caricamento delle impostazioni...</div>');
+      try{ await caricaFatture(); }catch(e){ return; }
+      if(rotta().v !== 'fatture-impostazioni') return;
+      if(!FATT){ metti('<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="sec"><div class="msgx err">Impostazioni non disponibili in questo momento.</div><div style="margin-top:12px"><button class="btn sec2" type="button" data-az="f_riprova">Riprova</button></div></div>'); return; }
+    }
+    var d = FATT.dati || {}, t = TITOLARE || FATT.titolare || {};
+    var a = annoCorrente();
+    var s1 = d.serie, s2 = d.serie_prossimo_anno;
+    var bloccata = !!(s1 && Number(s1.ultimo_numero) > 0);
+    var bloccata2 = !!(s2 && Number(s2.ultimo_numero) > 0);
+    var scrive = puoScrivere();
+    var h = '<a class="back" href="#fatture">' + ICO_BACK + 'Fatture</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:0"><h1 class="h1">Impostazioni delle fatture</h1></div>';
+    h += '<div class="sec"><div class="h2">Serie EventsFun</div><div class="card pad">';
+    h += '<div class="campo"><label class="lbl" for="pref1">Lettere della serie ' + a + '</label><input class="field" id="pref1" value="' + esc(s1 ? s1.lettere : '') + '"' + (bloccata || !scrive ? ' disabled' : '') + ' maxlength="6" autocapitalize="characters" placeholder="Per esempio EF">';
+    h += '<div class="err-campo" id="e_pref1" hidden></div><div class="note" style="margin-top:6px">' + (bloccata ? 'Bloccate: nel ' + a + ' sono già state create fatture con queste lettere.' : 'Si possono cambiare finché nel ' + a + ' non è stata creata nessuna fattura. I numeri avranno la forma ' + esc((s1 ? s1.lettere : 'EF') + '-0001') + '.') + '</div></div>';
+    h += '<div class="campo"><label class="lbl" for="pref2">Lettere della serie ' + (a + 1) + '</label><input class="field" id="pref2" value="' + esc(s2 ? s2.lettere : '') + '"' + (bloccata2 || !scrive ? ' disabled' : '') + ' maxlength="6" autocapitalize="characters" placeholder="Da scegliere entro il 1° gennaio">';
+    h += '<div class="err-campo" id="e_pref2" hidden></div><div class="note" style="margin-top:6px">Dal 1° gennaio la numerazione riparte da 1. Le lettere devono essere diverse da quelle delle fatture delle tue altre attività.</div></div>';
+    if(scrive) h += '<button class="btn pieno" type="button" data-az="f_serie_salva" id="f_serie_btn">Salva le lettere</button><div class="msgx" id="f_msg"></div>';
+    h += '</div></div>';
+    h += '<div class="sec"><div class="h2">Dati fissi della fattura</div><div class="card">';
+    h += '<div class="row top-al"><div class="grow"><div class="t">Titolare</div><div class="s">' + esc([t.nome, t.cognome].filter(Boolean).join(' ') + ', ' + [t.indirizzo, t.numero_civico].filter(Boolean).join(' ') + ', ' + (t.cap || '') + ' ' + (t.comune || '') + ' (' + (t.provincia || '') + ')') + '<br>Partita IVA ' + esc(t.partita_iva || '') + '<br>Codice fiscale ' + (t.codice_fiscale ? esc(t.codice_fiscale) : '<span style="color:var(--bad)">mancante: senza, il file per lo SdI non si prepara</span>') + '<br>Regime forfettario (' + esc(t.regime_fiscale || 'RF19') + ')</div></div></div>';
+    h += '<div class="row top-al"><div class="grow"><div class="t">Dicitura (nella causale)</div><div class="s">' + esc(DICITURA_F) + '</div></div></div>';
+    h += '<div class="row top-al"><div class="grow"><div class="t">Riferimento normativo</div><div class="s">' + esc(RIF_NORM_F) + ' (il campo del tracciato ammette al massimo 100 caratteri)</div></div></div>';
+    h += '<div class="row top-al"><div class="grow"><div class="t">Bollo virtuale</div><div class="s">2,00 € sulle fatture sopra 77,47 €, a tuo carico</div></div></div>';
+    h += '</div><div class="note" style="margin-top:6px">Questi dati non si modificano dal gestionale: se cambiano, si aggiornano una volta per tutte nel sistema.</div></div>';
+    h += '</div>';
+    metti(h);
+  }
+  async function salvaSerieF(){
+    var a = annoCorrente(), msg = $('f_msg'), btn = $('f_serie_btn');
+    nascondiMsg(msg);
+    var cambi = [];
+    [['pref1', a, (FATT.dati.serie || {}).lettere], ['pref2', a + 1, (FATT.dati.serie_prossimo_anno || {}).lettere]].forEach(function(x){
+      var el = $(x[0]), e = $('e_' + x[0]);
+      e.hidden = true; el.classList.remove('sbagliato');
+      if(el.disabled) return;
+      var v = el.value.trim().toUpperCase();
+      if(!v || v === (x[2] || '')) return;
+      if(!/^[A-Z]{1,6}$/.test(v)){ e.hidden = false; e.textContent = 'Solo lettere, da 1 a 6.'; el.classList.add('sbagliato'); cambi = null; return; }
+      if(cambi) cambi.push([x[1], v]);
+    });
+    if(cambi === null) return;
+    if(!cambi.length){ toast('Nessuna modifica da salvare'); return; }
+    btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      for(var i = 0; i < cambi.length; i++) await chiediF('fatture_serie_salva', { anno: cambi[i][0], lettere: cambi[i][1] });
+      toast('Lettere salvate');
+      FATT = null; FATT_ALTRO = null;
+      await caricaFatture();
+      vistaImpostazioniF();
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva le lettere';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+
+  // ---- scheda cliente: dati di fatturazione ----
+  async function salvaSchedaF(){
+    var c = leggiModuloF();
+    var err = controllaClienteF(c);
+    mostraErroriF(err);
+    if(err.length){ toast('Controlla i campi segnati in rosso.', true); return; }
+    var btn = $('f_scheda_btn'); btn.disabled = true; btn.textContent = 'Salvataggio...';
+    try{
+      var id = SCHEDA.cliente.id;
+      await chiediF('fatturazione_salva', { order_id: id, cliente: c });
+      F.modificaFatt = false;
+      SCHEDA_F = null;
+      toast('Dati di fatturazione salvati');
+      dopoModificaF();
+      await vistaCliente(id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva i dati';
+      if(!gestisciErrore(e)) mostraMsg($('f_msg'), e.message, 'err');
+    }
+  }
+
   // ---------------- comandi ----------------
   document.addEventListener('click', function(ev){
     var el = ev.target.closest('[data-az],[data-fcli],[data-per],[data-piano],[data-ass],[data-fev],[data-fmsg]');
@@ -2120,6 +2939,27 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'push_disattiva': disattivaPush(); break;
       case 'push_prova': provaPush(); break;
       case 'push_rimuovi': rimuoviDispositivo(el.getAttribute('data-id')); break;
+      case 'tab_cli': F.tabCli = el.getAttribute('data-tab'); F.modificaFatt = false; disegnaScheda(); break;
+      case 'f_riprova': FATT = null; FATT_ALTRO = null; disegnaRotta(false); break;
+      case 'f_ricarica_cli': SCHEDA_F = null; vistaCliente(rotta().id); break;
+      case 'f_anno': F.fattAnno = Number(el.getAttribute('data-anno')); vistaFatture(); break;
+      case 'f_tipo_cli':
+        FORM.tipo = el.getAttribute('data-val'); sceltaSeg(el, 'f_tipo_cli');
+        $('blk_ente').hidden = FORM.tipo === 'persona'; $('blk_persona').hidden = FORM.tipo !== 'persona'; break;
+      case 'f_tipo_id': FORM.tipoId = el.getAttribute('data-val'); sceltaSeg(el, 'f_tipo_id'); break;
+      case 'f_crea': creaFatturaF(); break;
+      case 'f_xml': scaricaXmlF(); break;
+      case 'f_caricata': statoFatturaF('caricata'); break;
+      case 'f_scarto_apri': UIF.scarto = true; vistaFattura(FDET.id).then(function(){ if($('s_motivo')) $('s_motivo').focus(); }); break;
+      case 'f_scarto_annulla': UIF.scarto = false; vistaFattura(FDET.id); break;
+      case 'f_scarto_conferma': statoFatturaF('scartata'); break;
+      case 'f_correggi_apri': UIF.correggi = true; vistaFattura(FDET.id); break;
+      case 'f_correggi_annulla': UIF.correggi = false; vistaFattura(FDET.id); break;
+      case 'f_correggi': correggiFatturaF(); break;
+      case 'f_scheda_modifica': F.modificaFatt = true; disegnaScheda(); break;
+      case 'f_scheda_annulla': F.modificaFatt = false; disegnaScheda(); break;
+      case 'f_scheda_salva': salvaSchedaF(); break;
+      case 'f_serie_salva': salvaSerieF(); break;
     }
   });
 
@@ -2139,8 +2979,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
         if(d.tipo !== 'apri' || !d.url || !DATI) return;
         var k = String(d.url).indexOf('#');
         var dest = k >= 0 ? String(d.url).slice(k + 1) : '';
-        SCHEDA = null; RICH = null; INC = null;
-        aggiornaDati(false).then(function(){
+        SCHEDA = null; SCHEDA_F = null; RICH = null; INC = null; FDET = null; FATT_ALTRO = null;
+        aggiornaDati(false).then(function(){ return caricaFatture().catch(function(){}); }).then(function(){
           if(dest && location.hash !== '#' + dest) location.hash = dest; else disegnaRotta(false);
         });
       });
