@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /gestionale.html
+Disallow: /agenzia-dashboard.html
+Disallow: /pro-dashboard.html
+Disallow: /base-dashboard.html
+Disallow: /info-dashboard.html
+Disallow: /newsletter-agenzia.html
+Disallow: /statistiche-agenzia.html
+Disallow: /newsletter-demo.html
+
+Sitemap: https://eventsfun.com/sitemap.xml
