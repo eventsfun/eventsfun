@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<!-- EventsFun | Guida | Lista d'attesa e posti limitati -->
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lista d'attesa per eventi con posti limitati | EventsFun</title>
+<meta name="description" content="Evento con posti limitati? Come fissare la capienza, cosa fare a evento pieno e come usare una lista d'attesa per riempire i posti che si liberano.">
+<link rel="canonical" href="https://eventsfun.com/guide/lista-attesa-evento.html">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="shortcut icon" href="../favicon.ico">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Posti limitati e lista d'attesa: come gestire un evento al completo",
+  "description": "Evento con posti limitati? Come fissare la capienza, cosa fare a evento pieno e come usare una lista d'attesa per riempire i posti che si liberano.",
+  "author": {
+    "@type": "Organization",
+    "name": "EventsFun",
+    "url": "https://eventsfun.com"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "EventsFun",
+    "url": "https://eventsfun.com"
+  },
+  "datePublished": "2026-10-13",
+  "dateModified": "2026-10-13",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://eventsfun.com/guide/lista-attesa-evento.html"
+  }
+}
+</script>
+
+<style>
+:root{--gold:#C9A96E;--gold-dark:#8a6e3e;--bg:#0A0A0A;--bg2:#111111;--bg3:#161616;--border:rgba(255,255,255,0.10);--text:#F5F0E8;--text-muted:rgba(240,237,232,0.75);--text-dim:rgba(240,237,232,0.6)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.7}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,10,0.9);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;letter-spacing:-.5px;color:var(--text);text-decoration:none}
+.nav-logo span{color:var(--gold)}
+.nav-back{font-size:13px;color:var(--text-dim);text-decoration:none;transition:color .2s}
+.nav-back:hover{color:var(--gold)}
+.page{max-width:760px;margin:0 auto;padding:112px 24px 100px}
+.art-label{display:inline-flex;align-items:center;gap:8px;padding:5px 13px;border-radius:20px;background:rgba(201,169,110,0.1);border:1px solid rgba(201,169,110,0.22);font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.art-title{font-family:'Syne',sans-serif;font-size:clamp(28px,5vw,46px);font-weight:800;letter-spacing:-1.5px;line-height:1.1;margin-bottom:20px}
+.art-sub{font-size:17px;line-height:1.75;color:var(--text-muted);font-weight:300;margin-bottom:36px;max-width:620px}
+.art-meta{display:flex;align-items:center;gap:16px;font-size:12px;color:var(--text-dim);padding-bottom:32px;border-bottom:1px solid var(--border);margin-bottom:52px;flex-wrap:wrap}
+.art-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text-dim)}
+.art-toc{position:relative;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px 28px;margin-bottom:52px}
+.art-toc-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:16px}
+.art-toc ol{padding-left:18px;display:flex;flex-direction:column;gap:8px}
+.art-toc li{font-size:14px}
+.art-toc a{color:var(--text-muted);text-decoration:none;transition:color .2s}
+.art-toc a:hover{color:var(--gold)}
+.art-body h2{font-family:'Syne',sans-serif;font-size:clamp(20px,3vw,26px);font-weight:800;letter-spacing:-.5px;margin:56px 0 18px;color:var(--text);line-height:1.2}
+.art-body h3{font-family:'Syne',sans-serif;font-size:17px;font-weight:700;margin:32px 0 12px;color:var(--text)}
+.art-body p{font-size:15px;line-height:1.8;color:var(--text-muted);margin-bottom:20px}
+.art-body p strong{color:var(--text);font-weight:600}
+.art-body ul,.art-body ol{margin:0 0 22px 20px;display:flex;flex-direction:column;gap:10px}
+.art-body li{font-size:15px;line-height:1.7;color:var(--text-muted)}
+.art-body li strong{color:var(--text);font-weight:600}
+.box{border-radius:12px;padding:22px 26px;margin:32px 0}
+.box-info{background:rgba(110,160,220,0.07);border:1px solid rgba(110,160,220,0.18)}
+.box-warn{background:rgba(201,169,110,0.07);border:1px solid rgba(201,169,110,0.22)}
+.box-ok{background:rgba(110,201,130,0.07);border:1px solid rgba(110,201,130,0.18)}
+.box-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:.3px;margin-bottom:10px}
+.box-info .box-title{color:#8ab4d8}
+.box-warn .box-title{color:var(--gold)}
+.box-ok .box-title{color:#7ED99A}
+.box p{font-size:14px;line-height:1.7;color:var(--text-muted);margin-bottom:0}
+.use-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:28px 0}
+.use-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px}
+.use-card-icon{font-size:24px;margin-bottom:10px}
+.use-card h3{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text)}
+.use-card p{font-size:13px;line-height:1.6;color:var(--text-muted);margin:0}
+.art-cta{background:linear-gradient(135deg,rgba(201,169,110,0.1),rgba(201,169,110,0.04));border:1px solid rgba(201,169,110,0.28);border-radius:16px;padding:36px;text-align:center;margin:64px 0 0}
+.art-cta h3{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;margin-bottom:10px;letter-spacing:-.3px}
+.art-cta p{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto}
+.cta-btn{display:inline-block;padding:13px 30px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'Syne',sans-serif;font-size:14px;font-weight:700;text-decoration:none;letter-spacing:-.2px;transition:opacity .2s}
+.cta-btn:hover{opacity:.88}
+.cta-sub{margin-top:14px;font-size:12px;color:var(--text-dim)}
+.related{margin-top:72px;padding-top:48px;border-top:1px solid var(--border)}
+.related-title{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--text-dim);margin-bottom:20px}
+.related-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.related-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:20px;text-decoration:none;transition:border-color .2s,transform .2s;display:block}
+.related-card:hover{border-color:rgba(201,169,110,0.3);transform:translateY(-2px)}
+.related-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.related-card h4{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--text);line-height:1.35}
+footer{padding:40px 24px;border-top:1px solid var(--border)}
+.footer-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--text);text-decoration:none}
+.footer-logo span{color:var(--gold)}
+.footer-copy{font-size:12px;color:var(--text-dim)}
+@media(max-width:640px){
+  nav{padding:0 16px}
+  .page{padding:100px 16px 80px}
+  .use-grid{grid-template-columns:1fr}
+  .related-grid{grid-template-columns:1fr}
+  .art-cta{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://eventsfun.com" class="nav-logo">Events<span>Fun</span></a>
+  <a href="https://eventsfun.com" class="nav-back">← Torna al sito</a>
+</nav>
+
+<div class="page">
+
+  <div class="art-label">Guida pratica</div>
+  <h1 class="art-title">Posti limitati e lista d'attesa: come gestire un evento al completo</h1>
+  <p class="art-sub">Fissare la capienza, dire di no senza perdere le persone e riempire i posti che si liberano all'ultimo momento: come funziona, passo per passo.</p>
+  <div class="art-meta">
+    <span>EventsFun</span>
+    <span class="art-meta-dot"></span>
+    <span>Aggiornato: ottobre 2026</span>
+    <span class="art-meta-dot"></span>
+    <span>Lettura: 4 minuti</span>
+  </div>
+
+  <div class="art-toc" aria-label="Indice">
+    <div class="art-toc-title">In questa guida</div>
+    <ol>
+      <li><a href="#perche-capienza">Perché conviene fissare una capienza</a></li>
+      <li><a href="#posti-finiti">Cosa succede quando i posti finiscono</a></li>
+      <li><a href="#come-funziona">La lista d'attesa: come funziona</a></li>
+      <li><a href="#recuperare-posti">Recuperare i posti che si liberano</a></li>
+      <li><a href="#errori-comuni">Gli errori più comuni</a></li>
+      <li><a href="#con-eventsfun">Come si fa con EventsFun</a></li>
+    </ol>
+  </div>
+
+  <div class="art-body">
+
+    <h2 id="perche-capienza">Perché conviene fissare una capienza</h2>
+
+    <p>Quasi ogni evento ha un limite reale: i posti a sedere di una sala, i materiali di un laboratorio, i coperti di una cena, il numero di persone che un relatore riesce a seguire. Se quel limite non è scritto nel sistema di iscrizione, lo scopri il giorno dell'evento, quando ormai è troppo tardi per rimediare.</p>
+
+    <p>Fissare una <strong>capienza</strong> significa indicare il numero massimo di persone. Da quel momento le iscrizioni si contano da sole e vedi sempre, a colpo d'occhio, quanti posti restano.</p>
+
+    <div class="box box-warn">
+      <div class="box-title">⚠️ Conta i posti davvero disponibili</div>
+      <p>Prima di inserire il numero, togli i posti che non sono per il pubblico: staff, relatori, ospiti invitati, posti riservati. La capienza che imposti deve essere quella delle iscrizioni, non quella totale della sala.</p>
+    </div>
+
+    <h2 id="posti-finiti">Cosa succede quando i posti finiscono</h2>
+
+    <p>Quando l'ultimo posto è occupato hai tre strade. Non ce n'è una giusta in assoluto: dipende da quanta richiesta ti aspetti e da quanto ti pesa perdere una persona interessata.</p>
+
+    <ul>
+      <li><strong>Chiudere le iscrizioni.</strong> È la scelta più semplice. Va bene per eventi piccoli o ripetuti, dove chi resta fuori può venire la volta dopo. Il rischio è che chi arriva tardi trovi la porta chiusa e non torni.</li>
+      <li><strong>Raccogliere a mano i contatti di chi resta fuori.</strong> Funziona con pochissime persone, ma diventa subito difficile da seguire: devi ricordare chi era primo, chi hai già avvisato e chi ha cambiato idea.</li>
+      <li><strong>Aprire una lista d'attesa.</strong> Chi arriva dopo si iscrive lo stesso, ma viene messo in coda. Se si libera un posto, qualcuno è già pronto a occuparlo.</li>
+    </ul>
+
+    <p>Se prevedi che l'evento si riempia, o se sai che qualche iscritto non si presenterà (succede spesso), la lista d'attesa è la scelta che spreca meno posti.</p>
+
+    <h2 id="come-funziona">La lista d'attesa: come funziona</h2>
+
+    <p>Una lista d'attesa è un elenco ordinato di persone che vogliono partecipare ma, in questo momento, non hanno un posto. Per funzionare bene ha tre regole.</p>
+
+    <ol>
+      <li><strong>È chiara per chi si iscrive.</strong> La persona deve capire subito di essere in attesa, non confermata. Se pensa di avere un posto e si presenta all'ingresso, il problema ricade su di te.</li>
+      <li><strong>Ha un ordine.</strong> Si segue l'ordine di arrivo: chi si è messo in coda prima viene chiamato prima.</li>
+      <li><strong>Non dà ciò che serve per entrare.</strong> Il link di un evento online o il codice d'ingresso vanno solo a chi ha un posto confermato.</li>
+    </ol>
+
+    <h2 id="recuperare-posti">Recuperare i posti che si liberano</h2>
+
+    <p>La lista d'attesa serve solo se la usi quando un posto si libera. Succede per le disdette, ma anche per chi semplicemente non risponde più. Un metodo semplice:</p>
+
+    <ul>
+      <li><strong>Quando qualcuno disdice</strong>, il primo in lista passa tra i confermati e riceve la conferma con tutti i dettagli dell'evento.</li>
+      <li><strong>Nei giorni prima dell'evento</strong>, scrivi a chi è confermato e chiedi di avvisarti se non può venire. Meglio saperlo con qualche giorno di anticipo che il giorno stesso.</li>
+      <li><strong>Il giorno dell'evento</strong>, decidi in anticipo che cosa fare se restano posti vuoti: far entrare chi è in lista e si presenta, oppure no. Meglio stabilire la regola prima, non all'ingresso con la fila davanti.</li>
+    </ul>
+
+    <h2 id="errori-comuni">Gli errori più comuni</h2>
+
+    <p><strong>Lista d'attesa senza dirlo chiaramente.</strong> Se chi si iscrive in coda riceve un messaggio identico a quello dei confermati, penserà di avere il posto. Scrivi nero su bianco che è in attesa e che riceverà una conferma separata se si libera un posto.</p>
+
+    <p><strong>Capienza gonfiata alla cieca.</strong> Alzare il numero perché «tanto qualcuno non viene» è una scommessa. Se decidi di farla, falla consapevolmente e controlla le iscrizioni nei giorni prima dell'evento.</p>
+
+    <p><strong>Nessun modo per disdire.</strong> Se chi non può venire non sa come avvisarti, il posto resta occupato fino all'ultimo. Scrivi sulla pagina e nelle email a chi rivolgersi per disdire.</p>
+
+    <p><strong>Dimenticarsi della lista.</strong> Una lista d'attesa che nessuno guarda è solo un elenco di persone deluse. Controllala con regolarità, soprattutto vicino alla data dell'evento.</p>
+
+    <p><strong>Cambiare sala senza cambiare la capienza.</strong> Se passi a uno spazio più grande (o più piccolo), aggiorna subito il numero dei posti, altrimenti le iscrizioni si chiudono troppo presto o troppo tardi.</p>
+
+    <h2 id="con-eventsfun">Come si fa con EventsFun</h2>
+
+    <p>La <strong>capienza</strong> si imposta quando crei l'evento ed è disponibile in tutti i piani. Puoi cambiarla anche dopo, dalle impostazioni dell'evento: la pagina di iscrizione si aggiorna da sola e l'indirizzo non cambia.</p>
+
+    <div class="use-grid">
+      <div class="use-card">
+        <div class="use-card-icon">⛔</div>
+        <h3>Piani Base e Pro</h3>
+        <p>Raggiunta la capienza, le iscrizioni si fermano. Perfetto quando basta chiudere e non serve tenere una coda.</p>
+      </div>
+      <div class="use-card">
+        <div class="use-card-icon">⏳</div>
+        <h3>Piano Agenzia</h3>
+        <p>Lista d'attesa automatica: a evento pieno la pagina permette di iscriversi lo stesso e mette la persona in coda.</p>
+      </div>
+    </div>
+
+    <p>Con il piano Agenzia, quando l'evento è al completo la pagina lo dice chiaramente e chi si iscrive vede una schermata che gli conferma di essere <strong>in lista d'attesa</strong>, non iscritto. Nella dashboard trovi un pulsante <strong>Lista attesa</strong> con il numero di persone in coda e l'elenco completo.</p>
+
+    <div class="box box-ok">
+      <div class="box-title">✓ Gestione automatica della lista</div>
+      <p>È un'opzione che attivi tu. Se è accesa, quando elimini un iscritto confermato il primo in lista d'attesa viene confermato in automatico e riceve l'email di conferma.</p>
+    </div>
+
+    <p>Per gli eventi online, il link di partecipazione viene inviato solo agli iscritti confermati, non a chi è in lista d'attesa. Il giorno dell'evento usi poi la <a href="lista-presenze-evento.html" style="color:var(--gold)">lista presenze</a> per spuntare chi arriva, anche dal telefono.</p>
+
+  </div>
+
+  <div class="art-cta">
+    <h3>Capienza e iscrizioni sotto controllo</h3>
+    <p>Imposti il numero di posti e EventsFun conta le iscrizioni per te. Provalo nella demo e guarda come si presenta ai tuoi partecipanti.</p>
+    <a href="https://eventsfun.com/demo.html" class="cta-btn">Prova la demo gratuita →</a>
+    <p class="cta-sub">Nessuna registrazione richiesta per la demo</p>
+  </div>
+
+  <div class="related">
+    <div class="related-title">Altre guide</div>
+    <div class="related-grid">
+      <a href="iscrizioni-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Come gestire le iscrizioni a un evento</h4>
+      </a>
+      <a href="iscrizioni-evento-online.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Iscrizioni a un evento online</h4>
+      </a>
+      <a href="modulo-iscrizione-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Modulo di iscrizione: quali campi chiedere</h4>
+      </a>
+      <a href="qr-code-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>QR code per eventi: come crearlo e usarlo</h4>
+      </a>
+      <a href="lista-presenze-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Lista presenze digitale: addio ai fogli Excel</h4>
+      </a>
+      <a href="gdpr-iscrizioni-evento.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>GDPR e raccolta dati agli eventi: cosa devi sapere</h4>
+      </a>
+      <a href="iscrizioni-sagre-feste-di-paese.html" class="related-card">
+        <div class="related-label">Guida</div>
+        <h4>Sagre e feste di paese: iscrizioni e informazioni</h4>
+      </a>
+      <a href="https://eventsfun.com/alternativa-a-eventbrite.html" class="related-card">
+        <div class="related-label">Confronto</div>
+        <h4>EventsFun come alternativa a Eventbrite</h4>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="footer-inner">
+    <a href="https://eventsfun.com" class="footer-logo">Events<span>Fun</span></a>
+    <span class="footer-copy">© 2026 EventsFun</span>
+  </div>
+</footer>
+
+</body>
+</html>
