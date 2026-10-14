@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Pro Dashboard | v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Pro Dashboard | v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -924,6 +924,7 @@ tbody td.xv{color:var(--gold)}
     <div style="text-align:center;padding:8px 0">
       <div style="background:#fff;border-radius:10px;display:inline-block;padding:14px;margin:16px 0"><div id="qrCode"></div></div>
       <div style="font-size:11px;color:var(--text-dim);word-break:break-all;margin-bottom:16px;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px" id="qrUrl"></div>
+      <button class="btn-full" id="qrCopyBtn" style="background:transparent;border:1px solid var(--gold);color:var(--gold);margin-bottom:10px" onclick="copyQrLink(this)">Copia link</button>
       <button class="btn-full" onclick="dlQR()">↓ Scarica QR</button>
     </div>
   </div>
@@ -1904,10 +1905,16 @@ function exportCSV() {
 /* ============================================================
    QR CODE
    ============================================================ */
+/* Copia il link dell'evento mostrato nella finestra del QR */
+var qrLinkCorrente = '';
+function copyQrLink(btn) {
+  if (!qrLinkCorrente) return;
+  copyTxt(qrLinkCorrente, btn);
+}
 function openQR() {
   var ev = currentEv; if (!ev) { alert('Crea prima il tuo evento.'); return; }
   var url = landingUrl(ev);
-  document.getElementById('qrUrl').textContent = url;
+  document.getElementById('qrUrl').textContent = url; qrLinkCorrente = url;
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
   if (ev.qr_logo) {
