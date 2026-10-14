@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1412,6 +1412,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <div style="text-align:center;padding:8px 0">
       <div style="background:#fff;border-radius:10px;display:inline-block;padding:14px;margin:16px 0"><div id="qrCode"></div></div>
       <div style="font-size:11px;color:var(--text-dim);word-break:break-all;margin-bottom:16px;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px" id="qrUrl"></div>
+      <button class="btn-full" id="qrCopyBtn" style="background:transparent;border:1px solid var(--gold);color:var(--gold);margin-bottom:10px" onclick="copyQrLink(this)">Copia link</button>
       <button class="btn-full" onclick="dlQR()">↓ Scarica QR</button>
     </div>
   </div>
@@ -4257,10 +4258,16 @@ function exportPDF() {
 /* ============================================================
    QR CODE
    ============================================================ */
+/* Copia il link dell'evento mostrato nella finestra del QR */
+var qrLinkCorrente = '';
+function copyQrLink(btn) {
+  if (!qrLinkCorrente) return;
+  copyTxt(qrLinkCorrente, btn);
+}
 function openQR() {
   var ev = currentEv; if (!ev) { alert('Crea prima il tuo evento.'); return; }
   var url = landingUrl(ev);
-  setText('qrUrl', url);
+  setText('qrUrl', url); qrLinkCorrente = url;
   var w = document.getElementById('qrCode'); w.innerHTML = '';
   new QRCode(w, { text: url, width: 240, height: 240, colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.H });
   if (ev.qr_logo) {
