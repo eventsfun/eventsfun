@@ -189,6 +189,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
       <tr><td>Invio email di accesso all'area personale e aggiornamenti sul servizio</td><td>Esecuzione del contratto (art. 6.1.b GDPR)</td></tr>
       <tr><td>Assistenza ai clienti (risposta alle richieste inviate dalla guida o per email)</td><td>Esecuzione del contratto (art. 6.1.b GDPR)</td></tr>
       <tr><td>Risposta ai messaggi inviati con il modulo contatti del sito eventsfun.com</td><td>Misure precontrattuali adottate su richiesta dell'interessato (art. 6.1.b GDPR)</td></tr>
+      <tr><td>Misurazione anonima delle visite al sito e alla demo (conteggi senza cookie né identificativi)</td><td>Legittimo interesse (art. 6.1.f GDPR)</td></tr>
       <tr><td>Adempimento di obblighi fiscali e legali</td><td>Obbligo legale (art. 6.1.c GDPR)</td></tr>
       <tr><td>Invio di comunicazioni commerciali (solo se esplicitamente richiesto)</td><td>Consenso (art. 6.1.a GDPR)</td></tr>
       <tr><td>Raccolta delle iscrizioni e invio delle email legate all'evento (conferma, promemoria) per conto degli organizzatori</td><td>Esecuzione di un contratto con il partecipante (art. 6.1.b GDPR)</td></tr>
@@ -209,6 +210,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
       <tr><td>Iscritti, accompagnatori, liste d'attesa, richieste di informazioni e newsletter programmate (piani Agenzia e Punto Info)</td><td>Per tutta la durata dell'abbonamento. Alla fine dell'accesso vengono eliminati automaticamente nella notte successiva (vedi "Fine dell'abbonamento: cosa succede ai dati")</td></tr>
       <tr><td>Eventi, pagine, impostazioni, rubrica, fornitori e costi, storico delle newsletter inviate (piani Agenzia e Punto Info)</td><td>Per tutta la durata dell'abbonamento e per 12 mesi dopo la fine dell'accesso, poi eliminati automaticamente</td></tr>
       <tr><td>Materiale allegato alle newsletter programmate (piano Agenzia)</td><td>Eliminato alla scadenza scelta dall'organizzatore (7, 15 o 30 giorni)</td></tr>
+      <tr><td>Conteggi anonimi delle visite al sito e alla demo</td><td>13 mesi, poi eliminati automaticamente</td></tr>
       <tr><td>Log di accesso e sicurezza</td><td>Fino a 90 giorni</td></tr>
       <tr><td>Messaggi inviati dal modulo contatti del sito</td><td>24 mesi, poi eliminati automaticamente. Se hai dato il consenso agli aggiornamenti, restano solo nome, cognome, email e consenso, fino alla revoca</td></tr>
       <tr><td>Richieste di assistenza e risposte</td><td>24 mesi dall'ultimo messaggio della conversazione, poi eliminate automaticamente. Gli eventuali allegati inviati per email restano presso Resend, il fornitore che riceve le email per nostro conto, secondo i suoi tempi di conservazione</td></tr>
@@ -259,16 +261,19 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;line-heig
     <div class="section-badge">Cookie Policy</div>
     <h2>Informativa sui cookie e sulla memoria del browser</h2>
     <h3>Strumenti tecnici (necessari)</h3>
-    <p>Il sito EventsFun non installa cookie. Alcune pagine salvano poche informazioni tecniche nella memoria del browser (localStorage e sessionStorage), necessarie al funzionamento del servizio. Non vengono utilizzati strumenti di profilazione o di tracciamento, né propri né di terze parti.</p>
+    <p>Il sito EventsFun non installa cookie. Alcune pagine salvano poche informazioni tecniche nella memoria del browser (localStorage e sessionStorage), necessarie al funzionamento del servizio. Non vengono utilizzati cookie né strumenti di profilazione o di tracciamento di terze parti. Le visite sono contate solo in forma anonima, come descritto qui sotto.</p>
     <div class="table-wrap"><table class="data-table stack">
       <tr class="hdr"><th>Nome</th><th>Tipo</th><th>Durata</th><th>Finalità</th></tr>
       <tr><td data-label="Nome">ef_token (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Accesso alla dashboard senza reinserire il link (rimosso automaticamente se non pi&ugrave; valido)</td></tr>
       <tr><td data-label="Nome">ef_theme (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Preferenza tema chiaro/scuro della dashboard</td></tr>
       <tr><td data-label="Nome">ef_custom_stats (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Persistente</td><td data-label="Finalità">Disposizione delle statistiche scelta nella dashboard</td></tr>
       <tr><td data-label="Nome">ef_at, ef_email (sessionStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Fino alla chiusura della scheda</td><td data-label="Finalità">Mantenere aperta la sessione dell'area personale</td></tr>
+      <tr><td data-label="Nome">ef_src, ef_da, ef_m_* (sessionStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Fino alla chiusura della scheda</td><td data-label="Finalità">Ricordare l'etichetta del link e la provenienza generica, ed evitare di contare due volte la stessa azione nella stessa visita (conteggi anonimi, vedi sotto)</td></tr>
       <tr><td data-label="Nome">ef_demo (localStorage)</td><td data-label="Tipo">Tecnico</td><td data-label="Durata">Fino a "Ricomincia da zero" o alla pulizia del browser</td><td data-label="Finalità">Dati di prova inseriti nella demo: restano solo nel browser di chi la usa e non vengono inviati a EventsFun</td></tr>
     </table></div>
-    <p>Non essendo presenti cookie o strumenti di profilazione o tracciamento, non è necessaria la visualizzazione del banner cookie ai sensi del Provvedimento del Garante 8 maggio 2014 e delle successive Linee Guida del 2021.</p>
+    <h3>Misurazione anonima delle visite</h3>
+    <p>Per capire quante persone visitano il sito e la demo, e da dove arrivano, contiamo in forma anonima alcune azioni (per esempio: pagina aperta, demo avviata, clic su un piano). Non usiamo cookie e non salviamo nei conteggi l'indirizzo IP né altri identificativi, quindi i conteggi non sono collegati a nessuna persona. Salviamo soltanto la pagina, il passaggio, la provenienza generica (per esempio "linkedin" o "diretto"), il tipo di dispositivo (mobile o computer) e l'eventuale etichetta del link. Non registriamo nulla di ciò che scrivi nella demo. Questi dati sono conservati per 13 mesi e poi cancellati automaticamente. Se il tuo browser invia il segnale Do Not Track o Global Privacy Control, non conteggiamo nulla. Base giuridica: legittimo interesse a migliorare il servizio (art. 6.1.f GDPR). I conteggi sono ospitati su Supabase, in Europa (Irlanda). La misurazione non è attiva sulle pagine pubbliche degli eventi, sulle dashboard e sull'area personale.</p>
+    <p>Non essendo presenti cookie né strumenti di profilazione o tracciamento di terze parti, e limitandosi la misurazione a conteggi anonimi, non è necessaria la visualizzazione del banner cookie ai sensi del Provvedimento del Garante 8 maggio 2014 e delle successive Linee Guida del 2021.</p>
   </div>
 
   <!-- RUOLI E RESPONSABILITA -->

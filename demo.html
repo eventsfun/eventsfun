@@ -417,7 +417,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <div class="wc-step"><div class="wc-step-n">2</div><div><div class="wc-step-title">Apri la landing e iscriviti</div><div class="wc-step-desc">Vedi la pagina pubblica come la vedono i tuoi iscritti. Compila e invia -- appare subito in dashboard.</div></div></div>
       <div class="wc-step"><div class="wc-step-n">3</div><div><div class="wc-step-title">Gestisci presenze, esporta, scarica QR</div><div class="wc-step-desc">Check-in digitale, lista presenze in PDF da stampare, esporta dati CSV.</div></div></div>
     </div>
-    <div class="wc-cache-note"><strong>&#128274; I tuoi dati restano sul tuo dispositivo.</strong><br>Tutto viene salvato nella memoria locale del browser (localStorage). Nessun dato viene inviato a server. I dati si eliminano svuotando la cache o cliccando "Reimposta demo".</div>
+    <div class="wc-cache-note"><strong>&#128274; I dati che scrivi restano sul tuo dispositivo.</strong></div>
     <button class="wc-btn" onclick="startDemo()">Inizia la demo &rarr;</button>
     <span class="wc-reset-link" onclick="hardReset()">Reimposta demo (elimina tutti i dati)</span>
   </div>
@@ -464,6 +464,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <a href="#" onclick="openRubrica();return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128199; Rubrica</a>
       <a href="#" onclick="showView('newsletter');return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128231; Newsletter</a>
       <a href="#" onclick="showView('statistiche');return false;" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128200; Statistiche</a>
+      <a href="https://eventsfun.com/?src=demo&via=demo#prezzi" data-ef-pacchetti="menu" style="font-size:12px;color:var(--gold);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid rgba(201,169,110,0.4);transition:all .2s">Pacchetti</a>
       <a href="https://eventsfun.com/guida.html?dash=demo" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128214; Guida</a>
       <a href="https://eventsfun.com/guida.html?dash=demo#assistenza" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" style="font-size:12px;color:var(--text-dim);text-decoration:none;padding:5px 10px;border-radius:6px;border:1px solid var(--border);transition:all .2s" onmouseover="this.style.color='var(--gold)';this.style.borderColor='rgba(201,169,110,0.4)'" onmouseout="this.style.color='var(--text-dim)';this.style.borderColor='var(--border)'">&#128172; Assistenza</a>
       <button class="reset-btn" onclick="confirmReset()">&#128260; Reimposta</button>
@@ -475,6 +476,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <a href="#" class="nav-mob-item" onclick="openRubrica();closeMobMenu();return false;">&#128199; Rubrica</a>
       <a href="#" class="nav-mob-item" onclick="showView('newsletter');closeMobMenu();return false;">&#128231; Newsletter</a>
       <a href="#" class="nav-mob-item" onclick="showView('statistiche');closeMobMenu();return false;">&#128200; Statistiche</a>
+      <a href="https://eventsfun.com/?src=demo&via=demo#prezzi" data-ef-pacchetti="menu" class="nav-mob-item" style="color:var(--gold)">&#11088; Pacchetti</a>
       <a href="https://eventsfun.com/guida.html?dash=demo" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" class="nav-mob-item" onclick="closeMobMenu()">&#128214; Guida</a>
       <a href="https://eventsfun.com/guida.html?dash=demo#assistenza" onclick="if(window.matchMedia('(min-width:769px) and (pointer:fine)').matches){window.open(this.href,'_blank','noopener');return false;}" class="nav-mob-item" onclick="closeMobMenu()">&#128172; Assistenza</a>
       <div style="height:1px;background:var(--border);margin:4px 0"></div>
@@ -1526,7 +1528,7 @@ function pickerCreateNew(){var purpose=pickerPurpose;pickerPurpose=null;closeOv(
 /* ============================================================
    WELCOME + RESET
    ============================================================ */
-function startDemo(){lsSet(LS_STARTED,true);document.getElementById('welcomeScreen').style.display='none';init();}
+function startDemo(){try{if(window.EFMisura)EFMisura.inizio();}catch(e){}lsSet(LS_STARTED,true);document.getElementById('welcomeScreen').style.display='none';init();}
 function hardReset(){if(!confirm('Eliminare tutti i dati della demo e ricominciare da zero?'))return;[LS_EVENTS,LS_REGS,LS_STATS,LS_STARTED,LS_CONTATTI,LS_EVCONTATTI,LS_FORN_SEEDED,'ef_demo_richieste'].forEach(function(k){localStorage.removeItem(k);});location.reload();}
 function confirmReset(){hardReset();}
 
@@ -1615,11 +1617,11 @@ var _guideDone={};
 var _guideSteps={
   'created':{icon:'✅',text:'<strong>Evento creato!</strong> Ora apri la landing page: clicca "Anteprima / Iscriviti" per vedere come appare ai tuoi iscritti.'},
   'landing_opened':{icon:'👁',text:'<strong>Questa è la pagina pubblica.</strong> Compila il modulo e clicca "Iscriviti" per simulare un\'iscrizione reale.'},
-  'registered':{icon:'🎉',text:'<strong>Iscrizione completata!</strong> Il nominativo è in dashboard. Prova le <strong>Presenze</strong> per il check-in digitale, oppure scarica la lista in <strong>PDF</strong>.'},
+  'registered':{icon:'🎉',text:'<strong>Iscrizione completata!</strong> Il nominativo è in dashboard. Prova le <strong>Presenze</strong> per il check-in digitale, oppure scarica la lista in <strong>PDF</strong>. Ti piace? <a href="https://eventsfun.com/?src=demo&via=demo#prezzi" data-ef-pacchetti="registrata" style="color:var(--gold);font-weight:600;text-decoration:underline;white-space:nowrap">Vedi i pacchetti &rarr;</a>'},
   'checkin':{icon:'✅',text:'<strong>Check-in digitale attivo.</strong> Puoi anche stampare la lista presenze PDF. Prova "Esporta CSV" per scaricare tutti i dati.'},
-  'exported':{icon:'📄',text:'<strong>Hai completato il flusso completo!</strong> Creazione evento → iscrizioni → presenze → export. Questo è EventsFun.'}
+  'exported':{icon:'📄',text:'<strong>Hai provato il flusso completo!</strong> Questa è una demo: per creare eventi veri, con iscrizioni vere, scegli il pacchetto che fa per te. <a href="https://eventsfun.com/?src=demo&via=demo#prezzi" data-ef-pacchetti="export" style="color:var(--gold);font-weight:600;text-decoration:underline;white-space:nowrap">Vedi i pacchetti &rarr;</a>'}
 };
-function advanceGuide(stepId){if(_guideDone[stepId])return;_guideDone[stepId]=true;var step=_guideSteps[stepId];if(!step)return;var bar=document.getElementById('guideBar');if(!bar)return;document.getElementById('guideIcon').textContent=step.icon;document.getElementById('guideText').innerHTML=step.text;bar.style.display='flex';}
+function advanceGuide(stepId){if(_guideDone[stepId])return;_guideDone[stepId]=true;try{if(window.EFMisura)EFMisura.passo(stepId);}catch(e){}var step=_guideSteps[stepId];if(!step)return;var bar=document.getElementById('guideBar');if(!bar)return;document.getElementById('guideIcon').textContent=step.icon;document.getElementById('guideText').innerHTML=step.text;bar.style.display='flex';}
 function hideGuide(){var bar=document.getElementById('guideBar');if(bar)bar.style.display='none';}
 
 /* ============================================================
@@ -4362,5 +4364,6 @@ showView = function(n) {
 };
 </script>
 
+<script src="/misura.js" defer></script>
 </body>
 </html>
