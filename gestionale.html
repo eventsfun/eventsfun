@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -299,6 +299,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       <a href="#messaggi" data-v="messaggi">Messaggi dal sito<span class="pill p-warn" id="sbMsg" hidden></span></a>
       <a href="#venditori" data-v="venditori">Venditori</a>
       <a href="#newsletter" data-v="newsletter">Newsletter</a>
+      <a href="#statistiche" data-v="statistiche" id="sbStat" style="display:none">Statistiche sito</a>
       <a href="#controllo" data-v="controllo">Da controllare<span class="pill p-bad" id="sbCtrl" hidden></span></a>
       <hr>
       <a href="#notifiche" data-v="notifiche">Notifiche</a>
@@ -325,6 +326,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   var FN_URL = SB_URL + '/functions/v1/gestionale-api';
   var AZ_URL = SB_URL + '/functions/v1/gestionale-azioni';
   var FT_URL = SB_URL + '/functions/v1/gestionale-fatture';
+  var ST_URL = SB_URL + '/functions/v1/gestionale-statistiche';
   var sb = window.supabase.createClient(SB_URL, SB_ANON);
 
   var DATI = null;        // riepilogo generale (gest_snapshot)
@@ -335,12 +337,16 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   var FATT = null, FATT_ALTRO = null;     // elenco delle fatture (anno in corso / altro anno)
   var RICH = null;        // richiesta di assistenza aperta
   var INC = null;         // incassi caricati
+  var ST = null;          // statistiche del sito caricate
+  var ST_TIMER = null;    // aggiornamento automatico delle statistiche
+  var ST_SEQ = 0;         // evita che una risposta vecchia sovrascriva una nuova
   var ULTIMA_ROTTA = '';
   var F = {
     cli: 'tutti', cliOrd: 'recenti', q: '',
     ev: 'corso', evQ: '',
     ass: 'gestire', msg: 'gestire',
     incPer: 'mese', incDal: '', incAl: '', incPiano: '', incSconto: false,
+    stPer: 'tutto',
     tabCli: 'eventi', modificaFatt: false, fattAnno: 0
   };
 
@@ -671,6 +677,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var res = await chiedi('snapshot');
     DATI = res.dati || {};
     ME = res.me || {};
+    var sbStat = $('sbStat'); if(sbStat) sbStat.style.display = ME.ruolo === 'admin' ? '' : 'none';
     $('who').textContent = (ME.nome || ME.email || '') + (ME.ruolo ? ', ' + ME.ruolo : '');
     try{ var v = await chiedi('venditori_lista'); VENDITORI = v.venditori || []; }catch(e){ VENDITORI = []; }
     await caricaFatture();
@@ -725,8 +732,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function vai(h){
     if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
   }
-  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
-  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', statistiche: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', statistiche: 'statistiche', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
   function disegnaRotta(inCima){
     if(!DATI) return;
     var r = rotta();
@@ -756,6 +763,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'messaggi': vistaMessaggi(); break;
       case 'venditori': vistaVenditori(); break;
       case 'newsletter': vistaNewsletter(); break;
+      case 'statistiche': vistaStatistiche(); break;
       case 'controllo': vistaControllo(); break;
       case 'notifiche': vistaNotifiche(); break;
       case 'fatture': vistaFatture(); break;
@@ -1621,12 +1629,178 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     h += '<a class="row" href="#messaggi"><div class="grow"><div class="t">Messaggi dal sito</div><div class="s">' + (nNuovi === 1 ? '1 da gestire' : nNuovi + ' da gestire') + ', ' + nCons + ' con il consenso agli aggiornamenti</div></div>' + (nNuovi ? '<span class="pill p-warn">' + nNuovi + '</span>' : '') + ICO_CHEV + '</a>';
     h += '<a class="row" href="#venditori"><div class="grow"><div class="t">Venditori</div><div class="s">' + (nVend === 1 ? '1 attivo' : nVend + ' attivi') + '</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#newsletter"><div class="grow"><div class="t">Newsletter</div><div class="s">Comunicazioni a clienti, contatti dal sito e venditori</div></div>' + ICO_CHEV + '</a>';
+    if(ME.ruolo === 'admin') h += '<a class="row" href="#statistiche"><div class="grow"><div class="t">Statistiche sito</div><div class="s">Visite, demo e clic sui pacchetti, in tempo reale</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#controllo"><div class="grow"><div class="t">Da controllare</div><div class="s">' + (nC ? (nC === 1 ? '1 cosa da guardare' : nC + ' cose da guardare') : 'Tutto in ordine') + '</div></div>' + (nC ? '<span class="pill p-bad">' + nC + '</span>' : '') + ICO_CHEV + '</a>';
     h += '</div></div>';
     h += riquadroNotifiche();
     h += '<div class="sec"><div class="card"><div class="row"><div class="grow"><div class="t">' + esc(ME.nome || ME.email || '') + '</div><div class="s">' + esc(ME.email || '') + (ME.ruolo ? ', ' + esc(ME.ruolo) : '') + '</div></div><button class="btn sec2 piccolo" type="button" data-az="esci">Esci</button></div></div></div>';
     metti(h);
     apriRiquadroPush();
+  }
+
+  // ---------------- STATISTICHE SITO (solo amministratore) ----------------
+  var ST_EV = [
+    ['home_vista', 'Visite alla home'],
+    ['clic_demo', 'Clic su "Demo" (da home e guide)'],
+    ['demo_aperta', 'Demo aperte'],
+    ['demo_iniziata', 'Demo iniziate'],
+    ['evento_creato', 'Evento creato nella demo'],
+    ['iscrizione_prova', 'Iscrizione di prova completata'],
+    ['clic_invito', 'Clic sui pacchetti dalla demo'],
+    ['clic_acquisto', 'Clic su un piano nella home']
+  ];
+  var ST_DA = { diretto: 'Diretto o senza provenienza', linkedin: 'LinkedIn', facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube', google: 'Google', altro: 'Altri siti' };
+  var ST_PIANO = { base: 'Base', pro: 'Pro', 'agenzia-mensile': 'Agenzia mensile', 'agenzia-annuale': 'Agenzia annuale', 'punto-info-mensile': 'Punto Info mensile', 'punto-info-annuale': 'Punto Info annuale', altro: 'Altro' };
+  function stNum(n){ return Number(n || 0).toLocaleString('it-IT'); }
+  function stPct(a, b){ a = Number(a || 0); b = Number(b || 0); return b > 0 ? Math.round(a * 100 / b) + '%' : '--'; }
+  function stPeriodo(){
+    var o = parteData(oggi());
+    var meno = function(g){ var d = new Date(Date.UTC(o.a, o.m - 1, o.g - g)); return d.getUTCFullYear() + '-' + String(d.getUTCMonth() + 1).padStart(2, '0') + '-' + String(d.getUTCDate()).padStart(2, '0'); };
+    if(F.stPer === 'oggi') return { dal: oggi(), al: oggi() };
+    if(F.stPer === '7') return { dal: meno(6), al: oggi() };
+    if(F.stPer === '30') return { dal: meno(29), al: oggi() };
+    return { dal: '2026-01-01', al: oggi() };
+  }
+  function stFermaTimer(){ if(ST_TIMER){ clearInterval(ST_TIMER); ST_TIMER = null; } }
+  function vistaStatistiche(){
+    stFermaTimer();
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Statistiche sito</h1></div>';
+    if(ME.ruolo !== 'admin'){ metti(h + '<div class="sec"><div class="msgx info">Le statistiche del sito sono riservate all\'amministratore.</div></div></div>'); return; }
+    h += '<div class="sec" style="padding-top:0"><div class="note">Conteggi anonimi di visite e passaggi (una per visita), non di persone uniche. Chi scrive eventsfun.com a mano risulta "diretto". Non sono contate le pagine pubbliche degli eventi, le dashboard, l\'area personale, i bot e chi ha attivato Do Not Track.</div></div>';
+    h += '<div class="chips" style="padding-top:12px">';
+    [['oggi', 'Oggi'], ['7', '7 giorni'], ['30', '30 giorni'], ['tutto', 'Tutto']].forEach(function(x){
+      h += '<button class="chip' + (F.stPer === x[0] ? ' on' : '') + '" type="button" data-st="' + x[0] + '">' + x[1] + '</button>';
+    });
+    h += '</div>';
+    h += '<div class="sec" style="padding-top:10px"><div class="note" id="st_stato">Caricamento...</div></div>';
+    h += '<div id="st_corpo"><div class="caricamento">Caricamento delle statistiche...</div></div></div>';
+    metti(h);
+    ST = null;
+    caricaStatistiche(false);
+    ST_TIMER = setInterval(function(){
+      if(rotta().v !== 'statistiche'){ stFermaTimer(); return; }
+      if(document.hidden) return;
+      caricaStatistiche(true);
+    }, 30000);
+  }
+  async function caricaStatistiche(silenzioso){
+    var p = stPeriodo();
+    var mio = ++ST_SEQ;
+    var chiave = F.stPer;
+    try{
+      var res = await chiedi('statistiche_sito', { dal: p.dal, al: p.al }, ST_URL);
+      if(mio !== ST_SEQ || rotta().v !== 'statistiche' || chiave !== F.stPer) return;
+      ST = res.dati || {};
+      disegnaStatistiche();
+    }catch(e){
+      if(mio !== ST_SEQ || rotta().v !== 'statistiche') return;
+      if(gestisciErrore(e)) return;
+      if(silenzioso){
+        var el = $('st_stato');
+        if(el) el.textContent = 'Aggiornamento non riuscito, riprovo tra poco. (' + e.message + ')';
+        return;
+      }
+      var c = $('st_corpo');
+      if(c) c.innerHTML = '<div class="sec"><div class="msgx err">Statistiche non disponibili: ' + esc(e.message) + '</div></div>';
+    }
+  }
+  function stRiga(titolo, dettaglio, destra){
+    return '<div class="row"><div class="grow"><div class="t">' + esc(titolo) + '</div><div class="s">' + esc(dettaglio) + '</div></div>' + (destra !== undefined ? '<b>' + esc(destra) + '</b>' : '') + '</div>';
+  }
+  function disegnaStatistiche(){
+    var d = ST || {};
+    var t = d.totali || {};
+    var n = function(k){ return Number(t[k] || 0); };
+    var stato = $('st_stato'), corpo = $('st_corpo');
+    if(!corpo) return;
+    var ora = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    var ultimo = '';
+    if(d.ultimo){
+      try{ ultimo = ' Ultima visita registrata: ' + new Date(d.ultimo).toLocaleString('it-IT', { timeZone: 'Europe/Rome', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) + '.'; }catch(e){ ultimo = ''; }
+    }
+    if(stato) stato.textContent = 'Aggiornato alle ' + ora + ', poi ogni 30 secondi.' + ultimo;
+
+    var totale = 0;
+    Object.keys(t).forEach(function(k){ totale += Number(t[k] || 0); });
+    if(!totale){
+      corpo.innerHTML = '<div class="sec"><div class="card"><div class="vuoto">Nessuna visita registrata in questo periodo.</div></div></div>';
+      return;
+    }
+
+    var h = '';
+    // numeri chiave
+    h += '<div class="sec"><div class="nums">';
+    h += '<div class="num"><div class="n">' + esc(stNum(n('demo_aperta'))) + '</div><div class="l">Demo aperte</div><div class="x">' + esc(stNum(n('home_vista'))) + ' visite alla home</div></div>';
+    h += '<div class="num"><div class="n">' + esc(stPct(n('demo_iniziata'), n('demo_aperta'))) + '</div><div class="l">Iniziano la demo</div><div class="x">' + esc(stNum(n('demo_iniziata'))) + ' su ' + esc(stNum(n('demo_aperta'))) + ' aperte</div></div>';
+    h += '<div class="num"><div class="n">' + esc(stPct(n('iscrizione_prova'), n('demo_iniziata'))) + '</div><div class="l">Completano il percorso</div><div class="x">' + esc(stNum(n('iscrizione_prova'))) + ' iscrizioni di prova su ' + esc(stNum(n('demo_iniziata'))) + ' iniziate</div></div>';
+    h += '<div class="num"><div class="n">' + esc(stPct(n('clic_invito'), n('demo_aperta'))) + '</div><div class="l">Dalla demo ai pacchetti</div><div class="x">' + esc(stNum(n('clic_invito'))) + ' clic, ' + esc(stNum(n('home_da_demo'))) + ' arrivati ai prezzi</div></div>';
+    h += '</div></div>';
+
+    // percorso
+    var max = 1;
+    ST_EV.forEach(function(e){ if(n(e[0]) > max) max = n(e[0]); });
+    h += '<div class="sec"><div class="h2">Percorso <small>passaggi contati</small></div><div class="card">';
+    ST_EV.forEach(function(e){
+      var v = n(e[0]);
+      var w = Math.max(v ? 3 : 0, Math.round(v * 100 / max));
+      h += '<div class="row top-al"><div class="grow"><div class="t">' + esc(e[1]) + '</div><div style="height:6px;border-radius:3px;background:rgba(245,240,232,0.08);margin-top:7px"><div style="height:6px;border-radius:3px;background:var(--gold);width:' + w + '%"></div></div></div><b>' + esc(stNum(v)) + '</b></div>';
+    });
+    h += '</div>';
+    if(n('guida_vista')) h += '<div class="note" style="margin-top:6px">Pagine guida aperte: ' + esc(stNum(n('guida_vista'))) + '.</div>';
+    h += '</div>';
+
+    // per etichetta
+    var ps = d.per_src || [];
+    h += '<div class="sec"><div class="h2">Per etichetta del link <small>video e campagne</small></div><div class="card">';
+    if(!ps.length) h += '<div class="vuoto">Nessun dato.</div>';
+    ps.forEach(function(x){
+      var nome = x.src ? x.src : '(senza etichetta)';
+      var det = 'Home ' + stNum(x.home_vista) + ' · Demo aperte ' + stNum(x.demo_aperta) + ' · Iniziate ' + stNum(x.demo_iniziata) + ' · Iscrizioni ' + stNum(x.iscrizione_prova) + ' · Pacchetti dalla demo ' + stNum(x.clic_invito) + ' · Piani cliccati ' + stNum(x.clic_acquisto);
+      if(Number(x.guida_vista)) det += ' · Guide ' + stNum(x.guida_vista);
+      h += stRiga(nome, det);
+    });
+    h += '</div><div class="note" style="margin-top:6px">Usa link come eventsfun.com/demo.html?src=video3-linkedin per sapere da quale video arrivano le visite.</div></div>';
+
+    // per provenienza
+    var pd = d.per_da || [];
+    h += '<div class="sec"><div class="h2">Da dove arrivano</div><div class="card">';
+    if(!pd.length) h += '<div class="vuoto">Nessun dato.</div>';
+    pd.forEach(function(x){
+      h += stRiga(ST_DA[x.da] || x.da, 'Demo aperte ' + stNum(x.demo_aperta) + ' · Iniziate ' + stNum(x.demo_iniziata) + ' · Pacchetti dalla demo ' + stNum(x.clic_invito) + ' · Piani cliccati ' + stNum(x.clic_acquisto), stNum(x.visite));
+    });
+    h += '</div><div class="note" style="margin-top:6px">Il numero a destra sono le pagine aperte (home, demo, guide).</div></div>';
+
+    // per giorno
+    var pg = (d.per_giorno || []).slice().reverse();
+    var maxG = 1;
+    pg.forEach(function(x){ var v = Number(x.home_vista) + Number(x.demo_aperta); if(v > maxG) maxG = v; });
+    h += '<div class="sec"><div class="h2">Giorno per giorno</div><div class="card">';
+    pg.slice(0, 31).forEach(function(x){
+      var v = Number(x.home_vista) + Number(x.demo_aperta);
+      var w = Math.max(v ? 3 : 0, Math.round(v * 100 / maxG));
+      h += '<div class="row top-al"><div class="grow"><div class="t">' + esc(dataLunga(x.giorno)) + '</div><div class="s">Home ' + esc(stNum(x.home_vista)) + ' · Demo aperte ' + esc(stNum(x.demo_aperta)) + ' · Iniziate ' + esc(stNum(x.demo_iniziata)) + ' · Verso i prezzi ' + esc(stNum(x.verso_prezzi)) + '</div><div style="height:5px;border-radius:3px;background:rgba(245,240,232,0.08);margin-top:7px"><div style="height:5px;border-radius:3px;background:var(--gold);width:' + w + '%"></div></div></div></div>';
+    });
+    h += '</div>' + (pg.length > 31 ? '<div class="note" style="margin-top:6px">Mostrati gli ultimi 31 giorni con visite.</div>' : '') + '</div>';
+
+    // piani cliccati
+    var pp = d.per_piano || [];
+    if(pp.length){
+      h += '<div class="sec"><div class="h2">Piani cliccati nella home</div><div class="card">';
+      pp.forEach(function(x){ h += stRiga(ST_PIANO[x.piano] || x.piano, '', stNum(x.n)); });
+      h += '</div><div class="note" style="margin-top:6px">Sono clic sul pulsante di pagamento, non acquisti: gli acquisti veri sono in Incassi.</div></div>';
+    }
+
+    // dispositivo
+    var pdv = d.per_disp || [];
+    var totDv = 0;
+    pdv.forEach(function(x){ totDv += Number(x.visite || 0); });
+    if(pdv.length){
+      h += '<div class="sec"><div class="h2">Telefono o computer</div><div class="card">';
+      pdv.forEach(function(x){ h += stRiga(x.disp === 'mobile' ? 'Telefono o tablet' : 'Computer', '', stNum(x.visite) + ' (' + stPct(x.visite, totDv) + ')'); });
+      h += '</div></div>';
+    }
+    corpo.innerHTML = h;
   }
 
   // ---------------- EVENTI ----------------
@@ -2904,12 +3078,13 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
 
   // ---------------- comandi ----------------
   document.addEventListener('click', function(ev){
-    var el = ev.target.closest('[data-az],[data-fcli],[data-per],[data-piano],[data-ass],[data-fev],[data-fmsg]');
+    var el = ev.target.closest('[data-az],[data-fcli],[data-per],[data-piano],[data-ass],[data-fev],[data-fmsg],[data-st]');
     if(!el || !$('vista').contains(el)) return;
     if(el.hasAttribute('data-fcli')){ F.cli = el.getAttribute('data-fcli'); listaClienti(rotta().id); return; }
     if(el.hasAttribute('data-per')){ F.incPer = el.getAttribute('data-per'); INC = null; vistaIncassi(); return; }
     if(el.hasAttribute('data-piano')){ F.incPiano = el.getAttribute('data-piano'); INC = null; vistaIncassi(); return; }
     if(el.hasAttribute('data-ass')){ F.ass = el.getAttribute('data-ass'); vistaAssistenza(); return; }
+    if(el.hasAttribute('data-st')){ F.stPer = el.getAttribute('data-st'); vistaStatistiche(); return; }
     if(el.hasAttribute('data-fev')){ F.ev = el.getAttribute('data-fev'); listaEventi(); return; }
     if(el.hasAttribute('data-fmsg')){ F.msg = el.getAttribute('data-fmsg'); vistaMessaggi(); return; }
     var az = el.getAttribute('data-az');
