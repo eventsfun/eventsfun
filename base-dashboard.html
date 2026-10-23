@@ -2717,6 +2717,228 @@ applyOpts = function(ev) {
 
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.2 base</div>
+<script>
+/* ============================================================
+   AGGIORNAMENTO AUTOMATICO DEGLI ISCRITTI (v1, 23/10/2026)
+   Ogni 20 secondi controlla se ci sono nuovi iscritti o nuove presenze e, solo se qualcosa e' cambiato,
+   aggiorna i contatori e l'elenco. Usa lo stesso accesso sicuro (codice dell'evento) che la dashboard
+   usa gia' per leggere gli iscritti: nessun permesso nuovo.
+   Non disturba chi sta lavorando:
+   - non parte con la scheda in secondo piano, senza connessione, o a evento concluso
+   - non ridisegna nulla se e' aperta una finestra (modifica, eliminazione, ecc.) o se si sta scorrendo/toccando
+     (in quel caso aspetta e aggiorna appena e' tutto fermo)
+   - se un'operazione dell'utente e' in corso, scarta il controllo e riprova dopo
+   - ridisegna solo contatori ed elenco, non il resto della pagina; mantiene la posizione di scorrimento
+   - nessun popup: le nuove iscrizioni compaiono solo come testo nella riga di stato ("5 nuove iscrizioni alle 19:57")
+   - gli errori di rete non generano messaggi: riprova in silenzio
+   ============================================================ */
+(function () {
+  var OGNI = 20000;            /* controllo leggero ogni 20 secondi */
+  var PIENO_OGNI = 5;          /* ogni 5 controlli rilegge tutti i dati (circa 100 secondi) */
+  var FERMO_MS = 2500;         /* attesa dopo l'ultimo tocco/scorrimento prima di ridisegnare */
+  var st = { run: false, mut: 0, inflight: 0, fails: 0, tick: 0, giro: 0, daRender: false, tocco: 0, ultimo: '' };
+
+  function el(id) { return document.getElementById(id); }
+
+  /* 1. conta le scritture sugli iscritti fatte da questa pagina (aggiunta, modifica, presenza, eliminazione) */
+  ['sbPost', 'sbPatch', 'sbDel'].forEach(function (nome) {
+    var orig = window[nome];
+    if (typeof orig !== 'function') return;
+    window[nome] = function (tabella) {
+      if (tabella !== 'registrations') return orig.apply(this, arguments);
+      st.inflight++; st.mut++;
+      var fine = function () { st.inflight--; st.mut++; };
+      var p;
+      try { p = orig.apply(this, arguments); } catch (e) { fine(); throw e; }
+      return Promise.resolve(p).then(function (v) { fine(); return v; }, function (e) { fine(); throw e; });
+    };
+  });
+
+  /* 2. ricorda quando l'utente ha toccato o scorso per ultimo */
+  ['scroll', 'touchstart', 'touchmove', 'wheel', 'keydown', 'mousedown'].forEach(function (nome) {
+    window.addEventListener(nome, function () { st.tocco = Date.now(); }, { passive: true, capture: true });
+  });
+
+  function modaleAperta() {
+    var o = document.querySelectorAll('.ov.on');
+    for (var i = 0; i < o.length; i++) { if (o[i].id !== 'ovQrScanner') return true; }
+    var ob = el('ovOnboarding');
+    if (ob && ob.style.display === 'flex') return true;
+    return false;
+  }
+
+  function sigLeggera(a) {
+    return a.map(function (r) { return r.id + ':' + (r.presente ? 1 : 0) + (r.in_lista_attesa ? 1 : 0); }).sort().join('|');
+  }
+  function canon(r) {
+    return Object.keys(r).sort().map(function (k) { return k + '=' + JSON.stringify(r[k]); }).join(';');
+  }
+  function sigPiena(a) {
+    return a.map(function (r) { return r.id + '#' + canon(r); }).sort().join('\n');
+  }
+
+  function hhmm(d) {
+    return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2);
+  }
+  function ora() { return hhmm(new Date()); }
+  function scritta(testo, ok) {
+    ['panel-sub', 'presSub'].forEach(function (id) {
+      var p = el(id);
+      if (!p || !p.parentNode) return;
+      var sid = 'efLive_' + id;
+      var s = el(sid);
+      if (!s) {
+        s = document.createElement('div');
+        s.id = sid;
+        s.style.cssText = 'font-size:11px;color:var(--text-dim);margin-top:3px;display:flex;align-items:center;gap:6px';
+        p.parentNode.insertBefore(s, p.nextSibling);
+      }
+      s.innerHTML = '';
+      var pallino = document.createElement('span');
+      pallino.style.cssText = 'width:6px;height:6px;border-radius:50%;flex-shrink:0;background:' + (ok ? 'var(--green)' : 'var(--text-dim)');
+      var t = document.createElement('span');
+      t.textContent = testo;
+      s.appendChild(pallino); s.appendChild(t);
+    });
+  }
+  function esitoOk() {
+    st.fails = 0;
+    scritta('Aggiornamento automatico attivo · controllato alle ' + ora() + (st.ultimo ? ' · ' + st.ultimo : ''), true);
+  }
+
+  function salvaScroll() {
+    var s = [{ e: null, x: window.pageXOffset, y: window.pageYOffset }];
+    ['regTable', 'presList'].forEach(function (id) {
+      var n = el(id);
+      while (n && n !== document.body && n !== document.documentElement) {
+        if (n.scrollTop || n.scrollLeft) s.push({ e: n, x: n.scrollLeft, y: n.scrollTop });
+        n = n.parentNode;
+      }
+    });
+    return s;
+  }
+  function ripristinaScroll(s) {
+    s.forEach(function (o) {
+      if (!o.e) window.scrollTo(o.x, o.y);
+      else { o.e.scrollLeft = o.x; o.e.scrollTop = o.y; }
+    });
+  }
+
+  /* ridisegna SOLO cio' che dipende dagli iscritti */
+  function renderLive() {
+    var s = salvaScroll();
+    try {
+      var ev = currentEv, regs = currentRegs, closed = isClosed(ev);
+      var totP = regs.filter(function (r) { return !r.capogruppo_id; }).reduce(function (a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+      var postiOccupati = (ev.opt_cap_persona && ev.opt_multipla) ? totP : regs.length;
+      el('s-regs').textContent = regs.length;
+      el('s-persone').textContent = totP;
+      el('s-posti').textContent = ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '\u221e';
+      renderTable(ev, regs, closed);
+      var vp = el('view-presenze');
+      if (vp && vp.classList.contains('on')) renderPresenze();
+    } finally { ripristinaScroll(s); }
+  }
+
+  function provaRender() {
+    if (!st.daRender) return;
+    if (modaleAperta()) return;
+    if (Date.now() - st.tocco < FERMO_MS) return;
+    st.daRender = false;
+    try { renderLive(); } catch (e) { console.error('aggiornamento iscritti:', e); }
+  }
+
+  /* nessun avviso a comparsa: la novita' compare solo nella riga di stato, es. "5 nuove iscrizioni alle 19:57"
+     (l'orario e' quello dell'iscrizione piu' recente; la riga si aggiorna sul posto, non si accumula) */
+  function segna(nuovi) {
+    if (!nuovi.length) return;
+    try {
+      var t = 0;
+      nuovi.forEach(function (r) {
+        var m = new Date(r.created_at).getTime();
+        if (m > t) t = m;
+      });
+      var quando = t ? hhmm(new Date(t)) : ora();
+      st.ultimo = nuovi.length + (nuovi.length === 1 ? ' nuova iscrizione' : ' nuove iscrizioni') + ' alle ' + quando;
+      esitoOk();
+    } catch (e) { /* la riga e' solo un di piu' */ }
+  }
+
+  function applica(nuove) {
+    var noti = {};
+    (window.currentRegs || []).forEach(function (r) { noti[r.id] = 1; });
+    var nuovi = nuove.filter(function (r) { return !noti[r.id] && !r.capogruppo_id; });
+    window.currentRegs = nuove;
+    st.daRender = true;
+    provaRender();
+    segna(nuovi);
+  }
+
+  function cambiato(evId, mut0) {
+    return !window.currentEv || window.currentEv.id !== evId || st.mut !== mut0 || st.inflight > 0;
+  }
+
+  function evAttivo() {
+    var ev = window.currentEv;
+    if (!ev || !ev.id || !window.TOKEN) return null;
+    if (ev.modalita === 'info') return null;
+    var nav = el('mainNav');
+    if (!nav || nav.style.display === 'none') return null;
+    try { if (isClosed(ev)) return null; } catch (e) { return null; }
+    return ev;
+  }
+
+  async function controlla(forza) {
+    if (st.run) return;
+    if (document.hidden || navigator.onLine === false) return;
+    var ev = evAttivo();
+    if (!ev || st.inflight > 0) return;
+    st.run = true;
+    var evId = ev.id, mut0 = st.mut;
+    try {
+      st.tick++;
+      var pieno = !!forza || (st.tick % PIENO_OGNI === 0);
+      if (!pieno) {
+        var leggero = await sbGet('registrations', { event_id: evId }, 'id,presente,in_lista_attesa');
+        if (!Array.isArray(leggero)) throw new Error('risposta non valida');
+        if (cambiato(evId, mut0)) return;
+        if (sigLeggera(leggero) === sigLeggera(window.currentRegs || [])) { esitoOk(); return; }
+      }
+      var nuove = await sbGet('registrations', { event_id: evId }, '*');
+      if (!Array.isArray(nuove)) throw new Error('risposta non valida');
+      if (cambiato(evId, mut0)) return;
+      esitoOk();
+      if (sigPiena(nuove) === sigPiena(window.currentRegs || [])) return;
+      applica(nuove);
+    } catch (e) {
+      st.fails++;
+      if (st.fails >= 3) scritta('Aggiornamento automatico in pausa, riprovo tra poco', false);
+    } finally { st.run = false; }
+  }
+
+  /* con tanti iscritti o dopo errori ripetuti controlla piu' di rado */
+  function ciclo() {
+    st.giro++;
+    var n = (window.currentRegs || []).length;
+    if (n > 1500 && st.giro % 3 !== 0) return;
+    if (st.fails >= 3 && st.giro % 3 !== 0) return;
+    controlla(false);
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) setTimeout(function () { controlla(false); }, 800);
+  });
+  window.addEventListener('online', function () { setTimeout(function () { controlla(false); }, 800); });
+  setTimeout(function () {
+    controlla(false);
+    setInterval(ciclo, OGNI);
+    setInterval(provaRender, 1000);
+  }, 3000 + Math.floor(Math.random() * 6000));
+
+  window.EFLive = { controlla: controlla, stato: st, renderLive: renderLive };
+})();
+</script>
+
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.4 base</div>
 </body>
 </html>
