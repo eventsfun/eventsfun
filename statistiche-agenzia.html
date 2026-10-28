@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Statistiche Agenzia | v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
+<!-- EventsFun | Statistiche Agenzia | v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -82,6 +82,12 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .widget-opt.added{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.08);color:var(--gold);cursor:default}
 .widget-opt.disabled{opacity:.35;cursor:not-allowed}
 
+.widget-grp{width:100%;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin:8px 0 2px}
+.widget-grp:first-child{margin-top:0}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;max-width:90vw;text-align:center}
+.toast.g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:var(--green)}
+.toast.r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:var(--red)}
+
 /* CHARTS */
 .chart-section{margin-bottom:28px}
 .chart-box{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:24px}
@@ -128,6 +134,7 @@ canvas{display:block;width:100%!important}
     <a href="https://eventsfun.com/area-personale.html" class="nav-link">&#8592; Area personale</a>
   </div>
 </nav>
+<div class="toast" id="toast"></div>
 
 <div class="main">
   <div class="page-header">
@@ -162,7 +169,7 @@ canvas{display:block;width:100%!important}
 
     <!-- PANNELLO AGGIUNGI WIDGET -->
     <div class="add-panel" id="addPanel">
-      <div class="add-panel-title">Widget disponibili -- clicca per aggiungere o rimuovere</div>
+      <div class="add-panel-title">Widget disponibili -- clicca per aggiungere o rimuovere (massimo 12)</div>
       <div class="widget-options" id="widgetOptions"></div>
     </div>
 
@@ -242,10 +249,15 @@ var WIDGET_CATALOG = [
     var pct = conf.length ? Math.round(nl/conf.length*100) : 0;
     return { value: nl, sub: pct + '% degli iscritti', pct: pct };
   }},
+  { id: 'persone',    label: 'Persone totali',         icon: '&#128101;', color: '#7EB5E0', compute: function(ev, regs) {
+    var conf = regs.filter(function(r){return !r.in_lista_attesa;});
+    var c = conf.filter(function(r){return !r.capogruppo_id;}).reduce(function(s,r){return s+(r.adulti||1)+(r.bambini||0);},0);
+    return { value: c, sub: 'persone iscritte', pct: null };
+  }},
   { id: 'posti',      label: 'Posti rimasti',          icon: '&#127916;', color: '#E0A87E', compute: function(ev, regs) {
     if (!ev.capienza) return { value: '∞', sub: 'nessun limite impostato', pct: null };
     var conf = regs.filter(function(r){return !r.in_lista_attesa;});
-    var occ = ev.opt_cap_persona ? conf.reduce(function(s,r){return s+(r.adulti||1)+(r.bambini||0);},0) : conf.length;
+    var occ = (ev.opt_cap_persona && ev.opt_multipla) ? conf.filter(function(r){return !r.capogruppo_id;}).reduce(function(s,r){return s+(r.adulti||1)+(r.bambini||0);},0) : conf.length;
     var rim = Math.max(0, ev.capienza - occ);
     var pct = Math.round(occ/ev.capienza*100);
     return { value: rim, sub: 'su ' + ev.capienza + ' totali (' + pct + '% occupato)', pct: pct };
@@ -258,9 +270,41 @@ var WIDGET_CATALOG = [
 ];
 
 /* Default: first 4 widgets */
-var DEFAULT_WIDGETS = ['iscritti','presenti','newsletter','posti'];
+var DEFAULT_WIDGETS = ['iscritti','persone','posti'];
+var WIDGET_MAX = 12;
 var activeWidgets = DEFAULT_WIDGETS.slice();
 var dragSrc = null;
+
+/* Catalogo completo per l'evento: card generali + dati dei campi aggiuntivi (Numero, Menu, Caselle, Testo) */
+function fullCatalog(ev, regs) {
+  var cat = WIDGET_CATALOG.map(function(w) { return { id: w.id, label: w.label, icon: w.icon, color: w.color, group: 'Generali', compute: w.compute }; });
+  var conf = regs.filter(function(r){ return !r.in_lista_attesa; });
+  (ev.custom_fields || []).forEach(function(f) {
+    function add(id, label, value, sub) {
+      cat.push({ id: id, label: label, icon: '&#128230;', color: '#C9A96E', group: f.label, compute: function() { return { value: value, sub: sub, pct: null }; } });
+    }
+    if (f.type === 'numero') {
+      var tot = conf.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0);
+      var chi = conf.filter(function(r) { return (parseInt(r.extra && r.extra[f.id], 10) || 0) > 0; }).length;
+      add(f.id + '__totale', f.label + ' (totale)', tot, 'unità richieste da ' + chi + (chi === 1 ? ' iscritto' : ' iscritti'));
+    } else if (f.type === 'dropdown' || f.type === 'checkbox') {
+      (f.options || []).forEach(function(opt) {
+        var count = conf.filter(function(r) {
+          var v = r.extra ? r.extra[f.id] : undefined;
+          return f.type === 'checkbox' ? (Array.isArray(v) && v.includes(opt)) : v === opt;
+        }).length;
+        add(f.id + '__' + opt, f.label + ': ' + opt, count, 'iscritti');
+      });
+    } else if (f.type === 'text') {
+      var filled = conf.filter(function(r) { return r.extra && r.extra[f.id] && r.extra[f.id].toString().trim(); }).length;
+      add(f.id + '__filled', f.label + ' (compilati)', filled, 'iscritti');
+    }
+  });
+  return cat;
+}
+function catDef(id) { return fullCatalog(currentEv, currentRegs).find(function(w){ return w.id === id; }); }
+function showToast(msg, t) { var el = document.getElementById('toast'); el.textContent = msg; el.className = 'toast ' + t; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
+function escAttr(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
 /* ============================================================
    INIT
@@ -304,7 +348,7 @@ async function init() {
   if (navbarLogo) navbarLogo.href = 'agenzia-dashboard.html?token=' + TOKEN;
 
   try {
-    var evs = await sbGet('events', { activation_token: TOKEN }, 'id,nome,data_iso,ora,attivo,capienza,opt_multipla,opt_cap_persona,opt_tipo,opt_pasto,opt_newsletter,stats_config');
+    var evs = await sbGet('events', { activation_token: TOKEN }, 'id,nome,data_iso,ora,attivo,bozza,capienza,opt_multipla,opt_cap_persona,opt_tipo,opt_pasto,opt_newsletter,stats_config,custom_fields');
     allEvents = (evs || []).filter(function(e){ return !e.bozza; });
     allEvents.sort(function(a,b){ return (b.data_iso||'').localeCompare(a.data_iso||''); });
     populateSelect();
@@ -361,15 +405,15 @@ async function selectEvent() {
   document.getElementById('widgetsGrid').innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px"><div class="spinner"></div></div>';
 
   try {
-    currentRegs = await sbGet('registrations', { event_id: evId }, 'id,nome,cognome,adulti,bambini,tipo,newsletter,presente,in_lista_attesa,created_at');
+    currentRegs = await sbGet('registrations', { event_id: evId }, 'id,nome,cognome,adulti,bambini,tipo,newsletter,presente,in_lista_attesa,created_at,capogruppo_id,extra');
   } catch(e) { currentRegs = []; }
 
   /* Load widget config from DB */
-  if (currentEv.stats_config && Array.isArray(currentEv.stats_config)) {
-    activeWidgets = currentEv.stats_config;
-  } else {
-    activeWidgets = DEFAULT_WIDGETS.slice();
-  }
+  var cfgIniziale = (currentEv.stats_config && Array.isArray(currentEv.stats_config)) ? currentEv.stats_config : DEFAULT_WIDGETS;
+  var catIniziale = fullCatalog(currentEv, currentRegs);
+  activeWidgets = cfgIniziale.filter(function(id, i) {
+    return cfgIniziale.indexOf(id) === i && catIniziale.some(function(w){ return w.id === id; });
+  });
 
   renderAll();
 }
@@ -392,8 +436,9 @@ function renderWidgets() {
     return;
   }
   grid.innerHTML = '';
+  var catW = fullCatalog(currentEv, currentRegs);
   activeWidgets.forEach(function(wid, idx) {
-    var def = WIDGET_CATALOG.find(function(w){ return w.id === wid; });
+    var def = catW.find(function(w){ return w.id === wid; });
     if (!def) return;
     var data = def.compute(currentEv, currentRegs);
     var card = document.createElement('div');
@@ -403,7 +448,7 @@ function renderWidgets() {
     card.dataset.wid = wid;
     card.innerHTML =
       '<div class="widget-drag-handle" title="Trascina per riordinare">&#9776;</div>' +
-      '<div class="widget-label">' + def.icon + ' ' + def.label + '</div>' +
+      '<div class="widget-label">' + def.icon + ' ' + escAttr(def.label) + '</div>' +
       '<div class="widget-value" style="color:' + def.color + '">' + data.value + '</div>' +
       '<div class="widget-sub">' + data.sub + '</div>' +
       (data.pct !== null ? '<div class="widget-bar"><div class="widget-bar-fill" style="width:' + Math.min(100,data.pct) + '%;background:' + def.color + '"></div></div>' : '');
@@ -450,18 +495,23 @@ function onDragEnd() {
 function renderWidgetOptions() {
   var wrap = document.getElementById('widgetOptions');
   wrap.innerHTML = '';
-  WIDGET_CATALOG.forEach(function(def) {
+  var grp = null;
+  fullCatalog(currentEv, currentRegs).forEach(function(def) {
+    if (def.group !== grp) {
+      grp = def.group;
+      var g = document.createElement('div'); g.className = 'widget-grp'; g.textContent = grp; wrap.appendChild(g);
+    }
     var isAdded = activeWidgets.includes(def.id);
-    var atMax = activeWidgets.length >= 6 && !isAdded;
+    var atMax = activeWidgets.length >= WIDGET_MAX && !isAdded;
     var btn = document.createElement('button');
     btn.className = 'widget-opt' + (isAdded ? ' added' : '') + (atMax ? ' disabled' : '');
-    btn.innerHTML = def.icon + ' ' + def.label + (isAdded ? ' &#10003;' : '');
+    btn.innerHTML = def.icon + ' ' + escAttr(def.label) + (isAdded ? ' &#10003;' : '');
     btn.disabled = atMax;
     btn.onclick = function() {
       if (isAdded) {
         activeWidgets = activeWidgets.filter(function(w){ return w !== def.id; });
       } else {
-        if (activeWidgets.length >= 6) return;
+        if (activeWidgets.length >= WIDGET_MAX) return;
         activeWidgets.push(def.id);
       }
       renderWidgets();
@@ -485,10 +535,20 @@ function toggleConfig() {
 
 async function saveConfig() {
   if (!currentEv) return;
+  var ev = currentEv, nuova = activeWidgets.slice();
+  var prima = Array.isArray(ev.stats_config) ? ev.stats_config.slice() : null;
   try {
-    await sbPatch('events', currentEv.id, { stats_config: activeWidgets });
-    currentEv.stats_config = activeWidgets;
-  } catch(e) { console.error('saveConfig:', e); }
+    await sbPatch('events', ev.id, { stats_config: nuova });
+    ev.stats_config = nuova;
+    showToast('Statistiche salvate', 'g');
+  } catch(e) {
+    console.error('saveConfig:', e);
+    if (currentEv === ev) {
+      activeWidgets = prima ? prima.slice() : DEFAULT_WIDGETS.slice();
+      renderWidgets(); renderWidgetOptions();
+    }
+    showToast('Non salvato, riprova', 'r');
+  }
 }
 
 /* LINE CHART */

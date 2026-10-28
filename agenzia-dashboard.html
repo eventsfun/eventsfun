@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -71,7 +71,13 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .ev-tab .ev-tab-count{display:inline-block;background:rgba(201,169,110,0.2);border-radius:20px;padding:1px 7px;font-size:11px;margin-left:5px}
 /* STATS */
 .stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;position:relative}
+.stat-x{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:none;background:transparent;color:var(--text-dim);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.55;transition:all .2s;font-family:inherit}
+.stat-x:hover{opacity:1;color:var(--gold);background:rgba(201,169,110,0.1)}
+.stat .stat-label{padding-right:18px}
+.stat-grp{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:14px 0 8px}
+.stat-grp:first-child{margin-top:0}
+.tot-row td{font-weight:700;color:var(--gold);border-top:2px solid rgba(201,169,110,0.35);background:rgba(201,169,110,0.05)}
 .stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700;display:flex;align-items:center;gap:5px}
 .stat-val{font-family:"Syne",sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
 .stat-custom{background:var(--bg2);border:2px dashed rgba(201,169,110,0.25);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;position:relative}
@@ -294,7 +300,7 @@ select option{background:#1a1a1a;color:var(--text)}
 .stat-cfg-option:hover,.stat-cfg-option.sel{border-color:rgba(201,169,110,0.4);background:rgba(201,169,110,0.06)}
 .stat-cfg-option.sel .stat-cfg-check{opacity:1}
 .stat-cfg-check{width:18px;height:18px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:10px;color:#0A0A0A;font-weight:700;opacity:0;flex-shrink:0;transition:opacity .2s}
-@media(max-width:600px){.stats-row{flex-direction:column}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
+@media(max-width:600px){.stat,.stat-custom{flex:1 1 calc(50% - 6px);min-width:0}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}.cf-row{grid-template-columns:1fr auto auto}.preview-fg2{grid-template-columns:1fr}.nav-links{display:none}.nav-hamburger{display:flex}}
 /* ACCORDION FORM */
 .acc{border:1px solid var(--border2);border-radius:12px;margin:10px 0;overflow:hidden;background:var(--bg2)}
 .acc-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 16px;cursor:pointer;user-select:none}
@@ -504,19 +510,7 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
 
     <!-- STATISTICHE -->
-    <div class="stats-row" id="statsRow">
-      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">--</div></div>
-      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">--</div></div>
-      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">--</div></div>
-      <div class="stat-custom" id="statCustom0" onclick="openStatConfig(0)">
-        <div class="stat-custom-add">+</div>
-        <div class="stat-custom-lbl">Aggiungi statistica</div>
-      </div>
-      <div class="stat-custom" id="statCustom1" onclick="openStatConfig(1)">
-        <div class="stat-custom-add">+</div>
-        <div class="stat-custom-lbl">Aggiungi statistica</div>
-      </div>
-    </div>
+    <div class="stats-row" id="statsRow"></div>
 
     <div class="status-bar">
       <div class="sinfo">
@@ -1433,9 +1427,9 @@ select option{background:#1a1a1a;color:var(--text)}
 <div class="ov" id="ovStatConfig" onclick="if(event.target===this)closeOv('ovStatConfig')">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovStatConfig')">✕</button>
-    <h2>Scegli statistica</h2>
-    <p class="modal-sub">Seleziona quale dato vuoi vedere in evidenza in questa card.</p>
-    <div id="statConfigOptions"></div>
+    <h2>Aggiungi statistiche</h2>
+    <p class="modal-sub" id="statPickSub">Seleziona i dati da mostrare nelle card. Puoi sceglierne più di uno.</p>
+    <div id="statConfigOptions" style="max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
     <div class="del-btns" style="margin-top:8px">
       <button class="del-no" onclick="closeOv('ovStatConfig')">Annulla</button>
       <button class="del-yes" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A" onclick="confirmStatConfig()">Conferma</button>
@@ -1600,10 +1594,12 @@ var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc
 var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false, online: false , contatto_wa: false };
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
-/* Card statistiche personalizzabili: array di 2 elementi, null = vuoto */
-var customStats = [null, null];
-var configStatIdx = null;
-var configStatSel = null;
+/* Card statistiche: lista di id salvata sull'evento (events.stats_config), uguale su ogni dispositivo */
+var STAT_MAX = 12;
+var STAT_DEFAULT = ['iscritti', 'persone', 'posti'];
+var statPickList = [];
+var statPickSel = [];
+var switchSeq = 0;
 var bozzaId = null; /* ID evento bozza creato per anteprima, null se non esiste */
 var modState = { ev: 'iscrizioni', se: 'iscrizioni' }; /* modalita' della pagina nei due form */
 var ibUploading = 0; /* immagini dei blocchi in caricamento */
@@ -1770,18 +1766,16 @@ async function init() {
     bozze.forEach(function(b) { sbDel('events', b.id).catch(function(){}); });
     allEvents = all.filter(function(e) { return !e.bozza; });
   } catch(e) { allEvents = []; }
-  currentEv = allEvents.length ? allEvents[0] : null;
+  /* L'evento iniziale e' sempre il primo della scheda mostrata nel selettore (prima dell'ordine casuale del database) */
+  var gruppi0 = getEventiPerTab();
+  if (!gruppi0.attivi.length && gruppi0.conclusi.length) evTabCorrente = 'conclusi';
+  var lista0 = gruppi0[evTabCorrente];
+  currentEv = lista0.length ? lista0[0] : null;
 
   /* STEP 3: carica iscritti del primo evento */
   try {
     currentRegs = (currentEv) ? (await sbGet('registrations', { event_id: currentEv.id }, '*') || []) : [];
   } catch(e) { currentRegs = []; }
-
-  /* STEP 4: carica preferenze card custom da localStorage */
-  try {
-    var saved = localStorage.getItem('ef_custom_stats_' + TOKEN);
-    if (saved) customStats = JSON.parse(saved);
-  } catch(e) { customStats = [null, null]; }
 
   /* STEP 5: mostra */
   hideLoading();
@@ -2393,6 +2387,9 @@ function getEventiPerTab() {
     if (!e.data_iso) return false;
     return new Date(e.data_iso + 'T00:00:00') < oggi;
   });
+  /* ordine fisso: i prossimi per primi, i conclusi dal piu' recente */
+  attivi.sort(function(a, b) { return (a.data_iso || '9999').localeCompare(b.data_iso || '9999') || String(a.id).localeCompare(String(b.id)); });
+  conclusi.sort(function(a, b) { return (b.data_iso || '').localeCompare(a.data_iso || '') || String(a.id).localeCompare(String(b.id)); });
   return { attivi: attivi, conclusi: conclusi };
 }
 
@@ -2467,10 +2464,15 @@ function renderSelector() {
 }
 
 async function switchEvent(id) {
-  currentEv = allEvents.find(function(e) { return e.id === id; }) || null;
+  var mio = ++switchSeq;
+  var evNuovo = allEvents.find(function(e) { return e.id === id; }) || null;
+  var regsNuovi;
   try {
-    currentRegs = currentEv ? (await sbGet('registrations', { event_id: currentEv.id }, '*') || []) : [];
-  } catch(e) { currentRegs = []; }
+    regsNuovi = evNuovo ? (await sbGet('registrations', { event_id: evNuovo.id }, '*') || []) : [];
+  } catch(e) { regsNuovi = []; }
+  if (mio !== switchSeq) return; /* nel frattempo hai scelto un altro evento: ignora questa risposta */
+  currentEv = evNuovo;
+  currentRegs = regsNuovi;
   attesaVisible = false;
   renderDash();
 }
@@ -2531,12 +2533,8 @@ function renderDash() {
   var inAttesa = regs.filter(function(r) { return !!r.in_lista_attesa; });
   var totP = confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   var postiOccupati = hasEv ? calcPostiOccupati(ev, regs) : 0;
-  setText('s-regs', hasEv ? confermati.length : '--');
-  setText('s-persone', hasEv ? totP : '--');
-  setText('s-posti', hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '--');
-
-  /* Card custom stats */
-  renderCustomStats(ev, confermati);
+  /* Card statistiche */
+  renderStatsRow(ev, regs);
 
   /* Lista attesa badge */
   var mostraAttesa = hasEv && (inAttesa.length > 0 || (ev.capienza && postiOccupati >= ev.capienza));
@@ -2807,90 +2805,131 @@ function getStatOptions(ev, confermati) {
           if (f.type === 'checkbox') { return Array.isArray(val) ? val.includes(opt) : false; }
           return val === opt;
         }).length;
-        opts.push({ id: f.id + '__' + opt, label: f.label + ': ' + opt, value: count });
+        opts.push({ id: f.id + '__' + opt, label: f.label + ': ' + opt, value: count, group: f.label });
       });
     } else if (f.type === 'numero') {
       var tot = confermati.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0);
-      opts.push({ id: f.id + '__totale', label: f.label + ' (totale)', value: tot });
+      opts.push({ id: f.id + '__totale', label: f.label + ' (totale)', value: tot, group: f.label });
     } else if (f.type === 'text') {
       var filled = confermati.filter(function(r) { return r.extra && r.extra[f.id] && r.extra[f.id].toString().trim(); }).length;
-      opts.push({ id: f.id + '__filled', label: f.label + ' (compilati)', value: filled });
+      opts.push({ id: f.id + '__filled', label: f.label + ' (compilati)', value: filled, group: f.label });
     }
   });
   return opts;
 }
 
-function renderCustomStats(ev, confermati) {
-  var opts = getStatOptions(ev, confermati);
-  for (var i = 0; i < 2; i++) {
-    var el = document.getElementById('statCustom' + i);
-    if (!el) continue;
-    var cfg = customStats[i];
-    if (!cfg) {
-      el.className = 'stat-custom';
-      el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
-        + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare. Disponibile per campi aggiuntivi di tipo Menu o Caselle.">?</div>';
-      el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
-    } else {
-      var found = opts.find(function(o) { return o.id === cfg; });
-      if (found) {
-        el.className = 'stat-custom filled';
-        el.innerHTML = '<div class="stat-label">' + escHtml(found.label) + '</div>'
-          + '<div class="stat-val">' + found.value + '</div>'
-          + '<div class="stat-custom-tip" onclick="removeStatConfig(' + i + ');event.stopPropagation()" title="Rimuovi" style="cursor:pointer;border-color:rgba(255,255,255,0.15);color:var(--text-dim)">✕</div>';
-        el.onclick = null;
-      } else {
-        customStats[i] = null;
-        saveCustomStats();
-        el.className = 'stat-custom';
-        el.innerHTML = '<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>'
-          + '<div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare.">?</div>';
-        el.onclick = (function(idx) { return function() { openStatConfig(idx); }; })(i);
-      }
-    }
-  }
+/* ============================================================
+   CARD STATISTICHE (salvate sull'evento: events.stats_config)
+   ============================================================ */
+/* Tutte le statistiche disponibili per l'evento: prima quelle generali, poi quelle dei campi aggiuntivi */
+function statCatalog(ev, regs) {
+  var conf = regs.filter(function(r) { return !r.in_lista_attesa; });
+  var cat = [];
+  cat.push({ id: 'iscritti', label: 'Iscritti', value: conf.length, group: 'Generali' });
+  var totP = conf.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  cat.push({ id: 'persone', label: 'Persone totali', value: totP, group: 'Generali' });
+  var occ = calcPostiOccupati(ev, regs);
+  cat.push({ id: 'posti', label: 'Posti rimasti', value: ev.capienza ? Math.max(0, ev.capienza - occ) : '∞', group: 'Generali' });
+  var pres = conf.filter(function(r) { return r.presente; }).length;
+  cat.push({ id: 'presenti', label: 'Tasso presenza', value: (conf.length ? Math.round(pres / conf.length * 100) : 0) + '%', group: 'Generali' });
+  cat.push({ id: 'attesa', label: 'Lista d\'attesa', value: regs.filter(function(r) { return r.in_lista_attesa; }).length, group: 'Generali' });
+  cat.push({ id: 'newsletter', label: 'Consenso newsletter', value: conf.filter(function(r) { return r.newsletter; }).length, group: 'Generali' });
+  var oggi = new Date().toDateString();
+  cat.push({ id: 'oggi', label: 'Iscrizioni oggi', value: conf.filter(function(r) { return r.created_at && new Date(r.created_at).toDateString() === oggi; }).length, group: 'Generali' });
+  getStatOptions(ev, conf).forEach(function(o) { cat.push(o); });
+  return cat;
 }
 
-function openStatConfig(idx) {
-  var ev = currentEv;
-  var confermati = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
-  var opts = getStatOptions(ev, confermati);
-  if (!opts.length) {
-    alert('Aggiungi prima dei campi aggiuntivi di tipo Dropdown o Checkbox all\'evento per usare questa funzione.');
+/* Id delle card attive: quelli salvati sull'evento (anche lista vuota), altrimenti le tre di base. Solo id esistenti. */
+function statActiveIds(ev, cat) {
+  var cfg = Array.isArray(ev.stats_config) ? ev.stats_config : STAT_DEFAULT;
+  var noti = {};
+  cat.forEach(function(o) { noti[o.id] = 1; });
+  var visti = {};
+  return cfg.filter(function(id) { if (!noti[id] || visti[id]) return false; visti[id] = 1; return true; });
+}
+
+function renderStatsRow(ev, regs) {
+  var row = document.getElementById('statsRow');
+  if (!row) return;
+  if (!ev) {
+    row.innerHTML = ['Iscritti', 'Persone totali', 'Posti rimasti'].map(function(l) {
+      return '<div class="stat"><div class="stat-label">' + l + '</div><div class="stat-val">--</div></div>';
+    }).join('');
     return;
   }
-  configStatIdx = idx;
-  configStatSel = customStats[idx] || null;
-  var container = document.getElementById('statConfigOptions');
-  if (!container) return;
-  container.innerHTML = opts.map(function(o) {
-    var sel = configStatSel === o.id;
-    return '<div class="stat-cfg-option' + (sel ? ' sel' : '') + '" onclick="selectStatOption(\'' + o.id + '\')">'
-      + '<div class="stat-cfg-check">✓</div>'
-      + '<div style="flex:1"><div style="font-size:13px;color:var(--text)">' + escHtml(o.label) + '</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px">Valore attuale: ' + o.value + '</div></div>'
-      + '</div>';
+  var cat = statCatalog(ev, regs);
+  var ids = statActiveIds(ev, cat);
+  var html = ids.map(function(id, i) {
+    var o = cat.find(function(c) { return c.id === id; });
+    return '<div class="stat"><button type="button" class="stat-x" onclick="removeStatAt(' + i + ')" title="Rimuovi" aria-label="Rimuovi statistica">✕</button>'
+      + '<div class="stat-label">' + escHtml(o.label) + '</div><div class="stat-val">' + escHtml(String(o.value)) + '</div></div>';
   }).join('');
+  if (ids.length < STAT_MAX) {
+    html += '<div class="stat-custom" onclick="openStatPicker()"><div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div></div>';
+  }
+  row.innerHTML = html;
+}
+
+function openStatPicker() {
+  var ev = currentEv; if (!ev) return;
+  var cat = statCatalog(ev, currentRegs);
+  var ids = statActiveIds(ev, cat);
+  statPickList = cat.filter(function(o) { return ids.indexOf(o.id) < 0; });
+  statPickSel = [];
+  if (!statPickList.length) { showToast('Hai già aggiunto tutte le statistiche', 'g'); return; }
+  var html = '', grp = null;
+  statPickList.forEach(function(o, i) {
+    if (o.group !== grp) { grp = o.group; html += '<div class="stat-grp">' + escHtml(grp) + '</div>'; }
+    html += '<div class="stat-cfg-option" id="statopt' + i + '" onclick="toggleStatPick(' + i + ')">'
+      + '<div class="stat-cfg-check">✓</div>'
+      + '<div style="flex:1"><div style="font-size:13px;color:var(--text)">' + escHtml(o.label) + '</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px">Valore attuale: ' + escHtml(String(o.value)) + '</div></div>'
+      + '</div>';
+  });
+  document.getElementById('statConfigOptions').innerHTML = html;
+  setText('statPickSub', 'Seleziona i dati da mostrare nelle card. Puoi sceglierne più di uno (ancora ' + (STAT_MAX - ids.length) + ' disponibili).');
   openOv('ovStatConfig');
 }
-function selectStatOption(id) {
-  configStatSel = id;
-  document.querySelectorAll('.stat-cfg-option').forEach(function(el) { el.classList.remove('sel'); });
-  event.currentTarget.classList.add('sel');
+function toggleStatPick(i) {
+  var ev = currentEv; if (!ev) return;
+  var attive = statActiveIds(ev, statCatalog(ev, currentRegs)).length;
+  var pos = statPickSel.indexOf(i);
+  if (pos >= 0) statPickSel.splice(pos, 1);
+  else {
+    if (attive + statPickSel.length >= STAT_MAX) { showToast('Massimo ' + STAT_MAX + ' statistiche', 'r'); return; }
+    statPickSel.push(i);
+  }
+  var el = document.getElementById('statopt' + i);
+  if (el) el.classList.toggle('sel', statPickSel.indexOf(i) >= 0);
 }
 function confirmStatConfig() {
-  if (configStatIdx === null || configStatSel === null) return;
-  customStats[configStatIdx] = configStatSel;
-  saveCustomStats();
+  var ev = currentEv; if (!ev) return;
+  if (!statPickSel.length) { closeOv('ovStatConfig'); return; }
+  var ids = statActiveIds(ev, statCatalog(ev, currentRegs));
+  statPickSel.slice().sort(function(a, b) { return a - b; }).forEach(function(i) { ids.push(statPickList[i].id); });
   closeOv('ovStatConfig');
-  renderDash();
+  saveStats(ids);
 }
-function removeStatConfig(idx) {
-  customStats[idx] = null;
-  saveCustomStats();
-  renderDash();
+function removeStatAt(i) {
+  var ev = currentEv; if (!ev) return;
+  var ids = statActiveIds(ev, statCatalog(ev, currentRegs));
+  ids.splice(i, 1);
+  saveStats(ids);
 }
-function saveCustomStats() {
-  try { localStorage.setItem('ef_custom_stats_' + TOKEN, JSON.stringify(customStats)); } catch(e) {}
+/* Salva sull'evento (database): la scelta resta su ogni dispositivo. Se il salvataggio fallisce, torna come prima. */
+async function saveStats(ids) {
+  var ev = currentEv; if (!ev) return;
+  var prima = ev.stats_config;
+  ev.stats_config = ids;
+  renderStatsRow(ev, currentRegs);
+  try {
+    await sbPatch('events', ev.id, { stats_config: ids });
+    showToast('Statistiche salvate', 'g');
+  } catch (e) {
+    ev.stats_config = prima;
+    if (currentEv && currentEv.id === ev.id) renderStatsRow(ev, currentRegs);
+    showToast('Non salvato, riprova', 'r');
+  }
 }
 
 /* ============================================================
@@ -2958,6 +2997,25 @@ function renderAttesa(ev, inAttesa, closed) {
 /* ============================================================
    RENDER TABELLA ISCRITTI
    ============================================================ */
+/* Riga "Totali" in fondo alla tabella: compare solo se l'evento ha campi di tipo Numero */
+function totaliRowHtml(ev, regs, h) {
+  var cf = ev.custom_fields || [];
+  if (!cf.some(function(f) { return f.type === 'numero'; })) return '';
+  var tr = '<tr class="tot-row"><td class="nm">Totali</td><td></td><td></td>';
+  if (h.hM) tr += '<td></td><td></td><td></td>';
+  if (h.hT) tr += '<td></td>';
+  if (h.hP) tr += '<td></td>';
+  cf.forEach(function(f) {
+    if (f.type === 'numero') {
+      var tot = regs.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0);
+      tr += '<td class="xv">' + tot + '</td>';
+    } else tr += '<td class="xv"></td>';
+  });
+  if (h.hN) tr += '<td></td>';
+  tr += '<td></td><td></td></tr>';
+  return tr;
+}
+
 function renderTable(ev, regs, closed) {
   if (!ev) {
     setHTML('tableHead', '<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data</th><th></th></tr>');
@@ -3004,7 +3062,7 @@ function renderTable(ev, regs, closed) {
         + (!closed ? '<button class="ic" onclick="openEditReg(\'' + r.id + '\')">✏️</button>' : '')
         + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + escHtml(r.nome + ' ' + r.cognome) + '\')">🗑️</button>'
         + '</div></td></tr>';
-    }).join(''));
+    }).join('') + totaliRowHtml(ev, regs, { hM: hM, hT: hT, hP: hP, hN: hN }));
   }
   var pb = document.getElementById('panelBtns');
   if (pb) {
@@ -4752,10 +4810,7 @@ init();
       var inAttesa = regs.filter(function (r) { return !!r.in_lista_attesa; });
       var totP = confermati.filter(function (r) { return !r.capogruppo_id; }).reduce(function (a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
       var postiOccupati = calcPostiOccupati(ev, regs);
-      setText('s-regs', confermati.length);
-      setText('s-persone', totP);
-      setText('s-posti', ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '\u221e');
-      renderCustomStats(ev, confermati);
+      renderStatsRow(ev, regs);
       var mostraAttesa = (inAttesa.length > 0 || (ev.capienza && postiOccupati >= ev.capienza));
       setDisp('btnAttesa', mostraAttesa ? 'inline-block' : 'none');
       var btnA = document.getElementById('btnAttesa');
@@ -4866,6 +4921,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.9 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.0 agenzia</div>
 </body>
 </html>
