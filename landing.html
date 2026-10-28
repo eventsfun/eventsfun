@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.8 28/10/2026: negli eventi con ritiro il messaggio WhatsApp precompilato non cita la data dell'evento (come l'email di conferma). v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -500,7 +500,7 @@ function eventPublicUrl(ev) {
 function waShareBtnHtml(ev) {
   var TW = termWords(ev.terminologia);
   var msg = 'Ho appena confermato la mia ' + TW.n + ' a "' + ev.nome + '"'
-    + (ev.data_iso ? ' -- ' + isoToIt(ev.data_iso) : '')
+    + (ev.data_iso && ev.etichetta_presenza !== 'ritirato' ? ' -- ' + isoToIt(ev.data_iso) : '')
     + '. ' + TW.imp + ' anche tu: ' + eventPublicUrl(ev);
   var link = 'https://wa.me/?text=' + encodeURIComponent(msg);
   return '<a href="' + link + '" target="_blank" rel="noopener" class="wa-btn">'
