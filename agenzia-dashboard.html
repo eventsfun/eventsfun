@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1039,7 +1039,7 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="acc-body">
     <div class="sec-div">
       📝 Campi aggiuntivi
-      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi domande personalizzate al modulo di iscrizione. Scegli il tipo: testo libero, menu a scelta singola o caselle di spunta multiple.</span></span>
+      <span class="tip" style="margin-left:4px"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Aggiungi domande personalizzate al modulo di iscrizione. Scegli il tipo: testo libero, menu a scelta singola, caselle di spunta multiple o numero (tendina da 0 a 50, utile per le quantità).</span></span>
       <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim);margin-left:4px">(opzionale)</span>
       <button class="add-row-btn" onclick="addCF('c','ccfList')">+ Aggiungi</button>
     </div>
@@ -2809,6 +2809,9 @@ function getStatOptions(ev, confermati) {
         }).length;
         opts.push({ id: f.id + '__' + opt, label: f.label + ': ' + opt, value: count });
       });
+    } else if (f.type === 'numero') {
+      var tot = confermati.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0);
+      opts.push({ id: f.id + '__totale', label: f.label + ' (totale)', value: tot });
     } else if (f.type === 'text') {
       var filled = confermati.filter(function(r) { return r.extra && r.extra[f.id] && r.extra[f.id].toString().trim(); }).length;
       opts.push({ id: f.id + '__filled', label: f.label + ' (compilati)', value: filled });
@@ -3859,6 +3862,7 @@ function addCF(prefix, listId, data) {
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
     + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Menu a scelta</option>'
     + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Caselle multiple</option>'
+    + '<option value="numero"' + (type==='numero'?' selected':'') + '>Numero (tendina 0-50)</option>'
     + '</select>'
     + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
     + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
@@ -3996,6 +4000,11 @@ function buildExtra(ev, extra) {
       html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
         + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('')
         + '</select>';
+    } else if (f.type === 'numero') {
+      var nv = parseInt(val, 10); if (isNaN(nv) || nv < 0 || nv > 50) nv = 0;
+      var nopts = '';
+      for (var ni = 0; ni <= 50; ni++) nopts += '<option value="' + ni + '"' + (ni === nv ? ' selected' : '') + '>' + ni + '</option>';
+      html += '<select id="rx' + f.id + '">' + nopts + '</select>';
     } else if (f.type === 'checkbox') {
       var vals = Array.isArray(val) ? val : [];
       html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">'
@@ -4032,7 +4041,8 @@ async function saveReg() {
       });
       extra[f.id] = checked;
     } else {
-      var el = document.getElementById('rx' + f.id); if (el) extra[f.id] = el.value.trim();
+      var el = document.getElementById('rx' + f.id);
+      if (el) extra[f.id] = (f.type === 'numero') ? (parseInt(el.value, 10) || 0) : el.value.trim();
     }
   });
   var eid = getVal('reg_edit_id');
@@ -4856,6 +4866,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.8 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.9 agenzia</div>
 </body>
 </html>

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.5 28/10/2026: campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -616,6 +616,11 @@ function buildRegFormHtml(closed, TW) {
         + '<option value="">-- Seleziona --</option>'
         + (f.options || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('')
         + '</select></div>';
+    } else if (f.type === 'numero') {
+      var numOpts = '';
+      for (var ni = 0; ni <= 50; ni++) numOpts += '<option value="' + ni + '">' + ni + '</option>';
+      extraFields += '<div class="lp-fg">' + lbl
+        + '<select id="rx_' + f.id + '" class="lp-select">' + numOpts + '</select></div>';
     } else if (f.type === 'checkbox') {
       extraFields += '<div class="lp-fg">' + lbl
         + '<div class="lp-chk-list" id="rxgrp_' + f.id + '">'
@@ -879,6 +884,14 @@ async function submitReg() {
     accompagnatori.push({ nome: accNome, cognome: accCognome, email: accEmail, telefono: accTel });
   }
 
+  var cfChk = ev.custom_fields || [];
+  for (var ci = 0; ci < cfChk.length; ci++) {
+    if (cfChk[ci].type === 'numero' && cfChk[ci].required) {
+      var nEl = document.getElementById('rx_' + cfChk[ci].id);
+      if (nEl && (parseInt(nEl.value, 10) || 0) < 1) { showAlert('Scegli una quantità per: ' + cfChk[ci].label + '.'); return; }
+    }
+  }
+
   var btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Invio in corso...';
 
@@ -893,7 +906,7 @@ async function submitReg() {
       extra[f.id] = checked;
     } else {
       var el = document.getElementById('rx_' + f.id);
-      if (el) extra[f.id] = el.value.trim();
+      if (el) extra[f.id] = (f.type === 'numero') ? (parseInt(el.value, 10) || 0) : el.value.trim();
     }
   });
 
