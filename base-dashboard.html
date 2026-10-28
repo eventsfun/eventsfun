@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Base Dashboard | v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Base Dashboard | v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -91,6 +91,7 @@ tbody td{padding:11px 16px;font-size:12px;color:var(--text-muted);white-space:no
 tbody td.nm{color:var(--text);font-weight:600}
 tbody td.dt{color:var(--text-dim);font-size:11px}
 tbody td.xv{color:var(--gold)}
+.tot-row td{font-weight:700;color:var(--gold);border-top:2px solid rgba(201,169,110,0.35);background:rgba(201,169,110,0.05)}
 .act-cell{display:flex;gap:5px}
 .ic{background:var(--inp-bg);border:1px solid var(--border);border-radius:5px;width:26px;height:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:12px;transition:all .15s}
 .ic:hover{background:var(--row-hover)}
@@ -205,6 +206,9 @@ tbody td.xv{color:var(--gold)}
 .mod-opt.on{border-color:var(--gold);background:rgba(201,169,110,0.1)}
 .mod-t{font-size:13px;font-weight:700;color:var(--text)}
 .mod-s{font-size:11px;color:var(--text-dim);line-height:1.35}
+.mod-seg.two{grid-template-columns:repeat(2,1fr)}
+.stats.cinque{grid-template-columns:repeat(5,1fr)}
+@media(max-width:900px){.stats.cinque{grid-template-columns:1fr 1fr}.stats.cinque .stat:last-child{grid-column:1/-1}}
 .ib-note{font-size:11.5px;color:var(--text-dim);line-height:1.55;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:8px;padding:9px 12px;margin-bottom:12px}
 .ib-warn{margin-top:8px;font-size:12px;line-height:1.5;color:#d99a3a;background:rgba(224,160,64,0.08);border:1px solid rgba(224,160,64,0.3);border-radius:8px;padding:9px 12px}
 .ib-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
@@ -224,7 +228,7 @@ tbody td.xv{color:var(--gold)}
 .ib-status:empty{display:none}
 .ib-status.err{color:#e06060}
 .ib-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-@media(max-width:600px){.mod-seg{grid-template-columns:1fr}}
+@media(max-width:600px){.mod-seg,.mod-seg.two{grid-template-columns:1fr}}
 /* RICHIESTE DI CONTATTO */
 .pill-gold{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
 .rich-list{display:flex;flex-direction:column;gap:10px;padding:14px}
@@ -336,6 +340,7 @@ tbody td.xv{color:var(--gold)}
       <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">—</div></div>
       <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">—</div></div>
       <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">—</div></div>
+      <div class="stat" id="stat-ritirati" style="display:none"><div class="stat-label">Ritirati</div><div class="stat-val" id="s-ritirati">—</div></div>
     </div>
 
     <div class="status-bar">
@@ -391,7 +396,7 @@ tbody td.xv{color:var(--gold)}
 <div class="view" id="view-presenze">
   <div class="presenze-wrap">
     <div class="pres-header">
-      <div><h2>Presenze</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">—</p></div>
+      <div><h2><span id="presTitle">Presenze</span> <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Tocca il pulsante accanto a un nome per segnarlo; toccalo di nuovo per annullare. Se l'evento è impostato su "Ritirato" qui segni chi ha ritirato. Cambi la scelta dalle impostazioni dell'evento, sezione "Presenza o ritiro".</span></span></h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">—</p></div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="pres-stats">
           <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
@@ -637,6 +642,32 @@ tbody td.xv{color:var(--gold)}
     <div class="opt-row" style="border-bottom:none"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="otog_capienza" onclick="otog('capienza')"><div class="tog-dot"></div></div></div>
       </div>
     </div>
+    <div class="acc" id="o_ritiro_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📦 Presenza o ritiro<span class="acc-dot" id="acc_dot_ev_ritiro" style="display:none"></span></div>
+          <div class="acc-desc">Segna chi è presente oppure chi ha ritirato la sua prenotazione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Cosa segni quando una persona si presenta
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Presente: segni chi partecipa all'evento. Ritirato: per le prenotazioni di prodotti o materiali che le persone vengono a ritirare di persona. EventsFun non gestisce pagamenti: serve solo a tenere traccia di chi ha ritirato. Puoi cambiare la scelta quando vuoi.</span></span>
+          </label>
+          <div class="mod-seg two" id="ev_pres_seg">
+            <button type="button" class="mod-opt on" data-pres="presente" onclick="setPresEt('ev','presente')"><span class="mod-t">👥 Presente</span><span class="mod-s">Per eventi a cui le persone partecipano</span></button>
+            <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('ev','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
+          </div>
+        </div>
+        <div class="mf" id="ev_ritiro_data_wrap" style="display:none">
+          <label>Ultimo giorno di ritiro (facoltativo)
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno puoi continuare a segnare i ritiri. Non cambia la pagina pubblica: date e orari del ritiro scrivili anche nella scheda Informazioni.</span></span>
+          </label>
+          <input id="ev_data_fine_ritiro" type="date">
+        </div>
+      </div>
+    </div>
     <div class="acc" id="o_checkin_sect">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
@@ -855,6 +886,32 @@ tbody td.xv{color:var(--gold)}
     <div class="opt-row"><div><div class="opt-lbl">Mostra posti disponibili</div></div><div class="tog" id="stog_capienza" onclick="stog('capienza')"><div class="tog-dot"></div></div></div>
       </div>
     </div>
+    <div class="acc" id="s_ritiro_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📦 Presenza o ritiro<span class="acc-dot" id="acc_dot_se_ritiro" style="display:none"></span></div>
+          <div class="acc-desc">Segna chi è presente oppure chi ha ritirato la sua prenotazione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Cosa segni quando una persona si presenta
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Presente: segni chi partecipa all'evento. Ritirato: per le prenotazioni di prodotti o materiali che le persone vengono a ritirare di persona. EventsFun non gestisce pagamenti: serve solo a tenere traccia di chi ha ritirato. Puoi cambiare la scelta quando vuoi.</span></span>
+          </label>
+          <div class="mod-seg two" id="se_pres_seg">
+            <button type="button" class="mod-opt on" data-pres="presente" onclick="setPresEt('se','presente')"><span class="mod-t">👥 Presente</span><span class="mod-s">Per eventi a cui le persone partecipano</span></button>
+            <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('se','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
+          </div>
+        </div>
+        <div class="mf" id="se_ritiro_data_wrap" style="display:none">
+          <label>Ultimo giorno di ritiro (facoltativo)
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno puoi continuare a segnare i ritiri. Non cambia la pagina pubblica: date e orari del ritiro scrivili anche nella scheda Informazioni.</span></span>
+          </label>
+          <input id="se_data_fine_ritiro" type="date">
+        </div>
+      </div>
+    </div>
     <div class="acc" id="s_checkin_sect">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
@@ -1025,6 +1082,7 @@ var spIdx = { c: 0, s: 0 };
 var modState = { ev: 'iscrizioni', se: 'iscrizioni' }; /* modalita' della pagina nei due form */
 var ibUploading = 0; /* immagini dei blocchi in caricamento */
 var cfIdx = { c: 0, s: 0 };
+var presEtState = { ev: 'presente', se: 'presente' }; /* "presente" oppure "ritirato", nei due form */
 var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false, contatto_wa: false };
 var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false, contatto_wa: false };
 var LS_THEME = 'ef_theme';
@@ -1187,6 +1245,8 @@ function sanitizeEvent(ev) {
   ev.info_blocchi = Array.isArray(ev.info_blocchi) ? ev.info_blocchi : [];
   ev.info_avviso = ev.info_avviso === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta';
   ev.info_riepilogo_ora = (typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8;
+  ev.etichetta_presenza = ev.etichetta_presenza === 'ritirato' ? 'ritirato' : 'presente';
+  ev.data_fine_ritiro = ev.data_fine_ritiro || null;
   return ev;
 }
 
@@ -1206,10 +1266,63 @@ function initTheme() {
    DATE UTILS
    ============================================================ */
 function isoToIt(iso) { if (!iso) return '—'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
-function isClosed(ev) {
-  if (!ev || !ev.data_iso) return false;
+/* Parole da usare per l'evento: "Presente" (partecipazione) oppure "Ritirato" (prenotazioni da ritirare di persona) */
+function presTxt(ev) {
+  if (ev && ev.etichetta_presenza === 'ritirato') {
+    return { ritirato: true, stato: 'Ritirato', okPl: 'ritirati', noPl: 'da ritirare', btn: 'Segna ritirato', btnOn: 'Ritirato ✓',
+      vista: 'Ritiri', btnVista: '📦 Ritiri', gia: 'Già segnato come ritirato.', tot: 'prenotazioni' };
+  }
+  return { ritirato: false, stato: 'Presente', okPl: 'presenti', noPl: 'assenti', btn: 'Segna presente', btnOn: 'Presente ✓',
+    vista: 'Presenze', btnVista: '👥 Presenze', gia: 'Già segnato come presente.', tot: 'iscritti' };
+}
+/* Ultimo giorno utile dell'evento: la data dell'evento oppure, se piu' tardi, l'ultimo giorno di ritiro */
+function dataFineAttivita(ev) {
+  if (!ev) return '';
+  var d = ev.data_iso || '';
+  if (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro && String(ev.data_fine_ritiro) > d) d = String(ev.data_fine_ritiro);
+  return d;
+}
+/* Come isClosed, ma tiene conto dell'ultimo giorno di ritiro (per scanner QR e aggiornamento automatico) */
+function isClosedPres(ev) {
+  var f = dataFineAttivita(ev);
+  if (!f) return false;
   var t = new Date(); t.setHours(0, 0, 0, 0);
-  var d = new Date(ev.data_iso); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
+  var d = new Date(f); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
+  return t >= d;
+}
+/* Card "Ritirati": visibile solo negli eventi impostati su "Ritirato" */
+function aggiornaRitirati(ev, regs) {
+  var on = !!ev && presTxt(ev).ritirato;
+  setDisp('stat-ritirati', on ? 'block' : 'none');
+  var sr = document.getElementById('statsRow');
+  if (sr) sr.classList.toggle('cinque', on && sr.children.length >= 5);
+  var e = document.getElementById('s-ritirati');
+  if (e) e.textContent = on ? (regs.filter(function(r) { return r.presente; }).length + ' su ' + regs.length) : '—';
+}
+/* Totali dei campi di tipo Numero */
+function totaliRowHtml(ev, regs, h) {
+  var cf = ev.custom_fields || [];
+  if (!cf.some(function(f) { return f.type === 'numero'; })) return '';
+  var tr = '<tr class="tot-row"><td class="nm">Totali</td><td></td><td></td>';
+  if (h.hM) tr += '<td></td><td></td><td></td>';
+  if (h.hT) tr += '<td></td>';
+  if (h.hP) tr += '<td></td>';
+  cf.forEach(function(f) {
+    if (f.type === 'numero') {
+      var tot = regs.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0);
+      tr += '<td class="xv">' + tot + '</td>';
+    } else tr += '<td class="xv"></td>';
+  });
+  if (h.hN) tr += '<td></td>';
+  tr += '<td></td><td></td></tr>';
+  return tr;
+}
+function isClosed(ev) {
+  /* concluso dopo la data dell'evento oppure, per i ritiri, dopo l'ultimo giorno di ritiro */
+  var f = dataFineAttivita(ev);
+  if (!f) return false;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var d = new Date(f); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
   return t >= d;
 }
 
@@ -1227,7 +1340,7 @@ function renderDash() {
   /* Header */
   document.getElementById('dash-title').textContent = ev ? ev.nome : 'Dashboard Base';
   document.getElementById('dash-sub').textContent = ev
-    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : ''))
+    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
     : 'Nessun evento creato -- clicca su "Crea evento" per iniziare';
 
   /* Pulsanti */
@@ -1235,6 +1348,7 @@ function renderDash() {
   setDisp('btnQR', hasEv ? 'inline-block' : 'none');
   setDisp('btnLanding', hasEv ? 'inline-block' : 'none');
   setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
+  document.getElementById('btnPresenze').textContent = presTxt(ev).btnVista;
   setDisp('btnSendLink', (hasEv && ev.evento_online && ev.link_partecipazione && !closed) ? 'inline-block' : 'none');
   setDisp('btnSettings', canEdit ? 'inline-block' : 'none');
   setDisp('btnCreate', hasEv ? 'none' : 'inline-block');
@@ -1248,6 +1362,7 @@ function renderDash() {
   document.getElementById('s-regs').textContent = hasEv ? regs.length : '—';
   document.getElementById('s-persone').textContent = hasEv ? totP : '—';
   document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '—';
+  aggiornaRitirati(ev, regs);
 
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
@@ -1334,11 +1449,11 @@ function renderTable(ev, regs, closed) {
       if (hM) { xc += r.capogruppo_id ? '<td class="xv">--</td><td class="xv">--</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '--') + '</td>'; }
       if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '—') + '</td>';
       if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '—') + '</td>'; }
-      cf.forEach(function(f) { xc += '<td class="xv">' + ((r.extra && r.extra[f.id]) ? r.extra[f.id] : '—') + '</td>'; });
+      cf.forEach(function(f) { var cv = r.extra ? r.extra[f.id] : undefined; xc += '<td class="xv">' + ((f.type === 'numero' && cv !== undefined && cv !== null && cv !== '') ? cv : (cv ? cv : '—')) + '</td>'; });
       if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '—') + '</td>';
       var presente = !!r.presente;
       return '<tr>'
-        + '<td class="nm">' + (presente ? '<span style="color:var(--green)">● </span>' : '') + r.nome + ' ' + r.cognome + '</td>'
+        + '<td class="nm">' + (presente ? '<span style="color:var(--green)" title="' + presTxt(ev).stato + '">● </span>' : '') + r.nome + ' ' + r.cognome + '</td>'
         + '<td>' + r.email + '</td><td>' + (r.telefono || '—') + '</td>'
         + xc
         + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '—') + '</td>'
@@ -1346,7 +1461,7 @@ function renderTable(ev, regs, closed) {
         + (!closed ? '<button class="ic" onclick="openEditReg(\'' + r.id + '\')">✏️</button>' : '')
         + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + r.nome + ' ' + r.cognome + '\')">🗑️</button>'
         + '</div></td></tr>';
-    }).join('');
+    }).join('') + totaliRowHtml(ev, regs, { hM: hM, hT: hT, hP: hP, hN: hN });
   }
   /* Panel btn CSV */
   var pb = document.getElementById('panelBtns');
@@ -1377,6 +1492,7 @@ function resetEvForm(mode) {
   waRowCheck('ev');
   document.getElementById('ev_cap').value = '';
   document.getElementById('ev_data').value = '';
+  setVal('ev_data_fine_ritiro', ''); setPresEt('ev', 'presente');
   removeEvImg();
   setHTML('cspList', '');
   setHTML('ccfList', '');
@@ -1481,6 +1597,8 @@ async function saveEvent() {
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
     opt_qr_checkin: otogState.qr_checkin,
+    etichetta_presenza: presEtState.ev,
+    data_fine_ritiro: presEtState.ev === 'ritirato' ? (getVal('ev_data_fine_ritiro') || null) : null,
     evento_online: otogState.online,
     link_partecipazione: otogState.online ? (document.getElementById('ev_link_part').value.trim() || null) : null,
     link_invio: otogState.online ? ((document.getElementById('ev_link_invio') || {}).value || 'entrambi') : 'entrambi',
@@ -1536,6 +1654,8 @@ function openEditEvent() {
   var sc2 = document.getElementById('sopt_cena'); if (sc2) sc2.checked = ev.opt_pasto_cena !== false;
   var sspEl = document.getElementById('sspList'); if (sspEl) { sspEl.innerHTML = ''; spIdx.s = 0; (ev.sponsors || []).forEach(function(s) { addSP('s', 'sspList', s); }); }
   var scfEl = document.getElementById('scfList'); if (scfEl) { scfEl.innerHTML = ''; cfIdx.s = 0; (ev.custom_fields || []).forEach(function(f) { addCF('s', 'scfList', f); }); }
+  setVal('se_data_fine_ritiro', ev.data_fine_ritiro || '');
+  setPresEt('se', ev.etichetta_presenza);
   infoFill('se', ev);
   openOv('ovSettings');
   accResetModal('ovSettings');
@@ -1565,6 +1685,8 @@ async function saveSettings() {
     opt_pasto_cena: !stogState.pasto || document.getElementById('sopt_cena').checked,
     opt_newsletter: stogState.newsletter, opt_capienza: stogState.capienza,
     opt_qr_checkin: stogState.qr_checkin,
+    etichetta_presenza: presEtState.se,
+    data_fine_ritiro: presEtState.se === 'ritirato' ? (getVal('se_data_fine_ritiro') || null) : null,
     evento_online: stogState.online,
     link_partecipazione: stogState.online ? (document.getElementById('se_link_part').value.trim() || null) : null,
     link_invio: stogState.online ? ((document.getElementById('se_link_invio') || {}).value || 'entrambi') : 'entrambi',
@@ -1672,6 +1794,11 @@ function buildExtra(ev, extra) {
     if (f.type === 'dropdown') {
       html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
         + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('') + '</select>';
+    } else if (f.type === 'numero') {
+      var nv = parseInt(val, 10); if (isNaN(nv) || nv < 0 || nv > 50) nv = 0;
+      var nopts = '';
+      for (var ni = 0; ni <= 50; ni++) nopts += '<option value="' + ni + '"' + (ni === nv ? ' selected' : '') + '>' + ni + '</option>';
+      html += '<select id="rx' + f.id + '">' + nopts + '</select>';
     } else if (f.type === 'checkbox') {
       var vals = Array.isArray(val) ? val : [];
       html += '<div style="display:flex;flex-direction:column;gap:8px;margin-top:6px">'
@@ -1700,7 +1827,7 @@ async function saveReg() {
       var checked = [];
       (f.options || []).forEach(function(o) { var cb = document.getElementById('rxcb' + f.id + '_' + o); if (cb && cb.checked) checked.push(o); });
       extra[f.id] = checked;
-    } else { var el = document.getElementById('rx' + f.id); if (el) extra[f.id] = el.value.trim(); }
+    } else { var el = document.getElementById('rx' + f.id); if (el) extra[f.id] = (f.type === 'numero') ? (parseInt(el.value, 10) || 0) : el.value.trim(); }
   });
   var eid = document.getElementById('reg_edit_id').value;
   var rt = document.getElementById('r_tipo'), rp = document.getElementById('r_pranzo'), rc = document.getElementById('r_cena'), rn = document.getElementById('r_newsletter');
@@ -1782,11 +1909,26 @@ function exportCSV() {
     if (ev.opt_multipla) { row.push(r.adulti || 1); row.push(r.bambini || 0); }
     if (ev.opt_tipo) row.push(r.tipo || 'visitatore');
     if (ev.opt_pasto) { row.push(r.pranzo ? 'Sì' : 'No'); row.push(r.cena ? 'Sì' : 'No'); }
-    cf.forEach(function(f) { row.push((r.extra && r.extra[f.id]) || ''); });
+    cf.forEach(function(f) { var cv = r.extra ? r.extra[f.id] : undefined; row.push((f.type === 'numero' && cv !== undefined && cv !== null) ? cv : (cv || '')); });
     if (ev.opt_newsletter !== false) row.push(r.newsletter ? 'Sì' : 'No');
     row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '—');
     return row;
   });
+  /* Riga Totali (solo se ci sono campi Numero) */
+  if (cf.some(function(f) { return f.type === 'numero'; })) {
+    var trow = ['Totali', '', '', ''];
+    if (ev.opt_multipla) trow.push('', '');
+    if (ev.opt_tipo) trow.push('');
+    if (ev.opt_pasto) trow.push('', '');
+    cf.forEach(function(f) {
+      if (f.type === 'numero') {
+        trow.push(regs.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0));
+      } else trow.push('');
+    });
+    if (ev.opt_newsletter !== false) trow.push('');
+    trow.push('');
+    rows.push(trow);
+  }
   var csv = [h].concat(rows).map(function(r) { return r.map(function(v) { return '"' + String(v) + '"'; }).join(','); }).join('\n');
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
@@ -1833,12 +1975,14 @@ function renderPresenze() {
   var q = (document.getElementById('presSearch').value || '').toLowerCase();
   var filtered = regs.filter(function(r) { return !q || (r.nome + ' ' + r.cognome + ' ' + r.email).toLowerCase().includes(q); });
   var presenti = regs.filter(function(r) { return r.presente; }).length;
-  document.getElementById('presPres').textContent = presenti + ' presenti';
-  document.getElementById('presAss').textContent = (regs.length - presenti) + ' assenti';
-  document.getElementById('presSub').textContent = ev.nome + ' -- ' + regs.length + ' iscritti';
+  var pt = presTxt(ev);
+  var ptl = document.getElementById('presTitle'); if (ptl) ptl.textContent = pt.vista;
+  document.getElementById('presPres').textContent = presenti + ' ' + pt.okPl;
+  document.getElementById('presAss').textContent = (regs.length - presenti) + ' ' + pt.noPl;
+  document.getElementById('presSub').textContent = ev.nome + ' -- ' + regs.length + ' ' + pt.tot;
   // Mostra pulsante scanner solo se opt_qr_checkin attivo
   var scanBtn = document.getElementById('btnQrScanner');
-  if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosed(ev)) ? 'inline-block' : 'none';
+  if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosedPres(ev)) ? 'inline-block' : 'none';
   var list = document.getElementById('presList');
   if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px">Nessun risultato</div>'; return; }
   list.innerHTML = filtered.map(function(r) {
@@ -1846,7 +1990,7 @@ function renderPresenze() {
     return '<div class="pres-row' + (p ? ' presente' : '') + '">'
       + '<div><div class="pres-name">' + (p ? '<span style="color:var(--green)">✓ </span>' : '') + r.nome + ' ' + r.cognome + '</div>'
       + '<div class="pres-detail">' + r.email + (r.adulti ? ' · ' + (r.adulti || 1) + ' ad.' + (r.bambini ? ' +' + r.bambini + ' bam.' : '') : '') + '</div></div>'
-      + '<button class="pres-btn' + (p ? ' on' : '') + '" onclick="togglePresenza(\'' + r.id + '\')">' + (p ? 'Presente ✓' : 'Segna presente') + '</button>'
+      + '<button class="pres-btn' + (p ? ' on' : '') + '" onclick="togglePresenza(\'' + r.id + '\')">' + (p ? pt.btnOn : pt.btn) + '</button>'
       + '</div>';
   }).join('');
 }
@@ -1894,6 +2038,7 @@ function addCF(prefix, listId, data) {
     + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
     + '<option value="dropdown"' + (type==='dropdown'?' selected':'') + '>Scelta singola (menu)</option>'
     + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Scelta multipla (caselle)</option>'
+    + '<option value="numero"' + (type==='numero'?' selected':'') + '>Numero (tendina 0-50)</option>'
     + '</select>'
     + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
     + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
@@ -1968,6 +2113,18 @@ function applyOnlineUI(inpPfx, rowPfx, on) {
   setDisp(rowPfx + '_pasto_row', on ? 'none' : 'flex');
   setDisp(rowPfx + '_checkin_sect', (on || modState[inpPfx] === 'info') ? 'none' : '');
 }
+/* Scelta "Presente" / "Ritirato" nei due form (creazione e impostazioni) */
+function setPresEt(p, v) {
+  v = (v === 'ritirato') ? 'ritirato' : 'presente';
+  presEtState[p] = v;
+  var seg = document.getElementById(p + '_pres_seg');
+  if (seg) {
+    var bs = seg.querySelectorAll('.mod-opt');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-pres') === v);
+  }
+  setDisp(p + '_ritiro_data_wrap', v === 'ritirato' ? 'flex' : 'none');
+  if (typeof accSync === 'function') accSync(p);
+}
 function otog(k) {
   otogState[k] = !otogState[k];
   var el = document.getElementById('otog_' + k); if (el) { if (otogState[k]) el.classList.add('on'); else el.classList.remove('on'); }
@@ -1998,6 +2155,7 @@ function accSync(pfx){
   accSetDot('acc_dot_'+pfx+'_contatti',telDigits.length>0||!!st.contatto_wa||(mit!==''&&mit!==accountName));
   accSetDot('acc_dot_'+pfx+'_modulo',term!=='iscrizione'||st.multipla||st.cap_persona||st.capienza);
   accSetDot('acc_dot_'+pfx+'_checkin',!!st.qr_checkin);
+  accSetDot('acc_dot_'+pfx+'_ritiro',presEtState[pfx]==='ritirato');
   accSetDot('acc_dot_'+pfx+'_campi',accCount(cfList)>0);
   accSetDot('acc_dot_'+pfx+'_info',accCount(pfx+'_ibList')>0||!!st.info_email||accVal(pfx+'_info_avviso')==='riepilogo');
 }
@@ -2032,6 +2190,7 @@ function setModalita(p, m, silenzioso) {
   setDisp('acc_' + p + '_modulo', conIscr ? '' : 'none');
   setDisp('acc_' + p + '_campi', conIscr ? '' : 'none');
   setDisp((p === 'ev' ? 'o' : 's') + '_checkin_sect', (conIscr && !st.online) ? '' : 'none');
+  setDisp((p === 'ev' ? 'o' : 's') + '_ritiro_sect', conIscr ? '' : 'none');
   setDisp(p + '_email_info_note', conInfo ? '' : 'none');
   if (p === 'se') modWarn();
   if (conInfo && !silenzioso) {
@@ -2554,7 +2713,10 @@ function loadSeImg() { var f = document.getElementById('se_img_file').files[0]; 
 function removeSeImg() { var i = document.getElementById('se_img_preview'); i.src = ''; i.style.display = 'none'; setDisp('seImgPh', 'block'); setDisp('se_img_rm', 'none'); document.getElementById('se_img_file').value = ''; }
 
 /* UTILS */
-function showView(n) { document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); }); document.getElementById('view-' + n).classList.add('on'); if (n === 'presenze') renderPresenze(); }
+function showView(n) { document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); }); document.getElementById('view-' + n).classList.add('on'); if (n === 'presenze') renderPresenze();
+  /* tornando alla dashboard, card e tabella mostrano i ritiri/presenze appena segnati */
+  if (n === 'dash' && currentEv) { try { renderDash(); } catch (e) { console.error(e); } }
+}
 function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
 function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
@@ -2660,7 +2822,7 @@ function handleQrData(data) {
     result.style.border = '1px solid rgba(200,160,60,0.3)';
     icon.textContent = '⚠️';
     nameEl.textContent = reg.nome + ' ' + reg.cognome;
-    detail.textContent = 'Già segnato come presente.';
+    detail.textContent = presTxt(currentEv).gia;
     status.textContent = '';
     setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 3000);
     return;
@@ -2679,8 +2841,9 @@ function handleQrData(data) {
     status.textContent = '';
     // Aggiorna contatori presenze in background
     var pres = currentRegs.filter(function(r) { return r.presente; }).length;
-    document.getElementById('presPres').textContent = pres + ' presenti';
-    document.getElementById('presAss').textContent = (currentRegs.length - pres) + ' assenti';
+    var ptq = presTxt(currentEv);
+    document.getElementById('presPres').textContent = pres + ' ' + ptq.okPl;
+    document.getElementById('presAss').textContent = (currentRegs.length - pres) + ' ' + ptq.noPl;
     setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 2500);
   }).catch(function() {
     result.style.display = 'block';
@@ -2834,6 +2997,7 @@ applyOpts = function(ev) {
       el('s-regs').textContent = regs.length;
       el('s-persone').textContent = totP;
       el('s-posti').textContent = ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '\u221e';
+      aggiornaRitirati(ev, regs);
       renderTable(ev, regs, closed);
       var vp = el('view-presenze');
       if (vp && vp.classList.contains('on')) renderPresenze();
@@ -2884,7 +3048,7 @@ applyOpts = function(ev) {
     if (ev.modalita === 'info') return null;
     var nav = el('mainNav');
     if (!nav || nav.style.display === 'none') return null;
-    try { if (isClosed(ev)) return null; } catch (e) { return null; }
+    try { if (isClosedPres(ev)) return null; } catch (e) { return null; }
     return ev;
   }
 
@@ -2939,6 +3103,6 @@ applyOpts = function(ev) {
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.4 base</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.5 base</div>
 </body>
 </html>
