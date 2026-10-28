@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -165,12 +165,14 @@ a.term:hover{border-bottom-style:solid}
           <div class="idx-group-name">Gestire le iscrizioni</div>
           <a href="#iscritti">Vedere chi si è iscritto</a>
           <a href="#accompagnatori">Iscrizioni con accompagnatori</a>
+          <a href="#campi-aggiuntivi">Campi aggiuntivi</a>
           <a href="#email-automatiche">Le email automatiche</a>
         </div>
         <div class="idx-group">
           <div class="idx-group-name">Il giorno dell'evento</div>
           <a href="#presenze">Segnare i presenti</a>
           <a href="#qr-checkin">Il check-in con QR</a>
+          <a href="#ritiro-prodotti">Prenotazioni da ritirare</a>
         </div>
         <div class="idx-group">
           <div class="idx-group-name">Richiesta informazioni</div>
@@ -325,11 +327,32 @@ a.term:hover{border-bottom-style:solid}
       <div class="note">L'email di conferma, e l'eventuale QR di ingresso, arrivano al capogruppo. Gli accompagnatori il giorno dell'evento li segni presenti a mano dalla lista.</div>
     </section>
 
+    <section id="campi-aggiuntivi">
+      <h2>Campi aggiuntivi: chiedere altre informazioni <span class="badge badge-all">Tutti i piani</span></h2>
+      <p>Oltre a nome, cognome ed email puoi aggiungere al modulo le domande che ti servono: per esempio un'azienda, una taglia, un'allergia da segnalare o una quantità. Le risposte le ritrovi in tabella, accanto agli altri dati di ogni persona.</p>
+      <ol class="steps">
+        <li>Mentre crei o modifichi un evento, apri la sezione <strong>Campi aggiuntivi</strong> e premi <strong>+ Aggiungi</strong>.</li>
+        <li>Scrivi il nome del campo: è la domanda che vedrà la persona.</li>
+        <li>Scegli il <strong>tipo</strong> di risposta (qui sotto) e, se vuoi, segnalo come obbligatorio con l'asterisco <strong>*</strong>.</li>
+        <li>Premi <strong>Salva</strong>: il campo compare subito nella pagina pubblica.</li>
+      </ol>
+      <h3>I tipi di campo</h3>
+      <ul class="dots">
+        <li><strong>Testo libero</strong> e <strong>Testo lungo (note)</strong>: la persona scrive una risposta breve o un messaggio più lungo.</li>
+        <li><strong>Scelta singola (menu)</strong>: la persona sceglie una sola voce da un elenco che prepari tu.</li>
+        <li><strong>Scelta multipla (caselle)</strong>: la persona può spuntare più voci.</li>
+        <li><strong>Numero (tendina 0-50)</strong>: la persona sceglie una quantità da 0 a 50. Se lo segni come obbligatorio, deve scegliere almeno 1.</li>
+      </ul>
+      <h3>I totali dei campi Numero</h3>
+      <p>Se nell'evento c'è almeno un campo <strong>Numero</strong>, in fondo alla tabella degli iscritti compare la riga <strong>Totali</strong>, con la somma di ogni campo. Nell'<a href="#export" class="term">export</a> la riga Totali c'è nel CSV (Pro e Agenzia) e nel PDF (Agenzia). Con il piano Agenzia puoi anche mettere un totale tra le <a href="#statistiche" class="term">card delle statistiche</a>.</p>
+      <div class="note">Quando una persona sceglie delle quantità, nella schermata di ringraziamento e nell'<a href="#email-automatiche" class="term">email di conferma</a> vede un riepilogo con le sole voci maggiori di zero.</div>
+    </section>
+
     <section id="email-automatiche">
       <h2>Le email automatiche agli iscritti</h2>
       <p>EventsFun manda alcune email da solo, senza che tu debba fare niente.</p>
       <ul class="dots">
-        <li><strong>Email di conferma</strong>: appena una persona si iscrive, riceve un messaggio che conferma l'iscrizione con i dettagli dell'evento.</li>
+        <li><strong>Email di conferma</strong>: appena una persona si iscrive, riceve un messaggio che conferma l'iscrizione con i dettagli dell'evento. Se nel modulo ci sono dei <a href="#campi-aggiuntivi" class="term">campi Numero</a> e la persona ha scelto delle quantità, trova anche un <strong>riepilogo</strong> con quello che ha scelto.</li>
         <li><strong>Promemoria</strong>: gli iscritti ricevono un promemoria nei giorni vicini all'evento.</li>
         <li><strong>Aggiungi a Google Calendar</strong>: nelle email c'è un pulsante che permette all'iscritto di salvare l'evento nel proprio calendario con un clic.</li>
       </ul>
@@ -346,6 +369,7 @@ a.term:hover{border-bottom-style:solid}
         <li>Cerca la persona per nome se l'elenco è lungo.</li>
         <li>Premi <strong>Segna presente</strong> accanto al suo nome. Il conteggio dei presenti si aggiorna subito.</li>
       </ol>
+      <div class="note">Se l'evento è fatto di prenotazioni di prodotti o materiali da ritirare, puoi cambiare le parole: al posto di <strong>Presenze</strong> trovi <strong>Ritiri</strong> e al posto di "Segna presente" <strong>Segna ritirato</strong>. Lo spieghi in <a href="#ritiro-prodotti" class="term">Prenotazioni da ritirare di persona</a>.</div>
     </section>
 
     <section id="qr-checkin">
@@ -360,6 +384,37 @@ a.term:hover{border-bottom-style:solid}
         <li>Inquadra il QR che la persona mostra. Un segnale verde conferma che è stata segnata presente.</li>
       </ol>
       <div class="note">Riceve il QR solo il capogruppo. Gli accompagnatori si segnano presenti a mano dalla lista.</div>
+    </section>
+
+    <section id="ritiro-prodotti">
+      <h2>Prenotazioni da ritirare di persona <span class="badge badge-all">Tutti i piani</span></h2>
+      <p>Alcune raccolte non sono eventi a cui partecipare, ma prenotazioni di prodotti o materiali che le persone vengono a ritirare di persona: per esempio i panettoni di un'associazione, le piantine di una pro loco o i materiali di un corso. EventsFun ti aiuta a raccogliere le prenotazioni, a sapere quante quantità ti servono in tutto e a segnare chi ha già ritirato.</p>
+      <div class="note"><strong>EventsFun non gestisce pagamenti.</strong> Non è un negozio online: raccoglie le prenotazioni e tiene traccia dei ritiri, e il resto si concorda direttamente con te, nel modo che preferisci.</div>
+      <h3>Come impostarlo</h3>
+      <ol class="steps">
+        <li>Crea l'evento (o aprine uno esistente dalle <strong>Impostazioni</strong>) e come parola scegli <strong>Prenotazione</strong>, nella sezione <a href="#terminologia" class="term">Terminologia</a>.</li>
+        <li>In <strong>Campi aggiuntivi</strong> aggiungi un campo di tipo <strong>Numero</strong> per ogni prodotto, per esempio "Panettone 750g" e "Pandoro 750g". La persona sceglie quanti ne vuole.</li>
+        <li>Apri la sezione <strong>Presenza o ritiro</strong> e scegli <strong>Ritirato</strong> al posto di Presente.</li>
+        <li>Se vuoi, indica l'<strong>Ultimo giorno di ritiro</strong> (è facoltativo, vedi sotto).</li>
+        <li>Premi <strong>Salva</strong>.</li>
+      </ol>
+      <h3>Date, orari e luogo del ritiro</h3>
+      <p>Scrivili nella scheda <strong>Informazioni</strong> della pagina dell'evento, insieme a tutto quello che le persone devono sapere: dove si ritira, in quali giorni e a che ora. Per averla, in <a href="#richiesta-info" class="term">Cosa raccoglie la pagina</a> scegli <strong>Entrambe</strong>: la pagina avrà una scheda con le informazioni e una per prenotare. Con <strong>Entrambe</strong>, l'email di conferma ha anche il pulsante <strong>Rivedi le informazioni</strong>, che riporta la persona proprio a quella scheda.</p>
+      <h3>L'ultimo giorno di ritiro</h3>
+      <p>Di solito la pagina pubblica si chiude il giorno dopo la data dell'evento, ma i ritiri possono continuare anche dopo. Con <strong>Ultimo giorno di ritiro</strong> dici fino a quando: fino a quel giorno l'evento resta tra quelli attivi in dashboard e puoi continuare a segnare i ritiri. Non cambia la pagina pubblica. Se vuoi tenere aperte le prenotazioni più a lungo, metti come data dell'evento l'ultimo giorno utile per prenotare.</p>
+      <h3>Cosa cambia quando scegli "Ritirato"</h3>
+      <ul class="dots">
+        <li>Il pulsante <strong>Presenze</strong> diventa <strong>Ritiri</strong>, e accanto ad ogni nome trovi <strong>Segna ritirato</strong>. Premilo di nuovo per annullare.</li>
+        <li>I conteggi parlano di <strong>ritirati</strong> e <strong>da ritirare</strong>.</li>
+        <li>In dashboard compare la card <strong>Ritirati</strong>, per esempio "12 su 40". Nelle statistiche (piano Agenzia) trovi "Tasso ritiro" e "Ritirati".</li>
+        <li>La lista PDF (piano Agenzia) diventa <strong>Lista ritiri</strong>, con la colonna Ritirato e i totali dei campi Numero in fondo.</li>
+        <li>Se hai attivato anche il <a href="#qr-checkin" class="term">check-in con QR</a>, la persona mostra il QR ricevuto via email e con lo scanner segni il ritiro in un attimo.</li>
+      </ul>
+      <h3>Cosa riceve chi prenota</h3>
+      <p>Subito dopo la prenotazione la persona vede un <strong>riepilogo</strong> con le quantità scelte, e lo stesso riepilogo le arriva nell'email di conferma, con l'invito a mostrarla al momento del ritiro. Se vuole aggiungere altro fa una nuova prenotazione; se vuole togliere qualcosa ti contatta, e tu puoi correggere la prenotazione dalla tabella degli iscritti con la matita.</p>
+      <h3>Quante quantità ti servono in tutto</h3>
+      <p>In fondo alla tabella degli iscritti trovi la riga <strong>Totali</strong>: per ogni prodotto, la somma di tutte le prenotazioni. La stessa riga è nell'export CSV (Pro e Agenzia) e nel PDF (Agenzia), utile per preparare l'elenco dei prodotti da avere pronti.</p>
+      <div class="note">Puoi cambiare la scelta tra Presente e Ritirato quando vuoi dalle Impostazioni dell'evento. Il Punto Info non raccoglie iscrizioni e non ha questa opzione.</div>
     </section>
 
     <!-- RICHIESTA INFORMAZIONI -->
@@ -459,8 +514,9 @@ a.term:hover{border-bottom-style:solid}
       <p>Esportare vuol dire scaricare i dati in un file da tenere o stampare.</p>
       <ul class="dots">
         <li><strong>Elenco iscritti in <a href="#g-csv" class="term">CSV</a></strong>: un file che apri con Excel o Fogli Google, utile per conservare o rielaborare i dati.</li>
-        <li><strong>Lista presenze in <a href="#g-pdf" class="term">PDF</a></strong>: un foglio pronto da stampare, comodo da tenere all'ingresso come lista cartacea di riserva.</li>
+        <li><strong>Lista presenze in <a href="#g-pdf" class="term">PDF</a></strong>: un foglio pronto da stampare, comodo da tenere all'ingresso come lista cartacea di riserva. Negli eventi con ritiro diventa la <strong>Lista ritiri</strong>.</li>
       </ul>
+      <p>Se nell'evento ci sono <a href="#campi-aggiuntivi" class="term">campi Numero</a>, in fondo al CSV e al PDF trovi anche la riga dei <strong>Totali</strong>.</p>
     </section>
 
     <section id="newsletter">
@@ -492,6 +548,7 @@ a.term:hover{border-bottom-style:solid}
     <section id="statistiche">
       <h2>Statistiche <span class="badge badge-ag">Solo Agenzia</span></h2>
       <p>Le statistiche ti mostrano l'andamento di un evento con numeri e grafici semplici: quante iscrizioni hai raccolto, quante persone si sono presentate, quanti posti restano e altro. Puoi scegliere quali riquadri vedere e disporli come preferisci.</p>
+      <p>Se hai dei <a href="#campi-aggiuntivi" class="term">campi Numero</a>, puoi mettere in un riquadro il totale di ciascuno. Negli eventi con <a href="#ritiro-prodotti" class="term">ritiro di prodotti</a> trovi anche "Ritirati" e "Tasso ritiro" al posto della presenza.</p>
     </section>
 
     <section id="lista-attesa">
@@ -605,6 +662,14 @@ a.term:hover{border-bottom-style:solid}
         <div class="g-term">Check-in</div>
         <div class="g-def">L'operazione di segnare una persona come presente quando arriva all'evento.</div>
       </div>
+      <div class="gloss-item" id="g-ritiro">
+        <div class="g-term">Ritiro</div>
+        <div class="g-def">Nelle prenotazioni di prodotti o materiali, il momento in cui la persona viene a prendere quello che ha prenotato. Si segna come il check-in, con la parola "Ritirato".</div>
+      </div>
+      <div class="gloss-item" id="g-campo-numero">
+        <div class="g-term">Campo Numero</div>
+        <div class="g-def">Un campo aggiuntivo in cui la persona sceglie una quantità da 0 a 50. EventsFun ne somma i valori nella riga Totali.</div>
+      </div>
       <div class="gloss-item" id="g-capogruppo">
         <div class="g-term">Capogruppo</div>
         <div class="g-def">La persona che si iscrive e porta con sé degli accompagnatori; è quella che riceve l'email di conferma.</div>
@@ -673,6 +738,14 @@ a.term:hover{border-bottom-style:solid}
       <div class="faq-item">
         <div class="faq-q">Ho disdetto l'abbonamento ma ho cambiato idea.</div>
         <div class="faq-a">Se la data di fine non è ancora arrivata, dall'area personale premi "Gestisci abbonamento o riattiva" e riattivalo dal portale. Se è già passata, riabbonati dall'area personale con la stessa email: entro 12 mesi ritrovi i tuoi eventi e le loro pagine.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Posso usare EventsFun per raccogliere prenotazioni di prodotti da ritirare?</div>
+        <div class="faq-a">Sì. Ricorda che EventsFun non gestisce pagamenti: raccoglie le prenotazioni, ti dice quante quantità servono e segna chi ha ritirato. Come e quando regolare il resto lo decidi tu con le persone. Trovi i passaggi in <a href="#ritiro-prodotti" class="lnk">Prenotazioni da ritirare di persona</a>.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">I ritiri continuano dopo la data dell'evento: come faccio a segnarli?</div>
+        <div class="faq-a">Nelle Impostazioni, sezione "Presenza o ritiro", scegli "Ritirato" e indica l'ultimo giorno di ritiro: fino a quel giorno l'evento resta attivo in dashboard e puoi continuare a segnare chi ritira.</div>
       </div>
       <div class="faq-item">
         <div class="faq-q">Non trovo una risposta qui.</div>
