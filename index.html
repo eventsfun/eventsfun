@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
+<!-- EventsFun | Sito vetrina | v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -310,6 +310,8 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   .nav-burger{display:flex}
   .nav-mobile.open{display:flex}
 }
+/* -- PRENOTAZIONI DA RITIRARE (v1.8) -- */
+.pinfo.pritiro{background:var(--bg)}
 /* -- PUNTO INFO (v1.6) -- */
 .pinfo{padding:100px 40px;background:var(--bg2);position:relative;z-index:1}
 .pinfo::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent)}
@@ -881,6 +883,43 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   </div>
 </section>
 
+<!-- PRENOTAZIONI DA RITIRARE (v1.8) -->
+<section class="pinfo pritiro" id="prenotazioni-ritiro">
+  <div class="pinfo-inner">
+    <div class="pinfo-header fade-up">
+      <div class="section-label">Prenotazioni da ritirare</div>
+      <h2 class="section-title">Raccogli le prenotazioni, segna chi ha ritirato.</h2>
+      <p class="section-sub">Una raccolta solidale, le piantine di una pro loco, i materiali di un corso: le persone scelgono le quantità sulla tua pagina, tu vedi i totali e, quando vengono a ritirare, spunti il nome.</p>
+    </div>
+    <div class="pinfo-grid fade-up" style="transition-delay:.1s">
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128230;</div>
+        <h3>Una quantità per ogni prodotto</h3>
+        <p>Per ogni prodotto aggiungi un campo Numero: chi prenota sceglie da 0 a 50 con una tendina, direttamente sulla tua pagina.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128231;</div>
+        <h3>Riepilogo subito e via email</h3>
+        <p>Appena conferma, la persona vede le quantità scelte e le riceve anche per email, da mostrare al momento del ritiro.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#128202;</div>
+        <h3>Totali già calcolati</h3>
+        <p>In fondo alla tabella trovi la somma di ogni prodotto, sempre aggiornata: sai subito quanto devi avere pronto.</p>
+      </div>
+      <div class="pinfo-card">
+        <div class="feat-icon">&#9989;</div>
+        <h3>Segna chi ha ritirato</h3>
+        <p>Il giorno del ritiro tocchi il nome e lo segni. Se i ritiri durano più giorni, indichi l'ultimo giorno di ritiro e l'evento resta attivo fino ad allora.</p>
+      </div>
+    </div>
+    <div class="pinfo-box fade-up">
+      <p>EventsFun non gestisce pagamenti e non è un negozio online: raccoglie le prenotazioni e tiene traccia dei ritiri. Date, orari e luogo del ritiro li scrivi nella scheda Informazioni della pagina.</p>
+      <a href="guide/prenotazioni-prodotti-da-ritirare.html" class="btn-demo">Leggi la guida →</a>
+    </div>
+  </div>
+</section>
+
 <!-- NEWSLETTER -->
 <section class="nl-section" id="newsletter">
   <div class="nl-inner">
@@ -1285,6 +1324,14 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Posso raccogliere prenotazioni di prodotti da ritirare?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">Sì. Per ogni prodotto aggiungi un campo Numero: chi prenota sceglie le quantità, tu vedi i totali e segni chi ha ritirato. EventsFun non gestisce pagamenti e non è un negozio online: date, orari e luogo del ritiro li scrivi nella scheda Informazioni. Serve uno dei piani con iscrizioni (il Punto Info non raccoglie prenotazioni). <a href="guide/prenotazioni-prodotti-da-ritirare.html" style="color:var(--gold)">Leggi la guida</a>.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
           <span>I dati degli iscritti sono al sicuro? Chi può vederli?</span>
           <span class="faq-icon">+</span>
         </button>
@@ -1444,6 +1491,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <a href="guide/modulo-iscrizione-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Modulo di iscrizione: quali campi chiedere</a>
         <a href="guide/lista-attesa-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Lista d'attesa per eventi con posti limitati</a>
         <a href="guide/iscrizioni-sagre-feste-di-paese.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Sagre e feste di paese: iscrizioni e info</a>
+        <a href="guide/prenotazioni-prodotti-da-ritirare.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Prenotazioni di prodotti da ritirare</a>
         <a href="alternativa-a-eventbrite.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">EventsFun come alternativa a Eventbrite</a>
       </div>
     </div>
@@ -1620,7 +1668,7 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.7</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.8</div>
 <script src="/misura.js" defer></script>
 </body>
 </html>
