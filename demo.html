@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
+<!-- EventsFun | Demo Locale | v2.2 28/10/2026: card statistiche come nella dashboard Agenzia (scelta multipla, fino a 12, salvate per evento; l'esempio "Panettone solidale" ha gia' i totali dei prodotti); testo di ringraziamento adatto ai ritiri. v2.1 28/10/2026: evento di esempio "Panettone solidale" (raccolta di prodotti da ritirare, con prenotazioni e ritiri gia' inseriti), caricabile dal benvenuto e dal banner di aiuto. v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -91,9 +91,14 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .ev-tab.active{background:rgba(201,169,110,0.12);border-color:var(--gold);color:var(--gold)}
 .ev-tab .ev-tab-count{display:inline-block;background:rgba(201,169,110,0.2);border-radius:20px;padding:1px 7px;font-size:11px;margin-left:5px}
 .stats-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap}
-.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px}
+.stat{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;position:relative}
 .stat-label{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;font-weight:700}
 .stat-val{font-family:"Syne",sans-serif;font-size:28px;font-weight:300;color:var(--gold)}
+.stat-x{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;border:none;background:transparent;color:var(--text-dim);font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.55;transition:all .2s;font-family:inherit}
+.stat-x:hover{opacity:1;color:var(--gold);background:rgba(201,169,110,0.1)}
+.stat .stat-label{padding-right:18px}
+.stat-grp{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin:14px 0 8px}
+.stat-grp:first-child{margin-top:0}
 .stat-custom{background:var(--bg2);border:2px dashed rgba(201,169,110,0.25);border-radius:12px;padding:16px 20px;flex:1;min-width:140px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;text-align:center;position:relative}
 .stat-custom:hover{border-color:rgba(201,169,110,0.5);background:rgba(201,169,110,0.03)}
 .stat-custom-add{font-size:22px;color:rgba(201,169,110,0.4)}
@@ -527,13 +532,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
     <div class="closed-banner" id="closedBanner">
       <div><h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3><p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura.</p></div>
     </div>
-    <div class="stats-row" id="statsRow">
-      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">--</div></div>
-      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">--</div></div>
-      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">--</div></div>
-      <div class="stat-custom" id="statCustom0" onclick="openStatConfig(0)"><div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div><div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare">?</div></div>
-      <div class="stat-custom" id="statCustom1" onclick="openStatConfig(1)"><div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div><div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare">?</div></div>
-    </div>
+    <div class="stats-row" id="statsRow"></div>
     <div class="status-bar">
       <div class="sinfo"><h3 id="status-nome">Nessun evento</h3><p id="status-det">Crea il tuo primo evento per iniziare</p><p id="statusNota" class="status-nota" style="display:none"></p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -616,6 +615,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:10px">Benvenuto su EventsFun!</h2>
       <p style="font-size:14px;color:var(--text-muted);text-align:center;line-height:1.7;margin-bottom:28px">Sei a un passo dal tuo primo evento.<br>Ti guidiamo in meno di 3 minuti.</p>
       <button onclick="obStep(2)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">Iniziamo &rarr;</button>
+      <button onclick="creaEsempioRitiro()" style="width:100%;margin-top:10px;padding:12px;border:1px solid rgba(201,169,110,0.4);border-radius:10px;background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio: prodotti da ritirare</button>
       <div style="text-align:center;margin-top:14px"><button onclick="obSkip()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline">Salta, esploro da solo</button></div>
     </div>
     <div id="ob-step-2" style="display:none">
@@ -704,6 +704,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
 <div id="obHelpBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:800;padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:13px;color:var(--text-muted)">Hai bisogno di aiuto per iniziare?</span>
   <button onclick="obRestart()" style="padding:7px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Mostrami come fare &rarr;</button>
+  <button onclick="creaEsempioRitiro()" style="padding:7px 18px;border-radius:8px;border:1px solid rgba(201,169,110,0.4);background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio</button>
   <button onclick="document.getElementById('obHelpBanner').style.display='none'" style="background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1">&times;</button>
 </div>
 
@@ -1247,9 +1248,9 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
 <div class="ov" id="ovStatConfig" onclick="if(event.target===this)closeOv('ovStatConfig')">
   <div class="modal sm">
     <button class="mcls" onclick="closeOv('ovStatConfig')">&#10005;</button>
-    <h2>Scegli statistica</h2>
-    <p class="modal-sub">Seleziona quale dato vuoi vedere in evidenza in questa card.</p>
-    <div id="statConfigOptions"></div>
+    <h2>Aggiungi statistiche</h2>
+    <p class="modal-sub" id="statPickSub">Seleziona i dati da mostrare nelle card. Puoi sceglierne pi&ugrave; di uno.</p>
+    <div id="statConfigOptions" style="max-height:55vh;overflow-y:auto;-webkit-overflow-scrolling:touch"></div>
     <div class="del-btns" style="margin-top:8px">
       <button class="del-no" onclick="closeOv('ovStatConfig')">Annulla</button>
       <button class="del-yes" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A" onclick="confirmStatConfig()">Conferma</button>
@@ -1595,7 +1596,7 @@ var spIdx={c:0,s:0},cfIdx={c:0,s:0};
 var otogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false,info_email:false};
 var stogState={multipla:false,cap_persona:false,acc_email_obb:false,acc_tel_obb:false,tipo:false,pasto:false,newsletter:true,capienza:false,promo_auto:false,qr_checkin:false,bambini:true,online:false,contatto_wa:false,info_email:false};
 var presEtState={ev:'presente',se:'presente'}; /* "presente" oppure "ritirato", nei due form */
-var attesaVisible=false,customStats=[null,null],configStatIdx=null,configStatSel=null;
+var attesaVisible=false;
 var evTemaState='chiaro',seTemaState='chiaro',evQrTipo='nessuno',seQrTipo='nessuno',evQrLogoB64=null,seQrLogoB64=null;
 
 /* ============================================================
@@ -1606,7 +1607,6 @@ function init(){
   allEvents=dbGetEvents().map(sanitizeEvent);
   currentEv=allEvents.length?allEvents[0]:null;
   currentRegs=currentEv?dbGetRegs(currentEv.id):[];
-  try{var s=lsGet(LS_STATS);if(s)customStats=s;}catch(e){}
   seedContattiIfEmpty();allContatti=dbGetContatti();
   setDisp('mainNav','flex');showView('dash');renderDash();maybeShowOnboarding();
 }
@@ -1690,6 +1690,7 @@ function sanitizeEvent(ev){
   ev.info_avviso=ev.info_avviso==='riepilogo'?'riepilogo':'ogni_richiesta';ev.info_riepilogo_ora=(typeof ev.info_riepilogo_ora==='number')?ev.info_riepilogo_ora:8;
   ev.etichetta_presenza=ev.etichetta_presenza==='ritirato'?'ritirato':'presente';
   ev.data_fine_ritiro=ev.data_fine_ritiro||null;
+  ev.stats_config=Array.isArray(ev.stats_config)?ev.stats_config:null;
   return ev;
 }
 
@@ -1710,6 +1711,45 @@ function initTheme(){if(localStorage.getItem(LS_THEME)==='light'){document.body.
 /* ============================================================
    ONBOARDING
    ============================================================ */
+
+/* ============================================================
+   ESEMPIO: RACCOLTA DI PRODOTTI DA RITIRARE ("Panettone solidale")
+   Evento di esempio con nomi e recapiti inventati. Le date sono calcolate da oggi,
+   cosi' l'esempio risulta sempre attivo e i ritiri si possono provare.
+   ============================================================ */
+function esDataIso(n){var d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()+n);var m=d.getMonth()+1,g=d.getDate();return d.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(g<10?'0':'')+g;}
+function creaEsempioRitiro(){
+  var gia=allEvents.find(function(e){return e.slug==='panettone-solidale';});
+  var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';
+  var bn=document.getElementById('obHelpBanner');if(bn)bn.style.display='none';
+  if(gia){switchEvent(gia.id);showToast('Esempio gia\' presente','g');return;}
+  var dataPren=esDataIso(10),ritDa=esDataIso(11),ritA=esDataIso(17);
+  var testoInfo='Scegli le quantità che ti servono nella scheda Prenota.\n\nCome si ritirano\nI prodotti si ritirano di persona presso la sede dell\'associazione, in Via Esempio 12.\nGiorni e orari del ritiro: dal '+isoToIt(ritDa)+' al '+isoToIt(ritA)+', ogni giorno dalle 15:00 alle 18:00.\n\nSe cambi idea\nPer aggiungere altro fai una nuova prenotazione. Per togliere qualcosa scrivi a info@esempio.example.';
+  var cf=[
+    {id:'panettone_classico_750g',label:'Panettone classico 750g',type:'numero',options:[],required:false},
+    {id:'panettone_con_cioccolato_750g',label:'Panettone con cioccolato 750g',type:'numero',options:[],required:false},
+    {id:'pandoro_750g',label:'Pandoro 750g',type:'numero',options:[],required:false},
+    {id:'note_per_il_ritiro',label:'Note per il ritiro',type:'text',options:[],required:false}
+  ];
+  var evData={nome:'Panettone solidale',data_iso:dataPren,ora:'18:00',luogo:'Sede dell\'associazione, Via Esempio 12',email_contatto:'info@esempio.example',cliente:null,telefono_contatto:null,contatto_whatsapp:false,
+    descrizione:'Prenota i dolci solidali di Natale e ritirali di persona.',qr_testo:null,qr_logo:null,landing_tema:'chiaro',slug:'panettone-solidale',capienza:null,immagine:null,attivo:true,bozza:false,
+    opt_multipla:false,opt_cap_persona:false,opt_tipo:false,opt_pasto:false,opt_newsletter:true,opt_capienza:false,opt_qr_checkin:false,opt_bambini:true,evento_online:false,
+    etichetta_presenza:'ritirato',data_fine_ritiro:ritA,terminologia:'prenotazione',modalita:'entrambe',landing_scheda_iniziale:'info',
+    stats_config:['iscritti','ritirati','panettone_classico_750g__total','panettone_con_cioccolato_750g__total','pandoro_750g__total'],info_blocchi:[{tipo:'testo',testo:testoInfo}],info_email_obbligatoria:false,info_avviso:'ogni_richiesta',info_riepilogo_ora:8,sponsors:[],custom_fields:cf};
+  var ev=sanitizeEvent(dbCreateEvent(evData));
+  var persone=[
+    ['Giulia','Marino',2,0,1,'',true],['Paolo','Ferrari',0,3,0,'Passo nel pomeriggio',true],['Elena','Conti',1,1,1,'',false],
+    ['Marco','Gallo',4,0,0,'',true],['Sara','Fontana',0,0,2,'',false],['Luca','Greco',3,2,0,'Per il gruppo parrocchiale',false],
+    ['Chiara','Bruno',1,0,1,'',true],['Davide','Lombardi',0,2,2,'',false],['Francesca','Riva',2,1,0,'',false],['Matteo','Serra',5,0,0,'Ritiro dopo le 17',false]
+  ];
+  var base=Date.now()-persone.length*3600000*5;
+  persone.forEach(function(p,i){
+    var extra={panettone_classico_750g:p[2],panettone_con_cioccolato_750g:p[3],pandoro_750g:p[4],note_per_il_ritiro:p[5]};
+    dbCreateReg({event_id:ev.id,created_at:new Date(base+i*3600000*5).toISOString(),nome:p[0],cognome:p[1],email:p[0].toLowerCase()+'.'+p[1].toLowerCase()+'@esempio.example',telefono:'+39 000 000 00'+(10+i),adulti:1,bambini:0,tipo:'visitatore',pranzo:false,cena:false,newsletter:false,extra:extra,presente:!!p[6],in_lista_attesa:false});
+  });
+  allEvents.push(ev);currentEv=ev;currentRegs=dbGetRegs(ev.id);attesaVisible=false;
+  renderDash();showView('dash');showToast('Esempio caricato: prova Ritiri e Anteprima','g');
+}
 function maybeShowOnboarding(){if(allEvents&&allEvents.length>0)return;var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='flex';}
 function obStep(n){[1,2,3].forEach(function(i){var el=document.getElementById('ob-step-'+i);if(el)el.style.display=(i===n)?'block':'none';});if(n===3){setTimeout(function(){var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';openCreateEvent();},1200);}}
 function obSkip(){var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';var b=document.getElementById('obHelpBanner');if(b)b.style.display='flex';}
@@ -1752,9 +1792,7 @@ function renderDash(){
   setDisp('btnPDF',hasEv?'inline-block':'none');setDisp('btnToggleStatus',canEdit?'inline-block':'none');
   var conf=regs.filter(function(r){return!r.in_lista_attesa;}),inA=regs.filter(function(r){return!!r.in_lista_attesa;});
   var totP=conf.reduce(function(a,r){return a+(r.adulti||1)+(r.bambini||0);},0),postiOcc=hasEv?calcPostiOccupati(ev,regs):0;
-  setText('s-regs',hasEv?conf.length:'--');setText('s-persone',hasEv?totP:'--');
-  setText('s-posti',hasEv?(ev.capienza?Math.max(0,ev.capienza-postiOcc):'∞'):'--');
-  renderCustomStats(ev,conf);
+  renderStatsRow(ev,regs);
   var mostraA=hasEv&&(inA.length>0||(ev.capienza&&postiOcc>=ev.capienza));
   setDisp('btnAttesa',mostraA?'inline-block':'none');
   var btnA=document.getElementById('btnAttesa');if(btnA)btnA.textContent=(attesaVisible?'▲ ':'⏳ ')+'Lista attesa'+(inA.length>0?' ('+inA.length+')':'');
@@ -1768,12 +1806,127 @@ function renderDash(){
   applyModalitaDash(ev);
 }
 
-function getStatOptions(ev,conf){var opts=[];if(!ev)return opts;if(ev.etichetta_presenza==='ritirato'){var nrit=conf.filter(function(r){return r.presente;}).length;opts.push({id:'__ritirati',label:'Ritirati',value:nrit+' su '+conf.length});}(ev.custom_fields||[]).forEach(function(f){if(f.type==='dropdown'||f.type==='checkbox'){(f.options||[]).forEach(function(opt){var count=conf.filter(function(r){if(!r.extra)return false;var val=r.extra[f.id];if(f.type==='checkbox'){return Array.isArray(val)?val.includes(opt):false;}return val===opt;}).length;opts.push({id:f.id+'__'+opt,label:f.label+': '+opt,value:count});});}else if(f.type==='numero'){opts.push({id:f.id+'__total',label:f.label+' (totale)',value:sommaNumero(conf,f)});}else if(f.type==='text'){var filled=conf.filter(function(r){return r.extra&&r.extra[f.id]&&r.extra[f.id].toString().trim();}).length;opts.push({id:f.id+'__filled',label:f.label+' (compilati)',value:filled});}});return opts;}
-function renderCustomStats(ev,conf){var opts=getStatOptions(ev,conf);for(var i=0;i<2;i++){var el=document.getElementById('statCustom'+i);if(!el)continue;var cfg=customStats[i];if(!cfg){el.className='stat-custom';el.innerHTML='<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div><div class="stat-custom-tip" title="Clicca per scegliere un dato da evidenziare">?</div>';el.onclick=(function(idx){return function(){openStatConfig(idx);};})(i);}else{var found=opts.find(function(o){return o.id===cfg;});if(found){el.className='stat-custom filled';el.innerHTML='<div class="stat-label">'+escHtml(found.label)+'</div><div class="stat-val">'+found.value+'</div><div class="stat-custom-tip" onclick="removeStatConfig('+i+');event.stopPropagation()" title="Rimuovi" style="cursor:pointer;border-color:rgba(255,255,255,0.15)">✕</div>';el.onclick=null;}else{customStats[i]=null;lsSet(LS_STATS,customStats);el.className='stat-custom';el.innerHTML='<div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div>';el.onclick=(function(idx){return function(){openStatConfig(idx);};})(i);}}}}
-function openStatConfig(idx){var ev=currentEv;var conf=currentRegs.filter(function(r){return!r.in_lista_attesa;});var opts=getStatOptions(ev,conf);if(!opts.length){alert('Aggiungi prima dei campi aggiuntivi di tipo Scelta singola, Scelta multipla o Numero per usare questa funzione.');return;}configStatIdx=idx;configStatSel=customStats[idx]||null;var container=document.getElementById('statConfigOptions');if(!container)return;container.innerHTML=opts.map(function(o){var sel=configStatSel===o.id;return'<div class="stat-cfg-option'+(sel?' sel':'')+'" onclick="selectStatOption(\''+o.id+'\')"><div class="stat-cfg-check">✓</div><div style="flex:1"><div style="font-size:13px;color:var(--text)">'+escHtml(o.label)+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px">Valore attuale: '+o.value+'</div></div></div>';}).join('');openOv('ovStatConfig');}
-function selectStatOption(id){configStatSel=id;document.querySelectorAll('.stat-cfg-option').forEach(function(el){el.classList.remove('sel');});event.currentTarget.classList.add('sel');}
-function confirmStatConfig(){if(configStatIdx===null||configStatSel===null)return;customStats[configStatIdx]=configStatSel;lsSet(LS_STATS,customStats);closeOv('ovStatConfig');renderDash();}
-function removeStatConfig(idx){customStats[idx]=null;lsSet(LS_STATS,customStats);renderDash();}
+/* ============================================================
+   CARD STATISTICHE (come nella dashboard Agenzia: scelta multipla, fino a 12, salvate sull'evento)
+   ============================================================ */
+var STAT_MAX=12;
+var STAT_DEFAULT=['iscritti','persone','posti'];
+var statPickList=[],statPickSel=[];
+/* Statistiche dei campi aggiuntivi: scelte, quantita' (totali) e campi di testo compilati */
+function getStatOptions(ev,conf){
+  var opts=[];if(!ev)return opts;
+  (ev.custom_fields||[]).forEach(function(f){
+    if(f.type==='dropdown'||f.type==='checkbox'){
+      (f.options||[]).forEach(function(opt){
+        var count=conf.filter(function(r){if(!r.extra)return false;var val=r.extra[f.id];if(f.type==='checkbox'){return Array.isArray(val)?val.includes(opt):false;}return val===opt;}).length;
+        opts.push({id:f.id+'__'+opt,label:f.label+': '+opt,value:count,group:f.label});
+      });
+    }else if(f.type==='numero'){
+      opts.push({id:f.id+'__total',label:f.label+' (totale)',value:sommaNumero(conf,f),group:f.label});
+    }else if(f.type==='text'){
+      var filled=conf.filter(function(r){return r.extra&&r.extra[f.id]&&r.extra[f.id].toString().trim();}).length;
+      opts.push({id:f.id+'__filled',label:f.label+' (compilati)',value:filled,group:f.label});
+    }
+  });
+  return opts;
+}
+/* Tutte le statistiche disponibili: prima le generali, poi quelle dei campi aggiuntivi */
+function statCatalog(ev,regs){
+  var conf=regs.filter(function(r){return!r.in_lista_attesa;});
+  var cat=[];
+  cat.push({id:'iscritti',label:'Iscritti',value:conf.length,group:'Generali'});
+  var totP=conf.reduce(function(a,r){return a+(r.adulti||1)+(r.bambini||0);},0);
+  cat.push({id:'persone',label:'Persone totali',value:totP,group:'Generali'});
+  var occ=calcPostiOccupati(ev,regs);
+  cat.push({id:'posti',label:'Posti rimasti',value:ev.capienza?Math.max(0,ev.capienza-occ):'∞',group:'Generali'});
+  var pres=conf.filter(function(r){return r.presente;}).length;
+  var ptx=presTxt(ev);
+  cat.push({id:'presenti',label:ptx.tasso,value:(conf.length?Math.round(pres/conf.length*100):0)+'%',group:'Generali'});
+  if(ptx.ritirato)cat.push({id:'ritirati',label:'Ritirati',value:pres+' su '+conf.length,group:'Generali'});
+  cat.push({id:'attesa',label:'Lista d\'attesa',value:regs.filter(function(r){return r.in_lista_attesa;}).length,group:'Generali'});
+  cat.push({id:'newsletter',label:'Consenso newsletter',value:conf.filter(function(r){return r.newsletter;}).length,group:'Generali'});
+  var oggi=new Date().toDateString();
+  cat.push({id:'oggi',label:'Iscrizioni oggi',value:conf.filter(function(r){return r.created_at&&new Date(r.created_at).toDateString()===oggi;}).length,group:'Generali'});
+  getStatOptions(ev,conf).forEach(function(o){cat.push(o);});
+  return cat;
+}
+/* Id delle card attive: quelli salvati sull'evento (anche lista vuota), altrimenti le tre di base. Solo id esistenti. */
+function statActiveIds(ev,cat){
+  var cfg=Array.isArray(ev.stats_config)?ev.stats_config:STAT_DEFAULT;
+  var noti={};cat.forEach(function(o){noti[o.id]=1;});
+  var visti={};
+  return cfg.filter(function(id){if(!noti[id]||visti[id])return false;visti[id]=1;return true;});
+}
+function renderStatsRow(ev,regs){
+  var row=document.getElementById('statsRow');if(!row)return;
+  if(!ev){
+    row.innerHTML=['Iscritti','Persone totali','Posti rimasti'].map(function(l){return'<div class="stat"><div class="stat-label">'+l+'</div><div class="stat-val">--</div></div>';}).join('');
+    return;
+  }
+  var cat=statCatalog(ev,regs);
+  var ids=statActiveIds(ev,cat);
+  var html=ids.map(function(id,i){
+    var o=cat.find(function(c){return c.id===id;});
+    return'<div class="stat"><button type="button" class="stat-x" onclick="removeStatAt('+i+')" title="Rimuovi" aria-label="Rimuovi statistica">✕</button>'
+      +'<div class="stat-label">'+escHtml(o.label)+'</div><div class="stat-val">'+escHtml(String(o.value))+'</div></div>';
+  }).join('');
+  if(ids.length<STAT_MAX){
+    html+='<div class="stat-custom" onclick="openStatPicker()"><div class="stat-custom-add">+</div><div class="stat-custom-lbl">Aggiungi statistica</div></div>';
+  }
+  row.innerHTML=html;
+}
+function openStatPicker(){
+  var ev=currentEv;if(!ev)return;
+  var cat=statCatalog(ev,currentRegs);
+  var ids=statActiveIds(ev,cat);
+  statPickList=cat.filter(function(o){return ids.indexOf(o.id)<0;});
+  statPickSel=[];
+  if(!statPickList.length){showToast('Hai già aggiunto tutte le statistiche','g');return;}
+  var html='',grp=null;
+  statPickList.forEach(function(o,i){
+    if(o.group!==grp){grp=o.group;html+='<div class="stat-grp">'+escHtml(grp)+'</div>';}
+    html+='<div class="stat-cfg-option" id="statopt'+i+'" onclick="toggleStatPick('+i+')">'
+      +'<div class="stat-cfg-check">✓</div>'
+      +'<div style="flex:1"><div style="font-size:13px;color:var(--text)">'+escHtml(o.label)+'</div><div style="font-size:11px;color:var(--text-dim);margin-top:2px">Valore attuale: '+escHtml(String(o.value))+'</div></div>'
+      +'</div>';
+  });
+  document.getElementById('statConfigOptions').innerHTML=html;
+  setText('statPickSub','Seleziona i dati da mostrare nelle card. Puoi sceglierne più di uno (ancora '+(STAT_MAX-ids.length)+' disponibili).');
+  openOv('ovStatConfig');
+}
+function toggleStatPick(i){
+  var ev=currentEv;if(!ev)return;
+  var attive=statActiveIds(ev,statCatalog(ev,currentRegs)).length;
+  var pos=statPickSel.indexOf(i);
+  if(pos>=0)statPickSel.splice(pos,1);
+  else{
+    if(attive+statPickSel.length>=STAT_MAX){showToast('Massimo '+STAT_MAX+' statistiche','r');return;}
+    statPickSel.push(i);
+  }
+  var el=document.getElementById('statopt'+i);
+  if(el)el.classList.toggle('sel',statPickSel.indexOf(i)>=0);
+}
+function confirmStatConfig(){
+  var ev=currentEv;if(!ev)return;
+  if(!statPickSel.length){closeOv('ovStatConfig');return;}
+  var ids=statActiveIds(ev,statCatalog(ev,currentRegs));
+  statPickSel.slice().sort(function(a,b){return a-b;}).forEach(function(i){ids.push(statPickList[i].id);});
+  closeOv('ovStatConfig');
+  saveStats(ids);
+}
+function removeStatAt(i){
+  var ev=currentEv;if(!ev)return;
+  var ids=statActiveIds(ev,statCatalog(ev,currentRegs));
+  ids.splice(i,1);
+  saveStats(ids);
+}
+/* Nella demo la scelta resta nel browser, sull'evento */
+function saveStats(ids){
+  var ev=currentEv;if(!ev)return;
+  var upd=sanitizeEvent(dbUpdateEvent(ev.id,{stats_config:ids}));
+  currentEv=upd;var ix=allEvents.findIndex(function(e){return e.id===upd.id;});if(ix>=0)allEvents[ix]=upd;
+  renderStatsRow(upd,currentRegs);showToast('Statistiche salvate','g');
+}
 
 /* B36 -- aprendo la lista d'attesa la pagina scorre da sola fino al riquadro
    (sul telefono si apriva sotto la tabella senza che si vedesse). Tiene conto della barra in alto
@@ -2969,7 +3122,7 @@ function demoShowLandingSuccess(reg,ev){
     +'<div style="background:'+cardBg+';border-radius:16px;padding:40px 24px;box-shadow:0 2px 16px rgba(0,0,0,.06);'+cardBorder+'text-align:center">'
     +'<div style="font-size:56px;margin-bottom:16px">&#127881;</div>'
     +'<h2 style="font-family:Syne,sans-serif;font-size:22px;font-weight:800;margin:0 0 12px;color:'+txtMain+'">Grazie, '+escHtml(reg.nome)+'!</h2>'
-    +'<p style="font-size:14px;line-height:1.7;color:'+txtSub+';margin:0">La tua '+TW.n+' a <strong>'+escHtml(ev.nome)+'</strong> &egrave; confermata.<br>Riceverai una email di conferma a breve.'+(ev.data_iso?'<br>Ci vediamo il <strong>'+isoToIt(ev.data_iso)+'</strong>.':'')+'</p>'
+    +'<p style="font-size:14px;line-height:1.7;color:'+txtSub+';margin:0">La tua '+TW.n+' a <strong>'+escHtml(ev.nome)+'</strong> &egrave; confermata.<br>Riceverai una email di conferma a breve.'+(ev.etichetta_presenza==='ritirato'?'<br>'+(ev.modalita==='entrambe'?'Giorni, orari e luogo del ritiro sono nella scheda <strong>Informazioni</strong>.':'Per il ritiro segui le indicazioni dell\'organizzatore.'):(ev.data_iso?'<br>Ci vediamo il <strong>'+isoToIt(ev.data_iso)+'</strong>.':''))+'</p>'
     +recapHtml
     +'<div style="margin-top:24px;display:flex;flex-direction:column;align-items:center">'+waBtn+gcalBtn+'</div>'
     +'</div>'
@@ -3073,7 +3226,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.0 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.2 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1032,7 +1032,10 @@ function showSuccess(nome, inAttesa, extra) {
   var iconaTxt = inAttesa ? '⏳' : '🎉';
   var testoTxt = inAttesa
     ? 'La tua richiesta per <strong>' + ev.nome + '</strong> è stata ricevuta.<br>L\'evento è al completo, ma sei in lista d\'attesa: se si libera un posto ti contatteremo via email.'
-    : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.evento_online ? ' <strong>online</strong>' + (ev.luogo ? ' su <strong>' + ev.luogo + '</strong>' : '') : (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '')) + '.';
+    : (ev.etichetta_presenza === 'ritirato'
+      ? 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>'
+        + (modalitaEvento() === 'entrambe' ? 'Giorni, orari e luogo del ritiro sono nella scheda <strong>' + TXT_INFO.tabInfo + '</strong>.' : 'Per il ritiro segui le indicazioni dell\'organizzatore.')
+      : 'La tua ' + TW.n + ' a <strong>' + ev.nome + '</strong> è confermata.<br>Riceverai una email di conferma a breve.<br>Ci vediamo il <strong>' + isoToIt(ev.data_iso) + '</strong>' + (ev.evento_online ? ' <strong>online</strong>' + (ev.luogo ? ' su <strong>' + ev.luogo + '</strong>' : '') : (ev.luogo ? ' a <strong>' + ev.luogo + '</strong>' : '')) + '.');
   var gcalSuccessHtml = !inAttesa ? '<div style="margin-top:24px;display:flex;flex-direction:column;align-items:center">' + waShareBtnHtml(ev) + gcalBtnHtml(ev) + '</div>' : '';
   if (modalitaEvento() === 'entrambe') {
     var regCard = document.getElementById('regCard');
