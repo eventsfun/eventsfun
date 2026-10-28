@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v7.5 28/10/2026: campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -61,6 +61,12 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .success-icon{font-size:56px;margin-bottom:16px}
 .success-box h2{font-family:"Syne",sans-serif;font-size:24px;font-weight:800;margin-bottom:8px}
 .success-box p{font-size:14px;color:#666;line-height:1.7;max-width:400px;margin:0 auto}
+.ok-recap{max-width:400px;margin:20px auto 0;text-align:left;background:#fffaf0;border:1px solid #eadfc8;border-radius:10px;padding:14px 16px}
+.ok-recap h3{font-size:13px;font-weight:700;color:#1a1a1a;margin:0 0 6px}
+.ok-recap table{width:100%;border-collapse:collapse}
+.ok-recap td{padding:5px 0;font-size:14px;color:#333;line-height:1.4;vertical-align:top}
+.ok-recap td.q{text-align:right;font-weight:700;font-size:16px;color:#1a1a1a;white-space:nowrap;padding-left:12px}
+.ok-recap p.ok-recap-note{font-size:12px;color:#777;line-height:1.6;margin:8px 0 0;max-width:none}
 /* LOADING */
 .loading{min-height:50vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px}
 .spinner{width:36px;height:36px;border:3px solid #e0ddd8;border-top-color:#C9A96E;border-radius:50%;animation:spin .8s linear infinite}
@@ -176,6 +182,11 @@ body.dark .ch-opt input:checked+span{border-color:#C9A96E;background:rgba(201,16
 body.dark .info-cta p{color:#F5F0E8}
 body.dark .tab-link-btn{color:#C9A96E}
 body.dark .ok-cta p{color:rgba(245,240,232,.6)}
+body.dark .ok-recap{background:rgba(201,169,110,.10);border-color:rgba(201,169,110,.28)}
+body.dark .ok-recap h3{color:#F5F0E8}
+body.dark .ok-recap td{color:rgba(245,240,232,.82)}
+body.dark .ok-recap td.q{color:#F5F0E8}
+body.dark .ok-recap p.ok-recap-note{color:rgba(245,240,232,.6)}
 @media(max-width:480px){.tab-btn{font-size:13px}.ch-opt{min-width:0}.ch-opt span{padding:11px 4px;font-size:12.5px}}
 </style>
 </head>
@@ -985,7 +996,7 @@ async function submitReg() {
       }
     }
 
-    showSuccess(nome, !!capienzaPiena);
+    showSuccess(nome, !!capienzaPiena, extra);
   } catch(e) {
     btn.disabled = false; btn.textContent = termWords(ev.terminologia).imp + ' →';
     showAlert('Si è verificato un errore. Riprova tra qualche secondo.');
@@ -998,8 +1009,25 @@ function showAlert(msg, id) {
   setTimeout(function() { a.style.display = 'none'; }, 5000);
 }
 
-function showSuccess(nome, inAttesa) {
+/* Riepilogo delle quantita' scelte nei campi Numero (solo quelle maggiori di zero). Testo neutro: vale per ogni uso. */
+function riepilogoSuccessHtml(extra, inAttesa) {
+  if (inAttesa || !extra) return '';
   var TW = termWords(ev.terminologia);
+  var righe = '';
+  (ev.custom_fields || []).forEach(function(f) {
+    if (!f || f.type !== 'numero') return;
+    var n = parseInt(extra[f.id], 10);
+    if (isNaN(n) || n <= 0) return;
+    righe += '<tr><td>' + esc(f.label) + '</td><td class="q">' + n + '</td></tr>';
+  });
+  if (!righe) return '';
+  return '<div class="ok-recap"><h3>Riepilogo della tua ' + TW.n + '</h3><table>' + righe + '</table>'
+    + '<p class="ok-recap-note">Lo stesso riepilogo ti arriva anche via email: conservala.</p></div>';
+}
+
+function showSuccess(nome, inAttesa, extra) {
+  var TW = termWords(ev.terminologia);
+  var recapHtml = riepilogoSuccessHtml(extra, inAttesa);
   var titoloTxt = inAttesa ? 'Sei in lista d\'attesa!' : 'Grazie, ' + nome + '!';
   var iconaTxt = inAttesa ? '⏳' : '🎉';
   var testoTxt = inAttesa
@@ -1015,6 +1043,7 @@ function showSuccess(nome, inAttesa) {
         + '<div class="success-icon">' + iconaTxt + '</div>'
         + '<h2>' + titoloTxt + '</h2>'
         + '<p>' + testoTxt + '</p>'
+        + recapHtml
         + gcalSuccessHtml
         + '<div class="ok-cta"><button type="button" class="tab-link-btn" onclick="vaiScheda(\'info\')">' + TXT_INFO.rivedi + '</button></div>'
         + '</div>';
@@ -1026,6 +1055,7 @@ function showSuccess(nome, inAttesa) {
     + '<div class="success-icon">' + iconaTxt + '</div>'
     + '<h2>' + titoloTxt + '</h2>'
     + '<p>' + testoTxt + '</p>'
+    + recapHtml
     + gcalSuccessHtml
     + '</div></div>'
     + '<div class="ef-footer"><div class="ef-gdpr">I dati di questa iscrizione sono raccolti e gestiti esclusivamente dall\'organizzatore dell\'evento. Nessun marketplace, nessun uso da parte di terzi.</div><a href="https://eventsfun.com" target="_blank" class="ef-badge"><div class="ef-badge-inner"><span class="ef-name">Events<span>Fun</span></span><span class="ef-sub">Gestito con EventsFun</span></div><div class="ef-cta">Vuoi organizzare il tuo evento? &rarr;</div></a></div>';

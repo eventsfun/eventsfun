@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Statistiche Agenzia | v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
+<!-- EventsFun | Statistiche Agenzia | v1.3 28/10/2026: negli eventi impostati su "Ritirato" compare la card "Ritirati" e le parole cambiano da presenti/assenti a ritirati/da ritirare. v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -279,6 +279,20 @@ var dragSrc = null;
 function fullCatalog(ev, regs) {
   var cat = WIDGET_CATALOG.map(function(w) { return { id: w.id, label: w.label, icon: w.icon, color: w.color, group: 'Generali', compute: w.compute }; });
   var conf = regs.filter(function(r){ return !r.in_lista_attesa; });
+  /* Eventi impostati su "Ritirato": tasso di ritiro e card "Ritirati" */
+  if (ev.etichetta_presenza === 'ritirato') {
+    var presN = conf.filter(function(r){ return r.presente; }).length;
+    var pctR = conf.length ? Math.round(presN / conf.length * 100) : 0;
+    cat.forEach(function(w) {
+      if (w.id === 'presenti') {
+        w.label = 'Tasso ritiro';
+        w.compute = function() { return { value: pctR + '%', sub: presN + ' ritirati su ' + conf.length, pct: pctR }; };
+      }
+    });
+    var ip = -1; cat.forEach(function(w, i) { if (w.id === 'presenti') ip = i; });
+    cat.splice(ip + 1, 0, { id: 'ritirati', label: 'Ritirati', icon: '&#128230;', color: '#7ED99A', group: 'Generali',
+      compute: function() { return { value: presN, sub: 'su ' + conf.length + ' prenotazioni', pct: pctR }; } });
+  }
   (ev.custom_fields || []).forEach(function(f) {
     function add(id, label, value, sub) {
       cat.push({ id: id, label: label, icon: '&#128230;', color: '#C9A96E', group: f.label, compute: function() { return { value: value, sub: sub, pct: null }; } });
@@ -348,7 +362,7 @@ async function init() {
   if (navbarLogo) navbarLogo.href = 'agenzia-dashboard.html?token=' + TOKEN;
 
   try {
-    var evs = await sbGet('events', { activation_token: TOKEN }, 'id,nome,data_iso,ora,attivo,bozza,capienza,opt_multipla,opt_cap_persona,opt_tipo,opt_pasto,opt_newsletter,stats_config,custom_fields');
+    var evs = await sbGet('events', { activation_token: TOKEN }, 'id,nome,data_iso,ora,attivo,bozza,capienza,opt_multipla,opt_cap_persona,opt_tipo,opt_pasto,opt_newsletter,stats_config,custom_fields,etichetta_presenza');
     allEvents = (evs || []).filter(function(e){ return !e.bozza; });
     allEvents.sort(function(a,b){ return (b.data_iso||'').localeCompare(a.data_iso||''); });
     populateSelect();
@@ -686,15 +700,16 @@ function renderDonuts() {
 
   var donuts = [];
 
-  /* Presenti / Assenti */
+  /* Presenti / Assenti (oppure Ritirati / Da ritirare) */
   var conf = currentRegs.filter(function(r){ return !r.in_lista_attesa; });
+  var rit = currentEv.etichetta_presenza === 'ritirato';
   if (conf.length) {
     var pres = conf.filter(function(r){ return r.presente; }).length;
     donuts.push({
-      id: 'presenza', title: 'Presenze',
+      id: 'presenza', title: rit ? 'Ritiri' : 'Presenze',
       segments: [
-        { label: 'Presenti', value: pres, color: '#7ED99A' },
-        { label: 'Assenti', value: conf.length - pres, color: 'rgba(255,255,255,0.08)' }
+        { label: rit ? 'Ritirati' : 'Presenti', value: pres, color: '#7ED99A' },
+        { label: rit ? 'Da ritirare' : 'Assenti', value: conf.length - pres, color: 'rgba(255,255,255,0.08)' }
       ],
       center: Math.round(pres/conf.length*100) + '%'
     });

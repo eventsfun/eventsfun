@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -320,6 +320,7 @@ select option{background:#1a1a1a;color:var(--text)}
 .mod-opt.on{border-color:var(--gold);background:rgba(201,169,110,0.1)}
 .mod-t{font-size:13px;font-weight:700;color:var(--text)}
 .mod-s{font-size:11px;color:var(--text-dim);line-height:1.35}
+.mod-seg.two{grid-template-columns:repeat(2,1fr)}
 .ib-note{font-size:11.5px;color:var(--text-dim);line-height:1.55;background:rgba(201,169,110,0.06);border:1px solid rgba(201,169,110,0.15);border-radius:8px;padding:9px 12px;margin-bottom:12px}
 .ib-warn{margin-top:8px;font-size:12px;line-height:1.5;color:#d99a3a;background:rgba(224,160,64,0.08);border:1px solid rgba(224,160,64,0.3);border-radius:8px;padding:9px 12px}
 .ib-list{display:flex;flex-direction:column;gap:10px;margin-bottom:10px}
@@ -339,7 +340,7 @@ select option{background:#1a1a1a;color:var(--text)}
 .ib-status:empty{display:none}
 .ib-status.err{color:#e06060}
 .ib-add{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
-@media(max-width:600px){.mod-seg{grid-template-columns:1fr}}
+@media(max-width:600px){.mod-seg,.mod-seg.two{grid-template-columns:1fr}}
 /* RICHIESTE DI CONTATTO */
 .pill-gold{background:rgba(201,169,110,0.12);color:var(--gold);border:1px solid rgba(201,169,110,0.3)}
 .rich-list{display:flex;flex-direction:column;gap:10px;padding:14px}
@@ -582,7 +583,7 @@ select option{background:#1a1a1a;color:var(--text)}
 <div class="view" id="view-presenze">
   <div class="presenze-wrap">
     <div class="pres-header">
-      <div><h2>Presenze</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">--</p></div>
+      <div><h2><span id="presTitle">Presenze</span> <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Tocca il pulsante accanto a un nome per segnarlo; toccalo di nuovo per annullare. Se l'evento è impostato su "Ritirato" qui segni chi ha ritirato. Cambi la scelta dalle impostazioni dell'evento, sezione "Presenza o ritiro".</span></span></h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">--</p></div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="pres-stats">
           <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
@@ -950,6 +951,32 @@ select option{background:#1a1a1a;color:var(--text)}
     </div>
       </div>
     </div>
+    <div class="acc" id="o_ritiro_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📦 Presenza o ritiro<span class="acc-dot" id="acc_dot_ev_ritiro" style="display:none"></span></div>
+          <div class="acc-desc">Segna chi è presente oppure chi ha ritirato la sua prenotazione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Cosa segni quando una persona si presenta
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Presente: segni chi partecipa all'evento. Ritirato: per le prenotazioni di prodotti o materiali che le persone vengono a ritirare di persona. EventsFun non gestisce pagamenti: serve solo a tenere traccia di chi ha ritirato. Puoi cambiare la scelta quando vuoi.</span></span>
+          </label>
+          <div class="mod-seg two" id="ev_pres_seg">
+            <button type="button" class="mod-opt on" data-pres="presente" onclick="setPresEt('ev','presente')"><span class="mod-t">👥 Presente</span><span class="mod-s">Per eventi a cui le persone partecipano</span></button>
+            <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('ev','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
+          </div>
+        </div>
+        <div class="mf" id="ev_ritiro_data_wrap" style="display:none">
+          <label>Ultimo giorno di ritiro (facoltativo)
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno l'evento resta tra quelli attivi e puoi continuare a segnare i ritiri. Non cambia la pagina pubblica.</span></span>
+          </label>
+          <input id="ev_data_fine_ritiro" type="date">
+        </div>
+      </div>
+    </div>
     <div class="acc" id="o_checkin_sect">
       <div class="acc-head" onclick="accToggle(this)">
         <div class="acc-htxt">
@@ -1267,6 +1294,32 @@ select option{background:#1a1a1a;color:var(--text)}
       </div>
       <div class="tog" id="stog_promo_auto" onclick="stog('promo_auto')"><div class="tog-dot"></div></div>
     </div>
+      </div>
+    </div>
+    <div class="acc" id="s_ritiro_sect">
+      <div class="acc-head" onclick="accToggle(this)">
+        <div class="acc-htxt">
+          <div class="acc-title">📦 Presenza o ritiro<span class="acc-dot" id="acc_dot_se_ritiro" style="display:none"></span></div>
+          <div class="acc-desc">Segna chi è presente oppure chi ha ritirato la sua prenotazione</div>
+        </div>
+        <div class="acc-chev">&#9662;</div>
+      </div>
+      <div class="acc-body">
+        <div class="mf">
+          <label>Cosa segni quando una persona si presenta
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Presente: segni chi partecipa all'evento. Ritirato: per le prenotazioni di prodotti o materiali che le persone vengono a ritirare di persona. EventsFun non gestisce pagamenti: serve solo a tenere traccia di chi ha ritirato. Puoi cambiare la scelta quando vuoi.</span></span>
+          </label>
+          <div class="mod-seg two" id="se_pres_seg">
+            <button type="button" class="mod-opt on" data-pres="presente" onclick="setPresEt('se','presente')"><span class="mod-t">👥 Presente</span><span class="mod-s">Per eventi a cui le persone partecipano</span></button>
+            <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('se','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
+          </div>
+        </div>
+        <div class="mf" id="se_ritiro_data_wrap" style="display:none">
+          <label>Ultimo giorno di ritiro (facoltativo)
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno l'evento resta tra quelli attivi e puoi continuare a segnare i ritiri. Non cambia la pagina pubblica.</span></span>
+          </label>
+          <input id="se_data_fine_ritiro" type="date">
+        </div>
       </div>
     </div>
     <div class="acc" id="s_checkin_sect">
@@ -1592,6 +1645,7 @@ var spIdx = { c: 0, s: 0 };
 var cfIdx = { c: 0, s: 0 };
 var otogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
 var stogState = { multipla: false, cap_persona: false, acc_email_obb: false, acc_tel_obb: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, promo_auto: false, qr_checkin: false, online: false , contatto_wa: false };
+var presEtState = { ev: 'presente', se: 'presente' }; /* "presente" oppure "ritirato", nei due form */
 var attesaVisible = false;
 var LS_THEME = 'ef_theme';
 /* Card statistiche: lista di id salvata sull'evento (events.stats_config), uguale su ogni dispositivo */
@@ -2345,6 +2399,8 @@ function sanitizeEvent(ev) {
   ev.info_blocchi = Array.isArray(ev.info_blocchi) ? ev.info_blocchi : [];
   ev.info_avviso = ev.info_avviso === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta';
   ev.info_riepilogo_ora = (typeof ev.info_riepilogo_ora === 'number') ? ev.info_riepilogo_ora : 8;
+  ev.etichetta_presenza = ev.etichetta_presenza === 'ritirato' ? 'ritirato' : 'presente';
+  ev.data_fine_ritiro = ev.data_fine_ritiro || null;
   return ev;
 }
 
@@ -2364,6 +2420,30 @@ function initTheme() {
    DATE UTILS
    ============================================================ */
 function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+/* Parole da usare per l'evento: "Presente" (partecipazione) oppure "Ritirato" (prenotazioni da ritirare di persona) */
+function presTxt(ev) {
+  if (ev && ev.etichetta_presenza === 'ritirato') {
+    return { ritirato: true, stato: 'Ritirato', okPl: 'ritirati', noPl: 'da ritirare', btn: 'Segna ritirato', btnOn: 'Ritirato ✓',
+      vista: 'Ritiri', btnVista: '📦 Ritiri', tasso: 'Tasso ritiro', lista: 'Lista ritiri', col: 'Ritirato', gia: 'Già segnato come ritirato.', tot: 'prenotazioni' };
+  }
+  return { ritirato: false, stato: 'Presente', okPl: 'presenti', noPl: 'assenti', btn: 'Segna presente', btnOn: 'Presente ✓',
+    vista: 'Presenze', btnVista: '👥 Presenze', tasso: 'Tasso presenza', lista: 'Lista presenze', col: 'Presente', gia: 'Già segnato come presente.', tot: 'iscritti' };
+}
+/* Ultimo giorno utile dell'evento: la data dell'evento oppure, se piu' tardi, l'ultimo giorno di ritiro */
+function dataFineAttivita(ev) {
+  if (!ev) return '';
+  var d = ev.data_iso || '';
+  if (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro && String(ev.data_fine_ritiro) > d) d = String(ev.data_fine_ritiro);
+  return d;
+}
+/* Come isClosed, ma tiene conto dell'ultimo giorno di ritiro (per scanner QR e aggiornamento automatico) */
+function isClosedPres(ev) {
+  var f = dataFineAttivita(ev);
+  if (!f) return false;
+  var t = new Date(); t.setHours(0,0,0,0);
+  var d = new Date(f); d.setHours(0,0,0,0); d.setDate(d.getDate() + 1);
+  return t >= d;
+}
 function isClosed(ev) {
   if (!ev || !ev.data_iso) return false;
   var t = new Date(); t.setHours(0,0,0,0);
@@ -2380,12 +2460,14 @@ function getEventiPerTab() {
   var oggi = new Date();
   oggi.setHours(0, 0, 0, 0);
   var attivi = allEvents.filter(function(e) {
-    if (!e.data_iso) return true;
-    return new Date(e.data_iso + 'T00:00:00') >= oggi;
+    var f = dataFineAttivita(e);
+    if (!f) return true;
+    return new Date(f + 'T00:00:00') >= oggi;
   });
   var conclusi = allEvents.filter(function(e) {
-    if (!e.data_iso) return false;
-    return new Date(e.data_iso + 'T00:00:00') < oggi;
+    var f = dataFineAttivita(e);
+    if (!f) return false;
+    return new Date(f + 'T00:00:00') < oggi;
   });
   /* ordine fisso: i prossimi per primi, i conclusi dal piu' recente */
   attivi.sort(function(a, b) { return (a.data_iso || '9999').localeCompare(b.data_iso || '9999') || String(a.id).localeCompare(String(b.id)); });
@@ -2513,7 +2595,7 @@ function renderDash() {
   /* Header */
   setText('dash-title', ev ? ev.nome : 'Dashboard Agenzia');
   setText('dash-sub', ev
-    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : ''))
+    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
     : 'Nessun evento creato: clicca su "Crea evento" per iniziare');
 
   /* Pulsanti */
@@ -2521,6 +2603,7 @@ function renderDash() {
   setDisp('btnQR', hasEv ? 'inline-block' : 'none');
   setDisp('btnLanding', hasEv ? 'inline-block' : 'none');
   setDisp('btnPresenze', hasEv ? 'inline-block' : 'none');
+  setText('btnPresenze', presTxt(ev).btnVista);
   setDisp('btnFornitori', hasEv ? 'inline-block' : 'none');
   setDisp('btnSendLink', (hasEv && ev.evento_online && ev.link_partecipazione && !closed) ? 'inline-block' : 'none');
   setDisp('btnSettings', hasEv ? 'inline-block' : 'none');
@@ -2831,7 +2914,9 @@ function statCatalog(ev, regs) {
   var occ = calcPostiOccupati(ev, regs);
   cat.push({ id: 'posti', label: 'Posti rimasti', value: ev.capienza ? Math.max(0, ev.capienza - occ) : '∞', group: 'Generali' });
   var pres = conf.filter(function(r) { return r.presente; }).length;
-  cat.push({ id: 'presenti', label: 'Tasso presenza', value: (conf.length ? Math.round(pres / conf.length * 100) : 0) + '%', group: 'Generali' });
+  var ptx = presTxt(ev);
+  cat.push({ id: 'presenti', label: ptx.tasso, value: (conf.length ? Math.round(pres / conf.length * 100) : 0) + '%', group: 'Generali' });
+  if (ptx.ritirato) cat.push({ id: 'ritirati', label: 'Ritirati', value: pres + ' su ' + conf.length, group: 'Generali' });
   cat.push({ id: 'attesa', label: 'Lista d\'attesa', value: regs.filter(function(r) { return r.in_lista_attesa; }).length, group: 'Generali' });
   cat.push({ id: 'newsletter', label: 'Consenso newsletter', value: conf.filter(function(r) { return r.newsletter; }).length, group: 'Generali' });
   var oggi = new Date().toDateString();
@@ -2997,6 +3082,13 @@ function renderAttesa(ev, inAttesa, closed) {
 /* ============================================================
    RENDER TABELLA ISCRITTI
    ============================================================ */
+/* Totali dei campi di tipo Numero (usati nel PDF) */
+function totaliNumero(ev, regs) {
+  return (ev.custom_fields || []).filter(function(f) { return f.type === 'numero'; }).map(function(f) {
+    return { label: f.label, tot: regs.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0) };
+  });
+}
+
 /* Riga "Totali" in fondo alla tabella: compare solo se l'evento ha campi di tipo Numero */
 function totaliRowHtml(ev, regs, h) {
   var cf = ev.custom_fields || [];
@@ -3054,7 +3146,7 @@ function renderTable(ev, regs, closed) {
       if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '--') + '</td>';
       var presente = !!r.presente;
       return '<tr>'
-        + '<td class="nm">' + (presente ? '<span style="color:var(--green)">● </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</td>'
+        + '<td class="nm">' + (presente ? '<span style="color:var(--green)" title="' + presTxt(ev).stato + '">● </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</td>'
         + '<td>' + escHtml(r.email) + '</td><td>' + escHtml(r.telefono || '--') + '</td>'
         + xc
         + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--') + '</td>'
@@ -3221,6 +3313,7 @@ function resetEvForm() {
   setHTML('cspList', '');
   setHTML('ccfList', '');
   var etRes = document.getElementById('ev_terminologia'); if (etRes) etRes.value = 'iscrizione';
+  setVal('ev_data_fine_ritiro', ''); setPresEt('ev', 'presente');
   spIdx.c = 0; cfIdx.c = 0;
   var defaults = { multipla: false, cap_persona: false, bambini: true, tipo: false, pasto: false, newsletter: true, capienza: false, qr_checkin: false, online: false , contatto_wa: false };
   Object.keys(defaults).forEach(function(k) {
@@ -3323,6 +3416,8 @@ async function saveEvent() {
     opt_newsletter: otogState.newsletter,
     opt_capienza: otogState.capienza,
     opt_qr_checkin: otogState.qr_checkin,
+    etichetta_presenza: presEtState.ev,
+    data_fine_ritiro: presEtState.ev === 'ritirato' ? (getVal('ev_data_fine_ritiro') || null) : null,
     evento_online: otogState.online,
     link_partecipazione: otogState.online ? (getVal('ev_link_part').trim() || null) : null,
     link_invio: otogState.online ? ((document.getElementById('ev_link_invio') || {}).value || 'entrambi') : 'entrambi',
@@ -3410,6 +3505,8 @@ function openEditEvent() {
   (ev.sponsors || []).forEach(function(s) { addSP('s', 'sspList', s); });
   setHTML('scfList', ''); cfIdx.s = 0;
   (ev.custom_fields || []).forEach(function(f) { addCF('s', 'scfList', f); });
+  setVal('se_data_fine_ritiro', ev.data_fine_ritiro || '');
+  setPresEt('se', ev.etichetta_presenza);
   infoFill('se', ev);
   openOv('ovSettings');
   accResetModal('ovSettings');
@@ -3451,6 +3548,8 @@ async function saveSettings() {
     opt_capienza: stogState.capienza,
     promo_automatica: stogState.promo_auto,
     opt_qr_checkin: stogState.qr_checkin,
+    etichetta_presenza: presEtState.se,
+    data_fine_ritiro: presEtState.se === 'ritirato' ? (getVal('se_data_fine_ritiro') || null) : null,
     evento_online: stogState.online,
     link_partecipazione: stogState.online ? (getVal('se_link_part').trim() || null) : null,
     link_invio: stogState.online ? ((document.getElementById('se_link_invio') || {}).value || 'entrambi') : 'entrambi',
@@ -3493,6 +3592,18 @@ function applyOnlineUI(inpPfx, rowPfx, on) {
   setDisp(rowPfx + '_tipo_row', on ? 'none' : 'flex');
   setDisp(rowPfx + '_pasto_row', on ? 'none' : 'flex');
   setDisp(rowPfx + '_checkin_sect', (on || modState[inpPfx] === 'info') ? 'none' : 'block');
+}
+/* Scelta "Presente" / "Ritirato" nei due form (creazione e impostazioni) */
+function setPresEt(p, v) {
+  v = (v === 'ritirato') ? 'ritirato' : 'presente';
+  presEtState[p] = v;
+  var seg = document.getElementById(p + '_pres_seg');
+  if (seg) {
+    var bs = seg.querySelectorAll('.mod-opt');
+    for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-pres') === v);
+  }
+  setDisp(p + '_ritiro_data_wrap', v === 'ritirato' ? 'flex' : 'none');
+  accSync(p);
 }
 function otog(k) {
   otogState[k] = !otogState[k];
@@ -3540,6 +3651,7 @@ function accSync(pfx) {
   accSetDot('acc_dot_' + pfx + '_contatti', contatti);
   accSetDot('acc_dot_' + pfx + '_modulo', modulo);
   accSetDot('acc_dot_' + pfx + '_checkin', !!st.qr_checkin);
+  accSetDot('acc_dot_' + pfx + '_ritiro', presEtState[pfx] === 'ritirato');
   accSetDot('acc_dot_' + pfx + '_aspetto', aspetto);
   accSetDot('acc_dot_' + pfx + '_campi', accCount(cfList) > 0);
   accSetDot('acc_dot_' + pfx + '_info', accCount(pfx + '_ibList') > 0 || !!st.info_email || accVal(pfx + '_info_avviso') === 'riepilogo');
@@ -3580,6 +3692,7 @@ function setModalita(p, m, silenzioso) {
   setDisp('acc_' + p + '_modulo', conIscr ? 'block' : 'none');
   setDisp('acc_' + p + '_campi', conIscr ? 'block' : 'none');
   setDisp((p === 'ev' ? 'o' : 's') + '_checkin_sect', (conIscr && !st.online) ? 'block' : 'none');
+  setDisp((p === 'ev' ? 'o' : 's') + '_ritiro_sect', conIscr ? 'block' : 'none');
   setDisp(p + '_email_info_note', conInfo ? 'block' : 'none');
   if (p === 'se') modWarn();
   if (conInfo && !silenzioso) {
@@ -4235,6 +4348,21 @@ function exportCSV() {
     row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--');
     return row;
   });
+  /* Riga Totali (solo se ci sono campi Numero) */
+  if (cf.some(function(f) { return f.type === 'numero'; })) {
+    var trow = ['Totali', '', '', ''];
+    if (ev.opt_multipla) trow.push('', '', '');
+    if (ev.opt_tipo) trow.push('');
+    if (ev.opt_pasto) trow.push('', '');
+    cf.forEach(function(f) {
+      if (f.type === 'numero') {
+        trow.push(regs.reduce(function(a, r) { var n = parseInt(r.extra && r.extra[f.id], 10); return a + (isNaN(n) ? 0 : n); }, 0));
+      } else trow.push('');
+    });
+    if (ev.opt_newsletter !== false) trow.push('');
+    trow.push('');
+    rows.push(trow);
+  }
   var csv = [h].concat(rows).map(function(r) { return r.map(function(v) { return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
   var a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' }));
@@ -4250,6 +4378,12 @@ function exportPDF() {
   if (ev.ora) dataStr += ' · ' + ev.ora;
   var luogoStr = ev.luogo || '';
   var cf = ev.custom_fields || [];
+  var pt = presTxt(ev);
+  var totN = totaliNumero(ev, regs);
+  var totHtml = totN.length
+    ? '<tfoot><tr><td></td><td colspan="4" style="padding:12px 14px;border-top:2px solid #111;font-size:13px"><strong>Totali</strong>&nbsp;&nbsp; '
+      + totN.map(function(t) { return escHtml(t.label) + ': <strong>' + t.tot + '</strong>'; }).join(' &nbsp;·&nbsp; ') + '</td></tr></tfoot>'
+    : '';
 
   /* Costruisce le righe della tabella */
   var righe = regs.map(function(r, i) {
@@ -4278,7 +4412,7 @@ function exportPDF() {
   }).join('');
 
   var html = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">'
-    + '<title>Lista presenze -- ' + escHtml(ev.nome) + '</title>'
+    + '<title>' + pt.lista + ' -- ' + escHtml(ev.nome) + '</title>'
     + '<style>'
     + 'body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:32px 40px;color:#111;background:#fff}'
     + 'h1{font-size:22px;font-weight:700;margin:0 0 6px;color:#111}'
@@ -4289,15 +4423,17 @@ function exportPDF() {
     + 'thead th{padding:8px 14px;text-align:left;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#888;border-bottom:2px solid #111}'
     + 'thead th:last-child{text-align:center}'
     + 'tbody tr:last-child td{border-bottom:none}'
+    + 'tfoot td{background:#faf7f0}'
     + '.footer{margin-top:32px;padding-top:16px;border-top:1px solid #ddd;font-size:11px;color:#aaa;display:flex;justify-content:space-between}'
     + '@media print{body{padding:20px 28px}@page{margin:1.5cm}}'
     + '</style></head><body>'
     + '<div class="header-block">'
-    + '<div class="badge">Lista presenze</div>'
+    + '<div class="badge">' + pt.lista + '</div>'
     + '<h1>' + escHtml(ev.nome) + '</h1>'
     + '<div class="meta">📅 ' + escHtml(dataStr) + '</div>'
     + (luogoStr ? '<div class="meta">📍 ' + escHtml(luogoStr) + '</div>' : '')
-    + '<div class="meta" style="margin-top:8px;color:#888">Iscritti: <strong style="color:#111">' + regs.length + '</strong></div>'
+    + (pt.ritirato && ev.data_fine_ritiro ? '<div class="meta">📦 Ritiro entro il ' + escHtml(isoToIt(ev.data_fine_ritiro)) + '</div>' : '')
+    + '<div class="meta" style="margin-top:8px;color:#888">' + (pt.ritirato ? 'Prenotazioni' : 'Iscritti') + ': <strong style="color:#111">' + regs.length + '</strong></div>'
     + '</div>'
     + '<table>'
     + '<thead><tr>'
@@ -4305,9 +4441,9 @@ function exportPDF() {
     + '<th>Nome e cognome</th>'
     + '<th>Email</th>'
     + '<th>Telefono</th>'
-    + '<th style="width:60px;text-align:center">Presente</th>'
+    + '<th style="width:60px;text-align:center">' + pt.col + '</th>'
     + '</tr></thead>'
-    + '<tbody>' + righe + '</tbody>'
+    + '<tbody>' + righe + '</tbody>' + totHtml
     + '</table>'
     + '<div class="footer">'
     + '<span>EventsFun &mdash; eventsfun.com</span>'
@@ -4518,12 +4654,14 @@ function renderPresenze() {
   var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
   var q = (getVal('presSearch') || '').toLowerCase();
   var filtered = regs.filter(function(r) { return !q || (r.nome + ' ' + r.cognome + ' ' + r.email).toLowerCase().includes(q); });
+  var pt = presTxt(ev);
   var presenti = regs.filter(function(r) { return r.presente; }).length;
-  setText('presPres', presenti + ' presenti');
-  setText('presAss', (regs.length - presenti) + ' assenti');
-  setText('presSub', ev.nome + ' -- ' + regs.length + ' iscritti');
+  setText('presTitle', pt.vista);
+  setText('presPres', presenti + ' ' + pt.okPl);
+  setText('presAss', (regs.length - presenti) + ' ' + pt.noPl);
+  setText('presSub', ev.nome + ' -- ' + regs.length + ' ' + pt.tot);
   var scanBtn = document.getElementById('btnQrScanner');
-  if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosed(ev)) ? 'inline-block' : 'none';
+  if (scanBtn) scanBtn.style.display = (ev.opt_qr_checkin && !isClosedPres(ev)) ? 'inline-block' : 'none';
   var list = document.getElementById('presList');
   if (!filtered.length) { list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--text-dim);font-size:13px">Nessun risultato</div>'; return; }
   list.innerHTML = filtered.map(function(r) {
@@ -4531,7 +4669,7 @@ function renderPresenze() {
     return '<div class="pres-row' + (p ? ' presente' : '') + '">'
       + '<div><div class="pres-name">' + (p ? '<span style="color:var(--green)">✓ </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</div>'
       + '<div class="pres-detail">' + escHtml(r.email) + (r.opt_multipla && r.adulti ? ' · ' + (r.adulti || 1) + ' ad.' + (r.bambini ? ' +' + r.bambini + ' bam.' : '') : '') + '</div></div>'
-      + '<button class="pres-btn' + (p ? ' on' : '') + '" onclick="togglePresenza(\'' + r.id + '\')">' + (p ? 'Presente ✓' : 'Segna presente') + '</button>'
+      + '<button class="pres-btn' + (p ? ' on' : '') + '" onclick="togglePresenza(\'' + r.id + '\')">' + (p ? pt.btnOn : pt.btn) + '</button>'
       + '</div>';
   }).join('');
 }
@@ -4552,6 +4690,8 @@ function showView(n) {
   document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('on'); });
   document.getElementById('view-' + n).classList.add('on');
   if (n === 'presenze') renderPresenze();
+  /* tornando alla dashboard, card e tabella mostrano i ritiri/presenze appena segnati */
+  if (n === 'dash' && currentEv) { try { renderDash(); } catch (e) { console.error(e); } }
 }
 function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
@@ -4655,7 +4795,7 @@ function handleQrData(data) {
     result.style.border = '1px solid rgba(200,160,60,0.3)';
     icon.textContent = '⚠️';
     nameEl.textContent = reg.nome + ' ' + reg.cognome;
-    detail.textContent = 'Già segnato come presente.';
+    detail.textContent = presTxt(ev).gia;
     status.textContent = '';
     setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 3000);
     return;
@@ -4673,8 +4813,9 @@ function handleQrData(data) {
     status.textContent = '';
     var pres = currentRegs.filter(function(r) { return r.presente && !r.in_lista_attesa; }).length;
     var tot = currentRegs.filter(function(r) { return !r.in_lista_attesa; }).length;
-    setText('presPres', pres + ' presenti');
-    setText('presAss', (tot - pres) + ' assenti');
+    var ptq = presTxt(ev);
+    setText('presPres', pres + ' ' + ptq.okPl);
+    setText('presAss', (tot - pres) + ' ' + ptq.noPl);
     setTimeout(function() { qrScanCooldown = false; result.style.display = 'none'; status.textContent = 'In attesa di scansione...'; }, 2500);
   }).catch(function() {
     result.style.display = 'block';
@@ -4866,7 +5007,7 @@ init();
     if (ev.modalita === 'info') return null;
     var nav = el('mainNav');
     if (!nav || nav.style.display === 'none') return null;
-    try { if (isClosed(ev)) return null; } catch (e) { return null; }
+    try { if (isClosedPres(ev)) return null; } catch (e) { return null; }
     return ev;
   }
 
@@ -4921,6 +5062,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.0 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.1 agenzia</div>
 </body>
 </html>
