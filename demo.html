@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v2.3 28/10/2026: negli eventi con ritiro l'email simulata e il messaggio WhatsApp non citano la data dell'evento (come l'email reale). v2.2 28/10/2026: card statistiche come nella dashboard Agenzia (scelta multipla, fino a 12, salvate per evento; l'esempio "Panettone solidale" ha gia' i totali dei prodotti); testo di ringraziamento adatto ai ritiri. v2.1 28/10/2026: evento di esempio "Panettone solidale" (raccolta di prodotti da ritirare, con prenotazioni e ritiri gia' inseriti), caricabile dal benvenuto e dal banner di aiuto. v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
+<!-- EventsFun | Demo Locale | v2.4 29/10/2026: finestra "Scegli un esempio" con cinque esempi pronti (prodotti da ritirare, evento in presenza, evento online, solo richiesta informazioni, iscrizioni e informazioni insieme); pulsante Esempi accanto a "Nuovo evento". v2.3 28/10/2026: negli eventi con ritiro l'email simulata e il messaggio WhatsApp non citano la data dell'evento (come l'email reale). v2.2 28/10/2026: card statistiche come nella dashboard Agenzia (scelta multipla, fino a 12, salvate per evento; l'esempio "Panettone solidale" ha gia' i totali dei prodotti); testo di ringraziamento adatto ai ritiri. v2.1 28/10/2026: evento di esempio "Panettone solidale" (raccolta di prodotti da ritirare, con prenotazioni e ritiri gia' inseriti), caricabile dal benvenuto e dal banner di aiuto. v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -409,6 +409,18 @@ select option{background:#1a1a1a;color:var(--text)}
 @media(max-width:480px){#landingContent .tab-btn{font-size:13px}#landingContent .ch-opt{min-width:0}#landingContent .ch-opt span{padding:11px 4px;font-size:12.5px}#landingContent .lp-grid2{grid-template-columns:1fr}}
 /* Demo: le barre in basso non coprono i moduli aperti */
 body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar,body:has(.ov.on) #obHelpBanner,body:has(#landingOv.on) #guideBar,body:has(#landingOv.on) #obHelpBanner,body:has(#emailSimOv.on) #guideBar,body:has(#emailSimOv.on) #obHelpBanner{display:none !important}
+
+.ev-selector-inner{min-width:0}
+.ev-selector select{min-width:0}
+@media(max-width:600px){.ev-selector-inner{flex:1 1 100%}.ev-selector select{max-width:none}}
+.es-item{display:flex;align-items:flex-start;gap:12px;width:100%;text-align:left;padding:12px 14px;margin:0 0 10px;border:1px solid var(--border);border-radius:12px;background:var(--bg3, rgba(255,255,255,.03));color:var(--text);font-family:'DM Sans',sans-serif;cursor:pointer;transition:border-color .15s,background .15s}
+.es-item:hover,.es-item:focus-visible{border-color:rgba(201,169,110,.55);background:rgba(201,169,110,.07);outline:none}
+.es-ico{font-size:22px;line-height:1.2;flex-shrink:0;width:30px;text-align:center}
+.es-txt{display:flex;flex-direction:column;gap:2px;min-width:0}
+.es-tipo{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--gold)}
+.es-gia{font-size:10px;letter-spacing:0;text-transform:none;color:var(--text-dim);font-weight:600;margin-left:6px}
+.es-nome{font-size:15px;font-weight:700;line-height:1.3}
+.es-riga{font-size:12.5px;color:var(--text-muted);line-height:1.5}
 </style>
 </head>
 <body>
@@ -507,6 +519,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
           <span class="ev-selector-label">Evento</span>
           <select id="evSelectBox" onchange="switchEvent(this.value)"></select>
         </div>
+        <button class="btn-sm" id="btnEsempi" onclick="apriEsempi()" style="display:none">&#128230; Esempi</button>
         <button class="btn-create" id="btnCreate" onclick="openCreateEvent()" style="display:none">+ Nuovo evento</button>
       </div>
     </div>
@@ -615,7 +628,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
       <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:10px">Benvenuto su EventsFun!</h2>
       <p style="font-size:14px;color:var(--text-muted);text-align:center;line-height:1.7;margin-bottom:28px">Sei a un passo dal tuo primo evento.<br>Ti guidiamo in meno di 3 minuti.</p>
       <button onclick="obStep(2)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">Iniziamo &rarr;</button>
-      <button onclick="creaEsempioRitiro()" style="width:100%;margin-top:10px;padding:12px;border:1px solid rgba(201,169,110,0.4);border-radius:10px;background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio: prodotti da ritirare</button>
+      <button onclick="apriEsempi()" style="width:100%;margin-top:10px;padding:12px;border:1px solid rgba(201,169,110,0.4);border-radius:10px;background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio</button>
       <div style="text-align:center;margin-top:14px"><button onclick="obSkip()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline">Salta, esploro da solo</button></div>
     </div>
     <div id="ob-step-2" style="display:none">
@@ -704,7 +717,7 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
 <div id="obHelpBanner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:800;padding:12px 20px;background:var(--bg2);border-top:1px solid var(--border);align-items:center;justify-content:center;gap:12px;flex-wrap:wrap">
   <span style="font-size:13px;color:var(--text-muted)">Hai bisogno di aiuto per iniziare?</span>
   <button onclick="obRestart()" style="padding:7px 18px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer">Mostrami come fare &rarr;</button>
-  <button onclick="creaEsempioRitiro()" style="padding:7px 18px;border-radius:8px;border:1px solid rgba(201,169,110,0.4);background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio</button>
+  <button onclick="apriEsempi()" style="padding:7px 18px;border-radius:8px;border:1px solid rgba(201,169,110,0.4);background:rgba(201,169,110,0.07);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer">&#128230; Guarda un esempio</button>
   <button onclick="document.getElementById('obHelpBanner').style.display='none'" style="background:none;border:none;font-size:18px;color:var(--text-dim);cursor:pointer;line-height:1">&times;</button>
 </div>
 
@@ -1258,6 +1271,16 @@ body.ov-aperto #guideBar,body.ov-aperto #obHelpBanner,body:has(.ov.on) #guideBar
   </div>
 </div>
 
+<!-- MODAL: SCEGLI UN ESEMPIO -->
+<div class="ov" id="ovEsempi" onclick="if(event.target===this)closeOv('ovEsempi')">
+  <div class="modal sm">
+    <button class="mcls" onclick="closeOv('ovEsempi')">&#10005;</button>
+    <h2>Scegli un esempio</h2>
+    <p class="modal-sub">Ogni esempio arriva con iscritti, presenze e statistiche già inseriti: nomi e recapiti sono inventati e restano solo nel tuo browser. Puoi caricarne quanti vuoi e modificarli come un evento vero.</p>
+    <div id="esempiList"></div>
+  </div>
+</div>
+
 <!-- MODAL: CONTATTO (demo) -->
 <div class="ov" id="ovContatto" onclick="if(event.target===this)closeOv('ovContatto')">
   <div class="modal">
@@ -1750,6 +1773,140 @@ function creaEsempioRitiro(){
   allEvents.push(ev);currentEv=ev;currentRegs=dbGetRegs(ev.id);attesaVisible=false;
   renderDash();showView('dash');showToast('Esempio caricato: prova Ritiri e Anteprima','g');
 }
+/* ============================================================
+   ESEMPI DI UTILIZZO (v2.4): finestra "Scegli un esempio"
+   Ogni esempio ha nomi e recapiti inventati; le date sono calcolate da oggi,
+   cosi' gli esempi risultano sempre attivi.
+   ============================================================ */
+function esQuando(oreFa){return new Date(Date.now()-oreFa*3600000).toISOString();}
+function esBase(o){
+  return Object.assign({cliente:null,telefono_contatto:null,contatto_whatsapp:false,qr_testo:null,qr_logo:null,landing_tema:'chiaro',capienza:null,immagine:null,attivo:true,bozza:false,
+    opt_multipla:false,opt_cap_persona:false,opt_tipo:false,opt_pasto:false,opt_pasto_pranzo:false,opt_pasto_cena:false,opt_newsletter:true,opt_capienza:false,opt_qr_checkin:false,opt_bambini:false,
+    promo_automatica:false,evento_online:false,link_partecipazione:'',link_invio:'entrambi',etichetta_presenza:'presente',data_fine_ritiro:null,terminologia:'iscrizione',modalita:'iscrizioni',
+    landing_scheda_iniziale:'info',stats_config:null,info_blocchi:[],info_email_obbligatoria:false,info_avviso:'ogni_richiesta',info_riepilogo_ora:8,sponsors:[],custom_fields:[]},o);
+}
+/* Crea l'evento, i suoi iscritti e le sue richieste di contatto, poi lo apre in dashboard */
+function esCrea(evData,iscritti,richieste,msg){
+  var ev=sanitizeEvent(dbCreateEvent(evData));
+  (iscritti||[]).forEach(function(r){dbCreateReg(Object.assign({event_id:ev.id,tipo:'visitatore',pranzo:false,cena:false,newsletter:false,presente:false,in_lista_attesa:false,adulti:1,bambini:0,extra:{}},r));});
+  (richieste||[]).forEach(function(r){dbCreateRich(Object.assign({id:genId(),event_id:ev.id,consenso:true,stato:'da_contattare',telefono:null,email:null,messaggio:null},r));});
+  allEvents.push(ev);currentEv=ev;currentRegs=dbGetRegs(ev.id);attesaVisible=false;richLoadedFor=null;
+  renderDash();showView('dash');showToast(msg,'g');
+  return ev;
+}
+function esIscritti(elenco,fn){
+  /* elenco: [nome, cognome, adulti, bambini, ...]; fn(riga,i) restituisce i campi in piu' */
+  var base=Date.now();
+  return elenco.map(function(p,i){
+    var o={created_at:new Date(base-(elenco.length-i)*3600000*4).toISOString(),nome:p[0],cognome:p[1],email:p[0].toLowerCase()+'.'+p[1].toLowerCase()+'@esempio.example',telefono:'+39 000 000 00'+(10+i),adulti:p[2],bambini:p[3]};
+    return Object.assign(o,fn?fn(p,i):{});
+  });
+}
+
+/* 1. EVENTO IN PRESENZA: cena di beneficenza (iscrizioni, posti esauriti, lista d'attesa, QR) */
+function creaEsempioPresenza(){
+  var menus=['Tradizionale','Vegetariano','Tradizionale','Bambini','Tradizionale','Vegetariano'];
+  var note=['','Senza glutine per un ospite','','','Tavolo vicino al palco','','',''];
+  var conf=[['Anna','Moretti',2,1],['Roberto','Colombo',2,0],['Silvia','Barbieri',4,2],['Franco','Pellegrini',1,0],['Lucia','Rinaldi',3,1],['Giorgio','Monti',2,2],['Elisa','Caruso',5,2],['Simone','Leone',2,0],['Marta','Vitale',3,2],['Andrea','Sanna',2,1],['Paola','Farina',4,2],['Nicola','Orlando',1,1],['Teresa','Bianco',6,2],['Stefano','Coppola',2,0],['Laura','Mancini',3,0],['Carlo','De Angelis',2,0]];
+  var attesa=[['Irene','Fabbri',2,0],['Valerio','Santoro',3,0],['Monica','Gentile',2,0]];
+  var persone=conf.reduce(function(a,p){return a+p[2]+p[3];},0);
+  var iscritti=esIscritti(conf,function(p,i){return {cena:true,newsletter:i%3!==1,extra:{menu:menus[i%menus.length],note_per_la_cucina:note[i%note.length]}};})
+    .concat(esIscritti(attesa,function(p,i){return {cena:true,in_lista_attesa:true,newsletter:true,extra:{menu:'Tradizionale',note_per_la_cucina:''}};}));
+  var cf=[
+    {id:'menu',label:'Menu',type:'dropdown',options:['Tradizionale','Vegetariano','Bambini'],required:true},
+    {id:'note_per_la_cucina',label:'Note per la cucina',type:'text',options:[],required:false}
+  ];
+  var ev=esBase({nome:'Cena di beneficenza',data_iso:esDataIso(3),ora:'20:00',luogo:'Sala civica, Via Esempio 5',email_contatto:'info@esempio.example',
+    descrizione:'Una serata insieme per sostenere il progetto di quartiere: cena, musica dal vivo e una piccola lotteria. I posti sono limitati: se sono finiti puoi metterti in lista d\'attesa.',
+    slug:'cena-di-beneficenza',capienza:60,opt_capienza:true,opt_multipla:true,opt_cap_persona:true,opt_bambini:true,opt_pasto:true,opt_pasto_pranzo:false,opt_pasto_cena:true,
+    opt_qr_checkin:true,promo_automatica:true,terminologia:'iscrizione',
+    stats_config:['iscritti','persone','posti','attesa','menu__Tradizionale','menu__Vegetariano'],custom_fields:cf});
+  return esCrea(ev,iscritti,[],'Esempio caricato: prova Presenze, Lista attesa e QR');
+}
+
+/* 2. EVENTO ONLINE: webinar con link di partecipazione */
+function creaEsempioOnline(){
+  var fonti=['Passaparola','Social','Sito web','Social','Passaparola','Sito web','Social'];
+  var domande=['','Quali piante resistono meglio al sole?','','Come si riutilizza l\'acqua?','','','Si può fare anche senza balcone?',''];
+  var nomi=[['Federica','Rossetti'],['Daniele','Marchi'],['Ilaria','Basile'],['Fabio','Longo'],['Ornella','Giuliani'],['Massimo','Palumbo'],['Veronica','Ferri'],['Claudio','Neri'],['Beatrice','Sala'],['Enrico','Piras'],['Giada','Valentini'],['Luigi','Testa'],['Roberta','Mele'],['Michele','Fiore'],['Alessia','Cattaneo'],['Tommaso','Guidi'],['Sonia','Marini'],['Pietro','Bellini'],['Nadia','Costa'],['Walter','Amato'],['Cinzia','Pagano'],['Bruno','Martini']];
+  var iscritti=esIscritti(nomi.map(function(n){return [n[0],n[1],1,0];}),function(p,i){return {newsletter:i%4!==0,extra:{come_ci_hai_conosciuto:fonti[i%fonti.length],domanda_per_il_relatore:domande[i%domande.length]}};});
+  /* le ultime iscrizioni sono di oggi, cosi' la card "Iscrizioni oggi" non e' vuota */
+  iscritti.forEach(function(r,i){r.created_at=esQuando(i<16?(30+(16-i)*7):(i-15)*1.5);});
+  var cf=[
+    {id:'come_ci_hai_conosciuto',label:'Come ci hai conosciuto',type:'dropdown',options:['Passaparola','Social','Sito web'],required:false},
+    {id:'domanda_per_il_relatore',label:'Una domanda per il relatore',type:'textarea',options:[],required:false}
+  ];
+  var ev=esBase({nome:'Webinar sul giardinaggio urbano',data_iso:esDataIso(5),ora:'18:30',luogo:'Piattaforma di videoconferenza',email_contatto:'info@esempio.example',
+    descrizione:'Un incontro online per imparare a coltivare orto e aromatiche su balcone e terrazzo. Dopo il webinar puoi approfondire con il corso completo: https://corsi.esempio.example/giardinaggio',
+    slug:'webinar-giardinaggio-urbano',evento_online:true,link_partecipazione:'https://meet.esempio.example/giardinaggio-urbano',link_invio:'entrambi',terminologia:'registrazione',
+    stats_config:['iscritti','newsletter','oggi','come_ci_hai_conosciuto__Passaparola','come_ci_hai_conosciuto__Social','come_ci_hai_conosciuto__Sito web'],custom_fields:cf});
+  return esCrea(ev,iscritti,[],'Esempio caricato: il link di partecipazione parte con la conferma');
+}
+
+/* 3. SOLO RICHIESTA INFORMAZIONI: open day (nessuna iscrizione) */
+function creaEsempioInfo(){
+  var testo='Un giorno per provare gli strumenti e conoscere gli insegnanti.\n\nProgramma\nDalle 10:00 alle 17:00 le aule sono aperte: pianoforte, chitarra, violino, canto e batteria. Alle 11:00 e alle 16:00 c\'è un piccolo concerto degli allievi.\n\nCome partecipare\nNon serve prenotare: vieni quando vuoi. Se desideri parlare con un insegnante o conoscere i corsi per bambini e adulti, lasciaci un contatto qui sopra e ti richiamiamo noi.';
+  var rich=[
+    {nome:'Marina Gatti',telefono:'+39 000 000 0101',canale_preferito:'telefono',messaggio:'Vorrei informazioni sui corsi di pianoforte per mia figlia di 9 anni.',stato:'da_contattare',created_at:esQuando(3)},
+    {nome:'Davide Ricci',email:'davide.ricci@esempio.example',canale_preferito:'email',messaggio:'Ci sono corsi di batteria per adulti principianti? In quali orari?',stato:'da_contattare',created_at:esQuando(9)},
+    {nome:'Sabrina Poli',telefono:'+39 000 000 0102',canale_preferito:'whatsapp',messaggio:'Posso provare una lezione di canto durante l\'open day?',stato:'da_contattare',created_at:esQuando(20)},
+    {nome:'Gianni Serra',telefono:'+39 000 000 0103',canale_preferito:'telefono',messaggio:'Quanto durano le lezioni di chitarra e ogni quanto si fanno?',stato:'contattato',created_at:esQuando(30)},
+    {nome:'Paola Lombardo',email:'paola.lombardo@esempio.example',canale_preferito:'email',messaggio:'Fate anche corsi di violino per ragazzi di 12 anni?',stato:'contattato',created_at:esQuando(44)},
+    {nome:'Ettore Vitali',telefono:'+39 000 000 0104',canale_preferito:'whatsapp',messaggio:null,stato:'contattato',created_at:esQuando(52)}
+  ];
+  var ev=esBase({nome:'Open day della scuola di musica',data_iso:esDataIso(14),ora:'10:00 - 17:00',luogo:'Scuola di musica, Via Esempio 8',email_contatto:'info@esempio.example',
+    descrizione:'Porte aperte alla scuola di musica: prova gli strumenti e scopri i corsi.',slug:'open-day-scuola-di-musica',modalita:'info',landing_scheda_iniziale:'info',
+    info_blocchi:[{tipo:'testo',testo:testo}],info_avviso:'riepilogo',info_riepilogo_ora:8});
+  return esCrea(ev,[],rich,'Esempio caricato: guarda le richieste di contatto');
+}
+
+/* 4. EVENTO MISTO: iscrizioni + richiesta informazioni (corso) */
+function creaEsempioMisto(){
+  var testo='Quattro serate per imparare a fotografare con qualsiasi macchina, anche con lo smartphone.\n\nProgramma\nPrima serata: luce e inquadratura. Seconda: ritratto. Terza: paesaggio. Quarta: scelta e stampa delle foto migliori.\n\nPer chi è\nPer chi parte da zero e per chi vuole smettere di usare solo l\'automatico. Porta la tua macchina fotografica o il telefono.\n\nHai dubbi?\nScrivici qui sopra: ti rispondiamo prima che tu decida se iscriverti.';
+  var si=['Sì','No','Sì','No','No','Sì','No','Sì'];
+  var nomi=[['Chiara','Donati'],['Marco','Cirillo'],['Elena','Lori'],['Paolo','Benedetti'],['Giulia','Spada'],['Andrea','Zanetti'],['Sara','Bernardi'],['Luca','Ferretti']];
+  var iscritti=esIscritti(nomi.map(function(n){return [n[0],n[1],1,0];}),function(p,i){return {newsletter:i%2===0,extra:{hai_gia_una_macchina_fotografica:si[i%si.length]}};});
+  var rich=[
+    {nome:'Rita Fumagalli',email:'rita.fumagalli@esempio.example',canale_preferito:'email',messaggio:'Il corso va bene anche per chi usa solo lo smartphone?',stato:'da_contattare',created_at:esQuando(5)},
+    {nome:'Alberto Galli',telefono:'+39 000 000 0201',canale_preferito:'whatsapp',messaggio:'Quali sono le date delle quattro serate?',stato:'da_contattare',created_at:esQuando(14)},
+    {nome:'Monica Rizzo',telefono:'+39 000 000 0202',canale_preferito:'telefono',messaggio:'C\'è un modo per provare la prima serata prima di iscrivermi?',stato:'contattato',created_at:esQuando(40)}
+  ];
+  var cf=[{id:'hai_gia_una_macchina_fotografica',label:'Hai già una macchina fotografica?',type:'dropdown',options:['Sì','No'],required:false}];
+  var ev=esBase({nome:'Corso di fotografia per principianti',data_iso:esDataIso(20),ora:'19:00',luogo:'Centro civico, Via Esempio 3',email_contatto:'info@esempio.example',
+    descrizione:'Un corso di quattro serate per imparare a fotografare. Leggi le informazioni, scrivici se hai dubbi e iscriviti quando vuoi.',slug:'corso-fotografia-principianti',
+    capienza:20,opt_capienza:true,modalita:'entrambe',landing_scheda_iniziale:'info',info_blocchi:[{tipo:'testo',testo:testo}],info_avviso:'ogni_richiesta',
+    stats_config:['iscritti','posti','newsletter','hai_gia_una_macchina_fotografica__Sì'],custom_fields:cf});
+  return esCrea(ev,iscritti,rich,'Esempio caricato: iscrizioni e richieste insieme');
+}
+
+var ESEMPI=[
+  {key:'ritiro',slug:'panettone-solidale',icona:'&#128230;',tipo:'Prodotti da ritirare',nome:'Panettone solidale',riga:'Prenotazioni con quantità per prodotto, riga Totali, ritiri e ultimo giorno di ritiro.',crea:function(){return creaEsempioRitiro();}},
+  {key:'presenza',slug:'cena-di-beneficenza',icona:'&#127869;&#65039;',tipo:'Evento in presenza',nome:'Cena di beneficenza',riga:'Adulti e bambini, menu, posti esauriti con lista d\'attesa e check-in con QR.',crea:function(){return creaEsempioPresenza();}},
+  {key:'online',slug:'webinar-giardinaggio-urbano',icona:'&#128187;',tipo:'Evento online',nome:'Webinar sul giardinaggio urbano',riga:'Link di partecipazione inviato nella conferma e nel promemoria, iscrizioni di oggi.',crea:function(){return creaEsempioOnline();}},
+  {key:'info',slug:'open-day-scuola-di-musica',icona:'&#128172;',tipo:'Solo richiesta informazioni',nome:'Open day della scuola di musica',riga:'Nessuna iscrizione: pagina informativa e richieste di contatto da richiamare.',crea:function(){return creaEsempioInfo();}},
+  {key:'misto',slug:'corso-fotografia-principianti',icona:'&#128247;',tipo:'Iscrizioni e informazioni insieme',nome:'Corso di fotografia per principianti',riga:'Scheda Informazioni, richieste di contatto e iscrizioni con posti limitati.',crea:function(){return creaEsempioMisto();}}
+];
+function esChiudiAvvisi(){var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';var bn=document.getElementById('obHelpBanner');if(bn)bn.style.display='none';}
+function apriEsempi(){
+  esChiudiAvvisi();
+  var box=document.getElementById('esempiList');if(!box)return;
+  box.innerHTML=ESEMPI.map(function(e){
+    var gia=allEvents.some(function(x){return x.slug===e.slug;});
+    return '<button type="button" class="es-item" onclick="caricaEsempio(\''+e.key+'\')">'
+      +'<span class="es-ico">'+e.icona+'</span>'
+      +'<span class="es-txt"><span class="es-tipo">'+e.tipo+(gia?' <span class="es-gia">già caricato</span>':'')+'</span>'
+      +'<span class="es-nome">'+e.nome+'</span><span class="es-riga">'+e.riga+'</span></span></button>';
+  }).join('');
+  openOv('ovEsempi');
+}
+function caricaEsempio(key){
+  var e=ESEMPI.find(function(x){return x.key===key;});if(!e)return;
+  closeOv('ovEsempi');esChiudiAvvisi();
+  var gia=allEvents.find(function(x){return x.slug===e.slug;});
+  if(gia){switchEvent(gia.id);showView('dash');showToast('Esempio già presente: aperto','g');return;}
+  e.crea();
+}
+
 function maybeShowOnboarding(){if(allEvents&&allEvents.length>0)return;var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='flex';}
 function obStep(n){[1,2,3].forEach(function(i){var el=document.getElementById('ob-step-'+i);if(el)el.style.display=(i===n)?'block':'none';});if(n===3){setTimeout(function(){var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';openCreateEvent();},1200);}}
 function obSkip(){var ov=document.getElementById('ovOnboarding');if(ov)ov.style.display='none';var b=document.getElementById('obHelpBanner');if(b)b.style.display='flex';}
@@ -1775,7 +1932,7 @@ function hideGuide(){var bar=document.getElementById('guideBar');if(bar)bar.styl
 var evTabCorrente='attivi';
 function getEventiPerTab(){var oggi=new Date();oggi.setHours(0,0,0,0);var a=allEvents.filter(function(e){var f=dataFineAttivita(e);if(!f)return true;return new Date(f+'T00:00:00')>=oggi;});var c=allEvents.filter(function(e){var f=dataFineAttivita(e);if(!f)return false;return new Date(f+'T00:00:00')<oggi;});return{attivi:a,conclusi:c};}
 function switchEvTab(tab){evTabCorrente=tab;document.getElementById('tabAttivi').classList.toggle('active',tab==='attivi');document.getElementById('tabConclusi').classList.toggle('active',tab==='conclusi');var gruppi=getEventiPerTab();var lista=gruppi[tab];var box=document.getElementById('evSelectBox');if(!box)return;if(!lista.length){box.innerHTML='<option value="">Nessun evento in questa categoria</option>';return;}var curId=currentEv?currentEv.id:'';var inTab=lista.some(function(e){return e.id===curId;});if(!inTab){curId=lista[0].id;switchEvent(curId);}box.innerHTML=lista.map(function(e){return'<option value="'+e.id+'"'+(e.id===curId?' selected':'')+'>'+escHtml(e.nome)+' ('+isoToIt(e.data_iso)+')</option>';}).join('');}
-function renderSelector(){var wrap=document.getElementById('evSelectorWrap');var box=document.getElementById('evSelectBox');if(!wrap||!box)return;if(!allEvents.length){wrap.style.display='none';setDisp('btnCreateMain','inline-block');return;}wrap.style.display='block';setDisp('btnCreateMain','none');setDisp('btnCreate','inline-block');var gruppi=getEventiPerTab();var cA=document.getElementById('countAttivi');var cC=document.getElementById('countConclusi');if(cA)cA.textContent=gruppi.attivi.length;if(cC)cC.textContent=gruppi.conclusi.length;if(evTabCorrente==='attivi'&&!gruppi.attivi.length&&gruppi.conclusi.length)evTabCorrente='conclusi';else if(evTabCorrente==='conclusi'&&!gruppi.conclusi.length&&gruppi.attivi.length)evTabCorrente='attivi';document.getElementById('tabAttivi').classList.toggle('active',evTabCorrente==='attivi');document.getElementById('tabConclusi').classList.toggle('active',evTabCorrente==='conclusi');var lista=gruppi[evTabCorrente];var curId=currentEv?currentEv.id:'';if(!lista.length){box.innerHTML='<option value="">Nessun evento in questa categoria</option>';return;}box.innerHTML=lista.map(function(e){return'<option value="'+e.id+'"'+(e.id===curId?' selected':'')+'>'+escHtml(e.nome)+' ('+isoToIt(e.data_iso)+')</option>';}).join('');}
+function renderSelector(){var wrap=document.getElementById('evSelectorWrap');var box=document.getElementById('evSelectBox');if(!wrap||!box)return;if(!allEvents.length){wrap.style.display='none';setDisp('btnCreateMain','inline-block');return;}wrap.style.display='block';setDisp('btnCreateMain','none');setDisp('btnCreate','inline-block');setDisp('btnEsempi','inline-block');var gruppi=getEventiPerTab();var cA=document.getElementById('countAttivi');var cC=document.getElementById('countConclusi');if(cA)cA.textContent=gruppi.attivi.length;if(cC)cC.textContent=gruppi.conclusi.length;if(evTabCorrente==='attivi'&&!gruppi.attivi.length&&gruppi.conclusi.length)evTabCorrente='conclusi';else if(evTabCorrente==='conclusi'&&!gruppi.conclusi.length&&gruppi.attivi.length)evTabCorrente='attivi';document.getElementById('tabAttivi').classList.toggle('active',evTabCorrente==='attivi');document.getElementById('tabConclusi').classList.toggle('active',evTabCorrente==='conclusi');var lista=gruppi[evTabCorrente];var curId=currentEv?currentEv.id:'';if(!lista.length){box.innerHTML='<option value="">Nessun evento in questa categoria</option>';return;}box.innerHTML=lista.map(function(e){return'<option value="'+e.id+'"'+(e.id===curId?' selected':'')+'>'+escHtml(e.nome)+' ('+isoToIt(e.data_iso)+')</option>';}).join('');}
 function switchEvent(id){currentEv=allEvents.find(function(e){return e.id===id;})||null;currentRegs=currentEv?dbGetRegs(currentEv.id):[];attesaVisible=false;renderDash();}
 function calcPostiOccupati(ev,regs){var conf=regs.filter(function(r){return!r.in_lista_attesa;});if(ev&&ev.opt_cap_persona&&ev.opt_multipla)return conf.reduce(function(a,r){return a+(r.adulti||1)+(r.bambini||0);},0);return conf.length;}
 
@@ -3226,7 +3383,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.3 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.4 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW
