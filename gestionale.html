@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.5.1 31/10/2026: pulsanti della Gestione accesso su una riga (Pausa, Blocca, Termina) e "Rimanda email di benvenuto" a tutta larghezza, per occupare meno spazio sul telefono. v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2299,23 +2299,24 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       var blocco = c.sospeso_tipo === 'blocco';
       h += '<div class="msgx ' + (blocco ? 'err' : 'info') + '" style="margin-top:0">' + (blocco ? 'Bloccato ' : 'In pausa ') + esc(art('dal', dataBreve(c.sospeso_il))) + (c.sospeso_motivo ? '. Motivo: ' + esc(c.sospeso_motivo) : '') + '</div>';
       h += '<div class="note" style="margin:10px 0 12px">Pagine degli eventi offline, dashboard chiusa, nessuna email in partenza. Nessun dato viene cancellato.</div>';
-      h += '<div class="bottoni"><button class="btn" type="button" data-az="cli_riattiva" id="cli_riattiva_btn">Riattiva</button></div>';
+      h += '<button class="btn pieno" type="button" data-az="cli_riattiva" id="cli_riattiva_btn">Riattiva</button>';
     }else{
-      h += '<div class="note" style="margin-bottom:12px">Pausa e Blocca chiudono subito pagine, dashboard ed email, senza cancellare nulla. Si annullano con Riattiva.</div>';
-      h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="pausa">Metti in pausa</button><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="blocco">Blocca</button>';
-      if(abbonamento(c.piano) && !c.ha_abbonamento_stripe && st !== 'fine_accesso' && st !== 'scaduto') h += '<button class="btn sec2" type="button" data-az="cli_apri" data-tipo="termina">Termina</button>';
+      var terminabile = abbonamento(c.piano) && !c.ha_abbonamento_stripe && st !== 'fine_accesso' && st !== 'scaduto';
+      h += '<div class="note" style="margin-bottom:12px">Pausa e Blocca fermano subito pagine, dashboard ed email, senza cancellare nulla. Si annullano con Riattiva.</div>';
+      h += '<div class="bottoni" style="grid-template-columns:repeat(' + (terminabile ? 3 : 2) + ',minmax(0,1fr))"><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="pausa" style="padding:0 8px">Pausa</button><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="blocco" style="padding:0 8px">Blocca</button>';
+      if(terminabile) h += '<button class="btn sec2" type="button" data-az="cli_apri" data-tipo="termina" style="padding:0 8px">Termina</button>';
       h += '</div>';
       h += '<div id="cli_box" hidden style="margin-top:14px"><div class="h2" id="cli_box_tit" style="margin-bottom:6px"></div><div class="note" id="cli_box_note" style="margin-bottom:10px"></div>';
       h += '<div class="campo"><label class="lbl" for="cli_motivo" id="cli_motivo_lbl">Motivo (lo vedi solo tu)</label><textarea class="field" id="cli_motivo" rows="3" maxlength="500"></textarea></div>';
       h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="cli_annulla">Annulla</button><button class="btn" type="button" data-az="cli_conferma" id="cli_conferma_btn">Conferma</button></div></div>';
     }
-    if(nReali === 0 && c.email) h += '<div class="bottoni" style="margin-top:12px"><button class="btn sec2" type="button" data-az="cli_benvenuto" id="cli_benv_btn">Rimanda email di benvenuto</button></div>';
+    if(nReali === 0 && c.email) h += '<button class="btn sec2 pieno" type="button" data-az="cli_benvenuto" id="cli_benv_btn" style="margin-top:8px">Rimanda email di benvenuto</button>';
     h += '<div class="msgx" id="cli_msg"></div></div></div>';
     return h;
   }
   function apriAzioneCliente(tipo){
     var T = {
-      pausa: ['Metti in pausa', 'Il cliente vedrà "Account sospeso". Nessun dato viene cancellato: con Riattiva torna tutto com\'era.', 'Motivo (lo vedi solo tu)'],
+      pausa: ['Pausa', 'Il cliente vedrà "Account sospeso". Nessun dato viene cancellato: con Riattiva torna tutto com\'era.', 'Motivo (lo vedi solo tu)'],
       blocco: ['Blocca', 'Per i casi gravi. Come la pausa, ma segnato come bloccato: per riattivarlo ti verrà chiesta una conferma in più.', 'Motivo (lo vedi solo tu)'],
       termina: ['Termina', 'Parte la regola di fine abbonamento: 7 giorni per scaricare gli elenchi, poi iscritti, richieste e newsletter programmate vengono cancellati; eventi e pagine restano 12 mesi. Dal gestionale non si annulla.', 'Motivo (facoltativo, lo vedi solo tu)']
     };
