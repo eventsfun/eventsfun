@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -407,6 +407,16 @@ select option{background:#1a1a1a;color:var(--text)}
 </nav>
 
 <!-- ERRORE TOKEN -->
+<div class="view" id="view-sospeso">
+  <div class="err-wrap">
+    <div class="err-box">
+      <div style="font-size:48px">&#9208;&#65039;</div>
+      <h2>Account sospeso</h2>
+      <p>Il tuo account &egrave; momentaneamente sospeso.<br>Per informazioni scrivi a <a href="mailto:info@eventsfun.com" style="color:var(--gold)">info@eventsfun.com</a></p>
+    </div>
+  </div>
+</div>
+
 <div class="view" id="view-error">
   <div class="err-wrap">
     <div class="err-box">
@@ -1727,7 +1737,7 @@ async function init() {
 
   /* STEP 1: verifica token */
   var rows;
-  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,subscription_cancel_at,nome,cognome)'); }
+  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,subscription_cancel_at,nome,cognome,sospeso_tipo)'); }
   catch(e) { rows = null; }
   if (rows === null) {
     PIANO = 'info';
@@ -1743,6 +1753,8 @@ async function init() {
     }
     ORDER_ID = rows[0].order_id || null;
     if (rows[0].orders) { accountName = ((rows[0].orders.nome || '') + ' ' + (rows[0].orders.cognome || '')).trim(); }
+    /* Account in pausa o bloccato dal gestionale: schermata dedicata, niente dashboard */
+    if (rows[0].orders && rows[0].orders.sospeso_tipo) { hideLoading(); setDisp('mainNav', 'none'); showView('sospeso'); return; }
     /* Check stato abbonamento */
     var subStatus = rows[0].orders ? rows[0].orders.subscription_status : null;
     var subExpiresAt = rows[0].orders ? rows[0].orders.subscription_expires_at : null;
@@ -4628,6 +4640,6 @@ openEditEvent = function() { _openEditEventAgenzia(); if (currentEv) piApriInfo(
 init();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.3 punto info</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.5 punto info</div>
 </body>
 </html>

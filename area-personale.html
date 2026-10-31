@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Area Personale | v4.6 meta noindex (pagina privata); v4.5 disdetta programmata dal portale Stripe (stato "Disdetta programmata" con data di fine), letta da orders.subscription_cancel_at scritta da stripe-webhook v13 (base: v4.4 regola di fine abbonamento Agenzia + stato pagamento non riuscito + collegamento ai dettagli (base: v4.3 Supabase Auth, Punto Info, avviso dopo il pagamento, recupero password, data di rinnovo solo se futura) -->
+<!-- EventsFun | Area Personale | v4.7 31/10/2026: i pacchetti messi in pausa o bloccati dal gestionale compaiono come "Sospeso", senza accesso alla dashboard; v4.6 meta noindex (pagina privata); v4.5 disdetta programmata dal portale Stripe (stato "Disdetta programmata" con data di fine), letta da orders.subscription_cancel_at scritta da stripe-webhook v13 (base: v4.4 regola di fine abbonamento Agenzia + stato pagamento non riuscito + collegamento ai dettagli (base: v4.3 Supabase Auth, Punto Info, avviso dopo il pagamento, recupero password, data di rinnovo solo se futura) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -279,7 +279,7 @@ async function loadDashboards(){
   var area=document.getElementById('resultArea');
   area.innerHTML='<div class="card"><div class="loading"><div class="spinner"></div><p style="font-size:13px;color:var(--text-muted)">Carico le tue dashboard...</p></div></div>';
   try{
-    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,subscription_renews_at,subscription_cancel_at,created_at',accessToken);
+    var orders=await sbGet('orders',{email:currentEmail},'id,piano,nome,subscription_status,subscription_expires_at,subscription_renews_at,subscription_cancel_at,created_at,sospeso_tipo',accessToken);
     if(!orders||!orders.length){
       area.innerHTML='<div class="card"><p style="text-align:center;color:var(--text-muted);font-size:14px">Nessun acquisto trovato con questa email.</p><div style="text-align:center;margin-top:14px"><button class="link-btn" onclick="doLogout()">Esci</button></div></div>';
       return;
@@ -296,6 +296,8 @@ async function loadDashboards(){
         continue;
       }
       var dashUrl=DASH_FILE[piano]+'?token='+token;
+      /* v4.7 -- account in pausa o bloccato dal gestionale: nessun accesso alla dashboard */
+      if(order.sospeso_tipo){html+=cardWrap(piano,renderSospeso());continue;}
       if(piano==='agenzia'){
         html+=cardWrap(piano,renderAgenzia(order,dashUrl));
       }else if(piano==='info'){
@@ -321,6 +323,12 @@ async function loadDashboards(){
   }catch(e){
     area.innerHTML='<div class="card"><p style="text-align:center;color:var(--red);font-size:14px">Errore nel caricamento. <button class="link-btn" onclick="loadDashboards()">Riprova</button></p></div>';
   }
+}
+
+/* v4.7 -- pacchetto sospeso dal gestionale (pausa o blocco): stesso testo per tutti i piani */
+function renderSospeso(){
+  return '<div class="status-line"><span class="dot dot-gray"></span><span style="color:var(--text-dim)">Sospeso</span></div>'
+    +'<div class="plan-info">Il tuo account &egrave; momentaneamente sospeso. Per informazioni scrivi a <a href="mailto:info@eventsfun.com" style="color:var(--gold)">info@eventsfun.com</a>.</div>';
 }
 
 function cardWrap(piano,inner){

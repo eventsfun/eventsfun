@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -412,6 +412,16 @@ select option{background:#1a1a1a;color:var(--text)}
 </nav>
 
 <!-- ERRORE TOKEN -->
+<div class="view" id="view-sospeso">
+  <div class="err-wrap">
+    <div class="err-box">
+      <div style="font-size:48px">&#9208;&#65039;</div>
+      <h2>Account sospeso</h2>
+      <p>Il tuo account &egrave; momentaneamente sospeso.<br>Per informazioni scrivi a <a href="mailto:info@eventsfun.com" style="color:var(--gold)">info@eventsfun.com</a></p>
+    </div>
+  </div>
+</div>
+
 <div class="view" id="view-error">
   <div class="err-wrap">
     <div class="err-box">
@@ -1770,7 +1780,7 @@ async function init() {
 
   /* STEP 1: verifica token */
   var rows;
-  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,subscription_cancel_at,nome,cognome)'); }
+  try { rows = await sbGet('activations', { token: TOKEN }, 'id,stato,order_id,orders(piano,subscription_status,subscription_expires_at,subscription_cancel_at,nome,cognome,sospeso_tipo)'); }
   catch(e) { rows = null; }
   if (rows === null) {
     PIANO = 'agenzia';
@@ -1783,6 +1793,8 @@ async function init() {
     if (PIANO !== 'agenzia' && DASH_PER_PIANO[PIANO]) { location.replace(DASH_PER_PIANO[PIANO] + '?token=' + encodeURIComponent(TOKEN)); return; }
     ORDER_ID = rows[0].order_id || null;
     if (rows[0].orders) { accountName = ((rows[0].orders.nome || '') + ' ' + (rows[0].orders.cognome || '')).trim(); }
+    /* Account in pausa o bloccato dal gestionale: schermata dedicata, niente dashboard */
+    if (rows[0].orders && rows[0].orders.sospeso_tipo) { hideLoading(); setDisp('mainNav', 'none'); showView('sospeso'); return; }
     /* Check stato abbonamento */
     var subStatus = rows[0].orders ? rows[0].orders.subscription_status : null;
     var subExpiresAt = rows[0].orders ? rows[0].orders.subscription_expires_at : null;
@@ -5062,6 +5074,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.1 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.2 agenzia</div>
 </body>
 </html>

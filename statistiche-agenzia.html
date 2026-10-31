@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Statistiche Agenzia | v1.3 28/10/2026: negli eventi impostati su "Ritirato" compare la card "Ritirati" e le parole cambiano da presenti/assenti a ritirati/da ritirare. v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
+<!-- EventsFun | Statistiche Agenzia | v1.4 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.3 28/10/2026: negli eventi impostati su "Ritirato" compare la card "Ritirati" e le parole cambiano da presenti/assenti a ritirati/da ritirare. v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -331,7 +331,7 @@ async function init() {
 
   /* Controllo token e piano: le statistiche sono solo per il piano Agenzia */
   var tokRows;
-  try { tokRows = await sbGet('activations', { token: TOKEN }, 'id,orders(piano,subscription_status,subscription_expires_at)'); }
+  try { tokRows = await sbGet('activations', { token: TOKEN }, 'id,orders(piano,subscription_status,subscription_expires_at,sospeso_tipo)'); }
   catch(e) { tokRows = null; } /* problema di connessione: si prosegue come prima */
   if (tokRows && !tokRows.length) {
     document.body.innerHTML = '<div style="text-align:center;padding:80px 20px;color:var(--text-muted)"><p style="font-size:18px">Link non valido. Accedi dalla tua area personale.</p></div>';
@@ -345,6 +345,8 @@ async function init() {
   /* Abbonamento scaduto: stesso criterio della dashboard Agenzia. Tolleranza e pagamento
      non riuscito senza data (Stripe sta riprovando) restano permessi. */
   var tokOrd = (tokRows && tokRows[0].orders) ? tokRows[0].orders : {};
+  /* Account in pausa o bloccato: la dashboard Agenzia mostra la schermata dedicata */
+  if (tokOrd.sospeso_tipo) { location.replace('agenzia-dashboard.html?token=' + encodeURIComponent(TOKEN)); return; }
   if (tokOrd.subscription_status === 'canceled' || tokOrd.subscription_status === 'past_due') {
     var tokScad = tokOrd.subscription_expires_at ? new Date(tokOrd.subscription_expires_at) : null;
     var tokRiprova = tokOrd.subscription_status === 'past_due' && !tokScad;

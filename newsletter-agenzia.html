@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Newsletter Agenzia | v2.2 B27: invio immediato protetto (codice di accesso + eventi, destinatari calcolati dal server, limite 24 ore, storico scritto dal server) -->
+<!-- EventsFun | Newsletter Agenzia | v2.3 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v2.2 B27: invio immediato protetto (codice di accesso + eventi, destinatari calcolati dal server, limite 24 ore, storico scritto dal server) -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -976,6 +976,7 @@
   let currentToken = null;
   let tokenPiano = null;     // piano dell'ordine collegato al token
   let tokenScaduto = false;  // abbonamento scaduto (regola di fine abbonamento)
+  let tokenSospeso = false;  // account in pausa o bloccato dal gestionale
   const DASH_PER_PIANO = { base: 'base-dashboard.html', pro: 'pro-dashboard.html', agenzia: 'agenzia-dashboard.html', info: 'info-dashboard.html' };
   let allEvents = [];       // eventi dell'account
   let nlData = {};          // { event_id: [registrations con newsletter=true] }
@@ -1005,8 +1006,8 @@
       return;
     }
 
-    // Abbonamento scaduto: la dashboard Agenzia mostra la schermata dedicata
-    if (tokenScaduto) {
+    // Abbonamento scaduto o account sospeso: la dashboard Agenzia mostra la schermata dedicata
+    if (tokenScaduto || tokenSospeso) {
       location.replace('agenzia-dashboard.html?token=' + encodeURIComponent(currentToken));
       return;
     }
@@ -1036,7 +1037,7 @@
   async function verificaToken(token) {
     try {
       const r = await fetch(
-        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato,orders(piano,subscription_status,subscription_expires_at)',
+        SUPA_URL + '/rest/v1/activations?token=eq.' + encodeURIComponent(token) + '&select=id,activated,stato,orders(piano,subscription_status,subscription_expires_at,sospeso_tipo)',
         { headers: supaHeaders() }
       );
       const data = await r.json();
@@ -1045,6 +1046,7 @@
       /* Abbonamento scaduto: stesso criterio della dashboard Agenzia. Tolleranza e pagamento
          non riuscito senza data (Stripe sta riprovando) restano permessi. */
       const ord = data[0].orders || {};
+      tokenSospeso = !!ord.sospeso_tipo;
       if (ord.subscription_status === 'canceled' || ord.subscription_status === 'past_due') {
         const scad = ord.subscription_expires_at ? new Date(ord.subscription_expires_at) : null;
         const riprova = ord.subscription_status === 'past_due' && !scad;
