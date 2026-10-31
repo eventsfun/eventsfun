@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -495,7 +495,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     return 'landing.html?id=' + encodeURIComponent(ev.id);
   }
   function codiceStato(c){ return (c && c.stato && c.stato.codice) ? c.stato.codice : ''; }
-  var CODICI_ATTIVI = ['attivo','manuale','disdetta_programmata','pagamento_non_riuscito','annullato_senza_data','senza_evento','evento_in_arrivo','concluso'];
+  var CODICI_ATTIVI = ['attivo','sospeso','manuale','disdetta_programmata','pagamento_non_riuscito','annullato_senza_data','senza_evento','evento_in_arrivo','concluso'];
   var CODICI_ABB_ATTIVI = ['attivo','manuale','disdetta_programmata','pagamento_non_riuscito','annullato_senza_data'];
   function clienteAttivo(c){ return CODICI_ATTIVI.indexOf(codiceStato(c)) >= 0; }
   function abbonamentoAttivo(c){ return abbonamento(c.piano) && CODICI_ABB_ATTIVI.indexOf(codiceStato(c)) >= 0; }
@@ -510,6 +510,9 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var st = (c && c.stato) || {};
     switch(st.codice){
       case 'attivo': return { dot: 'd-ok', pill: 'p-ok', breve: 'Abbonamento attivo', testo: st.rinnovo ? 'Attivo, si rinnova ' + art('il', dataBreve(st.rinnovo)) : 'Abbonamento attivo' };
+      case 'sospeso': return st.tipo === 'blocco'
+        ? { dot: 'd-bad', pill: 'p-bad', breve: 'Bloccato', testo: 'Bloccato ' + art('dal', dataBreve(st.dal)) }
+        : { dot: 'd-warn', pill: 'p-warn', breve: 'In pausa', testo: 'In pausa ' + art('dal', dataBreve(st.dal)) };
       case 'manuale': return { dot: 'd-ok', pill: 'p-neu', breve: 'Accesso manuale', testo: 'Accesso manuale, senza abbonamento' };
       case 'disdetta_programmata': return { dot: 'd-warn', pill: 'p-warn', breve: 'Disdetta programmata', testo: 'Disdetta programmata, attivo fino ' + art('al', dataBreve(st.fino_al)) };
       case 'pagamento_non_riuscito': return { dot: 'd-bad', pill: 'p-bad', breve: 'Pagamento non riuscito', testo: 'Pagamento non riuscito, Stripe sta riprovando' };
@@ -732,8 +735,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function vai(h){
     if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
   }
-  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', statistiche: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
-  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', statistiche: 'statistiche', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', statistiche: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', statistiche: 'statistiche', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
   function disegnaRotta(inCima){
     if(!DATI) return;
     var r = rotta();
@@ -762,6 +765,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'eventi': vistaEventi(); break;
       case 'messaggi': vistaMessaggi(); break;
       case 'venditori': vistaVenditori(); break;
+      case 'omaggio': vistaOmaggio(); break;
       case 'newsletter': vistaNewsletter(); break;
       case 'statistiche': vistaStatistiche(); break;
       case 'controllo': vistaControllo(); break;
@@ -863,6 +867,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
 
   // ---------------- CLIENTI ----------------
   var FILTRI_STATO = {
+    sospesi: { testo: 'In pausa o bloccati', f: function(c){ return codiceStato(c) === 'sospeso'; } },
     attivi: { testo: 'Clienti attivi', f: clienteAttivo },
     abbonamenti: { testo: 'Abbonamenti attivi', f: abbonamentoAttivo },
     rinnovi7: { testo: 'Si rinnovano nei prossimi 7 giorni', f: rinnovoEntro7 },
@@ -877,6 +882,10 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   }
   function vistaClienti(filtroStato){
     var h = '';
+    if(ME.ruolo === 'admin'){
+      var nSosp = (DATI.clienti || []).filter(function(c){ return codiceStato(c) === 'sospeso'; }).length;
+      h += '<div class="sec" style="padding-top:2px"><div class="bottoni"><a class="btn sec2" href="#omaggio">Nuovo accesso omaggio</a>' + (nSosp && filtroStato !== 'sospesi' ? '<a class="btn sec2" href="#clienti/sospesi">' + (nSosp === 1 ? '1 in pausa o bloccato' : nSosp + ' in pausa o bloccati') + '</a>' : '') + '</div></div>';
+    }
     h += '<div class="sec"><div style="position:relative"><span style="position:absolute;left:13px;top:13px;color:rgba(245,240,232,0.5)">' + ICO_CERCA + '</span><input class="field" style="padding-left:40px" type="search" id="cli_q" aria-label="Cerca un cliente" placeholder="Cerca per nome, email o evento" value="' + esc(F.q) + '"></div></div>';
     h += '<div class="chips" style="padding-top:12px" id="cli_chips"></div>';
     h += '<div class="sec" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:12px;flex-wrap:wrap"><div class="tag" id="cli_n"></div>';
@@ -1011,6 +1020,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     }
     h += '<button class="btn sec2" type="button" data-az="scrivi"' + (c.email ? '' : ' disabled') + '>' + ICO_PENNA + 'Scrivi</button>';
     h += '</div>';
+    h += bloccoGestioneAccesso(c, pag);
     if(accessi.length > 1){
       h += '<div class="bottoni" style="margin-top:8px">';
       accessi.slice(1).forEach(function(a, i){
@@ -2265,6 +2275,176 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     }
   }
 
+  // ---------------- AZIONI SUL CLIENTE E ACCESSI OMAGGIO (v2.5) ----------------
+  var AZCLI = { tipo: '' };
+  var FORM_OM = { piano: 'agenzia' };
+  function dataTraMesi(n){
+    var d = new Date(); d.setMonth(d.getMonth() + n);
+    var p = function(x){ return (x < 10 ? '0' : '') + x; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function bloccoGestioneAccesso(c, pag){
+    if(ME.ruolo !== 'admin') return '';
+    var st = codiceStato(c);
+    var nReali = (pag || []).filter(function(p){ return p.categoria === 'reale' && p.tipo !== 'rimborso'; }).length;
+    var h = '<div class="sec"><div class="h2">Gestione accesso</div>';
+    if(c.omaggio_ente || c.omaggio_scade_il || c.omaggio_note){
+      h += '<div class="card" style="margin-bottom:10px"><div class="kv">';
+      h += '<div><div class="k">Omaggio per</div><div class="v">' + esc(c.omaggio_ente || nomeCliente(c)) + '</div></div>';
+      h += '<div><div class="k">Scadenza</div><div class="v">' + (c.omaggio_scade_il ? esc(dataLunga(c.omaggio_scade_il)) : 'Nessuna') + '</div></div>';
+      h += '</div>' + (c.omaggio_note ? '<div class="note" style="padding:12px 14px">' + esc(c.omaggio_note) + '</div>' : '') + '</div>';
+    }
+    h += '<div class="card pad">';
+    if(st === 'sospeso'){
+      var blocco = c.sospeso_tipo === 'blocco';
+      h += '<div class="msgx ' + (blocco ? 'err' : 'info') + '" style="margin-top:0">' + (blocco ? 'Bloccato ' : 'In pausa ') + esc(art('dal', dataBreve(c.sospeso_il))) + (c.sospeso_motivo ? '. Motivo: ' + esc(c.sospeso_motivo) : '') + '</div>';
+      h += '<div class="note" style="margin:10px 0 12px">Pagine degli eventi offline, dashboard chiusa, nessuna email in partenza. Nessun dato viene cancellato.</div>';
+      h += '<div class="bottoni"><button class="btn" type="button" data-az="cli_riattiva" id="cli_riattiva_btn">Riattiva</button></div>';
+    }else{
+      h += '<div class="note" style="margin-bottom:12px">Pausa e Blocca chiudono subito pagine, dashboard ed email, senza cancellare nulla. Si annullano con Riattiva.</div>';
+      h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="pausa">Metti in pausa</button><button class="btn sec2" type="button" data-az="cli_apri" data-tipo="blocco">Blocca</button>';
+      if(abbonamento(c.piano) && !c.ha_abbonamento_stripe && st !== 'fine_accesso' && st !== 'scaduto') h += '<button class="btn sec2" type="button" data-az="cli_apri" data-tipo="termina">Termina</button>';
+      h += '</div>';
+      h += '<div id="cli_box" hidden style="margin-top:14px"><div class="h2" id="cli_box_tit" style="margin-bottom:6px"></div><div class="note" id="cli_box_note" style="margin-bottom:10px"></div>';
+      h += '<div class="campo"><label class="lbl" for="cli_motivo" id="cli_motivo_lbl">Motivo (lo vedi solo tu)</label><textarea class="field" id="cli_motivo" rows="3" maxlength="500"></textarea></div>';
+      h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="cli_annulla">Annulla</button><button class="btn" type="button" data-az="cli_conferma" id="cli_conferma_btn">Conferma</button></div></div>';
+    }
+    if(nReali === 0 && c.email) h += '<div class="bottoni" style="margin-top:12px"><button class="btn sec2" type="button" data-az="cli_benvenuto" id="cli_benv_btn">Rimanda email di benvenuto</button></div>';
+    h += '<div class="msgx" id="cli_msg"></div></div></div>';
+    return h;
+  }
+  function apriAzioneCliente(tipo){
+    var T = {
+      pausa: ['Metti in pausa', 'Il cliente vedrà "Account sospeso". Nessun dato viene cancellato: con Riattiva torna tutto com\'era.', 'Motivo (lo vedi solo tu)'],
+      blocco: ['Blocca', 'Per i casi gravi. Come la pausa, ma segnato come bloccato: per riattivarlo ti verrà chiesta una conferma in più.', 'Motivo (lo vedi solo tu)'],
+      termina: ['Termina', 'Parte la regola di fine abbonamento: 7 giorni per scaricare gli elenchi, poi iscritti, richieste e newsletter programmate vengono cancellati; eventi e pagine restano 12 mesi. Dal gestionale non si annulla.', 'Motivo (facoltativo, lo vedi solo tu)']
+    };
+    if(!T[tipo]) return;
+    AZCLI.tipo = tipo;
+    $('cli_box_tit').textContent = T[tipo][0];
+    $('cli_box_note').textContent = T[tipo][1];
+    $('cli_motivo_lbl').textContent = T[tipo][2];
+    $('cli_motivo').value = '';
+    nascondiMsg($('cli_msg'));
+    $('cli_box').hidden = false;
+    $('cli_motivo').focus();
+  }
+  async function ricaricaScheda(id){
+    SCHEDA = null;
+    await aggiornaDati(false);
+    await vistaCliente(id);
+  }
+  async function confermaAzioneCliente(){
+    var tipo = AZCLI.tipo, msg = $('cli_msg'), btn = $('cli_conferma_btn');
+    nascondiMsg(msg);
+    var motivo = $('cli_motivo').value.trim();
+    if(tipo !== 'termina' && !motivo){ mostraMsg(msg, 'Scrivi il motivo.', 'err'); return; }
+    if(tipo === 'termina' && !window.confirm('Terminare l\'accesso? Tra 7 giorni iscritti e richieste verranno cancellati.')) return;
+    if(tipo === 'blocco' && !window.confirm('Bloccare il cliente? Pagine, dashboard ed email si fermano subito.')) return;
+    var id = SCHEDA.cliente.id;
+    btn.disabled = true; btn.textContent = 'Attendi...';
+    try{
+      if(tipo === 'termina') await chiediAz('cliente_termina', { order_id: id, motivo: motivo });
+      else await chiediAz('cliente_sospendi', { order_id: id, tipo: tipo, motivo: motivo });
+      toast(tipo === 'pausa' ? 'Cliente in pausa' : tipo === 'blocco' ? 'Cliente bloccato' : 'Accesso terminato: 7 giorni per scaricare gli elenchi');
+      await ricaricaScheda(id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Conferma';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function riattivaCliente(){
+    var c = SCHEDA.cliente, msg = $('cli_msg'), btn = $('cli_riattiva_btn');
+    nascondiMsg(msg);
+    if(!window.confirm(c.sospeso_tipo === 'blocco' ? 'Questo cliente è BLOCCATO. Vuoi davvero riattivarlo?' : 'Riattivare il cliente? Pagine, dashboard ed email tornano a funzionare.')) return;
+    btn.disabled = true; btn.textContent = 'Attendi...';
+    try{
+      await chiediAz('cliente_riattiva', { order_id: c.id });
+      toast('Cliente riattivato');
+      await ricaricaScheda(c.id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Riattiva';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function rimandaBenvenuto(){
+    var c = SCHEDA.cliente, msg = $('cli_msg'), btn = $('cli_benv_btn');
+    nascondiMsg(msg);
+    if(!window.confirm('Mandare di nuovo l\'email di benvenuto a ' + c.email + '? Conterrà un nuovo link per impostare la password.')) return;
+    btn.disabled = true; btn.textContent = 'Invio...';
+    try{
+      await chiediAz('omaggio_benvenuto', { order_id: c.id });
+      toast('Email di benvenuto inviata');
+      mostraMsg(msg, 'Email inviata a ' + c.email + '.', 'ok');
+    }catch(e){
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+    btn.disabled = false; btn.textContent = 'Rimanda email di benvenuto';
+  }
+  function vistaOmaggio(){
+    if(ME.ruolo !== 'admin'){ metti('<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="sec"><div class="msgx err">Solo un amministratore può creare accessi omaggio.</div></div>'); return; }
+    var abb = abbonamento(FORM_OM.piano);
+    var h = '<a class="back" href="#clienti">' + ICO_BACK + 'Clienti</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Nuovo accesso omaggio</h1><div class="s chiaro" style="margin-top:6px">Crea un cliente senza pagamento, con il suo accesso alla dashboard. Compare tra gli accessi manuali ed è escluso dagli incassi.</div></div>';
+    h += '<div class="sec"><div class="card pad">';
+    h += '<div class="lbl">Pacchetto</div><div class="seg q4" style="margin-bottom:14px">';
+    [['base','Base'],['pro','Pro'],['agenzia','Agenzia'],['info','Punto Info']].forEach(function(p){
+      h += '<button type="button" data-az="om_piano" data-val="' + p[0] + '" class="' + (FORM_OM.piano === p[0] ? 'on' : '') + '" aria-pressed="' + (FORM_OM.piano === p[0]) + '">' + p[1] + '</button>';
+    });
+    h += '</div>';
+    h += '<div class="campo"><label class="lbl" for="om_ente">Ente o comitato (facoltativo)</label><input class="field" id="om_ente" type="text" maxlength="160" placeholder="Es. Comitato di ..."></div>';
+    h += '<div class="campo"><label class="lbl" for="om_nome">Nome della persona di riferimento</label><input class="field" id="om_nome" type="text" maxlength="80" autocomplete="off"></div>';
+    h += '<div class="campo"><label class="lbl" for="om_cognome">Cognome (facoltativo)</label><input class="field" id="om_cognome" type="text" maxlength="80" autocomplete="off"></div>';
+    h += '<div class="campo"><label class="lbl" for="om_email">Email di accesso</label><input class="field" id="om_email" type="email" maxlength="254" autocomplete="off" autocapitalize="none"></div>';
+    h += '<div class="campo"><label class="lbl" for="om_scade">Scadenza</label><input class="field" id="om_scade" type="date" min="' + esc(dataTraMesi(0)) + '" value="' + (abb ? esc(dataTraMesi(12)) : '') + '"><div class="note" id="om_scade_nota" style="margin-top:6px">' + (abb ? 'Proposta a 12 mesi. È un promemoria per te: alla scadenza non si blocca nulla da solo.' : 'Facoltativa: Base e Pro finiscono da soli 30 giorni dopo l\'evento.') + '</div></div>';
+    h += '<div class="campo"><label class="lbl" for="om_note">Note (le vedi solo tu)</label><textarea class="field" id="om_note" rows="3" maxlength="1000" placeholder="Es. accordo firmato il ..., PEC del comitato"></textarea></div>';
+    h += '<label class="chk" style="margin-bottom:14px"><input type="checkbox" id="om_mail" checked>Manda subito l\'email di benvenuto con il link per impostare la password</label>';
+    h += '<button class="btn" type="button" data-az="om_crea" id="om_btn">Crea l\'accesso</button><div class="msgx" id="om_msg"></div>';
+    h += '</div></div></div>';
+    metti(h);
+  }
+  function sceltaPianoOmaggio(el){
+    var prima = abbonamento(FORM_OM.piano);
+    FORM_OM.piano = el.getAttribute('data-val');
+    sceltaSeg(el, 'om_piano');
+    var ora = abbonamento(FORM_OM.piano);
+    var campo = $('om_scade');
+    if(ora && !prima && !campo.value) campo.value = dataTraMesi(12);
+    if(!ora && prima && campo.value === dataTraMesi(12)) campo.value = '';
+    $('om_scade_nota').textContent = ora ? 'Proposta a 12 mesi. È un promemoria per te: alla scadenza non si blocca nulla da solo.' : 'Facoltativa: Base e Pro finiscono da soli 30 giorni dopo l\'evento.';
+  }
+  async function creaOmaggio(){
+    var msg = $('om_msg'), btn = $('om_btn');
+    nascondiMsg(msg);
+    var d = {
+      piano: FORM_OM.piano,
+      ente: $('om_ente').value.trim(),
+      nome: $('om_nome').value.trim(),
+      cognome: $('om_cognome').value.trim(),
+      email: $('om_email').value.trim().toLowerCase(),
+      scade_il: $('om_scade').value,
+      note: $('om_note').value.trim(),
+      invia_email: $('om_mail').checked
+    };
+    if(!d.nome){ mostraMsg(msg, 'Scrivi il nome della persona di riferimento.', 'err'); return; }
+    if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)){ mostraMsg(msg, 'Controlla l\'email di accesso.', 'err'); return; }
+    if(d.scade_il && d.scade_il < dataTraMesi(0)){ mostraMsg(msg, 'La scadenza deve essere una data futura.', 'err'); return; }
+    var nomeP = { base: 'Base', pro: 'Pro', agenzia: 'Agenzia', info: 'Punto Info' }[d.piano];
+    if(!window.confirm('Creare l\'accesso omaggio ' + nomeP + ' per ' + d.email + '?' + (d.invia_email ? ' Partirà subito l\'email di benvenuto.' : ''))) return;
+    btn.disabled = true; btn.textContent = 'Creo l\'accesso...';
+    try{
+      var r = await chiediAz('omaggio_crea', d);
+      await aggiornaDati(false);
+      if(d.invia_email && !r.email_inviata) toast('Accesso creato, ma l\'email non è partita: usa "Rimanda email di benvenuto" nella scheda.', true);
+      else toast(d.invia_email ? 'Accesso creato ed email inviata' : 'Accesso creato');
+      SCHEDA = null;
+      location.hash = 'cliente/' + r.order_id;
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Crea l\'accesso';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+
   // ---------------- NEWSLETTER ----------------
   var NL_SEG = [
     { code: 'clienti_base', label: 'Clienti Base', breve: 'Base' },
@@ -3104,6 +3284,13 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'nota_int': salvaNotaInterna(); break;
       case 'allegato': apriAllegato(el.getAttribute('data-mid'), el.getAttribute('data-aid')); break;
       case 'msg_gestito': segnaMessaggio(el.getAttribute('data-id'), el.getAttribute('data-val') === '1'); break;
+      case 'cli_apri': apriAzioneCliente(el.getAttribute('data-tipo')); break;
+      case 'cli_annulla': $('cli_box').hidden = true; break;
+      case 'cli_conferma': confermaAzioneCliente(); break;
+      case 'cli_riattiva': riattivaCliente(); break;
+      case 'cli_benvenuto': rimandaBenvenuto(); break;
+      case 'om_piano': sceltaPianoOmaggio(el); break;
+      case 'om_crea': creaOmaggio(); break;
       case 'vend_aggiungi': aggiungiVenditore(); break;
       case 'vend_stato': statoVenditore(el.getAttribute('data-code'), el.getAttribute('data-val') === '1'); break;
       case 'nl_invia': inviaNewsletter(); break;
