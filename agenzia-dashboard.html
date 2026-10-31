@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard Agenzia -- EventsFun</title>
+<title>Dashboard Agenzia | EventsFun</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
@@ -684,7 +684,7 @@ select option{background:#1a1a1a;color:var(--text)}
   <div style="background:var(--bg2);border:1px solid var(--border);border-radius:20px;max-width:480px;width:100%;padding:36px 32px 28px;position:relative;animation:obFadeIn .3s ease">
     <div id="ob-step-1">
       <div style="font-size:44px;text-align:center;margin-bottom:16px">🎉</div>
-      <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:10px;letter-spacing:-.3px">Bentornato su EventsFun!</h2>
+      <h2 style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800;text-align:center;margin-bottom:10px;letter-spacing:-.3px">Benvenuto su EventsFun!</h2>
       <p style="font-size:14px;color:var(--text-muted);text-align:center;line-height:1.7;margin-bottom:28px">Sei a un passo dal tuo primo evento.<br>Ti guidiamo in meno di 3 minuti.</p>
       <button onclick="obStep(2)" style="width:100%;padding:14px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer">Iniziamo →</button>
       <div style="text-align:center;margin-top:14px"><button onclick="obSkip()" style="background:none;border:none;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--text-dim);cursor:pointer;text-decoration:underline">Salta, esploro da solo</button></div>
@@ -2335,6 +2335,16 @@ async function importFromPhone() {
    ============================================================ */
 function maybeShowOnboarding() {
   if (allEvents && allEvents.length > 0) return;
+  /* Il benvenuto completo compare solo la prima volta su questo dispositivo; dopo resta il piccolo avviso per rivederlo */
+  var chiaveOb = 'ef_ob_visto_' + (TOKEN || '');
+  var visto = false;
+  try { visto = localStorage.getItem(chiaveOb) === '1'; } catch (e) {}
+  if (visto) {
+    var banner = document.getElementById('obHelpBanner');
+    if (banner) banner.style.display = 'flex';
+    return;
+  }
+  try { localStorage.setItem(chiaveOb, '1'); } catch (e) {}
   var ov = document.getElementById('ovOnboarding');
   if (ov) ov.style.display = 'flex';
 }
@@ -4424,7 +4434,7 @@ function exportPDF() {
   }).join('');
 
   var html = '<!DOCTYPE html><html lang="it"><head><meta charset="UTF-8">'
-    + '<title>' + pt.lista + ' -- ' + escHtml(ev.nome) + '</title>'
+    + '<title>' + pt.lista + ': ' + escHtml(ev.nome) + '</title>'
     + '<style>'
     + 'body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:32px 40px;color:#111;background:#fff}'
     + 'h1{font-size:22px;font-weight:700;margin:0 0 6px;color:#111}'
@@ -5074,6 +5084,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.2 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.3 agenzia</div>
 </body>
 </html>
