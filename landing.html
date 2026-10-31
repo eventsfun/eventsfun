@@ -519,10 +519,11 @@ async function init() {
   try {
     /* Priorita' a slug; fallback su id per retrocompatibilita' con link vecchi */
     var evs;
+    /* Un solo evento alla volta, tramite funzione dedicata (nessun elenco pubblico) */
     if (evSlug) {
-      evs = await sbGet('events_public', { slug: evSlug }, '*');
+      evs = await sbRpc('ef_event_public', { p_slug: evSlug });
     } else {
-      evs = await sbGet('events_public', { id: evId }, '*');
+      evs = await sbRpc('ef_event_public', { p_id: evId });
     }
     if (!evs || !evs.length) { showError('Evento non trovato', 'L\'evento che stai cercando non esiste o è stato rimosso.'); return; }
     ev = evs[0];

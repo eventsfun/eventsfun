@@ -615,7 +615,7 @@ async function saveProfile(){
 async function savePassword(){
   var pwd = document.getElementById('accNewPwd').value;
   var conf = document.getElementById('accConfPwd').value;
-  if(!pwd || pwd.length < 6){ showAccErr('La password deve essere di almeno 6 caratteri.'); return; }
+  if(!pwd || pwd.length < 8){ showAccErr('La password deve essere di almeno 8 caratteri.'); return; }
   if(pwd !== conf){ showAccErr('Le due password non coincidono.'); return; }
   var btn = document.getElementById('accSavePwd');
   btn.disabled = true; btn.textContent = 'Salvo...';
