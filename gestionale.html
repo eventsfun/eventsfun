@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.6 01/11/2026: avvisi di scadenza degli omaggi. Nel modulo "Nuovo accesso omaggio" la casella "Avvisa il cliente della scadenza"; nella scheda di un cliente senza pagamenti reali il riquadro Omaggio con interruttore dell'avviso, stato degli avvisi dei 30 e 7 giorni e "Modifica scadenza"; in Da controllare la sezione "Omaggi in scadenza" (entro 30 giorni o gia' scaduti), con il numero rosso per quelli entro 7 giorni; riga nel Riepilogo. Portiere gestionale-azioni v3 (azione omaggio_imposta). v2.5.3 31/10/2026: nella scheda di un cliente senza pagamenti il piano compare come "omaggio" o "accesso manuale" invece del prezzo di listino (anche se in pausa). v2.5.2 31/10/2026: in Clienti il pulsante "Nuovo accesso omaggio" a tutta larghezza con il suo spazio sopra. v2.5.1 31/10/2026: pulsanti della Gestione accesso su una riga (Pausa, Blocca, Termina) e "Rimanda email di benvenuto" a tutta larghezza, per occupare meno spazio sul telefono. v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.8 01/11/2026: sezione "Rinnovi servizi esterni" (Altro e barra laterale): elenco dei servizi con costo di oggi e a regime, prossima scadenza, link al pannello; totali al mese e all'anno in euro (dollari convertiti con il cambio modificabile); Aggiungi, Modifica, Disattiva/Riattiva, Segna come rinnovato. Scadenze entro 7 giorni (o passate) in Da fare adesso, con numero su Altro e barra laterale. Dati da gest_snapshot (voce rinnovi), azioni dal portiere gestionale-azioni v4. v2.7 01/11/2026: pausa dimenticata. In Da controllare la sezione "In pausa da oltre 90 giorni" (solo pausa, il blocco resta fuori), contata nel numero rosso di Da controllare, Altro e barra laterale, con riga nel Riepilogo. Dati da gest_snapshot (voce pause_lunghe); la notifica una tantum parte da avvisa-omaggi v2. v2.6 01/11/2026: avvisi di scadenza degli omaggi. Nel modulo "Nuovo accesso omaggio" la casella "Avvisa il cliente della scadenza"; nella scheda di un cliente senza pagamenti reali il riquadro Omaggio con interruttore dell'avviso, stato degli avvisi dei 30 e 7 giorni e "Modifica scadenza"; in Da controllare la sezione "Omaggi in scadenza" (entro 30 giorni o gia' scaduti), con il numero rosso per quelli entro 7 giorni; riga nel Riepilogo. Portiere gestionale-azioni v3 (azione omaggio_imposta). v2.5.3 31/10/2026: nella scheda di un cliente senza pagamenti il piano compare come "omaggio" o "accesso manuale" invece del prezzo di listino (anche se in pausa). v2.5.2 31/10/2026: in Clienti il pulsante "Nuovo accesso omaggio" a tutta larghezza con il suo spazio sopra. v2.5.1 31/10/2026: pulsanti della Gestione accesso su una riga (Pausa, Blocca, Termina) e "Rimanda email di benvenuto" a tutta larghezza, per occupare meno spazio sul telefono. v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -300,6 +300,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       <a href="#venditori" data-v="venditori">Venditori</a>
       <a href="#newsletter" data-v="newsletter">Newsletter</a>
       <a href="#statistiche" data-v="statistiche" id="sbStat" style="display:none">Statistiche sito</a>
+      <a href="#rinnovi" data-v="rinnovi">Rinnovi servizi<span class="pill p-warn" id="sbRin" hidden></span></a>
       <a href="#controllo" data-v="controllo">Da controllare<span class="pill p-bad" id="sbCtrl" hidden></span></a>
       <hr>
       <a href="#notifiche" data-v="notifiche">Notifiche</a>
@@ -572,6 +573,34 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   // v2.6: omaggi che scadono entro 30 giorni o gia' scaduti (ancora attivi); urgenti = entro 7 giorni o scaduti
   function omaggiScadenza(){ return (DATI && DATI.omaggi_scadenza) || []; }
   function omaggiUrgenti(){ return omaggiScadenza().filter(function(o){ return Number(o.giorni) <= 7; }); }
+  // v2.8: rinnovi dei servizi esterni
+  function rinnDati(){ return (DATI && DATI.rinnovi) || { cambio_usd_eur: null, servizi: [] }; }
+  function rinnServizi(){ return (rinnDati().servizi || []).filter(function(x){ return x.attivo; }); }
+  function rinnUrgenti(){ return rinnServizi().filter(function(x){ return x.giorni !== null && x.giorni !== undefined && Number(x.giorni) <= 7; }); }
+  function rinnCambio(){ var c = Number(rinnDati().cambio_usd_eur); return c > 0 ? c : 0; }
+  function numIt(n, dec){ return Number(n || 0).toLocaleString('it-IT', { minimumFractionDigits: dec, maximumFractionDigits: dec }); }
+  function soldi(n, valuta){ return numIt(n, 2) + (valuta === 'USD' ? ' $' : ' €'); }
+  function rinnAnnuo(x, regime){
+    var v = Number(regime && x.costo_a_regime !== null && x.costo_a_regime !== undefined ? x.costo_a_regime : x.costo) || 0;
+    if(x.valuta === 'USD') v = v * rinnCambio();
+    return x.periodicita === 'mensile' ? v * 12 : x.periodicita === 'annuale' ? v : 0;
+  }
+  function rinnTotali(){
+    var t = { oggi: 0, regime: 0 };
+    rinnServizi().forEach(function(x){ t.oggi += rinnAnnuo(x, false); t.regime += rinnAnnuo(x, true); });
+    return t;
+  }
+  function quandoRinnovo(g){
+    g = Number(g);
+    if(g < -1) return 'scaduto da ' + (-g) + ' giorni';
+    if(g === -1) return 'scaduto ieri';
+    if(g === 0) return 'scade oggi';
+    if(g === 1) return 'scade domani';
+    return 'tra ' + g + ' giorni';
+  }
+  function perPeriodo(p){ return p === 'mensile' ? ' al mese' : p === 'annuale' ? ' all\'anno' : ''; }
+  // v2.7: clienti in pausa da oltre 90 giorni (il blocco resta fuori)
+  function pauseLunghe(){ return (DATI && DATI.pause_lunghe) || []; }
   function quandoScade(g){
     g = Number(g);
     if(g < -1) return 'scaduto da ' + (-g) + ' giorni';
@@ -737,11 +766,13 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function aggiornaBadge(){
     var nA = assDaGestire().length, nM = msgDaGestire().length, nC = anomalieTot();
     badge('nbAss', nA); badge('sbAss', nA);
-    var nO = omaggiUrgenti().length;
+    var nO = omaggiUrgenti().length + pauseLunghe().length;
     badge('sbMsg', nM); badge('sbCtrl', nC + nO);
     var nF = fattureDaFare();
     badge('sbFatt', nF);
-    badge('nbAltro', nM + nC + nO + nF);
+    var nR = rinnUrgenti().length;
+    badge('sbRin', nR);
+    badge('nbAltro', nM + nC + nO + nF + nR);
   }
 
   // ---------------- rotte ----------------
@@ -753,8 +784,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function vai(h){
     if(location.hash === '#' + h) disegnaRotta(true); else location.hash = h;
   }
-  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', statistiche: 'altro', controllo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
-  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', statistiche: 'statistiche', controllo: 'controllo', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
+  var SEZIONE_NAV = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'altro', eventi: 'altro', messaggi: 'altro', venditori: 'altro', newsletter: 'altro', statistiche: 'altro', controllo: 'altro', rinnovi: 'altro', rinnovo: 'altro', notifiche: 'altro', fatture: 'altro', fattura: 'altro', prepara: 'altro', anteprima: 'altro', 'fatture-impostazioni': 'altro' };
+  var SEZIONE_SIDE = { riepilogo: 'riepilogo', clienti: 'clienti', cliente: 'clienti', omaggio: 'clienti', incassi: 'incassi', assistenza: 'assistenza', richiesta: 'assistenza', altro: 'riepilogo', eventi: 'eventi', messaggi: 'messaggi', venditori: 'venditori', newsletter: 'newsletter', statistiche: 'statistiche', controllo: 'controllo', rinnovi: 'rinnovi', rinnovo: 'rinnovi', notifiche: 'notifiche', fatture: 'fatture', fattura: 'fatture', prepara: 'fatture', anteprima: 'fatture', 'fatture-impostazioni': 'fatture' };
   function disegnaRotta(inCima){
     if(!DATI) return;
     var r = rotta();
@@ -787,6 +818,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'newsletter': vistaNewsletter(); break;
       case 'statistiche': vistaStatistiche(); break;
       case 'controllo': vistaControllo(); break;
+      case 'rinnovi': vistaRinnovi(); break;
+      case 'rinnovo': vistaRinnovo(r.id); break;
       case 'notifiche': vistaNotifiche(); break;
       case 'fatture': vistaFatture(); break;
       case 'fattura': vistaFattura(r.id); break;
@@ -839,6 +872,10 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     if(nC) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nC === 1 ? '1 cosa da controllare' : nC + ' cose da controllare') + '</div><div class="s">Situazioni che non tornano nei dati</div></div>' + ICO_CHEV + '</a>');
     var nOm = omaggiUrgenti().length;
     if(nOm) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nOm === 1 ? '1 omaggio in scadenza' : nOm + ' omaggi in scadenza') + '</div><div class="s">Entro 7 giorni o già scaduti: decidi se prorogare, mettere in pausa o terminare</div></div>' + ICO_CHEV + '</a>');
+    var nRin = rinnUrgenti().length;
+    if(nRin) fare.push('<a class="row" href="#rinnovi"><div class="grow"><div class="t">' + (nRin === 1 ? '1 servizio esterno da rinnovare' : nRin + ' servizi esterni da rinnovare') + '</div><div class="s">Entro 7 giorni o già scaduti: dopo il rinnovo tocca "Segna come rinnovato"</div></div>' + ICO_CHEV + '</a>');
+    var nPl = pauseLunghe().length;
+    if(nPl) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nPl === 1 ? '1 cliente in pausa da oltre 90 giorni' : nPl + ' clienti in pausa da oltre 90 giorni') + '</div><div class="s">' + (nPl === 1 ? 'Decidi se riattivarlo o chiudere l\'accesso' : 'Decidi se riattivarli o chiudere l\'accesso') + '</div></div>' + ICO_CHEV + '</a>');
     var nFt = contaFatture();
     if(nFt.prep) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.prep === 1 ? '1 fattura da preparare' : nFt.prep + ' fatture da preparare') + '</div><div class="s">Pagamenti arrivati senza fattura</div></div>' + ICO_CHEV + '</a>');
     if(nFt.car) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.car === 1 ? '1 fattura da caricare' : nFt.car + ' fatture da caricare') + '</div><div class="s">Pronte, da caricare sul portale Fatture e Corrispettivi</div></div>' + ICO_CHEV + '</a>');
@@ -1653,12 +1690,14 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var nNuovi = msgDaGestire().length;
     var nCons = ms.filter(function(m){ return m.consenso_aggiornamenti; }).length;
     var nVend = VENDITORI.filter(function(v){ return v.attivo; }).length;
-    var nC = anomalieTot() + omaggiUrgenti().length;
+    var nC = anomalieTot() + omaggiUrgenti().length + pauseLunghe().length;
     var h = '<div class="sec"><h1 class="h1">Altro</h1></div><div class="sec"><div class="card">';
     var nFa = fattureDaFare();
     h += '<a class="row" href="#fatture"><div class="grow"><div class="t">Fatture</div><div class="s">' + (FATT ? (nFa ? (nFa === 1 ? '1 cosa da fare' : nFa + ' cose da fare') : 'Tutto in ordine') : 'Fatture elettroniche da preparare e caricare') + '</div></div>' + (nFa ? '<span class="pill p-warn">' + nFa + '</span>' : '') + ICO_CHEV + '</a>';
     h += '<a class="row" href="#eventi"><div class="grow"><div class="t">Eventi</div><div class="s">' + inCorso + ' in corso, ' + conclusi + ' conclusi</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#messaggi"><div class="grow"><div class="t">Messaggi dal sito</div><div class="s">' + (nNuovi === 1 ? '1 da gestire' : nNuovi + ' da gestire') + ', ' + nCons + ' con il consenso agli aggiornamenti</div></div>' + (nNuovi ? '<span class="pill p-warn">' + nNuovi + '</span>' : '') + ICO_CHEV + '</a>';
+    var nRu = rinnUrgenti().length, totR = rinnTotali();
+    h += '<a class="row" href="#rinnovi"><div class="grow"><div class="t">Rinnovi servizi esterni</div><div class="s">Oggi ' + esc(soldi(totR.oggi / 12, 'EUR')) + ' al mese, a regime ' + esc(soldi(totR.regime / 12, 'EUR')) + '</div></div>' + (nRu ? '<span class="pill p-warn">' + nRu + '</span>' : '') + ICO_CHEV + '</a>';
     h += '<a class="row" href="#venditori"><div class="grow"><div class="t">Venditori</div><div class="s">' + (nVend === 1 ? '1 attivo' : nVend + ' attivi') + '</div></div>' + ICO_CHEV + '</a>';
     h += '<a class="row" href="#newsletter"><div class="grow"><div class="t">Newsletter</div><div class="s">Comunicazioni a clienti, contatti dal sito e venditori</div></div>' + ICO_CHEV + '</a>';
     if(ME.ruolo === 'admin') h += '<a class="row" href="#statistiche"><div class="grow"><div class="t">Statistiche sito</div><div class="s">Visite, demo e clic sui pacchetti, in tempo reale</div></div>' + ICO_CHEV + '</a>';
@@ -1990,6 +2029,14 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       h += '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.ente || nomeCliente(o)) + '</div><div class="s">' + esc(maiuscola(quandoScade(g))) + ', ' + esc(art('il', dataLunga(o.scade_il))) + '</div><div class="s">' + esc(nomePiano(o.piano)) + ', avviso al cliente ' + (o.avvisa_cliente ? 'acceso' : 'spento') + '</div></div>' + pill + ICO_CHEV + '</a>';
     });
     h += '</div></div>';
+    var pls = pauseLunghe();
+    h += '<div class="sec"><div class="h2">In pausa da oltre 90 giorni <small>' + pls.length + '</small></div><div class="card">';
+    if(!pls.length) h += '<div class="vuoto">Nessuno.</div>';
+    else h += '<div class="row"><div class="grow note">Clienti messi in pausa più di 90 giorni fa e mai riattivati: pagine, dashboard ed email sono ferme. Apri la scheda e decidi se riattivarli o chiudere l\'accesso. Ricevi una sola notifica, quando la pausa supera i 90 giorni; i clienti bloccati non compaiono qui.</div></div>';
+    pls.forEach(function(p){
+      h += '<a class="row" href="#cliente/' + esc(p.id) + '"><div class="grow"><div class="t">' + esc(nomeCliente(p)) + '</div><div class="s">In pausa da ' + esc(p.giorni) + ' giorni, ' + esc(art('dal', dataLunga(p.sospeso_il))) + '</div><div class="s">' + esc(nomePiano(p.piano)) + (p.motivo ? ', motivo: ' + esc(p.motivo) : '') + '</div></div><span class="pill p-bad">' + esc(p.giorni) + ' giorni</span>' + ICO_CHEV + '</a>';
+    });
+    h += '</div></div>';
     ANOMALIE.forEach(function(a){
       var lista = an[a.tipo] || [];
       h += '<div class="sec"><div class="h2">' + a.titolo + ' <small>' + lista.length + '</small></div><div class="card">';
@@ -2276,6 +2323,166 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     }
     h += '</div>';
     metti(h);
+  }
+  // ---------------- RINNOVI SERVIZI ESTERNI (v2.8) ----------------
+  function rigaServizio(x, admin){
+    var h = '<div class="an"><div class="row top-al"><div class="grow"><div class="t">' + esc(x.servizio) + '</div>';
+    if(x.descrizione) h += '<div class="s">' + esc(x.descrizione) + '</div>';
+    var costo;
+    if(x.periodicita === 'a consumo') costo = 'A consumo, nessun canone';
+    else{
+      costo = 'Oggi ' + soldi(x.costo, x.valuta) + perPeriodo(x.periodicita);
+      if(x.costo_a_regime !== null && x.costo_a_regime !== undefined && Number(x.costo_a_regime) !== Number(x.costo)) costo += ', a regime ' + soldi(x.costo_a_regime, x.valuta) + perPeriodo(x.periodicita);
+    }
+    h += '<div class="s">' + esc(costo) + '</div>';
+    if(x.prossima_scadenza){
+      var g = Number(x.giorni), col = g <= 7 ? 'var(--bad)' : g <= 30 ? 'var(--warn)' : '';
+      h += '<div class="s"' + (col ? ' style="color:' + col + '"' : '') + '>Prossima scadenza: ' + esc(dataLunga(x.prossima_scadenza)) + ' (' + esc(quandoRinnovo(g)) + ')</div>';
+    }
+    if(x.nota) h += '<div class="note" style="margin-top:6px">' + esc(x.nota) + '</div>';
+    h += '</div>';
+    if(x.attivo && x.prossima_scadenza && Number(x.giorni) <= 7) h += '<span class="pill ' + (Number(x.giorni) < 0 ? 'p-bad' : 'p-warn') + '">' + (Number(x.giorni) < 0 ? 'Scaduto' : Number(x.giorni) === 0 ? 'Oggi' : Number(x.giorni) === 1 ? 'Domani' : Number(x.giorni) + ' giorni') + '</span>';
+    h += '</div><div class="an-az">';
+    if(x.link) h += '<a class="btn sec2 piccolo" target="_blank" rel="noopener" href="' + esc(x.link) + '">Apri il pannello</a>';
+    if(admin){
+      if(x.attivo){
+        h += '<a class="btn sec2 piccolo" href="#rinnovo/' + esc(x.id) + '">Modifica</a>';
+        if(x.prossima_scadenza && (x.periodicita === 'mensile' || x.periodicita === 'annuale')) h += '<button class="btn sec2 piccolo" type="button" data-az="rin_rinnovato" data-id="' + esc(x.id) + '">Segna come rinnovato</button>';
+        h += '<button class="btn sec2 piccolo" type="button" data-az="rin_attivo" data-id="' + esc(x.id) + '" data-val="0">Disattiva</button>';
+      }else{
+        h += '<button class="btn sec2 piccolo" type="button" data-az="rin_attivo" data-id="' + esc(x.id) + '" data-val="1">Riattiva</button>';
+      }
+    }
+    return h + '</div></div>';
+  }
+  function vistaRinnovi(){
+    var admin = ME.ruolo === 'admin';
+    var tutti = rinnDati().servizi || [];
+    var attivi = tutti.filter(function(x){ return x.attivo; }), spenti = tutti.filter(function(x){ return !x.attivo; });
+    var t = rinnTotali(), cambio = rinnCambio();
+    var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Rinnovi servizi esterni</h1><div class="note" style="margin-top:4px">I servizi che fanno funzionare EventsFun e quanto costano. Per quelli con una data di scadenza ricevi una notifica 30 e 7 giorni prima.</div></div>';
+    h += '<div class="sec"><div class="nums">';
+    h += '<div class="num"><div class="n">' + esc(soldi(t.oggi / 12, 'EUR')) + '</div><div class="l">Oggi al mese</div><div class="x">' + esc(soldi(t.oggi, 'EUR')) + ' all\'anno</div></div>';
+    h += '<div class="num"><div class="n">' + esc(soldi(t.regime / 12, 'EUR')) + '</div><div class="l">A regime al mese</div><div class="x">' + esc(soldi(t.regime, 'EUR')) + ' all\'anno</div></div>';
+    h += '</div><div class="note" style="margin-top:8px">Totali in euro dei servizi attivi: i costi in dollari sono convertiti con il cambio qui sotto. "A regime" usa il costo a regime quando c\'è, altrimenti quello di oggi. I servizi a consumo (come Stripe, che trattiene solo una commissione sugli incassi) non entrano nei totali.</div></div>';
+    h += '<div class="sec"><div class="card pad"><label class="lbl" for="cambio_val">Cambio: 1 dollaro vale in euro</label>';
+    if(admin){
+      h += '<div class="bottoni" style="margin-top:6px"><input class="field" id="cambio_val" type="text" inputmode="decimal" maxlength="8" value="' + esc(cambio ? numIt(cambio, 4) : '') + '"><button class="btn sec2" type="button" data-az="cambio_salva" id="cambio_btn">Salva il cambio</button></div>';
+      h += '<div class="note" style="margin-top:6px">Aggiornalo ogni tanto con il cambio del giorno (per esempio 0,90). Serve solo per i totali qui sopra.</div><div class="msgx" id="cambio_msg"></div>';
+    }else{
+      h += '<div class="v" style="margin-top:6px">' + esc(cambio ? numIt(cambio, 4) : 'non impostato') + '</div>';
+    }
+    h += '</div></div>';
+    h += '<div class="sec"><div class="h2">Servizi attivi <small>' + attivi.length + '</small></div><div class="card">';
+    if(!attivi.length) h += '<div class="vuoto">Nessun servizio attivo.</div>';
+    attivi.forEach(function(x){ h += rigaServizio(x, admin); });
+    h += '</div>';
+    if(admin) h += '<a class="btn sec2 pieno" href="#rinnovo/nuovo" style="margin-top:10px">+ Aggiungi servizio</a>';
+    h += '<div class="msgx" id="rin_msg"></div></div>';
+    if(spenti.length){
+      h += '<div class="sec"><details class="blocco"><summary>Disattivati (' + spenti.length + ')</summary>';
+      spenti.forEach(function(x){ h += rigaServizio(x, admin); });
+      h += '</details></div>';
+    }
+    h += '</div>';
+    metti(h);
+  }
+  function vistaRinnovo(id){
+    var nuovo = id === 'nuovo';
+    var x = nuovo ? { servizio: '', descrizione: '', costo: 0, costo_a_regime: null, valuta: 'EUR', periodicita: 'mensile', prossima_scadenza: '', link: '', nota: '' }
+                  : (rinnDati().servizi || []).filter(function(s){ return s.id === id; })[0];
+    var h = '<a class="back" href="#rinnovi">' + ICO_BACK + 'Rinnovi</a><div class="stretta">';
+    if(ME.ruolo !== 'admin'){ metti(h + '<div class="sec"><div class="msgx err">Solo un amministratore può modificare i servizi.</div></div></div>'); return; }
+    if(!x){ metti(h + '<div class="sec"><div class="msgx err">Servizio non trovato.</div></div></div>'); return; }
+    var num = function(v){ return v === null || v === undefined || v === '' ? '' : numIt(v, 2); };
+    h += '<div class="sec" style="padding-top:2px"><h1 class="h1">' + (nuovo ? 'Nuovo servizio' : esc(x.servizio)) + '</h1></div>';
+    h += '<div class="sec"><div class="card pad">';
+    h += '<div class="campo"><label class="lbl" for="rin_serv">Nome del servizio</label><input class="field" id="rin_serv" type="text" maxlength="80" value="' + esc(x.servizio) + '" placeholder="Es. Supabase"></div>';
+    h += '<div class="campo"><label class="lbl" for="rin_desc">A cosa serve (facoltativo)</label><input class="field" id="rin_desc" type="text" maxlength="160" value="' + esc(x.descrizione || '') + '"></div>';
+    h += '<div class="bottoni" style="margin-bottom:12px"><div><label class="lbl" for="rin_val">Valuta</label><select class="field" id="rin_val"><option value="EUR"' + (x.valuta === 'EUR' ? ' selected' : '') + '>Euro</option><option value="USD"' + (x.valuta === 'USD' ? ' selected' : '') + '>Dollari</option></select></div>';
+    h += '<div><label class="lbl" for="rin_per">Si paga</label><select class="field" id="rin_per">' + [['mensile','Ogni mese'],['annuale','Ogni anno'],['a consumo','A consumo'],['altro','Altro']].map(function(p){ return '<option value="' + p[0] + '"' + (x.periodicita === p[0] ? ' selected' : '') + '>' + p[1] + '</option>'; }).join('') + '</select></div></div>';
+    h += '<div class="bottoni" style="margin-bottom:4px"><div><label class="lbl" for="rin_costo">Costo di oggi</label><input class="field" id="rin_costo" type="text" inputmode="decimal" maxlength="10" value="' + esc(num(x.costo)) + '" placeholder="0,00"></div>';
+    h += '<div><label class="lbl" for="rin_regime">Costo a regime</label><input class="field" id="rin_regime" type="text" inputmode="decimal" maxlength="10" value="' + esc(num(x.costo_a_regime)) + '" placeholder="uguale a oggi"></div></div>';
+    h += '<div class="note" style="margin-bottom:12px">Costo per ogni pagamento (al mese o all\'anno, come scelto sopra). "A regime" è quanto costerà quando servirà il piano a pagamento: lascialo vuoto se resta uguale.</div>';
+    h += '<div class="campo"><label class="lbl" for="rin_scad">Prossima scadenza (facoltativa)</label><input class="field" id="rin_scad" type="date" value="' + esc(x.prossima_scadenza || '') + '"><div class="note" style="margin-top:6px">Serve per gli avvisi 30 e 7 giorni prima. Se cambi la data, gli avvisi ripartono. Lasciala vuota per i servizi senza una data.</div></div>';
+    h += '<div class="campo"><label class="lbl" for="rin_link">Link al pannello (facoltativo)</label><input class="field" id="rin_link" type="url" maxlength="500" autocapitalize="none" value="' + esc(x.link || '') + '" placeholder="https://..."></div>';
+    h += '<div class="campo"><label class="lbl" for="rin_nota">Nota (la vedi solo tu)</label><textarea class="field" id="rin_nota" rows="3" maxlength="1000">' + esc(x.nota || '') + '</textarea></div>';
+    h += '<button class="btn" type="button" data-az="rin_salva" data-id="' + (nuovo ? '' : esc(x.id)) + '" id="rin_btn">' + (nuovo ? 'Aggiungi il servizio' : 'Salva le modifiche') + '</button><div class="msgx" id="rin_form_msg"></div>';
+    h += '</div></div></div>';
+    metti(h);
+  }
+  function numDaCampo(v){ v = String(v || '').trim().replace(/\s/g, '').replace(',', '.'); return v; }
+  async function salvaRinnovo(btn){
+    var msg = $('rin_form_msg'), id = btn.getAttribute('data-id') || '';
+    nascondiMsg(msg);
+    var d = {
+      servizio: $('rin_serv').value.trim(), descrizione: $('rin_desc').value.trim(),
+      valuta: $('rin_val').value, periodicita: $('rin_per').value,
+      costo: numDaCampo($('rin_costo').value), costo_a_regime: numDaCampo($('rin_regime').value),
+      prossima_scadenza: $('rin_scad').value, link: $('rin_link').value.trim(), nota: $('rin_nota').value.trim()
+    };
+    if(!d.servizio){ mostraMsg(msg, 'Scrivi il nome del servizio.', 'err'); return; }
+    if(d.costo && !/^\d+(\.\d{1,2})?$/.test(d.costo)){ mostraMsg(msg, 'Controlla il costo di oggi (esempio: 19,98).', 'err'); return; }
+    if(d.costo_a_regime && !/^\d+(\.\d{1,2})?$/.test(d.costo_a_regime)){ mostraMsg(msg, 'Controlla il costo a regime (esempio: 25,00).', 'err'); return; }
+    if(d.link && !/^https:\/\//i.test(d.link)){ mostraMsg(msg, 'Il link deve iniziare con https://', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Salvo...';
+    try{
+      await chiediAz('rinnovo_salva', { id: id, dati: d });
+      await aggiornaDati(false);
+      toast(id ? 'Servizio aggiornato' : 'Servizio aggiunto');
+      location.hash = 'rinnovi';
+    }catch(e){
+      btn.disabled = false; btn.textContent = id ? 'Salva le modifiche' : 'Aggiungi il servizio';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function rinnovoAzione(tipo, btn){
+    var id = btn.getAttribute('data-id');
+    var x = (rinnDati().servizi || []).filter(function(s){ return s.id === id; })[0];
+    if(!x) return;
+    var msg = $('rin_msg');
+    nascondiMsg(msg);
+    if(tipo === 'rinnovato'){
+      var p = parteData(x.prossima_scadenza);
+      var na = x.periodicita === 'mensile' ? (p.m === 12 ? p.a + 1 : p.a) : p.a + 1;
+      var nm = x.periodicita === 'mensile' ? (p.m === 12 ? 1 : p.m + 1) : p.m;
+      var ultimo = new Date(Date.UTC(na, nm, 0)).getUTCDate();
+      var nuova = na + '-' + (nm < 10 ? '0' : '') + nm + '-' + (Math.min(p.g, ultimo) < 10 ? '0' : '') + Math.min(p.g, ultimo);
+      if(!window.confirm('Segnare ' + x.servizio + ' come rinnovato? La prossima scadenza passa ' + art('al', dataLunga(nuova)) + '.')) return;
+    }else if(btn.getAttribute('data-val') === '0'){
+      if(!window.confirm('Disattivare ' + x.servizio + '? Non conterà più nei totali e non manderà avvisi. Puoi riattivarlo quando vuoi.')) return;
+    }
+    btn.disabled = true;
+    try{
+      if(tipo === 'rinnovato'){
+        var r = await chiediAz('rinnovo_rinnovato', { id: id });
+        toast('Rinnovato: prossima scadenza ' + dataLunga(r.esito && r.esito.prossima_scadenza));
+      }else{
+        var attivo = btn.getAttribute('data-val') === '1';
+        await chiediAz('rinnovo_attivo', { id: id, attivo: attivo });
+        toast(attivo ? 'Servizio riattivato' : 'Servizio disattivato');
+      }
+      await aggiornaDati(true);
+    }catch(e){
+      btn.disabled = false;
+      if(!gestisciErrore(e)){ if(msg) mostraMsg(msg, e.message, 'err'); else toast(e.message, true); }
+    }
+  }
+  async function salvaCambio(){
+    var msg = $('cambio_msg'), btn = $('cambio_btn');
+    nascondiMsg(msg);
+    var v = Number(numDaCampo($('cambio_val').value));
+    if(!(v > 0.2 && v < 5)){ mostraMsg(msg, 'Scrivi il cambio come numero, per esempio 0,90.', 'err'); return; }
+    btn.disabled = true; btn.textContent = 'Salvo...';
+    try{
+      await chiediAz('cambio_salva', { valore: v });
+      toast('Cambio aggiornato');
+      await aggiornaDati(true);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva il cambio';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
   }
   async function ricaricaVenditori(){
     try{ var v = await chiedi('venditori_lista'); VENDITORI = v.venditori || []; }catch(e){ if(!gestisciErrore(e)) throw e; }
@@ -3394,6 +3601,10 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'om_scad_salva': salvaScadenzaOmaggio(); break;
       case 'vend_aggiungi': aggiungiVenditore(); break;
       case 'vend_stato': statoVenditore(el.getAttribute('data-code'), el.getAttribute('data-val') === '1'); break;
+      case 'rin_salva': salvaRinnovo(el); break;
+      case 'rin_rinnovato': rinnovoAzione('rinnovato', el); break;
+      case 'rin_attivo': rinnovoAzione('attivo', el); break;
+      case 'cambio_salva': salvaCambio(); break;
       case 'nl_invia': inviaNewsletter(); break;
       case 'an_ctrl': segnaAnomalia(el.getAttribute('data-tipo'), el.getAttribute('data-rif'), el.getAttribute('data-val') === '1', el); break;
       case 'an_elimina': eliminaOrfano(el); break;
