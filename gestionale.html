@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Gestionale | v2.5.3 31/10/2026: nella scheda di un cliente senza pagamenti il piano compare come "omaggio" o "accesso manuale" invece del prezzo di listino (anche se in pausa). v2.5.2 31/10/2026: in Clienti il pulsante "Nuovo accesso omaggio" a tutta larghezza con il suo spazio sopra. v2.5.1 31/10/2026: pulsanti della Gestione accesso su una riga (Pausa, Blocca, Termina) e "Rimanda email di benvenuto" a tutta larghezza, per occupare meno spazio sul telefono. v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
+<!-- EventsFun | Gestionale | v2.6 01/11/2026: avvisi di scadenza degli omaggi. Nel modulo "Nuovo accesso omaggio" la casella "Avvisa il cliente della scadenza"; nella scheda di un cliente senza pagamenti reali il riquadro Omaggio con interruttore dell'avviso, stato degli avvisi dei 30 e 7 giorni e "Modifica scadenza"; in Da controllare la sezione "Omaggi in scadenza" (entro 30 giorni o gia' scaduti), con il numero rosso per quelli entro 7 giorni; riga nel Riepilogo. Portiere gestionale-azioni v3 (azione omaggio_imposta). v2.5.3 31/10/2026: nella scheda di un cliente senza pagamenti il piano compare come "omaggio" o "accesso manuale" invece del prezzo di listino (anche se in pausa). v2.5.2 31/10/2026: in Clienti il pulsante "Nuovo accesso omaggio" a tutta larghezza con il suo spazio sopra. v2.5.1 31/10/2026: pulsanti della Gestione accesso su una riga (Pausa, Blocca, Termina) e "Rimanda email di benvenuto" a tutta larghezza, per occupare meno spazio sul telefono. v2.5 31/10/2026: azioni sul cliente (Metti in pausa, Blocca, Riattiva, Termina, Rimanda email di benvenuto) e nuovo accesso omaggio per tutti i pacchetti (portiere gestionale-azioni v2). v2.4 19/10/2026: sezione Statistiche sito (solo amministratore, portiere gestionale-statistiche v1, aggiornamento automatico ogni 30 secondi). v2.3 06/10/2026: sezione Fatture (fatture elettroniche da caricare sul portale Fatture e Corrispettivi, portiere gestionale-fatture v1), scheda cliente a schede con dati di fatturazione e fatture, fatture e documento Stripe negli Incassi, fatture tra le cose da fare. v2.2 04/10/2026: notifiche push su questo dispositivo (Altro e Notifiche), installabile come app (gestionale.webmanifest + gestionale-sw.js), azioni in Da controllare (Segna come controllato, Elimina, Riprova, Controllate). Azioni nuove dal portiere gestionale-azioni v1. v2.1 04/10/2026: allegati scaricati direttamente, Prove e omaggi sempre visibili, niente pulsante CSV spento. v2.0 (C7): Riepilogo, Clienti con stati veri, Scheda cliente, Incassi, Assistenza con risposte, Messaggi dal sito, Eventi, Venditori, Newsletter, Da controllare. Dati dal portiere gestionale-api v9. -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -569,6 +569,23 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     Object.keys(an).forEach(function(k){ n += (an[k] || []).length; });
     return n;
   }
+  // v2.6: omaggi che scadono entro 30 giorni o gia' scaduti (ancora attivi); urgenti = entro 7 giorni o scaduti
+  function omaggiScadenza(){ return (DATI && DATI.omaggi_scadenza) || []; }
+  function omaggiUrgenti(){ return omaggiScadenza().filter(function(o){ return Number(o.giorni) <= 7; }); }
+  function quandoScade(g){
+    g = Number(g);
+    if(g < -1) return 'scaduto da ' + (-g) + ' giorni';
+    if(g === -1) return 'scaduto ieri';
+    if(g === 0) return 'scade oggi';
+    if(g === 1) return 'scade domani';
+    return 'scade tra ' + g + ' giorni';
+  }
+  function maiuscola(t){ t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+  function giornoMeno(iso, n){
+    var p = parteData(iso);
+    if(!p) return '';
+    return new Date(Date.UTC(p.a, p.m - 1, p.g - n)).toISOString().slice(0, 10);
+  }
   function msgDaGestire(){ return ((DATI && DATI.messaggi_sito) || []).filter(function(m){ return !m.gestito_at; }); }
   function assDaGestire(){ return ((DATI && DATI.assistenza) || []).filter(daGestire); }
 
@@ -720,10 +737,11 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
   function aggiornaBadge(){
     var nA = assDaGestire().length, nM = msgDaGestire().length, nC = anomalieTot();
     badge('nbAss', nA); badge('sbAss', nA);
-    badge('sbMsg', nM); badge('sbCtrl', nC);
+    var nO = omaggiUrgenti().length;
+    badge('sbMsg', nM); badge('sbCtrl', nC + nO);
     var nF = fattureDaFare();
     badge('sbFatt', nF);
-    badge('nbAltro', nM + nC + nF);
+    badge('nbAltro', nM + nC + nO + nF);
   }
 
   // ---------------- rotte ----------------
@@ -819,6 +837,8 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     });
     var nC = anomalieTot();
     if(nC) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nC === 1 ? '1 cosa da controllare' : nC + ' cose da controllare') + '</div><div class="s">Situazioni che non tornano nei dati</div></div>' + ICO_CHEV + '</a>');
+    var nOm = omaggiUrgenti().length;
+    if(nOm) fare.push('<a class="row" href="#controllo"><div class="grow"><div class="t">' + (nOm === 1 ? '1 omaggio in scadenza' : nOm + ' omaggi in scadenza') + '</div><div class="s">Entro 7 giorni o già scaduti: decidi se prorogare, mettere in pausa o terminare</div></div>' + ICO_CHEV + '</a>');
     var nFt = contaFatture();
     if(nFt.prep) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.prep === 1 ? '1 fattura da preparare' : nFt.prep + ' fatture da preparare') + '</div><div class="s">Pagamenti arrivati senza fattura</div></div>' + ICO_CHEV + '</a>');
     if(nFt.car) fare.push('<a class="row" href="#fatture"><div class="grow"><div class="t">' + (nFt.car === 1 ? '1 fattura da caricare' : nFt.car + ' fatture da caricare') + '</div><div class="s">Pronte, da caricare sul portale Fatture e Corrispettivi</div></div>' + ICO_CHEV + '</a>');
@@ -1633,7 +1653,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var nNuovi = msgDaGestire().length;
     var nCons = ms.filter(function(m){ return m.consenso_aggiornamenti; }).length;
     var nVend = VENDITORI.filter(function(v){ return v.attivo; }).length;
-    var nC = anomalieTot();
+    var nC = anomalieTot() + omaggiUrgenti().length;
     var h = '<div class="sec"><h1 class="h1">Altro</h1></div><div class="sec"><div class="card">';
     var nFa = fattureDaFare();
     h += '<a class="row" href="#fatture"><div class="grow"><div class="t">Fatture</div><div class="s">' + (FATT ? (nFa ? (nFa === 1 ? '1 cosa da fare' : nFa + ' cose da fare') : 'Tutto in ordine') : 'Fatture elettroniche da preparare e caricare') + '</div></div>' + (nFa ? '<span class="pill p-warn">' + nFa + '</span>' : '') + ICO_CHEV + '</a>';
@@ -1960,6 +1980,16 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var ctrl = DATI.anomalie_controllate || {};
     var h = '<a class="back" href="#altro">' + ICO_BACK + 'Altro</a><div class="stretta">';
     h += '<div class="sec" style="padding-top:2px"><h1 class="h1">Da controllare</h1><div class="note" style="margin-top:4px">Le situazioni che non tornano nei dati. Non sono errori del sito: sono cose da guardare e decidere cosa farne.</div></div>';
+    var oms = omaggiScadenza();
+    h += '<div class="sec"><div class="h2">Omaggi in scadenza <small>' + oms.length + '</small></div><div class="card">';
+    if(!oms.length) h += '<div class="vuoto">Nessuno nei prossimi 30 giorni.</div>';
+    else h += '<div class="row"><div class="grow note">Accessi omaggio che scadono entro 30 giorni, o già scaduti e ancora attivi. Alla scadenza non si blocca nulla da solo: apri la scheda e scegli se prorogare la scadenza, mettere in pausa o terminare. Il numero rosso conta solo quelli entro 7 giorni o già scaduti.</div></div>';
+    oms.forEach(function(o){
+      var g = Number(o.giorni);
+      var pill = g < 0 ? '<span class="pill p-bad">Scaduto</span>' : g === 0 ? '<span class="pill p-warn">Oggi</span>' : g === 1 ? '<span class="pill p-warn">Domani</span>' : g <= 7 ? '<span class="pill p-warn">' + g + ' giorni</span>' : '';
+      h += '<a class="row" href="#cliente/' + esc(o.id) + '"><div class="grow"><div class="t">' + esc(o.ente || nomeCliente(o)) + '</div><div class="s">' + esc(maiuscola(quandoScade(g))) + ', ' + esc(art('il', dataLunga(o.scade_il))) + '</div><div class="s">' + esc(nomePiano(o.piano)) + ', avviso al cliente ' + (o.avvisa_cliente ? 'acceso' : 'spento') + '</div></div>' + pill + ICO_CHEV + '</a>';
+    });
+    h += '</div></div>';
     ANOMALIE.forEach(function(a){
       var lista = an[a.tipo] || [];
       h += '<div class="sec"><div class="h2">' + a.titolo + ' <small>' + lista.length + '</small></div><div class="card">';
@@ -2290,12 +2320,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     var st = codiceStato(c);
     var nReali = (pag || []).filter(function(p){ return p.categoria === 'reale' && p.tipo !== 'rimborso'; }).length;
     var h = '<div class="sec"><div class="h2">Gestione accesso</div>';
-    if(c.omaggio_ente || c.omaggio_scade_il || c.omaggio_note){
-      h += '<div class="card" style="margin-bottom:10px"><div class="kv">';
-      h += '<div><div class="k">Omaggio per</div><div class="v">' + esc(c.omaggio_ente || nomeCliente(c)) + '</div></div>';
-      h += '<div><div class="k">Scadenza</div><div class="v">' + (c.omaggio_scade_il ? esc(dataLunga(c.omaggio_scade_il)) : 'Nessuna') + '</div></div>';
-      h += '</div>' + (c.omaggio_note ? '<div class="note" style="padding:12px 14px">' + esc(c.omaggio_note) + '</div>' : '') + '</div>';
-    }
+    if(nReali === 0) h += riquadroOmaggio(c);
     h += '<div class="card pad">';
     if(st === 'sospeso'){
       var blocco = c.sospeso_tipo === 'blocco';
@@ -2315,6 +2340,71 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     if(nReali === 0 && c.email) h += '<button class="btn sec2 pieno" type="button" data-az="cli_benvenuto" id="cli_benv_btn" style="margin-top:8px">Rimanda email di benvenuto</button>';
     h += '<div class="msgx" id="cli_msg"></div></div></div>';
     return h;
+  }
+  // v2.6: riquadro Omaggio (clienti senza pagamenti reali): avviso di scadenza e modifica della scadenza
+  var ESITO_AVVISO = { inviata: 'email al cliente inviata', non_prevista: 'solo notifica a te (avviso al cliente spento)', pausa: 'email non inviata, account in pausa', errore: 'email al cliente NON partita' };
+  function rigaAvviso(c, soglia, fattoIl){
+    var log = (c.omaggio_avvisi || []).filter(function(l){ return l.azione === 'omaggio_avviso_' + soglia; })[0];
+    var testo;
+    if(log){
+      var cod = String(log.email_cliente || '').split(':')[0];
+      testo = 'fatto ' + art('il', dataBreve(log.quando)) + ', ' + (ESITO_AVVISO[cod] || 'esito non registrato');
+    }else if(fattoIl){
+      testo = 'non necessario (scadenza già entro 7 giorni)';
+    }else{
+      var parte = giornoMeno(giornoDi(c.omaggio_scade_il), soglia);
+      testo = parte > oggi() ? 'parte ' + art('il', dataLunga(parte)) + ' alle 9' : 'parte domattina alle 9';
+    }
+    return '<div class="s" style="margin-top:4px">Avviso ' + soglia + ' giorni: ' + esc(testo) + '</div>';
+  }
+  function riquadroOmaggio(c){
+    var g = c.omaggio_scade_il ? diffGiorni(oggi(), giornoDi(c.omaggio_scade_il)) : null;
+    var h = '<div class="card" style="margin-bottom:10px"><div class="kv">';
+    h += '<div><div class="k">Omaggio per</div><div class="v">' + esc(c.omaggio_ente || nomeCliente(c)) + '</div></div>';
+    h += '<div><div class="k">Scadenza</div><div class="v">' + (c.omaggio_scade_il ? esc(dataLunga(c.omaggio_scade_il)) + '<div class="s"' + (g !== null && g <= 7 ? ' style="color:var(--warn)"' : '') + '>' + esc(maiuscola(quandoScade(g))) + '</div>' : 'Nessuna') + '</div></div>';
+    h += '</div>' + (c.omaggio_note ? '<div class="note" style="padding:12px 14px;border-top:1px solid var(--line2)">' + esc(c.omaggio_note) + '</div>' : '');
+    h += '<div style="padding:10px 14px 14px;border-top:1px solid var(--line2)">';
+    h += '<label class="chk"><input type="checkbox" id="om_avv_sw" data-az="om_avvisa"' + (c.omaggio_avvisa_cliente ? ' checked' : '') + '>Avvisa il cliente della scadenza</label>';
+    h += '<div class="note">' + (c.omaggio_scade_il ? 'Acceso: il cliente riceve un\'email 30 e 7 giorni prima della scadenza. Tu ricevi sempre la notifica, anche se è spento. Alla scadenza non si blocca nulla da solo.' : 'Senza una scadenza non parte nessun avviso: imposta prima la scadenza.') + '</div>';
+    if(c.omaggio_scade_il && g !== null && g >= 0){
+      h += '<div style="margin-top:8px">' + rigaAvviso(c, 30, c.omaggio_avviso30_il) + rigaAvviso(c, 7, c.omaggio_avviso7_il) + '</div>';
+    }
+    h += '<button class="btn sec2 pieno" type="button" data-az="om_scad_apri" style="margin-top:12px">' + (c.omaggio_scade_il ? 'Modifica scadenza' : 'Imposta una scadenza') + '</button>';
+    h += '<div id="om_scad_box" hidden style="margin-top:12px"><div class="campo"><label class="lbl" for="om_scad_data">Nuova scadenza</label><input class="field" id="om_scad_data" type="date" min="' + esc(dataTraMesi(0)) + '" value="' + (c.omaggio_scade_il ? esc(giornoDi(c.omaggio_scade_il)) : '') + '"><div class="note" style="margin-top:6px">Se cambi la data, gli avvisi dei 30 e 7 giorni ripartono per la nuova scadenza. Lascia il campo vuoto per togliere la scadenza.</div></div>';
+    h += '<div class="bottoni"><button class="btn sec2" type="button" data-az="om_scad_annulla">Annulla</button><button class="btn" type="button" data-az="om_scad_salva" id="om_scad_btn">Salva</button></div></div>';
+    h += '<div class="msgx" id="om_msg2"></div></div></div>';
+    return h;
+  }
+  async function cambiaAvvisoOmaggio(el){
+    var c = SCHEDA.cliente, msg = $('om_msg2'), voglio = el.checked;
+    nascondiMsg(msg);
+    el.disabled = true;
+    try{
+      await chiediAz('omaggio_imposta', { order_id: c.id, avvisa_cliente: voglio });
+      toast(voglio ? 'Avviso al cliente acceso' : 'Avviso al cliente spento');
+      await ricaricaScheda(c.id);
+    }catch(e){
+      el.checked = !voglio; el.disabled = false;
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
+  }
+  async function salvaScadenzaOmaggio(){
+    var c = SCHEDA.cliente, msg = $('om_msg2'), btn = $('om_scad_btn');
+    nascondiMsg(msg);
+    var v = $('om_scad_data').value;
+    var prima = c.omaggio_scade_il ? giornoDi(c.omaggio_scade_il) : '';
+    if(v === prima){ mostraMsg(msg, 'La data è uguale a quella attuale.', 'info'); return; }
+    if(v && v < dataTraMesi(0)){ mostraMsg(msg, 'La scadenza deve essere oggi o una data futura.', 'err'); return; }
+    if(!v && !window.confirm('Togliere la scadenza? Per questo cliente non partirà più nessun avviso.')) return;
+    btn.disabled = true; btn.textContent = 'Salvo...';
+    try{
+      await chiediAz('omaggio_imposta', { order_id: c.id, cambia_scadenza: true, scade_il: v });
+      toast(v ? 'Scadenza aggiornata' : 'Scadenza tolta');
+      await ricaricaScheda(c.id);
+    }catch(e){
+      btn.disabled = false; btn.textContent = 'Salva';
+      if(!gestisciErrore(e)) mostraMsg(msg, e.message, 'err');
+    }
   }
   function apriAzioneCliente(tipo){
     var T = {
@@ -2400,6 +2490,7 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
     h += '<div class="campo"><label class="lbl" for="om_cognome">Cognome (facoltativo)</label><input class="field" id="om_cognome" type="text" maxlength="80" autocomplete="off"></div>';
     h += '<div class="campo"><label class="lbl" for="om_email">Email di accesso</label><input class="field" id="om_email" type="email" maxlength="254" autocomplete="off" autocapitalize="none"></div>';
     h += '<div class="campo"><label class="lbl" for="om_scade">Scadenza</label><input class="field" id="om_scade" type="date" min="' + esc(dataTraMesi(0)) + '" value="' + (abb ? esc(dataTraMesi(12)) : '') + '"><div class="note" id="om_scade_nota" style="margin-top:6px">' + (abb ? 'Proposta a 12 mesi. È un promemoria per te: alla scadenza non si blocca nulla da solo.' : 'Facoltativa: Base e Pro finiscono da soli 30 giorni dopo l\'evento.') + '</div></div>';
+    h += '<label class="chk"><input type="checkbox" id="om_avvisa">Avvisa il cliente della scadenza</label><div class="note" style="margin:0 0 14px">Email al cliente 30 e 7 giorni prima della scadenza. Tu ricevi sempre la notifica, anche se è spento. Puoi cambiarlo quando vuoi dalla sua scheda.</div>';
     h += '<div class="campo"><label class="lbl" for="om_note">Note (le vedi solo tu)</label><textarea class="field" id="om_note" rows="3" maxlength="1000" placeholder="Es. accordo firmato il ..., PEC del comitato"></textarea></div>';
     h += '<label class="chk" style="margin-bottom:14px"><input type="checkbox" id="om_mail" checked>Manda subito l\'email di benvenuto con il link per impostare la password</label>';
     h += '<button class="btn" type="button" data-az="om_crea" id="om_btn">Crea l\'accesso</button><div class="msgx" id="om_msg"></div>';
@@ -2427,18 +2518,21 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       email: $('om_email').value.trim().toLowerCase(),
       scade_il: $('om_scade').value,
       note: $('om_note').value.trim(),
-      invia_email: $('om_mail').checked
+      invia_email: $('om_mail').checked,
+      avvisa_cliente: $('om_avvisa').checked
     };
     if(!d.nome){ mostraMsg(msg, 'Scrivi il nome della persona di riferimento.', 'err'); return; }
     if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(d.email)){ mostraMsg(msg, 'Controlla l\'email di accesso.', 'err'); return; }
     if(d.scade_il && d.scade_il < dataTraMesi(0)){ mostraMsg(msg, 'La scadenza deve essere una data futura.', 'err'); return; }
+    if(d.avvisa_cliente && !d.scade_il){ mostraMsg(msg, 'Per avvisare il cliente serve una scadenza.', 'err'); return; }
     var nomeP = { base: 'Base', pro: 'Pro', agenzia: 'Agenzia', info: 'Punto Info' }[d.piano];
     if(!window.confirm('Creare l\'accesso omaggio ' + nomeP + ' per ' + d.email + '?' + (d.invia_email ? ' Partirà subito l\'email di benvenuto.' : ''))) return;
     btn.disabled = true; btn.textContent = 'Creo l\'accesso...';
     try{
       var r = await chiediAz('omaggio_crea', d);
       await aggiornaDati(false);
-      if(d.invia_email && !r.email_inviata) toast('Accesso creato, ma l\'email non è partita: usa "Rimanda email di benvenuto" nella scheda.', true);
+      if(d.avvisa_cliente && r.avviso_salvato === false) toast('Accesso creato, ma l\'avviso di scadenza non è stato salvato: accendilo dalla scheda.', true);
+      else if(d.invia_email && !r.email_inviata) toast('Accesso creato, ma l\'email non è partita: usa "Rimanda email di benvenuto" nella scheda.', true);
       else toast(d.invia_email ? 'Accesso creato ed email inviata' : 'Accesso creato');
       SCHEDA = null;
       location.hash = 'cliente/' + r.order_id;
@@ -3294,6 +3388,10 @@ details.blocco .an:first-of-type{border-top:1px solid var(--line2)}
       case 'cli_benvenuto': rimandaBenvenuto(); break;
       case 'om_piano': sceltaPianoOmaggio(el); break;
       case 'om_crea': creaOmaggio(); break;
+      case 'om_avvisa': cambiaAvvisoOmaggio(el); break;
+      case 'om_scad_apri': $('om_scad_box').hidden = false; $('om_scad_data').focus(); break;
+      case 'om_scad_annulla': $('om_scad_box').hidden = true; nascondiMsg($('om_msg2')); break;
+      case 'om_scad_salva': salvaScadenzaOmaggio(); break;
       case 'vend_aggiungi': aggiungiVenditore(); break;
       case 'vend_stato': statoVenditore(el.getAttribute('data-code'), el.getAttribute('data-val') === '1'); break;
       case 'nl_invia': inviaNewsletter(); break;
