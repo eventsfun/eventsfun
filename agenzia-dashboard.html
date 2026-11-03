@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -2854,7 +2854,7 @@ function renderRichieste() {
     return;
   }
   if (richErr) {
-    setText('richSub', '--');
+    setText('richSub', 'Caricamento non riuscito');
     list.innerHTML = '<div class="no-regs">Non riesco a caricare le richieste. Premi "Aggiorna" per riprovare.</div>';
     return;
   }
@@ -5147,6 +5147,136 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.4 agenzia</div>
+<script>
+/* ============================================================
+   AGGIORNAMENTO AUTOMATICO DELLE RICHIESTE DI CONTATTO (03/11/2026)
+   Ogni 20 secondi, negli eventi "Informazioni" ed "Entrambe", controlla se ci sono richieste
+   nuove o cambiate (anche da un altro dispositivo) e aggiorna la sezione "Richieste di contatto".
+   Non ridisegna mentre si tocca o si scorre la pagina o con una finestra aperta; nessun avviso a
+   comparsa: la novita' compare solo nella riga sotto il titolo.
+   ============================================================ */
+(function () {
+  var OGNI = 20000, FERMO_MS = 4000;
+  var st = { run: false, tocco: 0, daRender: false, fails: 0, ultimo: '', ev: null, giro: 0 };
+  function el(id) { return document.getElementById(id); }
+
+  ['scroll', 'touchstart', 'touchmove', 'wheel', 'keydown', 'mousedown'].forEach(function (nome) {
+    window.addEventListener(nome, function () { st.tocco = Date.now(); }, { passive: true, capture: true });
+  });
+
+  function modaleAperta() {
+    var o = document.querySelectorAll('.ov.on');
+    for (var i = 0; i < o.length; i++) { if (o[i].id !== 'ovQrScanner') return true; }
+    var ob = el('ovOnboarding');
+    if (ob && ob.style.display === 'flex') return true;
+    return false;
+  }
+  function hhmm(d) { return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2); }
+  function canon(r) { return Object.keys(r).sort().map(function (k) { return k + '=' + JSON.stringify(r[k]); }).join(';'); }
+  function firma(a) { return (a || []).map(function (r) { return r.id + '#' + canon(r); }).sort().join('\n'); }
+
+  function riga(testo, ok) {
+    var sub = el('richSub');
+    if (!sub || !sub.parentNode) return;
+    var s = el('efRichLive');
+    if (!s) {
+      s = document.createElement('div');
+      s.id = 'efRichLive';
+      s.style.cssText = 'font-size:11px;color:var(--text-dim);margin-top:3px;display:flex;align-items:center;gap:6px';
+      sub.parentNode.insertBefore(s, sub.nextSibling);
+    }
+    s.style.display = testo ? 'flex' : 'none';
+    s.innerHTML = '';
+    if (!testo) return;
+    var p = document.createElement('span');
+    p.style.cssText = 'width:6px;height:6px;border-radius:50%;flex-shrink:0;background:' + (ok ? 'var(--green)' : 'var(--text-dim)');
+    var t = document.createElement('span');
+    t.textContent = testo;
+    s.appendChild(p); s.appendChild(t);
+  }
+  function esitoOk() {
+    st.fails = 0;
+    riga('Aggiornamento automatico attivo · controllato alle ' + hhmm(new Date()) + (st.ultimo ? ' · ' + st.ultimo : ''), true);
+  }
+
+  /* evento con richieste, sezione visibile e gia' caricata */
+  function evAttivo() {
+    var ev = window.currentEv;
+    if (!ev || !ev.id || !window.TOKEN) return null;
+    if (ev.modalita !== 'info' && ev.modalita !== 'entrambe') return null;
+    var nav = el('mainNav');
+    if (!nav || nav.style.display === 'none') return null;
+    var panel = el('panelRichieste');
+    if (!panel || panel.style.display === 'none') return null;
+    if (richLoading || richLoadedFor !== ev.id || richErr) return null;
+    try { if (isClosed(ev)) return null; } catch (e) { return null; }
+    return ev;
+  }
+
+  function provaRender() {
+    if (!st.daRender) return;
+    if (modaleAperta()) return;
+    if (Date.now() - st.tocco < FERMO_MS) return;
+    st.daRender = false;
+    try { renderRichieste(); } catch (e) { console.error('aggiornamento richieste:', e); }
+  }
+
+  async function controlla() {
+    if (st.run) return;
+    if (document.hidden || navigator.onLine === false) return;
+    var ev = evAttivo();
+    if (!ev) { if (!window.currentEv || window.currentEv.modalita === 'iscrizioni') riga('', true); return; }
+    if (st.ev !== ev.id) { st.ev = ev.id; st.ultimo = ''; }
+    st.run = true;
+    var evId = ev.id, prima = firma(currentRich);
+    try {
+      var r = await fetch(SB_URL + '/rest/v1/richieste_contatto?event_id=eq.' + encodeURIComponent(evId) + '&order=created_at.desc', { headers: sbH() });
+      if (!r.ok) throw new Error('risposta ' + r.status);
+      var rows = await r.json();
+      if (!Array.isArray(rows)) throw new Error('risposta non valida');
+      /* nel frattempo e' cambiato evento, o e' stata fatta una modifica da qui: si riprova al giro dopo */
+      if (!window.currentEv || window.currentEv.id !== evId || richLoadedFor !== evId || richLoading) return;
+      if (firma(currentRich) !== prima) return;
+      if (firma(rows) !== prima) {
+        var noti = {};
+        (currentRich || []).forEach(function (x) { noti[x.id] = 1; });
+        var nuove = rows.filter(function (x) { return !noti[x.id]; });
+        if (nuove.length) {
+          var t = 0;
+          nuove.forEach(function (x) { var m = new Date(x.created_at).getTime(); if (m > t) t = m; });
+          st.ultimo = nuove.length + (nuove.length === 1 ? ' nuova richiesta' : ' nuove richieste') + ' alle ' + (t ? hhmm(new Date(t)) : hhmm(new Date()));
+        }
+        currentRich = rows;
+        st.daRender = true;
+        provaRender();
+      }
+      esitoOk();
+    } catch (e) {
+      st.fails++;
+      if (st.fails >= 3) riga('Aggiornamento automatico in pausa, riprovo tra poco', false);
+    } finally { st.run = false; }
+  }
+
+  function ciclo() {
+    st.giro++;
+    if (st.fails >= 3 && st.giro % 3 !== 0) return;
+    controlla();
+  }
+
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) setTimeout(controlla, 800);
+  });
+  window.addEventListener('online', function () { setTimeout(controlla, 800); });
+  setTimeout(function () {
+    controlla();
+    setInterval(ciclo, OGNI);
+    setInterval(provaRender, 1000);
+  }, 3000 + Math.floor(Math.random() * 6000));
+
+  window.EFRichLive = { controlla: controlla, stato: st };
+})();
+</script>
+
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.5 agenzia</div>
 </body>
 </html>
