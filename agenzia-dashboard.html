@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -260,7 +260,7 @@ select option{background:#1a1a1a;color:var(--text)}
 .del-yes{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#b04040,#803030);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 .btn-full{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
 .btn-full:hover{opacity:.87}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:nowrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:normal;width:max-content;max-width:calc(100vw - 32px);text-align:center;line-height:1.45}
 .toast-g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:var(--green)}
 .toast-r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:var(--red)}
 /* MODAL FOOTER BTNS */
@@ -726,7 +726,7 @@ select option{background:#1a1a1a;color:var(--text)}
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovCreate')">✕</button>
     <h2 id="evModalTitle">Crea il tuo evento</h2>
-    <p class="modal-sub">Compila i dettagli. Potrai modificarli in qualsiasi momento prima della data evento.</p>
+    <p class="modal-sub">Compila i dettagli. Potrai modificarli in qualsiasi momento.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
       <div class="mf" id="ev_cap_mf">
@@ -737,9 +737,18 @@ select option{background:#1a1a1a;color:var(--text)}
         <input id="ev_cap" type="number" placeholder="Vuoto = illimitata" min="1">
       </div>
     </div>
-    <div class="fg2">
-      <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
-      <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
+    <div class="opt-row" id="ev_dataora_row" style="display:none;border-bottom:none;padding-top:2px;margin-bottom:6px">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Mostra data e ora nella pagina
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascialo spento se l'informazione &egrave; legata a un luogo e vale sempre, per esempio un ufficio, un museo o un servizio: la pagina non mostra date e resta aperta finch&eacute; non la chiudi con &quot;Cambia stato&quot;. Accendilo se riguarda un evento con una data: puoi indicare solo il giorno o anche l'orario, e la pagina si chiude da sola il giorno dopo. Disponibile solo per gli eventi &quot;Informazioni&quot;: chi raccoglie iscrizioni ha sempre una data.</span></span>
+        </div>
+        <div class="opt-sub" id="ev_dataora_sub">La pagina non mostra date e resta aperta finch&eacute; non la chiudi tu.</div>
+      </div>
+      <div class="tog" id="ev_dataora_tog" onclick="dataOraTog('ev')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="fg2" id="ev_dataora_fields">
+      <div class="mf"><label id="ev_data_lbl">Data evento *</label><input id="ev_data" type="date"></div>
+      <div class="mf"><label id="ev_ora_lbl">Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
     </div>
     <div class="mf">
       <label>Cliente <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativo, visibile solo a te)</span>
@@ -1094,9 +1103,18 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
       <div class="mf" id="se_cap_mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
     </div>
-    <div class="fg2">
-      <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
-      <div class="mf"><label>Ora</label><input id="se_ora"></div>
+    <div class="opt-row" id="se_dataora_row" style="display:none;border-bottom:none;padding-top:2px;margin-bottom:6px">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Mostra data e ora nella pagina
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Lascialo spento se l'informazione &egrave; legata a un luogo e vale sempre, per esempio un ufficio, un museo o un servizio: la pagina non mostra date e resta aperta finch&eacute; non la chiudi con &quot;Cambia stato&quot;. Accendilo se riguarda un evento con una data: puoi indicare solo il giorno o anche l'orario, e la pagina si chiude da sola il giorno dopo. Disponibile solo per gli eventi &quot;Informazioni&quot;: chi raccoglie iscrizioni ha sempre una data.</span></span>
+        </div>
+        <div class="opt-sub" id="se_dataora_sub">La pagina non mostra date e resta aperta finch&eacute; non la chiudi tu.</div>
+      </div>
+      <div class="tog" id="se_dataora_tog" onclick="dataOraTog('se')"><div class="tog-dot"></div></div>
+    </div>
+    <div class="fg2" id="se_dataora_fields">
+      <div class="mf"><label id="se_data_lbl">Data evento *</label><input id="se_data" type="date"></div>
+      <div class="mf"><label id="se_ora_lbl">Ora *</label><input id="se_ora" placeholder="Es. 19:30"></div>
     </div>
     <div class="mf">
       <label>Cosa raccoglie la pagina dell'evento
@@ -1682,6 +1700,7 @@ function friendlyError(e) {
   try { parsed = JSON.parse(raw); } catch (_ignore) {}
   var code = (parsed && parsed.code) ? String(parsed.code) : '';
   var msg = (parsed && parsed.message) ? String(parsed.message) : raw;
+  if (parsed && parsed.hint === 'EF_DATA_OBBLIGATORIA' && parsed.message) return String(parsed.message);
   var m = msg.toLowerCase();
   if (code === '23505' || m.indexOf('duplicate key') !== -1) {
     if (m.indexOf('slug') !== -1) return 'Esiste gia\' un evento con un indirizzo simile. Cambia leggermente il nome e riprova.';
@@ -2441,6 +2460,41 @@ function initTheme() {
 /* ============================================================
    DATE UTILS
    ============================================================ */
+/* ============================================================
+   DATA E ORA FACOLTATIVE (solo eventi "Informazioni")
+   Con Iscrizioni o Entrambe data e ora restano obbligatorie e l'interruttore non compare.
+   Con Informazioni: interruttore "Mostra data e ora nella pagina"; spento = nessuna data,
+   acceso = data obbligatoria e ora facoltativa.
+   ============================================================ */
+var dataOraState = { ev: false, se: false };
+var MSG_DATA_MANCA = 'Hai acceso "Mostra data e ora nella pagina": inserisci la data, oppure spegni l\'interruttore.';
+function dataOraInfo(pfx) { return modState[pfx] === 'info'; }
+function dataOraAttiva(pfx) { return !dataOraInfo(pfx) || !!dataOraState[pfx]; }
+function dataOraSync(pfx) {
+  var info = dataOraInfo(pfx), on = dataOraAttiva(pfx);
+  setDisp(pfx + '_dataora_row', info ? 'flex' : 'none');
+  var t = document.getElementById(pfx + '_dataora_tog'); if (t) { if (dataOraState[pfx]) t.classList.add('on'); else t.classList.remove('on'); }
+  setDisp(pfx + '_dataora_fields', on ? '' : 'none');
+  setText(pfx + '_data_lbl', info ? 'Data *' : 'Data evento *');
+  setHTML(pfx + '_ora_lbl', info ? 'Ora <span style="font-weight:400;text-transform:none;letter-spacing:0;color:var(--text-dim)">(facoltativa)</span>' : 'Ora *');
+  setText(pfx + '_dataora_sub', dataOraState[pfx]
+    ? 'La pagina mostra la data e si chiude da sola il giorno dopo.'
+    : 'La pagina non mostra date e resta aperta finché non la chiudi tu.');
+}
+function dataOraSet(pfx, on) { dataOraState[pfx] = !!on; dataOraSync(pfx); }
+function dataOraTog(pfx) { dataOraSet(pfx, !dataOraState[pfx]); }
+function dataOraValori(pfx) {
+  if (!dataOraAttiva(pfx)) return { data_iso: null, ora: null };
+  return { data_iso: getVal(pfx + '_data') || null, ora: getVal(pfx + '_ora').trim() || null };
+}
+/* Restituisce il messaggio da mostrare se data o ora mancano, altrimenti stringa vuota */
+function dataOraManca(pfx) {
+  if (!dataOraAttiva(pfx)) return '';
+  var v = dataOraValori(pfx);
+  if (dataOraInfo(pfx)) return v.data_iso ? '' : MSG_DATA_MANCA;
+  return (v.data_iso && v.ora) ? '' : 'Compila la data e l\'ora dell\'evento.';
+}
+function dataEvTesto(ev) { return (ev && ev.data_iso) ? isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') : 'Senza data'; }
 function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 /* Parole da usare per l'evento: "Presente" (partecipazione) oppure "Ritirato" (prenotazioni da ritirare di persona) */
 function presTxt(ev) {
@@ -2517,7 +2571,7 @@ function switchEvTab(tab) {
     switchEvent(curId);
   }
   box.innerHTML = lista.map(function(e) {
-    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + (e.data_iso ? isoToIt(e.data_iso) : 'senza data') + ')</option>';
   }).join('');
 }
 
@@ -2563,7 +2617,7 @@ function renderSelector() {
   }
 
   box.innerHTML = lista.map(function(e) {
-    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + isoToIt(e.data_iso) + ')</option>';
+    return '<option value="' + e.id + '"' + (e.id === curId ? ' selected' : '') + '>' + escHtml(e.nome) + ' (' + (e.data_iso ? isoToIt(e.data_iso) : 'senza data') + ')</option>';
   }).join('');
 }
 
@@ -2617,7 +2671,7 @@ function renderDash() {
   /* Header */
   setText('dash-title', ev ? ev.nome : 'Dashboard Agenzia');
   setText('dash-sub', ev
-    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
+    ? (dataEvTesto(ev) + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
     : 'Nessun evento creato: clicca su "Crea evento" per iniziare');
 
   /* Pulsanti */
@@ -2652,7 +2706,7 @@ function renderDash() {
 
   /* Status bar */
   setText('status-nome', ev ? ev.nome : 'Nessun evento');
-  setText('status-det', ev ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '')) : 'Crea il tuo primo evento per iniziare');
+  setText('status-det', ev ? dataEvTesto(ev) : 'Crea il tuo primo evento per iniziare');
   var sp = document.getElementById('status-pill');
   if (sp) {
     if (!ev) sp.innerHTML = '<span class="pill pill-gray">--</span>';
@@ -3331,6 +3385,7 @@ function resetEvForm() {
   evTemaState = 'chiaro'; setTema('ev', 'chiaro');
   setVal('ev_cap', '');
   setVal('ev_data', '');
+  dataOraState.ev = false;
   removeEvImg();
   setHTML('cspList', '');
   setHTML('ccfList', '');
@@ -3403,11 +3458,13 @@ function landingUrl(ev) {
 
 async function saveEvent() {
   var nome = getVal('ev_nome').trim();
-  var data = getVal('ev_data');
-  var ora = getVal('ev_ora').trim();
+  var dov = dataOraValori('ev');
+  var data = dov.data_iso;
+  var ora = dov.ora;
   var luogo = getVal('ev_luogo').trim();
   var emailContatto = getVal('ev_email_contatto').trim();
-  if (!nome || !data || !ora || !luogo) { alert(otogState.online ? 'Compila Nome, Data, Ora e Piattaforma.' : 'Compila Nome, Data, Ora e Luogo.'); return; }
+  if (!nome || !luogo) { alert(otogState.online ? 'Compila Nome e Piattaforma.' : 'Compila Nome e Luogo.'); return; }
+  var mdo = dataOraManca('ev'); if (mdo) { alert(mdo); return; }
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
@@ -3477,6 +3534,7 @@ function openEditEvent() {
   setVal('se_cap', ev.capienza || '');
   setVal('se_data', ev.data_iso || '');
   setVal('se_ora', ev.ora || '');
+  dataOraState.se = !!ev.data_iso;
   setVal('se_luogo', ev.luogo || '');
   setVal('se_desc', ev.descrizione || '');
   setVal('se_email_contatto', ev.email_contatto || '');
@@ -3540,6 +3598,7 @@ async function saveSettings() {
   var nome = getVal('se_nome').trim(); if (!nome) { alert('Nome obbligatorio.'); return; }
   var emailContatto = getVal('se_email_contatto').trim();
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
+  var mdoS = dataOraManca('se'); if (mdoS) { alert(mdoS); return; }
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: nome,
@@ -3552,8 +3611,8 @@ async function saveSettings() {
     landing_tema: seTemaState || 'chiaro',
     slug: ev.slug || makeSlug(nome),
     capienza: parseInt(getVal('se_cap')) || null,
-    data_iso: getVal('se_data'),
-    ora: getVal('se_ora').trim(),
+    data_iso: dataOraValori('se').data_iso,
+    ora: dataOraValori('se').ora,
     luogo: getVal('se_luogo').trim(),
     descrizione: getVal('se_desc').trim(),
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
@@ -3717,6 +3776,7 @@ function setModalita(p, m, silenzioso) {
   setDisp((p === 'ev' ? 'o' : 's') + '_ritiro_sect', conIscr ? 'block' : 'none');
   setDisp(p + '_email_info_note', conInfo ? 'block' : 'none');
   if (p === 'se') modWarn();
+  dataOraSync(p);
   if (conInfo && !silenzioso) {
     var a = document.getElementById('acc_' + p + '_info');
     if (a) a.classList.add('open');
@@ -4584,10 +4644,12 @@ function openLanding() {
 
 async function openPreviewFromForm() {
   var nome = getVal('ev_nome').trim();
-  var data = getVal('ev_data');
-  var ora = getVal('ev_ora').trim();
+  var dov = dataOraValori('ev');
+  var data = dov.data_iso;
+  var ora = dov.ora;
   var luogo = getVal('ev_luogo').trim();
-  if (!nome || !data || !ora || !luogo) { alert('Compila almeno Nome, Data, Ora e Luogo per vedere l\'anteprima.'); return; }
+  if (!nome || !luogo) { alert('Compila almeno Nome e Luogo per vedere l\'anteprima.'); return; }
+  var mdo = dataOraManca('ev'); if (mdo) { alert(mdo); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
     activation_token: TOKEN, piano: PIANO,
@@ -4631,13 +4693,14 @@ async function openPreviewFromForm() {
 
 async function openPreviewFromSettings() {
   var ev = currentEv; if (!ev) return;
+  var mdoP = dataOraManca('se'); if (mdoP) { alert(mdoP); return; }
   /* Per le impostazioni l'evento esiste già -- aggiorna temporaneamente e apri */
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: getVal('se_nome').trim() || ev.nome,
     capienza: parseInt(getVal('se_cap')) || null,
-    data_iso: getVal('se_data'),
-    ora: getVal('se_ora').trim(),
+    data_iso: dataOraValori('se').data_iso,
+    ora: dataOraValori('se').ora,
     luogo: getVal('se_luogo').trim(),
     descrizione: getVal('se_desc').trim(),
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
@@ -5084,6 +5147,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.3 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.4 agenzia</div>
 </body>
 </html>

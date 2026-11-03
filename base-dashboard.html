@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Base Dashboard | v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Base Dashboard | v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -183,7 +183,7 @@ tbody td.xv{color:var(--gold)}
 .del-yes{flex:1;padding:12px;border-radius:8px;border:none;background:linear-gradient(135deg,#b04040,#803030);color:#fff;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 .btn-full{width:100%;padding:13px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:opacity .2s}
 .btn-full:hover{opacity:.87}
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:nowrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);border-radius:9px;padding:10px 20px;font-size:13px;display:none;z-index:400;font-weight:600;white-space:normal;width:max-content;max-width:calc(100vw - 32px);text-align:center;line-height:1.45}
 .toast-g{background:#162616;border:1px solid rgba(110,201,130,0.3);color:var(--green)}
 .toast-r{background:#261616;border:1px solid rgba(200,80,80,0.3);color:var(--red)}
 @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.dash,.presenze-wrap{padding:24px 14px 60px}.fg2{grid-template-columns:1fr}.sp-row{grid-template-columns:38px 1fr auto}}
@@ -476,6 +476,15 @@ tbody td.xv{color:var(--gold)}
       <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
       <div class="mf" id="ev_cap_mf"><label>Capienza (vuoto = illimitata)</label><input id="ev_cap" type="number" placeholder="es. 300" min="1"></div>
     </div>
+    <div class="opt-row" style="border-bottom:none;padding-top:2px;margin-bottom:4px">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Mostra data e ora nella pagina
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Con il piano Base la pagina &egrave; sempre legata alla data dell'evento: si chiude da sola il giorno dopo e i dati restano disponibili per 30 giorni. Le pagine informative senza data, che restano aperte finch&eacute; non le chiudi tu, sono incluse nel Punto Info e nel piano Agenzia.</span></span>
+        </div>
+        <div class="opt-sub">Pagine senza data: disponibili con <a href="https://eventsfun.com/#punto-info-prezzi" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Punto Info</a> e <a href="https://eventsfun.com/#prezzi" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Agenzia</a>.</div>
+      </div>
+      <div class="tog on" role="switch" aria-checked="true" aria-disabled="true" title="Sempre attivo con il piano Base" onclick="dataOraBloccata()" style="opacity:.45;cursor:not-allowed"><div class="tog-dot"></div></div>
+    </div>
     <div class="fg2">
       <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
       <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
@@ -719,8 +728,17 @@ tbody td.xv{color:var(--gold)}
       <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
       <div class="mf" id="se_cap_mf"><label>Capienza</label><input id="se_cap" type="number" min="1" placeholder="Vuoto = illimitata"></div>
     </div>
+    <div class="opt-row" style="border-bottom:none;padding-top:2px;margin-bottom:4px">
+      <div>
+        <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">Mostra data e ora nella pagina
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Con il piano Base la pagina &egrave; sempre legata alla data dell'evento: si chiude da sola il giorno dopo e i dati restano disponibili per 30 giorni. Le pagine informative senza data, che restano aperte finch&eacute; non le chiudi tu, sono incluse nel Punto Info e nel piano Agenzia.</span></span>
+        </div>
+        <div class="opt-sub">Pagine senza data: disponibili con <a href="https://eventsfun.com/#punto-info-prezzi" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Punto Info</a> e <a href="https://eventsfun.com/#prezzi" target="_blank" rel="noopener" style="color:var(--gold);text-decoration:underline">Agenzia</a>.</div>
+      </div>
+      <div class="tog on" role="switch" aria-checked="true" aria-disabled="true" title="Sempre attivo con il piano Base" onclick="dataOraBloccata()" style="opacity:.45;cursor:not-allowed"><div class="tog-dot"></div></div>
+    </div>
     <div class="fg2">
-      <div class="mf"><label>Data evento</label><input id="se_data" type="date"></div>
+      <div class="mf"><label>Data evento *</label><input id="se_data" type="date"></div>
       <div class="mf"><label>Ora</label><input id="se_ora"></div>
     </div>
     <div class="mf">
@@ -1161,6 +1179,7 @@ function friendlyError(e) {
   try { parsed = JSON.parse(raw); } catch (_ignore) {}
   var code = (parsed && parsed.code) ? String(parsed.code) : '';
   var msg = (parsed && parsed.message) ? String(parsed.message) : raw;
+  if (parsed && parsed.hint === 'EF_DATA_OBBLIGATORIA' && parsed.message) return String(parsed.message);
   var m = msg.toLowerCase();
   if (code === '23505' || m.indexOf('duplicate key') !== -1) {
     if (m.indexOf('slug') !== -1) return 'Esiste gia\' un evento con un indirizzo simile. Cambia leggermente il nome e riprova.';
@@ -1689,6 +1708,7 @@ async function saveSettings() {
   var nome = document.getElementById('se_nome').value.trim(); if (!nome) { alert('Nome obbligatorio.'); return; }
   var emailContatto = document.getElementById('se_email_contatto').value.trim();
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
+  if (!document.getElementById('se_data').value) { alert('Inserisci la data dell\'evento.'); return; }
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: nome,
@@ -2741,6 +2761,8 @@ function showView(n) { document.querySelectorAll('.view').forEach(function(v) { 
 }
 function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
+/* Interruttore "Mostra data e ora nella pagina": bloccato acceso nei piani Base e Pro (acquisto singolo, la data e' obbligatoria) */
+function dataOraBloccata() { showToast('Le pagine senza data sono disponibili con Punto Info e Agenzia.', 'r'); }
 function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
 
 /* ============================================================
@@ -3125,6 +3147,6 @@ applyOpts = function(ev) {
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.7 base</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.8 base</div>
 </body>
 </html>

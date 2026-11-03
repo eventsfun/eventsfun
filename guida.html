@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -178,6 +178,7 @@ a.term:hover{border-bottom-style:solid}
           <div class="idx-group-name">Richiesta informazioni</div>
           <a href="#richiesta-info">Cosa raccoglie la pagina</a>
           <a href="#pagina-info">Comporre la pagina informazioni</a>
+          <a href="#senza-data">Pagine senza data</a>
           <a href="#richieste">Ricevere e gestire le richieste</a>
           <a href="#punto-info">Il Punto Info</a>
         </div>
@@ -240,7 +241,7 @@ a.term:hover{border-bottom-style:solid}
       <p>Creare un evento vuol dire preparare la sua <a href="#g-landing" class="term">pagina di iscrizione</a>, cioè la pagina pubblica dove le persone si iscrivono.</p>
       <ol class="steps">
         <li>Nella dashboard, premi il pulsante <strong>Crea evento</strong> (o <strong>Nuovo evento</strong>).</li>
-        <li>Compila i dati principali: <strong>nome</strong> dell'evento, <strong>data</strong>, <strong>ora</strong> e <strong>luogo</strong>. Questi quattro sono obbligatori.</li>
+        <li>Compila i dati principali: <strong>nome</strong> dell'evento, <strong>data</strong>, <strong>ora</strong> e <strong>luogo</strong>. Sono obbligatori, tranne data e ora nelle pagine che possono restare senza data (vedi <a href="#senza-data" class="lnk">Pagine senza data</a>).</li>
         <li>Aggiungi se vuoi una <strong>descrizione</strong>, un'<strong>immagine</strong> e la <strong>capienza</strong> (il numero massimo di posti).</li>
         <li>Inserisci l'<strong>email di contatto</strong>: è l'indirizzo a cui arriveranno le eventuali risposte degli iscritti.</li>
         <li>Attiva le opzioni che ti servono (per esempio l'iscrizione di gruppo o il check-in con QR). Le trovi spiegate nelle sezioni successive.</li>
@@ -445,7 +446,15 @@ a.term:hover{border-bottom-style:solid}
       </ol>
       <h3>Cosa lascia chi ti chiede informazioni</h3>
       <p>Il modulo è semplice: nome e cognome, come preferisce essere ricontattato (telefono, WhatsApp o email), il recapito che serve per quel canale, un messaggio facoltativo e il consenso al trattamento dei dati. Dopo l'invio vede un messaggio di ringraziamento che gli conferma che la richiesta ti è arrivata e che verrà ricontattato nel modo che ha scelto.</p>
-      <div class="note">La richiesta informazioni si chiude da sola il giorno dopo la data dell'evento, come le iscrizioni. Puoi anche chiuderla e riaprirla prima con <strong>Cambia stato</strong> nella dashboard: le richieste già arrivate restano dove sono.</div>
+      <h3 id="senza-data">Pagine senza data <span class="badge badge-info">Punto Info</span> <span class="badge badge-ag">Agenzia</span></h3>
+      <p>Non tutte le informazioni sono legate a un giorno. Un ufficio turistico, un museo, uno sportello, un servizio o un punto di ritiro hanno bisogno di una pagina che resti valida sempre. Per questo, nel Punto Info e negli eventi "Informazioni" del piano Agenzia, trovi l'interruttore <strong>Mostra data e ora nella pagina</strong>.</p>
+      <ul class="dots">
+        <li><strong>Spento</strong> (è così quando crei un nuovo evento): la pagina non mostra date e resta aperta finché non la chiudi tu con <strong>Cambia stato</strong>.</li>
+        <li><strong>Acceso</strong>: inserisci la data e, se vuoi, anche l'ora. La pagina mostra solo la data, oppure data e ora, e si chiude da sola il giorno dopo.</li>
+      </ul>
+      <p>Puoi cambiare idea quando vuoi dalle impostazioni dell'evento. Negli elenchi della dashboard gli eventi senza data compaiono con la scritta "Senza data".</p>
+      <div class="note">Con i piani Base e Pro, e negli eventi che raccolgono iscrizioni, la data resta obbligatoria: le iscrizioni hanno bisogno di un giorno per le email di conferma, i promemoria e la chiusura automatica.</div>
+      <div class="note">Con una data, la richiesta informazioni si chiude da sola il giorno dopo, come le iscrizioni. Senza data, resta aperta finché non la chiudi tu. In ogni caso puoi chiuderla e riaprirla con <strong>Cambia stato</strong> nella dashboard: le richieste già arrivate restano dove sono.</div>
     </section>
 
     <section id="richieste">
@@ -475,7 +484,7 @@ a.term:hover{border-bottom-style:solid}
       <p>Ha una dashboard dedicata, più semplice: ci sono gli eventi con la loro pagina informazioni, il link e il QR code da condividere, le richieste di contatto e gli avvisi. Non ci sono iscritti, presenze, newsletter, statistiche, rubrica e fornitori, perché riguardano le iscrizioni o il piano Agenzia.</p>
       <h3>I primi passi</h3>
       <ol class="steps">
-        <li><strong>Crea l'evento</strong>: nome, data, ora, luogo, descrizione e, se vuoi, i blocchi con programma, orari o piantina (vedi <a href="#pagina-info" class="lnk">Comporre la pagina informazioni</a>). Inserisci l'<strong>email per gli avvisi</strong>, dove ti arriveranno le richieste.</li>
+        <li><strong>Crea l'evento</strong>: nome, luogo, descrizione e, se ti serve, la data con l'interruttore "Mostra data e ora nella pagina" (vedi <a href="#senza-data" class="lnk">Pagine senza data</a>). Poi, se vuoi, i blocchi con programma, orari o piantina (vedi <a href="#pagina-info" class="lnk">Comporre la pagina informazioni</a>). Inserisci l'<strong>email per gli avvisi</strong>, dove ti arriveranno le richieste.</li>
         <li><strong>Condividi il link</strong> o il QR code: sulla locandina, sui social, ovunque prima scrivevi "per info chiama il...".</li>
         <li><strong>Ricevi le richieste</strong>: ti arriva un avviso via email e le trovi tutte nella sezione Richieste di contatto dell'evento.</li>
       </ol>

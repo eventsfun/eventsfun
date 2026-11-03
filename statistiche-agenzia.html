@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Statistiche Agenzia | v1.5 31/10/2026: titolo della pagina senza doppio trattino. v1.4 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.3 28/10/2026: negli eventi impostati su "Ritirato" compare la card "Ritirati" e le parole cambiano da presenti/assenti a ritirati/da ritirare. v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
+<!-- EventsFun | Statistiche Agenzia | v1.6 03/11/2026: nel menu degli eventi "Seleziona un evento" e "Nome - data" (prima con doppio trattino) e "(senza data)" per gli eventi senza data. v1.5 31/10/2026: titolo della pagina senza doppio trattino. v1.4 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.3 28/10/2026: negli eventi impostati su "Ritirato" compare la card "Ritirati" e le parole cambiano da presenti/assenti a ritirati/da ritirare. v1.2 28/10/2026: card come nella dashboard (stessa lista salvata sull'evento, fino a 12), anche i totali dei campi Numero e le opzioni dei campi aggiuntivi. v1.1 abbonamento scaduto: rimando alla dashboard Agenzia (schermata dedicata) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -146,7 +146,7 @@ canvas{display:block;width:100%!important}
   <div class="ev-selector">
     <label>Evento</label>
     <select class="ev-select" id="evSelect" onchange="selectEvent()">
-      <option value="">-- Seleziona un evento --</option>
+      <option value="">Seleziona un evento</option>
     </select>
     <span class="ev-badge" id="evBadge" style="display:none"></span>
   </div>
@@ -382,8 +382,8 @@ function populateSelect() {
   allEvents.forEach(function(ev) {
     var opt = document.createElement('option');
     opt.value = ev.id;
-    var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT') : '--';
-    opt.textContent = ev.nome + ' -- ' + dataStr;
+    var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT') : '';
+    opt.textContent = ev.nome + (dataStr ? ' - ' + dataStr : ' (senza data)');
     sel.appendChild(opt);
   });
 }
