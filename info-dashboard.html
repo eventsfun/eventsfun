@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1811,7 +1811,8 @@ async function init() {
     bozze.forEach(function(b) { sbDel('events', b.id).catch(function(){}); });
     allEvents = all.filter(function(e) { return !e.bozza; });
   } catch(e) { allEvents = []; }
-  currentEv = allEvents.length ? allEvents[0] : null;
+  /* L'evento iniziale e' l'ultimo scelto su questo dispositivo, altrimenti il primo della scheda mostrata nel selettore */
+  currentEv = eventoIniziale();
 
   /* STEP 3: carica iscritti del primo evento */
   try {
@@ -2539,8 +2540,28 @@ function renderSelector() {
   }).join('');
 }
 
+/* Evento scelto per ultimo su questo dispositivo: ricaricando o riaprendo la dashboard si riparte da quello
+   (se non esiste piu', dal primo della scheda mostrata). Ogni dispositivo ricorda il suo. */
+function ricordaEvento(ev) { try { if (ev && ev.id && TOKEN) localStorage.setItem('ef_ev_sel_' + TOKEN, ev.id); } catch (e) {} }
+function eventoIniziale() {
+  var gruppi = getEventiPerTab();
+  var salvato = null;
+  try { salvato = localStorage.getItem('ef_ev_sel_' + TOKEN); } catch (e) {}
+  if (salvato) {
+    var ev = allEvents.find(function(e) { return e.id === salvato; });
+    if (ev) {
+      evTabCorrente = gruppi.conclusi.some(function(e) { return e.id === ev.id; }) ? 'conclusi' : 'attivi';
+      return ev;
+    }
+  }
+  if (!gruppi.attivi.length && gruppi.conclusi.length) evTabCorrente = 'conclusi';
+  var lista = gruppi[evTabCorrente];
+  return lista.length ? lista[0] : null;
+}
+
 async function switchEvent(id) {
   currentEv = allEvents.find(function(e) { return e.id === id; }) || null;
+  ricordaEvento(currentEv);
   try {
     currentRegs = currentEv ? (await sbGet('registrations', { event_id: currentEv.id }, '*') || []) : [];
   } catch(e) { currentRegs = []; }
@@ -3342,6 +3363,7 @@ async function saveEvent() {
     var idx = allEvents.findIndex(function(e) { return e.id === ev.id; });
     if (idx >= 0) allEvents[idx] = ev; else allEvents.push(ev);
     currentEv = ev;
+    ricordaEvento(ev);
     currentRegs = [];
     closeOv('ovCreate');
     renderDash();
@@ -4829,6 +4851,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.8 punto info</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.9 punto info</div>
 </body>
 </html>

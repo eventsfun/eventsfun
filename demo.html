@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Demo Locale | v2.6 03/11/2026: come la dashboard Agenzia v8.4, negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; con la data, ora facoltativa), "Senza data" negli elenchi e anteprima della pagina senza la riga di data e ora; barra dell'anteprima "Pagina pubblica - visione iscritto"; statistiche con "Seleziona un evento" e "Nome - data" come la pagina vera. v2.5 31/10/2026: titolo della pagina senza doppio trattino. v2.4 29/10/2026: finestra "Scegli un esempio" con cinque esempi pronti (prodotti da ritirare, evento in presenza, evento online, solo richiesta informazioni, iscrizioni e informazioni insieme); pulsante Esempi accanto a "Nuovo evento". v2.3 28/10/2026: negli eventi con ritiro l'email simulata e il messaggio WhatsApp non citano la data dell'evento (come l'email reale). v2.2 28/10/2026: card statistiche come nella dashboard Agenzia (scelta multipla, fino a 12, salvate per evento; l'esempio "Panettone solidale" ha gia' i totali dei prodotti); testo di ringraziamento adatto ai ritiri. v2.1 28/10/2026: evento di esempio "Panettone solidale" (raccolta di prodotti da ritirare, con prenotazioni e ritiri gia' inseriti), caricabile dal benvenuto e dal banner di aiuto. v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
+<!-- EventsFun | Demo Locale | v2.7 03/11/2026: come le dashboard vere, ricaricando si riparte dall'ultimo evento scelto (azzerato da Reimposta demo). v2.6 03/11/2026: come la dashboard Agenzia v8.4, negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; con la data, ora facoltativa), "Senza data" negli elenchi e anteprima della pagina senza la riga di data e ora; barra dell'anteprima "Pagina pubblica - visione iscritto"; statistiche con "Seleziona un evento" e "Nome - data" come la pagina vera. v2.5 31/10/2026: titolo della pagina senza doppio trattino. v2.4 29/10/2026: finestra "Scegli un esempio" con cinque esempi pronti (prodotti da ritirare, evento in presenza, evento online, solo richiesta informazioni, iscrizioni e informazioni insieme); pulsante Esempi accanto a "Nuovo evento". v2.3 28/10/2026: negli eventi con ritiro l'email simulata e il messaggio WhatsApp non citano la data dell'evento (come l'email reale). v2.2 28/10/2026: card statistiche come nella dashboard Agenzia (scelta multipla, fino a 12, salvate per evento; l'esempio "Panettone solidale" ha gia' i totali dei prodotti); testo di ringraziamento adatto ai ritiri. v2.1 28/10/2026: evento di esempio "Panettone solidale" (raccolta di prodotti da ritirare, con prenotazioni e ritiri gia' inseriti), caricabile dal benvenuto e dal banner di aiuto. v2.0 28/10/2026: campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella, CSV e PDF; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo; riepilogo delle quantita' nella schermata di ringraziamento e nell'email simulata; statistiche con ritirati. v1.9 14/10/2026: pulsante "Copia link" nella finestra del QR Code (copia il link di esempio). v1.8 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro, come nelle dashboard (B36). v1.7 05/10/2026: segnaposto email dell'anteprima uguali alla pagina dell'evento ("La tua email"); v1.6 04/10/2026: voce Assistenza accanto a Guida come nelle dashboard (la guida aperta dalla demo mostra il rimando al modulo contatti del sito); v1.5 Google Calendar legge l'ora scritta in ogni modo, come la landing v7.2; v1.4 richiesta informazioni come nel prodotto reale (modalita', pagina informazioni, richieste di contatto, anteprima con schede), suggerimenti "?" nuovi, anteprima chiusa con "Cambia stato" -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1625,7 +1625,7 @@ function pickerCreateNew(){var purpose=pickerPurpose;pickerPurpose=null;closeOv(
    WELCOME + RESET
    ============================================================ */
 function startDemo(){try{if(window.EFMisura)EFMisura.inizio();}catch(e){}lsSet(LS_STARTED,true);document.getElementById('welcomeScreen').style.display='none';init();}
-function hardReset(){if(!confirm('Eliminare tutti i dati della demo e ricominciare da zero?'))return;[LS_EVENTS,LS_REGS,LS_STATS,LS_STARTED,LS_CONTATTI,LS_EVCONTATTI,LS_FORN_SEEDED,'ef_demo_richieste'].forEach(function(k){localStorage.removeItem(k);});location.reload();}
+function hardReset(){if(!confirm('Eliminare tutti i dati della demo e ricominciare da zero?'))return;[LS_EVENTS,LS_REGS,LS_STATS,LS_STARTED,LS_CONTATTI,LS_EVCONTATTI,LS_FORN_SEEDED,'ef_demo_richieste','ef_demo_ev_sel'].forEach(function(k){localStorage.removeItem(k);});location.reload();}
 function confirmReset(){hardReset();}
 
 /* ============================================================
@@ -1646,7 +1646,7 @@ var evTemaState='chiaro',seTemaState='chiaro',evQrTipo='nessuno',seQrTipo='nessu
 function init(){
   initTheme();
   allEvents=dbGetEvents().map(sanitizeEvent);
-  currentEv=allEvents.length?allEvents[0]:null;
+  currentEv=eventoIniziale();
   currentRegs=currentEv?dbGetRegs(currentEv.id):[];
   seedContattiIfEmpty();allContatti=dbGetContatti();
   setDisp('mainNav','flex');showView('dash');renderDash();maybeShowOnboarding();
@@ -1823,7 +1823,7 @@ function creaEsempioRitiro(){
     var extra={panettone_classico_750g:p[2],panettone_con_cioccolato_750g:p[3],pandoro_750g:p[4],note_per_il_ritiro:p[5]};
     dbCreateReg({event_id:ev.id,created_at:new Date(base+i*3600000*5).toISOString(),nome:p[0],cognome:p[1],email:p[0].toLowerCase()+'.'+p[1].toLowerCase()+'@esempio.example',telefono:'+39 000 000 00'+(10+i),adulti:1,bambini:0,tipo:'visitatore',pranzo:false,cena:false,newsletter:false,extra:extra,presente:!!p[6],in_lista_attesa:false});
   });
-  allEvents.push(ev);currentEv=ev;currentRegs=dbGetRegs(ev.id);attesaVisible=false;
+  allEvents.push(ev);currentEv=ev;ricordaEvento(ev);currentRegs=dbGetRegs(ev.id);attesaVisible=false;
   renderDash();showView('dash');showToast('Esempio caricato: prova Ritiri e Anteprima','g');
 }
 /* ============================================================
@@ -1843,7 +1843,7 @@ function esCrea(evData,iscritti,richieste,msg){
   var ev=sanitizeEvent(dbCreateEvent(evData));
   (iscritti||[]).forEach(function(r){dbCreateReg(Object.assign({event_id:ev.id,tipo:'visitatore',pranzo:false,cena:false,newsletter:false,presente:false,in_lista_attesa:false,adulti:1,bambini:0,extra:{}},r));});
   (richieste||[]).forEach(function(r){dbCreateRich(Object.assign({id:genId(),event_id:ev.id,consenso:true,stato:'da_contattare',telefono:null,email:null,messaggio:null},r));});
-  allEvents.push(ev);currentEv=ev;currentRegs=dbGetRegs(ev.id);attesaVisible=false;richLoadedFor=null;
+  allEvents.push(ev);currentEv=ev;ricordaEvento(ev);currentRegs=dbGetRegs(ev.id);attesaVisible=false;richLoadedFor=null;
   renderDash();showView('dash');showToast(msg,'g');
   return ev;
 }
@@ -1986,7 +1986,26 @@ var evTabCorrente='attivi';
 function getEventiPerTab(){var oggi=new Date();oggi.setHours(0,0,0,0);var a=allEvents.filter(function(e){var f=dataFineAttivita(e);if(!f)return true;return new Date(f+'T00:00:00')>=oggi;});var c=allEvents.filter(function(e){var f=dataFineAttivita(e);if(!f)return false;return new Date(f+'T00:00:00')<oggi;});return{attivi:a,conclusi:c};}
 function switchEvTab(tab){evTabCorrente=tab;document.getElementById('tabAttivi').classList.toggle('active',tab==='attivi');document.getElementById('tabConclusi').classList.toggle('active',tab==='conclusi');var gruppi=getEventiPerTab();var lista=gruppi[tab];var box=document.getElementById('evSelectBox');if(!box)return;if(!lista.length){box.innerHTML='<option value="">Nessun evento in questa categoria</option>';return;}var curId=currentEv?currentEv.id:'';var inTab=lista.some(function(e){return e.id===curId;});if(!inTab){curId=lista[0].id;switchEvent(curId);}box.innerHTML=lista.map(function(e){return'<option value="'+e.id+'"'+(e.id===curId?' selected':'')+'>'+escHtml(e.nome)+' ('+(e.data_iso?isoToIt(e.data_iso):'senza data')+')</option>';}).join('');}
 function renderSelector(){var wrap=document.getElementById('evSelectorWrap');var box=document.getElementById('evSelectBox');if(!wrap||!box)return;if(!allEvents.length){wrap.style.display='none';setDisp('btnCreateMain','inline-block');return;}wrap.style.display='block';setDisp('btnCreateMain','none');setDisp('btnCreate','inline-block');setDisp('btnEsempi','inline-block');var gruppi=getEventiPerTab();var cA=document.getElementById('countAttivi');var cC=document.getElementById('countConclusi');if(cA)cA.textContent=gruppi.attivi.length;if(cC)cC.textContent=gruppi.conclusi.length;if(evTabCorrente==='attivi'&&!gruppi.attivi.length&&gruppi.conclusi.length)evTabCorrente='conclusi';else if(evTabCorrente==='conclusi'&&!gruppi.conclusi.length&&gruppi.attivi.length)evTabCorrente='attivi';document.getElementById('tabAttivi').classList.toggle('active',evTabCorrente==='attivi');document.getElementById('tabConclusi').classList.toggle('active',evTabCorrente==='conclusi');var lista=gruppi[evTabCorrente];var curId=currentEv?currentEv.id:'';if(!lista.length){box.innerHTML='<option value="">Nessun evento in questa categoria</option>';return;}box.innerHTML=lista.map(function(e){return'<option value="'+e.id+'"'+(e.id===curId?' selected':'')+'>'+escHtml(e.nome)+' ('+(e.data_iso?isoToIt(e.data_iso):'senza data')+')</option>';}).join('');}
-function switchEvent(id){currentEv=allEvents.find(function(e){return e.id===id;})||null;currentRegs=currentEv?dbGetRegs(currentEv.id):[];attesaVisible=false;renderDash();}
+/* Evento scelto per ultimo su questo dispositivo: ricaricando o riaprendo la dashboard si riparte da quello
+   (se non esiste piu', dal primo della scheda mostrata). Ogni dispositivo ricorda il suo. */
+function ricordaEvento(ev) { try { if (ev && ev.id) localStorage.setItem('ef_demo_ev_sel', ev.id); } catch (e) {} }
+function eventoIniziale() {
+  var gruppi = getEventiPerTab();
+  var salvato = null;
+  try { salvato = localStorage.getItem('ef_demo_ev_sel'); } catch (e) {}
+  if (salvato) {
+    var ev = allEvents.find(function(e) { return e.id === salvato; });
+    if (ev) {
+      evTabCorrente = gruppi.conclusi.some(function(e) { return e.id === ev.id; }) ? 'conclusi' : 'attivi';
+      return ev;
+    }
+  }
+  if (!gruppi.attivi.length && gruppi.conclusi.length) evTabCorrente = 'conclusi';
+  var lista = gruppi[evTabCorrente];
+  return lista.length ? lista[0] : null;
+}
+
+function switchEvent(id){currentEv=allEvents.find(function(e){return e.id===id;})||null;ricordaEvento(currentEv);currentRegs=currentEv?dbGetRegs(currentEv.id):[];attesaVisible=false;renderDash();}
 function calcPostiOccupati(ev,regs){var conf=regs.filter(function(r){return!r.in_lista_attesa;});if(ev&&ev.opt_cap_persona&&ev.opt_multipla)return conf.reduce(function(a,r){return a+(r.adulti||1)+(r.bambini||0);},0);return conf.length;}
 
 /* ============================================================
@@ -2214,7 +2233,7 @@ function resetEvForm(){['ev_nome','ev_ora','ev_luogo','ev_desc','ev_email_contat
 function saveEvent(){var dov=dataOraValori('ev');var nome=getVal('ev_nome').trim(),data=dov.data_iso,ora=dov.ora,luogo=getVal('ev_luogo').trim(),emailContatto=getVal('ev_email_contatto').trim();if(!nome||!luogo){alert('Compila Nome e Luogo.');return;}var mdo=dataOraManca('ev');if(mdo){alert(mdo);return;}if(!emailContatto){alert('Inserisci l\'email di contatto per gli iscritti.');return;}var img=document.getElementById('ev_img_preview');var evData={nome:nome,data_iso:data,ora:ora,luogo:luogo,email_contatto:emailContatto,cliente:getVal('ev_cliente').trim()||null,telefono_contatto:normTelefono(getVal('ev_tel_contatto')),contatto_whatsapp:!!(normTelefono(getVal('ev_tel_contatto'))&&otogState.contatto_wa),descrizione:getVal('ev_desc').trim(),qr_testo:evQrTipo==='testo'?(getVal('ev_qr_testo').trim().slice(0,18)||null):null,qr_logo:evQrTipo==='logo'?(evQrLogoB64||null):null,landing_tema:evTemaState||'chiaro',slug:makeSlug(nome),capienza:parseInt(getVal('ev_cap'))||null,immagine:(img&&img.style.display!=='none'&&img.src&&img.src!==window.location.href)?img.src:null,attivo:true,bozza:false,opt_multipla:otogState.multipla,opt_cap_persona:otogState.cap_persona,opt_accompagnatori_email_obbligatoria:otogState.acc_email_obb,opt_accompagnatori_telefono_obbligatorio:otogState.acc_tel_obb,opt_tipo:otogState.tipo,opt_pasto:otogState.pasto,opt_pasto_pranzo:!otogState.pasto||document.getElementById('oopt_pranzo').checked,opt_pasto_cena:!otogState.pasto||document.getElementById('oopt_cena').checked,opt_newsletter:otogState.newsletter,opt_capienza:otogState.capienza,opt_qr_checkin:otogState.qr_checkin,etichetta_presenza:presEtState.ev,data_fine_ritiro:presEtState.ev==='ritirato'?(getVal('ev_data_fine_ritiro')||null):null,opt_bambini:otogState.bambini,evento_online:otogState.online,link_partecipazione:getVal('ev_link').trim(),link_invio:(document.getElementById('ev_link_invio')||{}).value||'entrambi',mittente_nome:getVal('ev_mittente').trim()||null,terminologia:(document.getElementById('ev_terminologia')||{}).value||'iscrizione',sponsors:collectSP('cspList'),custom_fields:collectCF('ccfList')};
   if(!infoCheck('ev'))return;
   Object.assign(evData,infoFields('ev'));
-  var ev=sanitizeEvent(dbCreateEvent(evData));allEvents.push(ev);currentEv=ev;currentRegs=[];closeOv('ovCreate');renderDash();showToast('Evento creato!','g');advanceGuide('created');setTimeout(function(){openQR();},400);}
+  var ev=sanitizeEvent(dbCreateEvent(evData));allEvents.push(ev);currentEv=ev;ricordaEvento(ev);currentRegs=[];closeOv('ovCreate');renderDash();showToast('Evento creato!','g');advanceGuide('created');setTimeout(function(){openQR();},400);}
 
 function openEditEvent(){var ev=currentEv;if(!ev)return;setVal('se_nome',ev.nome||'');setVal('se_cap',ev.capienza||'');setVal('se_data',ev.data_iso||'');setVal('se_ora',ev.ora||'');dataOraState.se=!!ev.data_iso;setVal('se_luogo',ev.luogo||'');setVal('se_desc',ev.descrizione||'');setVal('se_email_contatto',ev.email_contatto||'');setVal('se_tel_contatto',ev.telefono_contatto||'+39 ');stogState.contatto_wa=!!ev.contatto_whatsapp;var stwEl=document.getElementById('stog_contatto_wa');if(stwEl){if(stogState.contatto_wa)stwEl.classList.add('on');else stwEl.classList.remove('on');}waRowCheck('se');setVal('se_terminologia',ev.terminologia||'iscrizione');setVal('se_mittente',ev.mittente_nome||'');setVal('se_link',ev.link_partecipazione||'');var sli=document.getElementById('se_link_invio');if(sli)sli.value=ev.link_invio||'entrambi';
   if(ev.qr_logo){seQrTipo='logo';seQrLogoB64=ev.qr_logo;setQrTipo('se','logo');var sp=document.getElementById('se_qr_logo_preview'),sph=document.getElementById('se_qr_logo_ph'),srm=document.getElementById('se_qr_logo_rm');if(sp){sp.src=ev.qr_logo;sp.style.display='block';}if(sph)sph.style.display='none';if(srm)srm.style.display='inline-block';updateQrPreviewLogo('se',ev.qr_logo);}
@@ -3437,7 +3456,7 @@ document.addEventListener('click',function(e){var nav=document.getElementById('n
    ============================================================ */
 if(lsGet(LS_STARTED)){document.getElementById('welcomeScreen').style.display='none';init();}
 </script>
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.6 demo</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.7 demo</div>
 
 <!-- ============================================================
      STATISTICHE VIEW

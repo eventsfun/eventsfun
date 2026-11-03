@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v8.6 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (con la scheda Attivi o Conclusi giusta). v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1851,11 +1851,8 @@ async function init() {
     bozze.forEach(function(b) { sbDel('events', b.id).catch(function(){}); });
     allEvents = all.filter(function(e) { return !e.bozza; });
   } catch(e) { allEvents = []; }
-  /* L'evento iniziale e' sempre il primo della scheda mostrata nel selettore (prima dell'ordine casuale del database) */
-  var gruppi0 = getEventiPerTab();
-  if (!gruppi0.attivi.length && gruppi0.conclusi.length) evTabCorrente = 'conclusi';
-  var lista0 = gruppi0[evTabCorrente];
-  currentEv = lista0.length ? lista0[0] : null;
+  /* L'evento iniziale e' l'ultimo scelto su questo dispositivo, altrimenti il primo della scheda mostrata nel selettore */
+  currentEv = eventoIniziale();
 
   /* STEP 3: carica iscritti del primo evento */
   try {
@@ -2621,6 +2618,25 @@ function renderSelector() {
   }).join('');
 }
 
+/* Evento scelto per ultimo su questo dispositivo: ricaricando o riaprendo la dashboard si riparte da quello
+   (se non esiste piu', dal primo della scheda mostrata). Ogni dispositivo ricorda il suo. */
+function ricordaEvento(ev) { try { if (ev && ev.id && TOKEN) localStorage.setItem('ef_ev_sel_' + TOKEN, ev.id); } catch (e) {} }
+function eventoIniziale() {
+  var gruppi = getEventiPerTab();
+  var salvato = null;
+  try { salvato = localStorage.getItem('ef_ev_sel_' + TOKEN); } catch (e) {}
+  if (salvato) {
+    var ev = allEvents.find(function(e) { return e.id === salvato; });
+    if (ev) {
+      evTabCorrente = gruppi.conclusi.some(function(e) { return e.id === ev.id; }) ? 'conclusi' : 'attivi';
+      return ev;
+    }
+  }
+  if (!gruppi.attivi.length && gruppi.conclusi.length) evTabCorrente = 'conclusi';
+  var lista = gruppi[evTabCorrente];
+  return lista.length ? lista[0] : null;
+}
+
 async function switchEvent(id) {
   var mio = ++switchSeq;
   var evNuovo = allEvents.find(function(e) { return e.id === id; }) || null;
@@ -2630,6 +2646,7 @@ async function switchEvent(id) {
   } catch(e) { regsNuovi = []; }
   if (mio !== switchSeq) return; /* nel frattempo hai scelto un altro evento: ignora questa risposta */
   currentEv = evNuovo;
+  ricordaEvento(currentEv);
   currentRegs = regsNuovi;
   attesaVisible = false;
   renderDash();
@@ -3520,6 +3537,7 @@ async function saveEvent() {
     var idx = allEvents.findIndex(function(e) { return e.id === ev.id; });
     if (idx >= 0) allEvents[idx] = ev; else allEvents.push(ev);
     currentEv = ev;
+    ricordaEvento(ev);
     currentRegs = [];
     closeOv('ovCreate');
     renderDash();
@@ -5277,6 +5295,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.5 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v8.6 agenzia</div>
 </body>
 </html>
