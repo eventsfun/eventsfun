@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
+<!-- EventsFun | Sito vetrina | v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -847,7 +847,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
       <div class="pinfo-card">
         <div class="feat-icon">&#128196;</div>
         <h3>Una pagina con tutto</h3>
-        <p>Programma, orari, come arrivare, la piantina. La componi tu con blocchi di testo e immagini, nell'ordine che vuoi, e i link diventano cliccabili da soli.</p>
+        <p>Programma, orari, come arrivare, la piantina. La componi tu con blocchi di testo e immagini, nell'ordine che vuoi, e i link diventano cliccabili da soli. Con una data, per un evento, oppure senza scadenza, per un luogo o un servizio.</p>
       </div>
       <div class="pinfo-card">
         <div class="feat-icon">&#128229;</div>
@@ -873,8 +873,9 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <span>&#129309; Associazioni</span>
         <span>&#9962; Parrocchie</span>
         <span>&#127881; Feste e sagre</span>
+<span>&#127970; Uffici e servizi</span>
       </div>
-      <p class="pinfo-for-note">E per chiunque debba dare informazioni su un evento, un corso o un'iniziativa, senza restare attaccato al telefono.</p>
+      <p class="pinfo-for-note">E per chiunque debba dare informazioni su un evento, un corso, un'iniziativa o un luogo, senza restare attaccato al telefono.</p>
     </div>
     <div class="pinfo-box fade-up">
       <p>È incluso in tutti i piani con iscrizioni: per ogni evento scegli se la pagina raccoglie iscrizioni, richieste di informazioni o entrambe. Se ti servono solo le informazioni, c'è il Punto Info da solo: 9,90&nbsp;€ al mese o 79&nbsp;€ all'anno, con eventi illimitati.</p>
@@ -1324,6 +1325,14 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
 
       <div class="faq-item">
         <button class="faq-q" onclick="toggleFaq(this)">
+          <span>Una pagina del Punto Info deve avere per forza una data?</span>
+          <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">No. Puoi legarla a un evento con la sua data, e se vuoi anche l'ora, oppure lasciarla senza data: per un ufficio, un museo, uno sportello o un servizio che vale sempre. Senza data la pagina resta aperta finché non la chiudi tu. Le pagine senza data sono disponibili nel Punto Info e negli eventi "Informazioni" del piano Agenzia. Nei pacchetti Base e Pro ogni pagina è legata alla data dell'evento.</div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
           <span>Posso raccogliere prenotazioni di prodotti da ritirare?</span>
           <span class="faq-icon">+</span>
         </button>
@@ -1492,6 +1501,7 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
         <a href="guide/lista-attesa-evento.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Lista d'attesa per eventi con posti limitati</a>
         <a href="guide/iscrizioni-sagre-feste-di-paese.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Sagre e feste di paese: iscrizioni e info</a>
         <a href="guide/prenotazioni-prodotti-da-ritirare.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Prenotazioni di prodotti da ritirare</a>
+        <a href="guide/pagina-informazioni-qr-code-link.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">Pagina informazioni con QR code</a>
         <a href="alternativa-a-eventbrite.html" style="font-size:12px;color:var(--text-muted);text-decoration:none;padding:5px 12px;border-radius:6px;border:1px solid var(--border);transition:border-color .2s,color .2s" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.color='#C9A96E'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='rgba(240,237,232,0.75)'">EventsFun come alternativa a Eventbrite</a>
       </div>
     </div>
@@ -1668,7 +1678,7 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.8</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.9</div>
 <script src="/misura.js" defer></script>
 </body>
 </html>
