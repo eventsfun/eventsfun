@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v8.0 03/11/2026: le pagine senza data (Punto Info e Agenzia "Solo informazioni") non mostrano la riga di data e ora; con la sola data compare solo la data. v7.9 31/10/2026: titolo della scheda del browser senza doppio trattino. v7.8 28/10/2026: negli eventi con ritiro il messaggio WhatsApp precompilato non cita la data dell'evento (come l'email di conferma). v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v8.1 05/11/2026: menu a tendina disegnati dalla pagina (con il tema scuro Safari li mostrava bianchi e illeggibili); "Seleziona" senza doppio trattino; data mancante mostrata come "-". v8.0 03/11/2026: le pagine senza data (Punto Info e Agenzia "Solo informazioni") non mostrano la riga di data e ora; con la sola data compare solo la data. v7.9 31/10/2026: titolo della scheda del browser senza doppio trattino. v7.8 28/10/2026: negli eventi con ritiro il messaggio WhatsApp precompilato non cita la data dell'evento (come l'email di conferma). v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -188,6 +188,10 @@ body.dark .ok-recap td{color:rgba(245,240,232,.82)}
 body.dark .ok-recap td.q{color:#F5F0E8}
 body.dark .ok-recap p.ok-recap-note{color:rgba(245,240,232,.6)}
 @media(max-width:480px){.tab-btn{font-size:13px}.ch-opt{min-width:0}.ch-opt span{padding:11px 4px;font-size:12.5px}}
+
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
 </style>
 </head>
 <body>
@@ -414,7 +418,7 @@ function termWords(t) {
   return W[t] || W.iscrizione;
 }
 
-function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isoToIt(iso) { if (!iso) return '-'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function isClosed(ev) {
   if (!ev || !ev.data_iso) return false;
   var t = new Date(); t.setHours(0, 0, 0, 0);
@@ -625,7 +629,7 @@ function buildRegFormHtml(closed, TW) {
     if (f.type === 'dropdown') {
       extraFields += '<div class="lp-fg">' + lbl
         + '<select id="rx_' + f.id + '" class="lp-select">'
-        + '<option value="">-- Seleziona --</option>'
+        + '<option value="">Seleziona</option>'
         + (f.options || []).map(function(o) { return '<option value="' + o + '">' + o + '</option>'; }).join('')
         + '</select></div>';
     } else if (f.type === 'numero') {

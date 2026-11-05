@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -376,6 +376,10 @@ select option{background:#1a1a1a;color:var(--text)}
 .pi-upsell a{flex-shrink:0;font-size:12px;font-weight:700;color:var(--gold);text-decoration:none;padding:8px 14px;border:1px solid rgba(201,169,110,0.4);border-radius:8px;white-space:nowrap}
 .pi-upsell a:hover{background:rgba(201,169,110,0.08)}
 @media (max-width:600px){.pi-upsell a{width:100%;text-align:center}}
+
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
 </style>
 </head>
 <body>
@@ -516,9 +520,9 @@ select option{background:#1a1a1a;color:var(--text)}
 
     <!-- STATISTICHE -->
     <div class="stats-row" id="statsRow">
-      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">--</div></div>
-      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">--</div></div>
-      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">--</div></div>
+      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">-</div></div>
+      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">-</div></div>
+      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">-</div></div>
       <div class="stat-custom" id="statCustom0" onclick="openStatConfig(0)">
         <div class="stat-custom-add">+</div>
         <div class="stat-custom-lbl">Aggiungi statistica</div>
@@ -536,7 +540,7 @@ select option{background:#1a1a1a;color:var(--text)}
         <p id="statusNota" class="status-nota" style="display:none"></p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <span id="status-pill"><span class="pill pill-gray">--</span></span>
+        <span id="status-pill"><span class="pill pill-gray">-</span></span>
         <button class="btn-sm" id="btnToggleStatus" onclick="toggleStatus()" style="display:none">Cambia stato</button>
       </div>
     </div>
@@ -557,7 +561,7 @@ select option{background:#1a1a1a;color:var(--text)}
     <!-- RICHIESTE DI CONTATTO (modalita' Informazioni / Entrambe) -->
     <div class="panel" id="panelRichieste" style="display:none">
       <div class="panel-head">
-        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla.</span></span></h3><p id="richSub">--</p></div>
+        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla.</span></span></h3><p id="richSub">-</p></div>
         <div class="rich-tools">
           <select id="richFiltro" class="rub-filter" onchange="renderRichieste()" aria-label="Filtra richieste">
             <option value="tutte">Tutte</option>
@@ -572,7 +576,7 @@ select option{background:#1a1a1a;color:var(--text)}
 
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:16px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Link pagina pubblica</div>
-      <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">--</code>
+      <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">-</code>
       <div id="pubLinkExtra"></div>
     </div>
 
@@ -590,7 +594,7 @@ select option{background:#1a1a1a;color:var(--text)}
       <div class="panel-head" style="background:rgba(201,169,110,0.04)">
         <div>
           <h3 style="color:var(--gold)">⏳ Lista d'attesa</h3>
-          <p id="attesaSub" style="font-size:12px;color:var(--text-muted);margin-top:2px">--</p>
+          <p id="attesaSub" style="font-size:12px;color:var(--text-muted);margin-top:2px">-</p>
         </div>
       </div>
       <div class="twrap">
@@ -608,7 +612,7 @@ select option{background:#1a1a1a;color:var(--text)}
 <div class="view" id="view-presenze">
   <div class="presenze-wrap">
     <div class="pres-header">
-      <div><h2>Presenze</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">--</p></div>
+      <div><h2>Presenze</h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">-</p></div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="pres-stats">
           <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
@@ -659,7 +663,7 @@ select option{background:#1a1a1a;color:var(--text)}
 <div class="view" id="view-fornitori">
   <div class="forn-wrap">
     <div class="forn-header">
-      <div><h2>Fornitori e costi</h2><p id="fornSub">--</p></div>
+      <div><h2>Fornitori e costi</h2><p id="fornSub">-</p></div>
       <button class="btn-sm" onclick="showView('dash')">&#8592; Dashboard</button>
     </div>
 
@@ -2443,7 +2447,7 @@ function dataOraValori(pfx) {
 }
 function dataOraManca(pfx) { return !!dataOraState[pfx] && !getVal(pfx + '_data'); }
 function dataEvTesto(ev) { return (ev && ev.data_iso) ? isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') : 'Senza data'; }
-function isoToIt(iso) { if (!iso) return '--'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isoToIt(iso) { if (!iso) return '-'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 function isClosed(ev) {
   if (!ev || !ev.data_iso) return false;
   var t = new Date(); t.setHours(0,0,0,0);
@@ -2625,9 +2629,9 @@ function renderDash() {
   var inAttesa = regs.filter(function(r) { return !!r.in_lista_attesa; });
   var totP = confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   var postiOccupati = hasEv ? calcPostiOccupati(ev, regs) : 0;
-  setText('s-regs', hasEv ? confermati.length : '--');
-  setText('s-persone', hasEv ? totP : '--');
-  setText('s-posti', hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '--');
+  setText('s-regs', hasEv ? confermati.length : '-');
+  setText('s-persone', hasEv ? totP : '-');
+  setText('s-posti', hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '-');
 
   /* Card custom stats */
   renderCustomStats(ev, confermati);
@@ -2646,14 +2650,14 @@ function renderDash() {
   setText('status-det', ev ? dataEvTesto(ev) : 'Crea il tuo primo evento per iniziare');
   var sp = document.getElementById('status-pill');
   if (sp) {
-    if (!ev) sp.innerHTML = '<span class="pill pill-gray">--</span>';
+    if (!ev) sp.innerHTML = '<span class="pill pill-gray">-</span>';
     else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
     else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">' + statoLabel(ev, true) + '</span>';
     else sp.innerHTML = '<span class="pill pill-red">' + statoLabel(ev, false) + '</span>';
   }
 
   /* Link pubblico */
-  setText('pubLink', hasEv ? landingUrl(ev) : '--');
+  setText('pubLink', hasEv ? landingUrl(ev) : '-');
 
   /* Tabella iscritti */
   renderTable(ev, confermati, closed);
@@ -3001,7 +3005,7 @@ function renderAttesa(ev, inAttesa, closed) {
   if (!panel) return;
   if (!ev || inAttesa.length === 0) {
     if (!attesaVisible) panel.style.display = 'none';
-    setText('attesaSub', '--');
+    setText('attesaSub', '-');
     setHTML('attesaTable', '<tr><td colspan="5" class="no-regs">Nessuno in lista d\'attesa</td></tr>');
     return;
   }
@@ -3017,8 +3021,8 @@ function renderAttesa(ev, inAttesa, closed) {
     return '<tr>'
       + '<td class="nm">' + escHtml(r.nome + ' ' + r.cognome) + '</td>'
       + '<td>' + escHtml(r.email) + '</td>'
-      + '<td>' + escHtml(r.telefono || '--') + '</td>'
-      + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--') + '</td>'
+      + '<td>' + escHtml(r.telefono || '-') + '</td>'
+      + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-') + '</td>'
       + '<td><div class="act-cell">'
       + (puoPromuovere ? '<button class="btn-sm btn-sm-green" style="font-size:11px;padding:5px 10px" onclick="promuoviAttesa(\'' + r.id + '\')">✓ Promuovi</button>' : '')
       + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + escHtml(r.nome + ' ' + r.cognome) + '\')">🗑️</button>'
@@ -3057,21 +3061,21 @@ function renderTable(ev, regs, closed) {
   } else {
     setHTML('regTable', regs.map(function(r) {
       var xc = '';
-      if (hM) { xc += r.capogruppo_id ? '<td class="xv">--</td><td class="xv">--</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '--') + '</td>'; }
-      if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '--') + '</td>';
-      if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '--') + '</td>'; }
+      if (hM) { xc += r.capogruppo_id ? '<td class="xv">-</td><td class="xv">-</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '-') + '</td>'; }
+      if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '-') + '</td>';
+      if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '-') + '</td>'; }
       cf.forEach(function(f) {
-        var val = (r.extra && r.extra[f.id] !== undefined) ? r.extra[f.id] : '--';
-        if (Array.isArray(val)) val = val.join(', ') || '--';
+        var val = (r.extra && r.extra[f.id] !== undefined) ? r.extra[f.id] : '-';
+        if (Array.isArray(val)) val = val.join(', ') || '-';
         xc += '<td class="xv">' + escHtml(String(val)) + '</td>';
       });
-      if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '--') + '</td>';
+      if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '-') + '</td>';
       var presente = !!r.presente;
       return '<tr>'
         + '<td class="nm">' + (presente ? '<span style="color:var(--green)">● </span>' : '') + escHtml(r.nome + ' ' + r.cognome) + '</td>'
-        + '<td>' + escHtml(r.email) + '</td><td>' + escHtml(r.telefono || '--') + '</td>'
+        + '<td>' + escHtml(r.email) + '</td><td>' + escHtml(r.telefono || '-') + '</td>'
         + xc
-        + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--') + '</td>'
+        + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-') + '</td>'
         + '<td><div class="act-cell">'
         + (!closed ? '<button class="ic" onclick="openEditReg(\'' + r.id + '\')">✏️</button>' : '')
         + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + escHtml(r.nome + ' ' + r.cognome) + '\')">🗑️</button>'
@@ -4074,7 +4078,7 @@ function buildExtra(ev, extra) {
     var val = (extra && extra[f.id] !== undefined) ? extra[f.id] : '';
     html += '<div class="mf" style="margin-bottom:10px"><label>' + escHtml(f.label) + (f.required ? ' *' : '') + '</label>';
     if (f.type === 'dropdown') {
-      html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
+      html += '<select id="rx' + f.id + '"><option value="">Seleziona</option>'
         + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('')
         + '</select>';
     } else if (f.type === 'checkbox') {
@@ -4245,7 +4249,7 @@ function exportCSV() {
       row.push(v);
     });
     if (ev.opt_newsletter !== false) row.push(r.newsletter ? 'Si' : 'No');
-    row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '--');
+    row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-');
     return row;
   });
   var csv = [h].concat(rows).map(function(r) { return r.map(function(v) { return '"' + String(v).replace(/"/g,'""') + '"'; }).join(','); }).join('\n');
@@ -4259,7 +4263,7 @@ function exportPDF() {
   var regs = currentRegs.filter(function(r) { return !r.in_lista_attesa; });
   if (!regs.length) { alert('Nessun iscritto da esportare.'); return; }
 
-  var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' }) : '--';
+  var dataStr = ev.data_iso ? new Date(ev.data_iso).toLocaleDateString('it-IT', { day:'2-digit', month:'long', year:'numeric' }) : '-';
   if (ev.ora) dataStr += ' · ' + ev.ora;
   var luogoStr = ev.luogo || '';
   var cf = ev.custom_fields || [];
@@ -4285,7 +4289,7 @@ function exportPDF() {
       + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:13px;color:#555;width:32px;text-align:center">' + (i + 1) + '</td>'
       + '<td style="padding:10px 14px;border-bottom:1px solid #eee"><div style="font-weight:600;font-size:13px">' + escHtml(r.nome + ' ' + r.cognome) + '</div>' + extraHtml + '</td>'
       + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:12px;color:#666">' + escHtml(r.email) + '</td>'
-      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:12px;color:#666">' + escHtml(r.telefono || '--') + '</td>'
+      + '<td style="padding:10px 14px;border-bottom:1px solid #eee;font-size:12px;color:#666">' + escHtml(r.telefono || '-') + '</td>'
       + '<td style="padding:10px 14px;border-bottom:1px solid #eee;text-align:center"><div style="width:20px;height:20px;border:2px solid #ccc;border-radius:4px;display:inline-block"></div></td>'
       + '</tr>';
   }).join('');
@@ -4851,6 +4855,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.9 punto info</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.0 punto info</div>
 </body>
 </html>

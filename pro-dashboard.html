@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Pro Dashboard | v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Pro Dashboard | v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -253,6 +253,10 @@ tbody td.xv{color:var(--gold)}
 /* SUGGERIMENTI "?": mostrati in un riquadro sopra a tutto, sempre interi dentro lo schermo */
 .tip-js .tip-box{display:none !important}
 #tipFloat{position:fixed;z-index:1000;display:none;left:0;top:0;width:max-content;max-width:min(260px,calc(100vw - 16px));background:#222;border:1px solid rgba(255,255,255,0.12);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:11px;font-weight:400;line-height:1.6;letter-spacing:0;text-transform:none;color:rgba(240,237,232,0.88);box-shadow:0 4px 20px rgba(0,0,0,0.4);pointer-events:none;white-space:normal;text-align:left}
+
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
 </style>
 </head>
 <body>
@@ -324,11 +328,11 @@ tbody td.xv{color:var(--gold)}
     </div>
 
     <div class="stats" id="statsRow">
-      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">—</div></div>
-      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">—</div></div>
-      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">—</div></div>
-      <div class="stat" id="stat-ritirati" style="display:none"><div class="stat-label">Ritirati</div><div class="stat-val" id="s-ritirati">—</div></div>
-      <div class="stat"><div class="stat-label">Giorni rimasti</div><div class="stat-val" id="s-giorni">—</div></div>
+      <div class="stat"><div class="stat-label">Iscritti</div><div class="stat-val" id="s-regs">-</div></div>
+      <div class="stat"><div class="stat-label">Persone totali</div><div class="stat-val" id="s-persone">-</div></div>
+      <div class="stat"><div class="stat-label">Posti rimasti</div><div class="stat-val" id="s-posti">-</div></div>
+      <div class="stat" id="stat-ritirati" style="display:none"><div class="stat-label">Ritirati</div><div class="stat-val" id="s-ritirati">-</div></div>
+      <div class="stat"><div class="stat-label">Giorni rimasti</div><div class="stat-val" id="s-giorni">-</div></div>
     </div>
 
     <div class="status-bar">
@@ -338,7 +342,7 @@ tbody td.xv{color:var(--gold)}
         <p id="statusNota" class="status-nota" style="display:none"></p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <span id="status-pill"><span class="pill pill-gray">—</span></span>
+        <span id="status-pill"><span class="pill pill-gray">-</span></span>
         <button class="btn-sm" id="btnToggleStatus" onclick="toggleStatus()" style="display:none">Cambia stato</button>
       </div>
     </div>
@@ -359,7 +363,7 @@ tbody td.xv{color:var(--gold)}
     <!-- RICHIESTE DI CONTATTO (modalita' Informazioni / Entrambe) -->
     <div class="panel" id="panelRichieste" style="display:none">
       <div class="panel-head">
-        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla. Come gli iscritti, le richieste restano disponibili fino a 30 giorni dopo la data dell'evento.</span></span></h3><p id="richSub">--</p></div>
+        <div><h3 class="rich-title">&#128172; Richieste di contatto <span class="tip tip-down"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Qui arrivano le persone che ti chiedono informazioni dalla pagina dell'evento. I tasti Chiama, WhatsApp ed Email aprono direttamente il telefono, WhatsApp o la posta: quello evidenziato in oro &egrave; il canale preferito dalla persona. &quot;Segna come contattato&quot; serve solo a te per tenere il conto: chi ha fatto la richiesta non riceve nulla. Come gli iscritti, le richieste restano disponibili fino a 30 giorni dopo la data dell'evento.</span></span></h3><p id="richSub">-</p></div>
         <div class="rich-tools">
           <select id="richFiltro" class="rub-filter" onchange="renderRichieste()" aria-label="Filtra richieste">
             <option value="tutte">Tutte</option>
@@ -374,7 +378,7 @@ tbody td.xv{color:var(--gold)}
 
     <div style="background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:18px 22px">
       <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:10px">Link pagina pubblica</div>
-      <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">—</code>
+      <code id="pubLink" style="display:block;background:var(--inp-bg);border:1px solid var(--border);border-radius:6px;padding:9px 13px;font-size:12px;color:var(--text-muted);word-break:break-all">-</code>
       <div id="pubLinkExtra"></div>
     </div>
   </div>
@@ -384,7 +388,7 @@ tbody td.xv{color:var(--gold)}
 <div class="view" id="view-presenze">
   <div class="presenze-wrap">
     <div class="pres-header">
-      <div><h2><span id="presTitle">Presenze</span> <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Tocca il pulsante accanto a un nome per segnarlo; toccalo di nuovo per annullare. Se l'evento è impostato su "Ritirato" qui segni chi ha ritirato. Cambi la scelta dalle impostazioni dell'evento, sezione "Presenza o ritiro".</span></span></h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">—</p></div>
+      <div><h2><span id="presTitle">Presenze</span> <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Tocca il pulsante accanto a un nome per segnarlo; toccalo di nuovo per annullare. Se l'evento è impostato su "Ritirato" qui segni chi ha ritirato. Cambi la scelta dalle impostazioni dell'evento, sezione "Presenza o ritiro".</span></span></h2><p style="font-size:13px;color:var(--text-muted);margin-top:4px" id="presSub">-</p></div>
       <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
         <div class="pres-stats">
           <span class="pres-stat pres-stat-pres" id="presPres">0 presenti</span>
@@ -1297,7 +1301,7 @@ function initTheme() {
 /* ============================================================
    DATE UTILS
    ============================================================ */
-function isoToIt(iso) { if (!iso) return '—'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+function isoToIt(iso) { if (!iso) return '-'; var p = iso.split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
 /* Parole da usare per l'evento: "Presente" (partecipazione) oppure "Ritirato" (prenotazioni da ritirare di persona) */
 function presTxt(ev) {
   if (ev && ev.etichetta_presenza === 'ritirato') {
@@ -1329,7 +1333,7 @@ function aggiornaRitirati(ev, regs) {
   var sr = document.getElementById('statsRow');
   if (sr) sr.classList.toggle('cinque', on && sr.children.length >= 5);
   var e = document.getElementById('s-ritirati');
-  if (e) e.textContent = on ? (regs.filter(function(r) { return r.presente; }).length + ' su ' + regs.length) : '—';
+  if (e) e.textContent = on ? (regs.filter(function(r) { return r.presente; }).length + ' su ' + regs.length) : '-';
 }
 /* Totali dei campi di tipo Numero */
 function totaliRowHtml(ev, regs, h) {
@@ -1392,9 +1396,9 @@ function renderDash() {
   var postiOccupati = (ev && ev.opt_cap_persona && ev.opt_multipla)
     ? regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
     : regs.length;
-  document.getElementById('s-regs').textContent = hasEv ? regs.length : '—';
-  document.getElementById('s-persone').textContent = hasEv ? totP : '—';
-  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '—';
+  document.getElementById('s-regs').textContent = hasEv ? regs.length : '-';
+  document.getElementById('s-persone').textContent = hasEv ? totP : '-';
+  document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '-';
   aggiornaRitirati(ev, regs);
 
   /* Closed banner */
@@ -1407,14 +1411,14 @@ function renderDash() {
     var diff = Math.ceil((evDate - oggi) / (1000*60*60*24));
     document.getElementById('s-giorni').textContent = diff > 0 ? diff : '0';
   } else {
-    document.getElementById('s-giorni').textContent = closed ? '—' : '—';
+    document.getElementById('s-giorni').textContent = closed ? '-' : '-';
   }
 
   /* Status bar */
   document.getElementById('status-nome').textContent = ev ? ev.nome : 'Nessun evento';
   document.getElementById('status-det').textContent = ev ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '')) : 'Crea il tuo primo evento per iniziare';
   var sp = document.getElementById('status-pill');
-  if (!ev) sp.innerHTML = '<span class="pill pill-gray">—</span>';
+  if (!ev) sp.innerHTML = '<span class="pill pill-gray">-</span>';
   else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
   else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">' + statoLabel(ev, true) + '</span>';
   else sp.innerHTML = '<span class="pill pill-red">' + statoLabel(ev, false) + '</span>';
@@ -1423,7 +1427,7 @@ function renderDash() {
   var lnk = document.getElementById('pubLink');
   lnk.textContent = hasEv
     ? landingUrl(ev)
-    : '—';
+    : '-';
 
   /* Table */
   renderTable(ev, regs, closed);
@@ -1458,17 +1462,17 @@ function renderTable(ev, regs, closed) {
   } else {
     document.getElementById('regTable').innerHTML = regs.map(function(r) {
       var xc = '';
-      if (hM) { xc += r.capogruppo_id ? '<td class="xv">--</td><td class="xv">--</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '--') + '</td>'; }
-      if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '—') + '</td>';
-      if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '—') + '</td>'; }
-      cf.forEach(function(f) { var cv = r.extra ? r.extra[f.id] : undefined; xc += '<td class="xv">' + ((f.type === 'numero' && cv !== undefined && cv !== null && cv !== '') ? cv : (cv ? cv : '—')) + '</td>'; });
-      if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '—') + '</td>';
+      if (hM) { xc += r.capogruppo_id ? '<td class="xv">-</td><td class="xv">-</td>' : ('<td class="xv">' + (r.adulti || 1) + '</td><td class="xv">' + (r.bambini || 0) + '</td>'); xc += '<td class="xv">' + (r.capogruppo_id ? escHtml(iscrittoDaNome(r)) : '-') + '</td>'; }
+      if (hT) xc += '<td class="xv">' + (r.tipo ? r.tipo.charAt(0).toUpperCase() + r.tipo.slice(1) : '-') + '</td>';
+      if (hP) { var p = []; if (r.pranzo) p.push('Pranzo'); if (r.cena) p.push('Cena'); xc += '<td class="xv">' + (p.length ? p.join(', ') : '-') + '</td>'; }
+      cf.forEach(function(f) { var cv = r.extra ? r.extra[f.id] : undefined; xc += '<td class="xv">' + ((f.type === 'numero' && cv !== undefined && cv !== null && cv !== '') ? cv : (cv ? cv : '-')) + '</td>'; });
+      if (hN) xc += '<td class="xv">' + (r.newsletter ? '✓' : '-') + '</td>';
       var presente = !!r.presente;
       return '<tr>'
         + '<td class="nm">' + (presente ? '<span style="color:var(--green)" title="' + presTxt(ev).stato + '">● </span>' : '') + r.nome + ' ' + r.cognome + '</td>'
-        + '<td>' + r.email + '</td><td>' + (r.telefono || '—') + '</td>'
+        + '<td>' + r.email + '</td><td>' + (r.telefono || '-') + '</td>'
         + xc
-        + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '—') + '</td>'
+        + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-') + '</td>'
         + '<td><div class="act-cell">'
         + (!closed ? '<button class="ic" onclick="openEditReg(\'' + r.id + '\')">✏️</button>' : '')
         + '<button class="ic" onclick="openDel(\'' + r.id + '\',\'' + r.nome + ' ' + r.cognome + '\')">🗑️</button>'
@@ -1927,7 +1931,7 @@ function buildExtra(ev, extra) {
     var val = (extra && extra[f.id] !== undefined) ? extra[f.id] : '';
     html += '<div class="mf" style="margin-bottom:10px"><label>' + escHtml(f.label) + (f.required ? ' *' : '') + '</label>';
     if (f.type === 'dropdown') {
-      html += '<select id="rx' + f.id + '"><option value="">-- Seleziona --</option>'
+      html += '<select id="rx' + f.id + '"><option value="">Seleziona</option>'
         + (f.options || []).map(function(o) { return '<option value="' + escHtml(o) + '"' + (val===o?' selected':'') + '>' + escHtml(o) + '</option>'; }).join('') + '</select>';
     } else if (f.type === 'numero') {
       var nv = parseInt(val, 10); if (isNaN(nv) || nv < 0 || nv > 50) nv = 0;
@@ -2046,7 +2050,7 @@ function exportCSV() {
     if (ev.opt_pasto) { row.push(r.pranzo ? 'Sì' : 'No'); row.push(r.cena ? 'Sì' : 'No'); }
     cf.forEach(function(f) { var cv = r.extra ? r.extra[f.id] : undefined; row.push((f.type === 'numero' && cv !== undefined && cv !== null) ? cv : (cv || '')); });
     if (ev.opt_newsletter !== false) row.push(r.newsletter ? 'Sì' : 'No');
-    row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '—');
+    row.push(r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-');
     return row;
   });
   /* Riga Totali (solo se ci sono campi Numero) */
@@ -3395,6 +3399,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v6.9 Pro</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.0 Pro</div>
 </body>
 </html>
