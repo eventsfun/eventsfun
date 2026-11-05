@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v2.0 05/11/2026: menu a tendina del modulo di assistenza disegnati dalla pagina, uguali su tutti i dispositivi (Safari compreso). v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -134,6 +134,10 @@ a.term:hover{border-bottom-style:solid}
   .logo{font-size:18px}
   .top-link{padding:7px 10px;font-size:12px}
 }
+
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
 </style>
 </head>
 <body>

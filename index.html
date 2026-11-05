@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
+<!-- EventsFun | Sito vetrina | v2.0 05/11/2026: menu a tendina del modulo "Hai domande?" disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili). v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -365,6 +365,10 @@ footer{padding:48px 40px;border-top:1px solid var(--border);position:relative;z-
   .pi-strip{padding:24px 20px}
 }
 @media(max-width:420px){.pi-btns{grid-template-columns:1fr}}
+
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
 </style>
 </head>
 <body>
@@ -1678,7 +1682,7 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v1.9</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.0</div>
 <script src="/misura.js" defer></script>
 </body>
 </html>

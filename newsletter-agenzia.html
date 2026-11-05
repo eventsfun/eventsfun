@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Newsletter Agenzia | v2.4 31/10/2026: titolo della pagina senza doppio trattino. v2.3 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v2.2 B27: invio immediato protetto (codice di accesso + eventi, destinatari calcolati dal server, limite 24 ore, storico scritto dal server) -->
+<!-- EventsFun | Newsletter Agenzia | v2.5 05/11/2026: menu a tendina con la freccina, uguali su tutti i dispositivi (Safari compreso); nella scelta degli eventi "data - N iscritti newsletter" senza doppio trattino. v2.4 31/10/2026: titolo della pagina senza doppio trattino. v2.3 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v2.2 B27: invio immediato protetto (codice di accesso + eventi, destinatari calcolati dal server, limite 24 ore, storico scritto dal server) -->
 <html lang="it">
 <head>
   <meta charset="UTF-8" />
@@ -588,7 +588,11 @@
       .page-title { font-size: 20px; }
       .auth-card { padding: 24px 18px; }
     }
-  </style>
+  
+/* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
+select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
+select:not([multiple]):not([size])::-ms-expand{display:none}
+</style>
 </head>
 <body>
 
@@ -1189,7 +1193,7 @@
           <input type="checkbox" value="${ev.id}" onchange="aggiornaDest()" ${count === 0 ? 'disabled' : ''} />
           <div>
             <div class="check-nome">${escHtml(ev.nome || 'Evento')}</div>
-            <div class="check-count">${dataStr ? dataStr + ' -- ' : ''}${count} iscritti newsletter</div>
+            <div class="check-count">${dataStr ? dataStr + ' - ' : ''}${count} iscritti newsletter</div>
           </div>
           <span class="check-spacer"></span>
           ${count === 0 ? '<span class="badge badge-gray">Nessun iscritto</span>' : '<span class="badge badge-gold">' + count + '</span>'}
