@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Pro Dashboard | v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Pro Dashboard | v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -1393,9 +1393,7 @@ function renderDash() {
 
   /* Stats */
   var totP = regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
-  var postiOccupati = (ev && ev.opt_cap_persona && ev.opt_multipla)
-    ? regs.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0)
-    : regs.length;
+  var postiOccupati = ev ? calcPostiOccupati(ev, regs) : 0;
   document.getElementById('s-regs').textContent = hasEv ? regs.length : '-';
   document.getElementById('s-persone').textContent = hasEv ? totP : '-';
   document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '-';
@@ -1435,6 +1433,17 @@ function renderDash() {
   applyModalitaDash(ev);
 }
 
+/* Posti occupati: stessa regola della pagina pubblica (ef_event_capacity) e della dashboard Agenzia.
+   Chi e' in lista d'attesa non occupa posti; con "Capienza per persona" e "Iscrizione multipla"
+   si contano adulti + bambini dei capigruppo, altrimenti una riga per iscritto. */
+function calcPostiOccupati(ev, regs) {
+  var confermati = regs.filter(function(r) { return !r.in_lista_attesa; });
+  if (ev && ev.opt_cap_persona && ev.opt_multipla) {
+    return confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
+  }
+  return confermati.length;
+}
+
 function renderTable(ev, regs, closed) {
   if (!ev) {
     document.getElementById('tableHead').innerHTML = '<tr><th>Nome</th><th>Email</th><th>Telefono</th><th>Data</th><th></th></tr>';
@@ -1456,7 +1465,7 @@ function renderTable(ev, regs, closed) {
   document.getElementById('tableHead').innerHTML = th;
   var n = 4 + (hM ? 3 : 0) + (hT ? 1 : 0) + (hP ? 1 : 0) + cf.length + (hN ? 1 : 0);
   document.getElementById('panel-title').textContent = regs.length + ' iscritti';
-  document.getElementById('panel-sub').textContent = ev.capienza ? (ev.capienza - regs.length) + ' posti disponibili' : 'Iscritti illimitati';
+  document.getElementById('panel-sub').textContent = ev.capienza ? (Math.max(0, ev.capienza - calcPostiOccupati(ev, regs)) + ' posti disponibili') : 'Iscritti illimitati';
   if (!regs.length) {
     document.getElementById('regTable').innerHTML = '<tr><td colspan="' + n + '" class="no-regs">Nessun iscritto ancora</td></tr>';
   } else {
@@ -3159,7 +3168,7 @@ init();
     try {
       var ev = currentEv, regs = currentRegs, closed = isClosed(ev);
       var totP = regs.filter(function (r) { return !r.capogruppo_id; }).reduce(function (a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
-      var postiOccupati = (ev.opt_cap_persona && ev.opt_multipla) ? totP : regs.length;
+      var postiOccupati = calcPostiOccupati(ev, regs);
       el('s-regs').textContent = regs.length;
       el('s-persone').textContent = totP;
       el('s-posti').textContent = ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '\u221e';
@@ -3399,6 +3408,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.0 Pro</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.1 Pro</div>
 </body>
 </html>
