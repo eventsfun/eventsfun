@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Base Dashboard | v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Base Dashboard | v7.2 07/11/2026: nota "Evento al completo" sotto lo stato quando i posti sono finiti (Base e Pro non hanno la lista d'attesa: la pagina pubblica ferma le iscrizioni). v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -245,6 +245,8 @@ tbody td.xv{color:var(--gold)}
 .tip-box{color:rgba(240,237,232,0.88);text-transform:none;letter-spacing:0;font-weight:400}
 .tip.tip-down .tip-box{bottom:auto;top:calc(100% + 7px);left:0;right:auto;transform:none;max-width:min(280px,calc(100vw - 64px));font-family:"DM Sans",sans-serif;font-weight:400;letter-spacing:0}
 .status-nota{font-size:11.5px;color:var(--text-dim);margin-top:5px;line-height:1.5;max-width:560px}
+.sinfo p.nota-completo{color:var(--gold);font-weight:500}
+body.light .sinfo p.nota-completo{color:var(--gold-dark)}
 .rich-tools .rub-filter{padding:7px 10px;font-size:12px}
 .link-extra-det{margin-top:12px}
 .link-extra-det summary{cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:600;color:var(--text-muted);padding:4px 0;user-select:none}
@@ -362,6 +364,7 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
         <h3 id="status-nome">Nessun evento</h3>
         <p id="status-det">Crea il tuo primo evento per iniziare</p>
         <p id="statusNota" class="status-nota" style="display:none"></p>
+        <p id="notaCompleto" class="status-nota nota-completo" style="display:none"></p>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
         <span id="status-pill"><span class="pill pill-gray">-</span></span>
@@ -1406,6 +1409,7 @@ function renderDash() {
   document.getElementById('s-persone').textContent = hasEv ? totP : '-';
   document.getElementById('s-posti').textContent = hasEv ? (ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '∞') : '-';
   aggiornaRitirati(ev, regs);
+  aggiornaNotaCompleto(ev, regs);
 
   /* Closed banner */
   setDisp('closedBanner', closed ? 'flex' : 'none');
@@ -1471,6 +1475,23 @@ function calcPostiOccupati(ev, regs) {
     return confermati.filter(function(r) { return !r.capogruppo_id; }).reduce(function(a, r) { return a + (r.adulti || 1) + (r.bambini || 0); }, 0);
   }
   return confermati.length;
+}
+
+/* Base e Pro non hanno la lista d'attesa: a evento pieno la pagina pubblica ferma le iscrizioni.
+   La nota lo dice all'organizzatore (solo mentre la pagina accetterebbe ancora iscrizioni). */
+var NP_TERM = { iscrizione: 'iscrizioni', prenotazione: 'prenotazioni', partecipazione: 'partecipazioni', registrazione: 'registrazioni' };
+function aggiornaNotaCompleto(ev, regs) {
+  var n = document.getElementById('notaCompleto');
+  if (!n) return;
+  var paginaChiusa = false;
+  if (ev && ev.data_iso) {
+    var oggi = new Date(); oggi.setHours(0, 0, 0, 0);
+    var fine = new Date(ev.data_iso); fine.setHours(0, 0, 0, 0); fine.setDate(fine.getDate() + 1);
+    paginaChiusa = oggi >= fine;
+  }
+  var pieno = !!(ev && ev.capienza && ev.modalita !== 'info' && ev.attivo !== false && !paginaChiusa && calcPostiOccupati(ev, regs || []) >= ev.capienza);
+  n.textContent = pieno ? 'Evento al completo: la pagina non accetta altre ' + (NP_TERM[ev.terminologia] || 'iscrizioni') + '. Per riaprirle aumenta la capienza nelle Impostazioni.' : '';
+  n.style.display = pieno ? 'block' : 'none';
 }
 
 function renderTable(ev, regs, closed) {
@@ -3055,6 +3076,7 @@ applyOpts = function(ev) {
       el('s-persone').textContent = totP;
       el('s-posti').textContent = ev.capienza ? Math.max(0, ev.capienza - postiOccupati) : '\u221e';
       aggiornaRitirati(ev, regs);
+      aggiornaNotaCompleto(ev, regs);
       renderTable(ev, regs, closed);
       var vp = el('view-presenze');
       if (vp && vp.classList.contains('on')) renderPresenze();
@@ -3290,6 +3312,6 @@ applyOpts = function(ev) {
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.1 base</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.2 base</div>
 </body>
 </html>

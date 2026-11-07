@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Landing Page | v8.1 05/11/2026: menu a tendina disegnati dalla pagina (con il tema scuro Safari li mostrava bianchi e illeggibili); "Seleziona" senza doppio trattino; data mancante mostrata come "-". v8.0 03/11/2026: le pagine senza data (Punto Info e Agenzia "Solo informazioni") non mostrano la riga di data e ora; con la sola data compare solo la data. v7.9 31/10/2026: titolo della scheda del browser senza doppio trattino. v7.8 28/10/2026: negli eventi con ritiro il messaggio WhatsApp precompilato non cita la data dell'evento (come l'email di conferma). v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
+<!-- EventsFun | Landing Page | v8.2 07/11/2026: Base e Pro senza lista d'attesa: a evento pieno al posto del modulo compare "Posti esauriti" (anche con "Mostra posti disponibili" spento); se gli ultimi posti finiscono durante la compilazione il modulo lo dice e non salva nulla; con "Capienza per persona" un gruppo piu' grande dei posti rimasti viene fermato con "Restano solo N posti disponibili". Agenzia invariata. B52: l'accompagnatore senza email ora viene salvato (prima il database lo rifiutava e il suo nome andava perso in silenzio). v8.1 05/11/2026: menu a tendina disegnati dalla pagina (con il tema scuro Safari li mostrava bianchi e illeggibili); "Seleziona" senza doppio trattino; data mancante mostrata come "-". v8.0 03/11/2026: le pagine senza data (Punto Info e Agenzia "Solo informazioni") non mostrano la riga di data e ora; con la sola data compare solo la data. v7.9 31/10/2026: titolo della scheda del browser senza doppio trattino. v7.8 28/10/2026: negli eventi con ritiro il messaggio WhatsApp precompilato non cita la data dell'evento (come l'email di conferma). v7.7 28/10/2026: negli eventi con ritiro ("Ritirato") la schermata di ringraziamento non dice piu' "Ci vediamo il [data]" ma rimanda alla scheda Informazioni (o alle indicazioni dell'organizzatore); il pulsante Google Calendar resta. v7.6 28/10/2026: riepilogo delle quantita' scelte nella schermata di ringraziamento; v7.5 campo aggiuntivo "Numero" come tendina 0-50; v7.4 titolo anteprima WhatsApp neutro (senza EventsFun); v7.3 segnaposto email senza indirizzi veri ("La tua email", "Email dell'accompagnatore"); v7.2 Google Calendar legge l'ora scritta in ogni modo (15, 21.30, 15-19); v7.1 richiesta informazioni + pagina sospesa Punto Info scaduto -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -42,6 +42,7 @@ body{font-family:"DM Sans",sans-serif;background:#f4f3f0;color:#1a1a1a;min-heigh
 .submit-btn:hover{opacity:.87}
 .submit-btn:disabled{opacity:.5;cursor:not-allowed}
 .closed-box{background:#f5e6e6;border:1px solid #e0a0a0;border-radius:10px;padding:14px;text-align:center;color:#a04040;font-size:13px;font-weight:600}
+.closed-sub{font-weight:400;margin-top:6px;line-height:1.5}
 .spon-wrap{margin-top:32px;padding-top:28px;border-top:1px solid #e8e4de;text-align:center}
 .spon-title{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#7a7a7a;margin-bottom:18px}
 .spon-list{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
@@ -252,6 +253,46 @@ async function fetchCapacity(eventId) {
     piena: !!c.piena
   };
 }
+/* Base e Pro non hanno la lista d'attesa: lo dice il server (colonna lista_attesa, dal piano dell'ordine).
+   Se la colonna manca la pagina si comporta come prima. */
+function senzaListaAttesa() { return !!ev && ev.lista_attesa === false; }
+function postiEsauriti() { return senzaListaAttesa() && cap.capienza !== null && !!cap.piena; }
+/* Posti che occupa l'iscrizione che si sta compilando (stessa regola del server) */
+function postiRichiesti() {
+  if (!ev.opt_multipla) return 1;
+  return ev.opt_cap_persona ? adultiCount + bambiniCount : adultiCount;
+}
+function testoPostiRestanti(n, TW) {
+  var art = /^[aeiou]/.test(TW.n) ? "l'" : 'la ';
+  return (n === 1 ? 'Resta solo 1 posto disponibile' : 'Restano solo ' + n + ' posti disponibili')
+    + ': riduci il numero di persone per completare ' + art + TW.n + '.';
+}
+function esauritiHtml(TW, durante) {
+  var testo = durante
+    ? 'Ci dispiace, mentre compilavi il modulo gli ultimi posti sono stati assegnati. Le ' + TW.np + ' a questo evento sono chiuse.'
+    : 'Tutti i posti per questo evento sono stati assegnati: le ' + TW.np + ' sono chiuse.';
+  return '<div class="closed-box">⛔ Posti esauriti<div class="closed-sub">' + testo + '</div></div>';
+}
+/* Ridisegna la barra dei posti con i numeri appena letti dal server */
+function aggiornaBarraPosti(c) {
+  if (c) cap = c;
+  var bar = document.querySelector('.cap-bar');
+  if (!bar) return;
+  var tmp = document.createElement('div');
+  tmp.innerHTML = buildCapHtml(termWords(ev.terminologia));
+  if (tmp.firstChild) bar.parentNode.replaceChild(tmp.firstChild, bar);
+}
+/* Posti finiti mentre si compilava: al posto del modulo il riquadro "Posti esauriti" */
+function mostraEsauriti(btn, c) {
+  aggiornaBarraPosti(c);
+  var card = btn ? btn.closest('.card') : null;
+  if (!card) return;
+  card.innerHTML = esauritiHtml(termWords(ev.terminologia), true);
+  var r = document.getElementById('richiamoIscr');
+  if (r) r.style.display = 'none';
+  scrollAElemento(card);
+}
+
 /* Genera un identificativo univoco lato client (uuid v4) */
 function genId() {
   if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -593,10 +634,10 @@ function buildCapHtml(TW) {
     var posti = Math.max(0, ev.capienza - occupati);
     var pct = Math.round((occupati / ev.capienza) * 100);
     var postiLabel = posti === 0
-      ? '<span style="color:#C9A96E;font-weight:700">Lista d\'attesa disponibile</span>'
+      ? (senzaListaAttesa() ? '<span style="color:#C9A96E;font-weight:700">Posti esauriti</span>' : '<span style="color:#C9A96E;font-weight:700">Lista d\'attesa disponibile</span>')
       : '<span><strong>' + posti + '</strong> / ' + ev.capienza + '</span>';
     capHtml = '<div class="cap-bar"><div class="cap-row"><span>Posti disponibili</span>' + postiLabel + '</div><div class="cap-track"><div class="cap-fill" style="width:' + pct + '%"></div></div>'
-      + (posti === 0 ? '<p style="font-size:11px;color:#707070;margin-top:8px">L\'evento è al completo. Puoi comunque ' + TW.inf + ': verrai messo in lista d\'attesa.</p>' : '')
+      + (posti === 0 && !senzaListaAttesa() ? '<p style="font-size:11px;color:#707070;margin-top:8px">L\'evento è al completo. Puoi comunque ' + TW.inf + ': verrai messo in lista d\'attesa.</p>' : '')
       + '</div>';
   }
 
@@ -658,6 +699,7 @@ function buildRegFormHtml(closed, TW) {
 
   var formHtml = closed
     ? '<div class="closed-box">⛔ Le ' + TW.np + ' per questo evento sono chiuse</div>'
+    : postiEsauriti() ? esauritiHtml(TW, false)
     : '<h2 class="form-title">' + TW.imp + '</h2>'
       + '<div class="alert" id="formAlert"></div>'
       + '<div class="lp-grid">'
@@ -723,7 +765,7 @@ function renderConInfo(modo, closed, TW) {
       + '<div class="tab-panel" id="panel_info" role="tabpanel">'
       +   (contenuto ? '<div class="card">' + contenuto + '</div>' : '')
       +   richiestaCard
-      +   (closed ? '' : '<div class="card info-cta" id="richiamoIscr"><p>' + TXT_INFO.richiamoIscr + '</p><button type="button" class="tab-link-btn" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>')
+      +   ((closed || postiEsauriti()) ? '' : '<div class="card info-cta" id="richiamoIscr"><p>' + TXT_INFO.richiamoIscr + '</p><button type="button" class="tab-link-btn" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>')
       + '</div>'
       + '<div class="tab-panel" id="panel_iscrizione" role="tabpanel">'
       +   '<div id="capWrap">' + buildCapHtml(TW) + '</div>'
@@ -817,7 +859,7 @@ function showRichiestaOk(nome, canale) {
   if (!card) return;
   var TW = termWords(ev.terminologia);
   var cta = '';
-  if (modalitaEvento() === 'entrambe' && !(isClosed(ev) || !ev.attivo)) {
+  if (modalitaEvento() === 'entrambe' && !(isClosed(ev) || !ev.attivo) && !postiEsauriti()) {
     cta = '<div class="ok-cta"><p>' + TXT_INFO.vuoiAnche.replace('{azione}', TW.inf) + '</p>'
       + '<button type="button" class="tab-link-btn" onclick="vaiScheda(\'iscrizione\')">' + TW.imp + ' &rarr;</button></div>';
   }
@@ -935,6 +977,20 @@ async function submitReg() {
   /* Rilegge la capienza in tempo reale dal canale posti pubblico (solo numeri, nessun dato personale) */
   var freshCap = await fetchCapacity(ev.id);
   var capienzaPiena = !!freshCap.piena;
+  /* Base e Pro: niente lista d'attesa, a evento pieno ci si ferma */
+  if (senzaListaAttesa()) {
+    capienzaPiena = false;
+    if (freshCap.capienza !== null) {
+      var restanti = Math.max(0, freshCap.capienza - freshCap.occupati);
+      if (restanti <= 0) { mostraEsauriti(btn, freshCap); return; }
+      if (postiRichiesti() > restanti) {
+        aggiornaBarraPosti(freshCap);
+        btn.disabled = false; btn.textContent = termWords(ev.terminologia).imp + ' →';
+        showAlert(testoPostiRestanti(restanti, termWords(ev.terminologia)));
+        return;
+      }
+    }
+  }
 
   var regId = genId();
   var regData = {
@@ -974,7 +1030,7 @@ async function submitReg() {
         id: accRegId,
         event_id: ev.id,
         nome: acc.nome, cognome: acc.cognome,
-        email: acc.email || null,
+        email: acc.email || '',   /* B52: il database non accetta un'email mancante; vuota = nessuna email */
         telefono: acc.telefono || null,
         adulti: 1, bambini: 0,
         tipo: rt ? rt.value : 'visitatore',
@@ -1003,6 +1059,17 @@ async function submitReg() {
 
     showSuccess(nome, !!capienzaPiena, extra);
   } catch(e) {
+    var msgErr = String((e && e.message) || '');
+    if (msgErr.indexOf('EF_POSTI_') !== -1) {
+      var capOra = null;
+      try { capOra = await fetchCapacity(ev.id); } catch (_e) {}
+      var restOra = (capOra && capOra.capienza !== null) ? Math.max(0, capOra.capienza - capOra.occupati) : 0;
+      if (msgErr.indexOf('EF_POSTI_ESAURITI') !== -1 || restOra <= 0) { mostraEsauriti(btn, capOra); return; }
+      aggiornaBarraPosti(capOra);
+      btn.disabled = false; btn.textContent = termWords(ev.terminologia).imp + ' →';
+      showAlert(testoPostiRestanti(restOra, termWords(ev.terminologia)));
+      return;
+    }
     btn.disabled = false; btn.textContent = termWords(ev.terminologia).imp + ' →';
     showAlert('Si è verificato un errore. Riprova tra qualche secondo.');
   }
