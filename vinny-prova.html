@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.2 08/11/2026: pannello di Vinny con colori caldi e bordo oro, ben distinto dal modulo; sul telefono il pannello resta sempre dentro lo schermo; il selettore degli eventi con un nome lungo non allarga piu' la pagina. v1.1 08/11/2026: pulsante "Chiedi a Vinny" per l'evento gia' creato (apre le Impostazioni con Vinny, che consiglia e modifica i campi), consigli per una pagina migliore nella bozza. v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.3 08/11/2026: pulsante "Chiedi a Vinny" dopo Impostazioni; nella bozza Vinny ricorda di guardare l'anteprima della pagina (pulsante "Guarda l'anteprima" nella creazione). v1.2 08/11/2026: pannello di Vinny con colori caldi e bordo oro, ben distinto dal modulo; sul telefono il pannello resta sempre dentro lo schermo; il selettore degli eventi con un nome lungo non allarga piu' la pagina. v1.1 08/11/2026: pulsante "Chiedi a Vinny" per l'evento gia' creato (apre le Impostazioni con Vinny, che consiglia e modifica i campi), consigli per una pagina migliore nella bozza. v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.1 08/11/2026: con un nome evento lungo il menu "Evento" in cima non allarga piu' la pagina sul telefono (prima finestre e pannelli uscivano dallo schermo a destra); il nome si accorcia con i puntini. v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -65,6 +65,10 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .ev-selector-inner{display:flex;align-items:center;gap:12px;flex:1}
 .ev-selector-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);white-space:nowrap}
 .ev-selector select{background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:8px;padding:8px 12px;font-family:"DM Sans",sans-serif;font-size:13px;color:var(--text);outline:none;flex:1;max-width:320px}
+/* 08/11/2026: con un nome evento lungo il menu "Evento" non allarga piu' la pagina sul telefono (il nome si accorcia con i puntini) */
+.ev-selector-inner{min-width:0}
+.ev-selector select{min-width:0;text-overflow:ellipsis;overflow:hidden}
+@media(max-width:600px){.ev-selector-inner{flex:1 1 100%}.ev-selector select{max-width:none}}
 .ev-tabs{display:flex;gap:6px;margin-bottom:10px}
 .ev-tab{background:transparent;border:1px solid var(--border);border-radius:8px;padding:6px 14px;font-family:"DM Sans",sans-serif;font-size:12px;font-weight:600;color:var(--text-dim);cursor:pointer;transition:all .2s;white-space:nowrap}
 .ev-tab:hover{border-color:var(--gold);color:var(--gold)}
@@ -402,10 +406,6 @@ body.light .vn-btn{color:var(--gold-dark);border-color:var(--gold-dark)}
 .ob-vn-btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .ob-vn-sec{width:100%;padding:13px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;cursor:pointer}
 
-/* Selettore degli eventi: con un nome lungo non allarga piu' la pagina sul telefono */
-.ev-selector-inner{min-width:0;flex:1 1 240px}
-.ev-selector select{min-width:0;width:100%;text-overflow:ellipsis;overflow:hidden}
-
 /* Pannello della chat: colori caldi e bordo oro, per distinguerlo dal modulo e dalla dashboard */
 .vn{--vn-bg:#1e1a13;--vn-head:#2b2418;--vn-bolla:#2e281e;--vn-linea:rgba(201,169,110,0.28)}
 body.light .vn{--vn-bg:#fbf6ec;--vn-head:#f1e4c9;--vn-bolla:#ffffff;--vn-linea:rgba(138,110,62,0.35)}
@@ -440,6 +440,9 @@ body.light .vn-bozza-t{color:var(--gold-dark)}
 .vn-rapide{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px}
 .vn-rapide button{padding:9px 14px;border-radius:18px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
 body.light .vn-rapide button{color:var(--gold-dark);border-color:var(--gold-dark)}
+.vn-bozza-a{font-size:12.5px;line-height:1.45;color:var(--text-muted);margin:10px 0 8px}
+.vn-bozza .vn-btn-sec{background:transparent;border:1.5px solid var(--gold);color:var(--gold)}
+body.light .vn-bozza .vn-btn-sec{border-color:var(--gold-dark);color:var(--gold-dark)}
 .vn-bozza button{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer}
 .vn-nota{font-size:11px;color:var(--text-dim);line-height:1.4;padding:0 14px 6px;flex-shrink:0}
 .vn-input{display:flex;gap:8px;align-items:flex-end;padding:8px 12px 12px;border-top:1px solid var(--vn-linea);flex-shrink:0}
@@ -500,7 +503,6 @@ body.vn-mini-on #evModalTitle,body.vn-mini-on #seModalTitle{display:inline-block
   .vn-invito > img{width:56px;height:56px}
 }
 @media (max-width:600px){
-  .dash-btns .vn-btn{order:-1}
 }
 </style>
 </head>
@@ -604,8 +606,8 @@ body.vn-mini-on #evModalTitle,body.vn-mini-on #seModalTitle{display:inline-block
         <button class="btn-sm" id="btnPresenze" onclick="showView('presenze')" style="display:none">👥 Presenze</button>
         <button class="btn-sm" id="btnSendLink" onclick="sendParticipationLink()" style="display:none">📧 Invia link</button>
         <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
-        <button type="button" class="vn-btn" id="btnVinny3" onclick="vinnyApri('modifica')"><img src="vinny-256.webp" alt="" width="30" height="30">Chiedi a Vinny</button>
         <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
+        <button type="button" class="vn-btn" id="btnVinny3" onclick="vinnyApri('modifica')"><img src="vinny-256.webp" alt="" width="30" height="30">Chiedi a Vinny</button>
         <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
         <button class="btn-sm btn-sm-gold" id="btnPDF" onclick="exportPDF()" style="display:none">↓ PDF</button>
         <button type="button" class="vn-btn" id="btnVinny" onclick="vinnyApri()"><img src="vinny-256.webp" alt="" width="30" height="30">Crea con Vinny</button>
@@ -4908,8 +4910,10 @@ var VN_MSG = {
   interrotta: 'La conversazione si è interrotta. Chiudi il modulo e riapri Vinny per ricominciare.',
   dati: 'Non sono riuscito a leggere il messaggio: prova a scriverlo in modo più breve.',
   rete: 'Non sono riuscito a rispondere. Controlla la connessione e riprova tra qualche secondo: il tuo messaggio è rimasto nella casella.',
-  chiusura: 'Ecco il modulo compilato: se ti piace, premi Crea evento. Anche dopo, per cambiare o migliorare la pagina, mi ritrovi con il pulsante Chiedi a Vinny.',
-  chiusura_mod: 'Ecco le modifiche nel modulo: se ti piacciono, premi Salva modifiche e la pagina si aggiorna subito.',
+  chiusura: 'Ecco il modulo compilato. Prima di salvare premi Anteprima landing, in fondo al modulo: vedi la pagina proprio come la vedrà la gente. Se ti piace, premi Crea evento. Anche dopo, per cambiare o migliorare la pagina, mi ritrovi con il pulsante Chiedi a Vinny.',
+  chiusura_mod: 'Ecco le modifiche nel modulo: se ti piacciono, premi Salva modifiche e la pagina si aggiorna subito. Poi premi Anteprima nella dashboard: vedi la pagina proprio come la vede la gente.',
+  anteprima: 'Prima di salvare guarda l\'anteprima: è la pagina proprio come la vedrà la gente.',
+  anteprima_mod: 'Dopo aver salvato, premi Anteprima nella dashboard: vedi la pagina proprio come la vede la gente.',
   consiglio: 'Dammi qualche consiglio per migliorare la pagina.',
   finita: 'Conversazione conclusa'
 };
@@ -5368,6 +5372,20 @@ function vnBozza(righe, consigli) {
   b.textContent = vnConv.modo === 'modifica' ? 'Vedi le modifiche' : 'Apri il modulo compilato';
   b.onclick = vnApriModulo;
   box.appendChild(b);
+  /* Promemoria dell'anteprima: la pagina come la vedra' la gente */
+  var nota = document.createElement('div');
+  nota.className = 'vn-bozza-a';
+  nota.textContent = vnConv.modo === 'modifica' ? VN_MSG.anteprima_mod : VN_MSG.anteprima;
+  box.appendChild(nota);
+  if (vnConv.modo !== 'modifica') {
+    /* Nella creazione l'anteprima usa una bozza che non e' pubblica; nelle Impostazioni invece l'anteprima salverebbe subito le modifiche, quindi li' si guarda dopo aver salvato */
+    var a = document.createElement('button');
+    a.type = 'button';
+    a.className = 'vn-btn-sec';
+    a.textContent = 'Guarda l\'anteprima';
+    a.onclick = function() { openPreviewFromForm(); };
+    box.appendChild(a);
+  }
   m.appendChild(box);
   vnScorriGiu();
   vnAnim('vn-salto');
@@ -5668,6 +5686,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.2</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.3</div>
 </body>
 </html>
