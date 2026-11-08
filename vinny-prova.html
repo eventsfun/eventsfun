@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.1 08/11/2026: pulsante "Chiedi a Vinny" per l'evento gia' creato (apre le Impostazioni con Vinny, che consiglia e modifica i campi), consigli per una pagina migliore nella bozza. v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -428,6 +428,10 @@ body.light .vn-btn{color:var(--gold-dark);border-color:var(--gold-dark)}
 body.light .vn-bozza-t{color:var(--gold-dark)}
 .vn-bozza ul{margin:0 0 12px 18px;padding:0;font-size:13px;line-height:1.5;color:var(--text-muted)}
 .vn-bozza li{margin-bottom:4px}
+.vn-bozza-c{font-family:"Syne",sans-serif;font-weight:700;font-size:13px;color:var(--text);margin:2px 0 6px}
+.vn-rapide{align-self:flex-start;display:flex;flex-wrap:wrap;gap:8px}
+.vn-rapide button{padding:9px 14px;border-radius:18px;border:1.5px solid var(--gold);background:transparent;color:var(--gold);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:700;cursor:pointer}
+body.light .vn-rapide button{color:var(--gold-dark);border-color:var(--gold-dark)}
 .vn-bozza button{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer}
 .vn-nota{font-size:11px;color:var(--text-dim);line-height:1.4;padding:0 14px 6px;flex-shrink:0}
 .vn-input{display:flex;gap:8px;align-items:flex-end;padding:8px 12px 12px;border-top:1px solid var(--border2);flex-shrink:0}
@@ -444,7 +448,7 @@ body.light .vn-barretta b{color:var(--gold-dark)}
 .vn-mini{display:none;width:40px;height:40px;padding:0;border:none;background:transparent;cursor:pointer;vertical-align:middle;margin:0 0 4px 8px;border-radius:50%}
 .vn-mini img{width:40px;height:40px;display:block}
 body.vn-mini-on .vn-mini{display:inline-block}
-body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
+body.vn-mini-on #evModalTitle,body.vn-mini-on #seModalTitle{display:inline-block;vertical-align:middle}
 .vn.vn-via{display:none!important}
 
 /* Campi appena compilati da Vinny */
@@ -464,7 +468,7 @@ body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
 /* Computer: pannello laterale a destra, il modulo resta visibile */
 @media (min-width:900px){
   .vn{top:0;right:0;bottom:0;width:400px;border-left:1px solid var(--border)}
-  body.vn-on #ovCreate{padding-right:420px}
+  body.vn-on #ovCreate,body.vn-on #ovSettings{padding-right:420px}
   #vnAltezzaBtn{display:none}
 }
 /* Telefono e tablet stretto: tre altezze */
@@ -480,9 +484,9 @@ body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
   .vn.vn-nasc{display:none}
   .vn-head{touch-action:none}
   .vn-head{padding:6px 12px 10px}
-  body.vn-on.vn-h-meta #ovCreate{padding-bottom:56vh;padding-bottom:56dvh}
-  body.vn-on.vn-h-barra #ovCreate{padding-bottom:96px}
-  body.vn-on.vn-h-meta #ovCreate,body.vn-on.vn-h-barra #ovCreate{padding-top:12px}
+  body.vn-on.vn-h-meta #ovCreate,body.vn-on.vn-h-meta #ovSettings{padding-bottom:56vh;padding-bottom:56dvh}
+  body.vn-on.vn-h-barra #ovCreate,body.vn-on.vn-h-barra #ovSettings{padding-bottom:96px}
+  body.vn-on.vn-h-meta #ovCreate,body.vn-on.vn-h-barra #ovCreate,body.vn-on.vn-h-meta #ovSettings,body.vn-on.vn-h-barra #ovSettings{padding-top:12px}
   .vn-invito{flex-direction:column;align-items:flex-start;gap:10px}
   .vn-invito > img{width:56px;height:56px}
 }
@@ -591,6 +595,7 @@ body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
         <button class="btn-sm" id="btnPresenze" onclick="showView('presenze')" style="display:none">👥 Presenze</button>
         <button class="btn-sm" id="btnSendLink" onclick="sendParticipationLink()" style="display:none">📧 Invia link</button>
         <button class="btn-sm" id="btnAttesa" onclick="toggleAttesa()" style="display:none">⏳ Lista attesa</button>
+        <button type="button" class="vn-btn" id="btnVinny3" onclick="vinnyApri('modifica')"><img src="vinny-256.webp" alt="" width="30" height="30">Chiedi a Vinny</button>
         <button class="btn-sm btn-sm-gold" id="btnSettings" onclick="openEditEvent()" style="display:none">⚙️ Impostazioni</button>
         <button class="btn-sm btn-sm-gold" id="btnCSV" onclick="exportCSV()" style="display:none">↓ CSV</button>
         <button class="btn-sm btn-sm-gold" id="btnPDF" onclick="exportPDF()" style="display:none">↓ PDF</button>
@@ -903,7 +908,7 @@ body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
 <div class="ov" id="ovCreate">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovCreate')">✕</button>
-    <h2 id="evModalTitle">Crea il tuo evento</h2><button type="button" class="vn-mini" id="vnMini" onclick="vnMiniClick()" aria-label="Chiedi a Vinny" title="Chiedi a Vinny"><img src="vinny-256.webp" alt="" width="40" height="40"></button>
+    <h2 id="evModalTitle">Crea il tuo evento</h2><button type="button" class="vn-mini" id="vnMini" onclick="vnMiniClick('crea')" aria-label="Chiedi a Vinny" title="Chiedi a Vinny"><img src="vinny-256.webp" alt="" width="40" height="40"></button>
     <p class="modal-sub">Compila i dettagli. Potrai modificarli in qualsiasi momento.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento *</label><input id="ev_nome" placeholder="Es. Gala di Primavera 2026"></div>
@@ -1249,7 +1254,7 @@ body.vn-mini-on #evModalTitle{display:inline-block;vertical-align:middle}
 <div class="ov" id="ovSettings">
   <div class="modal">
     <button class="mcls" onclick="closeOv('ovSettings')">✕</button>
-    <h2>Impostazioni evento</h2>
+    <h2 id="seModalTitle">Impostazioni evento</h2><button type="button" class="vn-mini" id="vnMini2" onclick="vnMiniClick('modifica')" aria-label="Chiedi a Vinny" title="Chiedi a Vinny"><img src="vinny-256.webp" alt="" width="40" height="40"></button>
     <p class="modal-sub">Modifica i dati. Le modifiche si applicano subito.</p>
     <div class="fg2">
       <div class="mf"><label>Nome evento</label><input id="se_nome"></div>
@@ -4879,9 +4884,10 @@ var _openEditEventAgenzia = openEditEvent;
 openEditEvent = function() { _openEditEventAgenzia(); if (currentEv) piApriInfo('se'); };
 
 /* ============================================================
-   VINNY (pagina di prova, 08/11/2026)
-   Assistente che consiglia e precompila il modulo "Crea evento".
-   Non salva nulla: compila i campi, l'organizzatore controlla e preme "Crea evento".
+   VINNY (pagina di prova, v1.1 08/11/2026)
+   Assistente che consiglia e precompila il modulo "Crea evento" (modalita' crea)
+   e, per un evento gia' creato, il modulo "Impostazioni evento" (modalita' modifica).
+   Non salva nulla: compila i campi, l'organizzatore controlla e preme "Crea evento" o "Salva modifiche".
    Risponde solo agli account abilitati dal gestionale (tabella vinny_account).
    ============================================================ */
 var VN_URL = SB_URL + '/functions/v1/vinny';
@@ -4893,19 +4899,30 @@ var VN_MSG = {
   interrotta: 'La conversazione si è interrotta. Chiudi il modulo e riapri Vinny per ricominciare.',
   dati: 'Non sono riuscito a leggere il messaggio: prova a scriverlo in modo più breve.',
   rete: 'Non sono riuscito a rispondere. Controlla la connessione e riprova tra qualche secondo: il tuo messaggio è rimasto nella casella.',
-  chiusura: 'Fatto! Dai un\'occhiata e, se ti piace, premi Crea evento. Io resto qui se ti serve una mano.',
+  chiusura: 'Ecco il modulo compilato: se ti piace, premi Crea evento. Anche dopo, per cambiare o migliorare la pagina, mi ritrovi con il pulsante Chiedi a Vinny.',
+  chiusura_mod: 'Ecco le modifiche nel modulo: se ti piacciono, premi Salva modifiche e la pagina si aggiorna subito.',
+  consiglio: 'Dammi qualche consiglio per migliorare la pagina.',
   finita: 'Conversazione conclusa'
 };
 var VN = { abilitato: false, rimaste: null, limite: null };
 var vnConv = null;
 var vnH = 'intera';
+/* Contesto: quale modulo sta aiutando Vinny */
+var VC = { modo: 'crea', p: 'ev', ov: 'ovCreate' };
+function vnCtx(modo) { VC = (modo === 'modifica') ? { modo: 'modifica', p: 'se', ov: 'ovSettings' } : { modo: 'crea', p: 'ev', ov: 'ovCreate' }; }
+function vnSt() { return VC.p === 'ev' ? otogState : stogState; }
+function vnQrTipo() { return VC.p === 'ev' ? evQrTipo : seQrTipo; }
+function vnQrLogo() { return VC.p === 'ev' ? evQrLogoB64 : seQrLogoB64; }
+function vnTema() { return VC.p === 'ev' ? evTemaState : seTemaState; }
+function vnId(nome) { return VC.p + '_' + nome; }
 
 function vnEl(id) { return document.getElementById(id); }
 function vnMobile() { return !window.matchMedia('(min-width:900px)').matches; }
 function vnMoto() { return !window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
 function vnHeaders() { return { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' }; }
 function vnPanelOn() { var p = vnEl('vinnyPanel'); return !!(p && p.classList.contains('on')); }
-function vnModaleAperto() { var ov = vnEl('ovCreate'); return !!(ov && ov.classList.contains('on')); }
+function vnOvAperto(id) { var ov = vnEl(id); return !!(ov && ov.classList.contains('on')); }
+function vnModaleAperto() { return vnOvAperto(VC.ov); }
 
 /* Stato dell'account: Vinny compare solo se il gestionale lo ha abilitato */
 async function vnCaricaStato() {
@@ -4927,6 +4944,7 @@ function vnPulsanti() {
   setDisp('btnVinny2', (ok && nEv > 0) ? 'inline-flex' : 'none');
   setDisp('vnInvito', (ok && nEv === 0) ? 'flex' : 'none');
   setDisp('obVinnyBtn', ok ? 'inline-block' : 'none');
+  setDisp('btnVinny3', (ok && typeof currentEv !== 'undefined' && currentEv) ? 'inline-flex' : 'none');
   vnMiniAggiorna();
 }
 
@@ -4934,17 +4952,25 @@ function vnPulsanti() {
 function vnMiniAggiorna() {
   var p = vnEl('vinnyPanel');
   var visibile = vnPanelOn() && vnH !== 'nasc';
-  var mostra = VN.abilitato && vnModaleAperto() && !visibile;
+  var mostra = VN.abilitato && (vnOvAperto('ovCreate') || (vnOvAperto('ovSettings') && typeof currentEv !== 'undefined' && currentEv)) && !visibile;
   document.body.classList.toggle('vn-mini-on', !!mostra);
-  if (p) p.classList.toggle('vn-via', document.querySelectorAll('.ov.on:not(#ovCreate)').length > 0);
+  if (p) p.classList.toggle('vn-via', document.querySelectorAll('.ov.on:not(#ovCreate):not(#ovSettings)').length > 0);
 }
 
-/* Apre Vinny: se il modulo non e' aperto lo apre vuoto, poi mostra la chat */
-function vinnyApri() {
+/* Apre Vinny. modo "crea": modulo Crea evento (aperto vuoto se serve).
+   modo "modifica": Impostazioni dell'evento scelto, con i suoi dati */
+function vinnyApri(modo) {
   if (!VN.abilitato) return;
+  modo = (modo === 'modifica') ? 'modifica' : 'crea';
+  if (modo === 'modifica' && (typeof currentEv === 'undefined' || !currentEv)) return;
   var ban = vnEl('obHelpBanner'); if (ban) ban.style.display = 'none';
   var ae = document.activeElement; if (ae && ae.blur && ae !== document.body) ae.blur();
-  if (!vnModaleAperto()) { vnConv = null; openCreateEvent(); }
+  if (vnConv && vnConv.modo !== modo) vinnyChiudi(true);
+  vnCtx(modo);
+  if (!vnModaleAperto()) {
+    vnConv = null;
+    if (modo === 'modifica') openEditEvent(); else openCreateEvent();
+  }
   if (!vnConv) vnNuova();
   var p = vnEl('vinnyPanel');
   if (!p) return;
@@ -4971,10 +4997,16 @@ function vinnyChiudi(reset) {
 }
 
 function vnNuova() {
-  vnConv = { id: null, storia: [], attesa: false, bloccata: false, bozza: false, chiusuraDetta: false };
+  vnConv = { id: null, modo: VC.modo, storia: [], attesa: false, bloccata: false, bozza: false, chiusuraDetta: false };
   setHTML('vnMsgs', '');
-  vnAggiungi('vin', VN_SALUTO);
-  vnConv.storia.push({ ruolo: 'vinny', testo: VN_SALUTO });
+  var saluto = VN_SALUTO;
+  if (VC.modo === 'modifica') {
+    var nome = getVal('se_nome').trim() || 'del tuo evento';
+    saluto = 'Ciao, eccomi! Vuoi cambiare qualcosa nella pagina "' + nome + '" o preferisci qualche consiglio per migliorarla?';
+  }
+  vnAggiungi('vin', saluto);
+  vnConv.storia.push({ ruolo: 'vinny', testo: saluto });
+  if (VC.modo === 'modifica' && VN.rimaste !== 0) vnScorciatoia(VN_MSG.consiglio, 'Dammi qualche consiglio');
   if (VN.rimaste === 0) {
     vnAggiungi('vin', VN_MSG.limite_mese);
     vnConv.bloccata = true;
@@ -4982,6 +5014,26 @@ function vnNuova() {
     vnAggiungi('info', VN.rimaste === 1 ? 'Questo mese ti resta 1 conversazione con Vinny.' : 'Questo mese ti restano ' + VN.rimaste + ' conversazioni con Vinny.');
   }
   vnInputStato();
+}
+
+/* Pulsante rapido sotto il saluto: manda una frase pronta */
+function vnScorciatoia(frase, etichetta) {
+  var m = vnEl('vnMsgs');
+  if (!m) return;
+  var w = document.createElement('div');
+  w.className = 'vn-rapide';
+  w.id = 'vnRapide';
+  var b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = etichetta;
+  b.onclick = function() {
+    var t = vnEl('vnTesto');
+    if (!t || !vnConv || vnConv.attesa || vnConv.bloccata) return;
+    t.value = frase;
+    vnInvia();
+  };
+  w.appendChild(b);
+  m.appendChild(w);
 }
 
 function vnScorriGiu() { var m = vnEl('vnMsgs'); if (m) m.scrollTop = m.scrollHeight; }
@@ -5043,7 +5095,7 @@ function vnAutoAltezza() {
 /* Stato attuale del modulo, mandato a Vinny insieme a ogni messaggio */
 function vnModulo() {
   var bl = [], tot = 0;
-  var rows = document.querySelectorAll('#ev_ibList .ib-row');
+  var rows = document.querySelectorAll('#' + vnId('ibList') + ' .ib-row');
   for (var i = 0; i < rows.length; i++) {
     var r = rows[i];
     if (r.getAttribute('data-tipo') === 'immagine') {
@@ -5057,22 +5109,23 @@ function vnModulo() {
       bl.push({ tipo: 'testo', testo: tx });
     }
   }
-  var img = vnEl('ev_img_preview');
-  var ora = parseInt(getVal('ev_info_ora'), 10);
+  var img = vnEl(vnId('img_preview'));
+  var ora = parseInt(getVal(vnId('info_ora')), 10);
+  var dOn = !!dataOraState[VC.p];
   return {
-    nome: getVal('ev_nome').trim().slice(0, 120),
-    luogo: getVal('ev_luogo').trim().slice(0, 200),
-    descrizione: getVal('ev_desc').trim().slice(0, 1500),
-    mostra_data: !!dataOraState.ev,
-    data: dataOraState.ev ? (getVal('ev_data') || null) : null,
-    ora: dataOraState.ev ? (getVal('ev_ora').trim().slice(0, 20) || null) : null,
-    email_avvisi: getVal('ev_email_contatto').trim().slice(0, 200),
-    email_obbligatoria: !!otogState.info_email,
-    avviso: getVal('ev_info_avviso') === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta',
+    nome: getVal(vnId('nome')).trim().slice(0, 120),
+    luogo: getVal(vnId('luogo')).trim().slice(0, 200),
+    descrizione: getVal(vnId('desc')).trim().slice(0, 1500),
+    mostra_data: dOn,
+    data: dOn ? (getVal(vnId('data')) || null) : null,
+    ora: dOn ? (getVal(vnId('ora')).trim().slice(0, 20) || null) : null,
+    email_avvisi: getVal(vnId('email_contatto')).trim().slice(0, 200),
+    email_obbligatoria: !!vnSt().info_email,
+    avviso: getVal(vnId('info_avviso')) === 'riepilogo' ? 'riepilogo' : 'ogni_richiesta',
     ora_riepilogo: isNaN(ora) ? 8 : ora,
-    testo_qr: evQrTipo === 'testo' ? getVal('ev_qr_testo').trim() : null,
-    logo_al_centro_del_qr: evQrTipo === 'logo',
-    tema: evTemaState,
+    testo_qr: vnQrTipo() === 'testo' ? getVal(vnId('qr_testo')).trim() : null,
+    logo_al_centro_del_qr: vnQrTipo() === 'logo',
+    tema: vnTema(),
     immagine_evento_caricata: !!(img && img.style.display !== 'none' && img.src && img.src !== window.location.href),
     blocchi: bl
   };
@@ -5084,6 +5137,7 @@ async function vnInvia() {
   var testo = t.value.trim();
   if (!testo) return;
   testo = testo.slice(0, 2000);
+  var rap = vnEl('vnRapide'); if (rap && rap.parentNode) rap.parentNode.removeChild(rap);
   var vecchi = document.querySelectorAll('#vnMsgs .vn-m.err');
   for (var i = 0; i < vecchi.length; i++) vecchi[i].parentNode.removeChild(vecchi[i]);
   t.value = '';
@@ -5101,7 +5155,7 @@ async function vnInvia() {
     var r = await fetch(VN_URL, {
       method: 'POST',
       headers: vnHeaders(),
-      body: JSON.stringify({ azione: 'messaggio', token: TOKEN, conversazione: conv.id, messaggi: conv.storia.slice(-60), modulo: vnModulo() }),
+      body: JSON.stringify({ azione: 'messaggio', token: TOKEN, conversazione: conv.id, modalita: conv.modo, messaggi: conv.storia.slice(-60), modulo: vnModulo() }),
       signal: ctrl ? ctrl.signal : undefined
     });
     try { d = await r.json(); } catch (e1) { d = null; }
@@ -5124,7 +5178,7 @@ function vnRisposta(d) {
   if (msg) { vnAggiungi('vin', msg); conv.storia.push({ ruolo: 'vinny', testo: msg }); }
   var cambiati = vnApplica(d.campi || {});
   var bozza = !!d.bozza_finale;
-  if (bozza) vnBozza(d.riepilogo);
+  if (bozza) vnBozza(d.riepilogo, d.consigli);
   if (d.ultimo) { conv.bloccata = true; vnAggiungi('info', VN_MSG.piena); }
   if (cambiati.length) vnMostraCampi(cambiati, bozza);
 }
@@ -5155,53 +5209,54 @@ function vnApplica(c) {
     el.value = v;
     out.push(el);
   }
-  testo('ev_nome', c.nome);
-  testo('ev_luogo', c.luogo);
-  testo('ev_desc', c.descrizione);
-  testo('ev_email_contatto', c.email_avvisi);
+  var p = VC.p, st = vnSt();
+  testo(vnId('nome'), c.nome);
+  testo(vnId('luogo'), c.luogo);
+  testo(vnId('desc'), c.descrizione);
+  testo(vnId('email_contatto'), c.email_avvisi);
   var dataOk = typeof c.data === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(c.data);
   if (c.mostra_data === true || (dataOk && c.mostra_data !== false)) {
-    if (!dataOraState.ev) { dataOraSet('ev', true); out.push(vnEl('ev_dataora_tog')); }
-  } else if (c.mostra_data === false && dataOraState.ev) {
-    dataOraSet('ev', false); out.push(vnEl('ev_dataora_tog'));
+    if (!dataOraState[p]) { dataOraSet(p, true); out.push(vnEl(vnId('dataora_tog'))); }
+  } else if (c.mostra_data === false && dataOraState[p]) {
+    dataOraSet(p, false); out.push(vnEl(vnId('dataora_tog')));
   }
-  if (dataOraState.ev) { if (dataOk) testo('ev_data', c.data); testo('ev_ora', c.ora); }
-  if (typeof c.email_obbligatoria === 'boolean' && !!otogState.info_email !== c.email_obbligatoria) {
-    otogState.info_email = c.email_obbligatoria;
-    var tg = vnEl('otog_info_email');
+  if (dataOraState[p]) { if (dataOk) testo(vnId('data'), c.data); testo(vnId('ora'), c.ora); }
+  if (typeof c.email_obbligatoria === 'boolean' && !!st.info_email !== c.email_obbligatoria) {
+    st.info_email = c.email_obbligatoria;
+    var tg = vnEl((p === 'ev' ? 'otog' : 'stog') + '_info_email');
     if (tg) { tg.classList.toggle('on', c.email_obbligatoria); out.push(tg); }
   }
   if (c.avviso === 'ogni_richiesta' || c.avviso === 'riepilogo') {
-    var av = vnEl('ev_info_avviso');
-    if (av && av.value !== c.avviso) { av.value = c.avviso; ibAvvisoUI('ev'); out.push(av); }
+    var av = vnEl(vnId('info_avviso'));
+    if (av && av.value !== c.avviso) { av.value = c.avviso; ibAvvisoUI(p); out.push(av); }
   }
   if (typeof c.ora_riepilogo === 'number' && c.ora_riepilogo >= 0 && c.ora_riepilogo <= 23) {
-    var orr = vnEl('ev_info_ora'), sv = String(Math.round(c.ora_riepilogo));
-    if (orr && orr.value !== sv) { orr.value = sv; if (getVal('ev_info_avviso') === 'riepilogo') out.push(orr); }
+    var orr = vnEl(vnId('info_ora')), sv = String(Math.round(c.ora_riepilogo));
+    if (orr && orr.value !== sv) { orr.value = sv; if (getVal(vnId('info_avviso')) === 'riepilogo') out.push(orr); }
   }
-  if (typeof c.testo_qr === 'string' && c.testo_qr.trim() && !(evQrTipo === 'logo' && evQrLogoB64)) {
-    var q = c.testo_qr.trim().slice(0, 18), qi = vnEl('ev_qr_testo');
-    if (qi && (evQrTipo !== 'testo' || qi.value !== q)) {
-      if (evQrTipo !== 'testo') setQrTipo('ev', 'testo');
+  if (typeof c.testo_qr === 'string' && c.testo_qr.trim() && !(vnQrTipo() === 'logo' && vnQrLogo())) {
+    var q = c.testo_qr.trim().slice(0, 18), qi = vnEl(vnId('qr_testo'));
+    if (qi && (vnQrTipo() !== 'testo' || qi.value !== q)) {
+      if (vnQrTipo() !== 'testo') setQrTipo(p, 'testo');
       qi.value = q;
-      updateQrCount('ev_qr_testo', 'ev_qr_count');
-      updateQrPreview('ev_qr_testo', 'ev_qr_preview');
+      updateQrCount(vnId('qr_testo'), vnId('qr_count'));
+      try { updateQrPreview(vnId('qr_testo'), vnId('qr_preview')); } catch (e0) {}
       out.push(qi);
     }
   }
-  if ((c.tema === 'chiaro' || c.tema === 'scuro') && evTemaState !== c.tema) {
-    setTema('ev', c.tema);
-    var tb = vnEl('ev_tema_' + c.tema);
+  if ((c.tema === 'chiaro' || c.tema === 'scuro') && vnTema() !== c.tema) {
+    setTema(p, c.tema);
+    var tb = vnEl(vnId('tema_' + c.tema));
     if (tb && tb.parentNode) out.push(tb.parentNode);
   }
   if (Array.isArray(c.blocchi)) out = out.concat(vnBlocchi(c.blocchi));
-  try { accSync('ev'); } catch (e) {}
+  try { accSync(p); } catch (e) {}
   return out.filter(function(x) { return !!x; });
 }
 
 /* Blocchi di testo: Vinny sostituisce solo i blocchi suoi che l'organizzatore non ha toccato */
 function vnBlocchi(lista) {
-  var box = vnEl('ev_ibList');
+  var box = vnEl(vnId('ibList'));
   if (!box) return [];
   var nuovi = [];
   lista.forEach(function(b) {
@@ -5223,7 +5278,7 @@ function vnBlocchi(lista) {
   nuovi.forEach(function(val) {
     if (presenti[val] || box.children.length >= IB_MAX) return;
     presenti[val] = true;
-    ibAdd('ev', 'testo', { testo: val });
+    ibAdd(VC.p, 'testo', { testo: val });
     var row = box.lastElementChild;
     if (!row) return;
     row.setAttribute('data-vn', '1');
@@ -5231,7 +5286,7 @@ function vnBlocchi(lista) {
     var ta = row.querySelector('.ib-text');
     if (ta) fatti.push(ta);
   });
-  ibRefresh('ev');
+  ibRefresh(VC.p);
   return fatti;
 }
 
@@ -5254,7 +5309,7 @@ function vnMostraCampi(els, bozza) {
   setTimeout(function() { vnScorriA(els[0]); }, 80);
 }
 function vnScorriA(el) {
-  var ov = vnEl('ovCreate');
+  var ov = vnEl(VC.ov);
   if (!ov || !el || !el.getBoundingClientRect) return;
   var r = el.getBoundingClientRect();
   if (!r.height && !r.width) return;
@@ -5263,7 +5318,7 @@ function vnScorriA(el) {
 }
 /* Scorrimento morbido del modulo; se il browser non lo esegue, salto diretto */
 function vnScorriModulo(top) {
-  var ov = vnEl('ovCreate');
+  var ov = vnEl(VC.ov);
   if (!ov) return;
   var max = Math.max(0, ov.scrollHeight - ov.clientHeight);
   top = Math.min(max, Math.max(0, Math.round(top)));
@@ -5272,7 +5327,16 @@ function vnScorriModulo(top) {
   setTimeout(function() { if (Math.abs(ov.scrollTop - top) > 4) ov.scrollTop = top; }, 900);
 }
 
-function vnBozza(righe) {
+function vnElenco(box, righe, max) {
+  var ul = document.createElement('ul');
+  righe.slice(0, max).forEach(function(x) {
+    var li = document.createElement('li');
+    li.textContent = String(x);
+    ul.appendChild(li);
+  });
+  box.appendChild(ul);
+}
+function vnBozza(righe, consigli) {
   var m = vnEl('vnMsgs');
   if (!m || !vnConv) return;
   vnConv.bozza = true;
@@ -5280,20 +5344,19 @@ function vnBozza(righe) {
   box.className = 'vn-bozza';
   var t = document.createElement('div');
   t.className = 'vn-bozza-t';
-  t.textContent = 'Bozza pronta da controllare';
+  t.textContent = vnConv.modo === 'modifica' ? 'Modifiche pronte da controllare' : 'Bozza pronta da controllare';
   box.appendChild(t);
-  if (Array.isArray(righe) && righe.length) {
-    var ul = document.createElement('ul');
-    righe.slice(0, 6).forEach(function(x) {
-      var li = document.createElement('li');
-      li.textContent = String(x);
-      ul.appendChild(li);
-    });
-    box.appendChild(ul);
+  if (Array.isArray(righe) && righe.length) vnElenco(box, righe, 6);
+  if (Array.isArray(consigli) && consigli.length) {
+    var c = document.createElement('div');
+    c.className = 'vn-bozza-c';
+    c.textContent = 'Per una pagina ancora migliore';
+    box.appendChild(c);
+    vnElenco(box, consigli, 4);
   }
   var b = document.createElement('button');
   b.type = 'button';
-  b.textContent = 'Apri il modulo compilato';
+  b.textContent = vnConv.modo === 'modifica' ? 'Vedi le modifiche' : 'Apri il modulo compilato';
   b.onclick = vnApriModulo;
   box.appendChild(b);
   m.appendChild(box);
@@ -5304,13 +5367,14 @@ function vnApriModulo() {
   if (!vnConv) return;
   if (!vnConv.chiusuraDetta) {
     vnConv.chiusuraDetta = true;
-    vnAggiungi('vin', VN_MSG.chiusura);
-    vnConv.storia.push({ ruolo: 'vinny', testo: VN_MSG.chiusura });
+    var fine = vnConv.modo === 'modifica' ? VN_MSG.chiusura_mod : VN_MSG.chiusura;
+    vnAggiungi('vin', fine);
+    vnConv.storia.push({ ruolo: 'vinny', testo: fine });
   }
   if (vnMobile()) vnAltezza('barra');
   vnScorriModulo(0);
   if (!vnMobile()) {
-    var n = vnEl('ev_nome');
+    var n = vnEl(vnId('nome'));
     if (n) setTimeout(function() { try { n.focus({ preventScroll: true }); } catch (e2) { n.focus(); } }, 950);
   }
 }
@@ -5333,7 +5397,7 @@ function vnCambiaAltezza() {
   vnAltezza(vnH === 'intera' ? 'meta' : (vnH === 'meta' ? 'barra' : 'intera'));
 }
 function vnCampoModulo(t) {
-  if (!t || !t.closest || !t.closest('#ovCreate')) return false;
+  if (!t || !t.closest || !t.closest('#' + VC.ov)) return false;
   var tag = t.tagName;
   if (tag === 'TEXTAREA' || tag === 'SELECT') return true;
   if (tag === 'INPUT') return ['file', 'checkbox', 'radio', 'button', 'submit', 'color', 'range'].indexOf((t.type || '').toLowerCase()) < 0;
@@ -5404,11 +5468,11 @@ function vnPrepara() {
 }
 
 /* Faccina nel titolo del modulo */
-function vnMiniClick() {
+function vnMiniClick(modo) {
   var ae = document.activeElement;
   if (ae && ae.blur && ae !== document.body) ae.blur();
-  if (vnPanelOn()) { vnAltezza('intera'); return; }
-  vinnyApri();
+  if (vnPanelOn() && vnConv && vnConv.modo === modo) { vnAltezza('intera'); return; }
+  vinnyApri(modo);
 }
 
 /* Benvenuto: all'ultimo passo, se Vinny e' abilitato, si sceglie tra "Mi aiuta Vinny" e "Compilo da solo" */
@@ -5425,7 +5489,7 @@ obStep = function(n) {
 function obVinny() {
   var ov = vnEl('ovOnboarding');
   if (ov) ov.style.display = 'none';
-  vinnyApri();
+  vinnyApri('crea');
 }
 function obDaSolo() {
   setDisp('ob-step-3v', 'none');
@@ -5436,8 +5500,8 @@ function obDaSolo() {
 var _vnCloseOvBase = closeOv;
 closeOv = function(id) {
   _vnCloseOvBase(id);
-  if (id === 'ovCreate') vinnyChiudi(true);
-  else if (vnModaleAperto()) document.body.style.overflow = 'hidden';
+  if (id === VC.ov) vinnyChiudi(true);
+  else if (vnOvAperto('ovCreate') || vnOvAperto('ovSettings')) document.body.style.overflow = 'hidden';
   vnMiniAggiorna();
 };
 var _vnOpenOvBase = openOv;
@@ -5589,6 +5653,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.0</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.1</div>
 </body>
 </html>
