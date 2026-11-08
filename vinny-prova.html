@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.1 08/11/2026: pulsante "Chiedi a Vinny" per l'evento gia' creato (apre le Impostazioni con Vinny, che consiglia e modifica i campi), consigli per una pagina migliore nella bozza. v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
+<!-- EventsFun | Punto Info Dashboard | PAGINA DI PROVA VINNY v1.2 08/11/2026: pannello di Vinny con colori caldi e bordo oro, ben distinto dal modulo; sul telefono il pannello resta sempre dentro lo schermo; il selettore degli eventi con un nome lungo non allarga piu' la pagina. v1.1 08/11/2026: pulsante "Chiedi a Vinny" per l'evento gia' creato (apre le Impostazioni con Vinny, che consiglia e modifica i campi), consigli per una pagina migliore nella bozza. v1.0 08/11/2026: copia della v2.0 con Vinny (assistente con intelligenza artificiale che consiglia e precompila il modulo "Crea evento"); risponde solo agli account abilitati dal gestionale; non collegata dal sito e fuori dai motori di ricerca. Base: v2.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v1.9 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (prima ripartiva dal primo evento dell'elenco). v1.8 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v1.7 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; interruttore "Mostra data e ora nella pagina" (spento alla creazione): senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa; "Senza data" negli elenchi. v1.6 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v1.5 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v1.4 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v1.3 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v1.2 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v1.1 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v1.0 derivata da Agenzia v7.1: solo modalita' Informazioni) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -402,25 +402,33 @@ body.light .vn-btn{color:var(--gold-dark);border-color:var(--gold-dark)}
 .ob-vn-btns{display:flex;flex-direction:column;gap:10px;margin-top:22px}
 .ob-vn-sec{width:100%;padding:13px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:600;cursor:pointer}
 
-/* Pannello della chat */
-.vn{position:fixed;z-index:300;display:none;flex-direction:column;background:var(--bg2);color:var(--text);font-family:"DM Sans",sans-serif;box-shadow:0 10px 40px rgba(0,0,0,0.45)}
+/* Selettore degli eventi: con un nome lungo non allarga piu' la pagina sul telefono */
+.ev-selector-inner{min-width:0;flex:1 1 240px}
+.ev-selector select{min-width:0;width:100%;text-overflow:ellipsis}
+
+/* Pannello della chat: colori caldi e bordo oro, per distinguerlo dal modulo e dalla dashboard */
+.vn{--vn-bg:#1e1a13;--vn-head:#2b2418;--vn-bolla:#2e281e;--vn-linea:rgba(201,169,110,0.28)}
+body.light .vn{--vn-bg:#fbf6ec;--vn-head:#f1e4c9;--vn-bolla:#ffffff;--vn-linea:rgba(138,110,62,0.35)}
+.vn{position:fixed;z-index:300;display:none;flex-direction:column;background:var(--vn-bg);color:var(--text);font-family:"DM Sans",sans-serif;box-shadow:0 10px 40px rgba(0,0,0,0.5)}
 .vn.on{display:flex}
 .vn-maniglia{display:none;justify-content:center;padding:8px 0 2px;cursor:grab;touch-action:none}
-.vn-maniglia span{width:42px;height:5px;border-radius:3px;background:var(--border);display:block}
-.vn-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--border2);flex-shrink:0}
+.vn-maniglia span{width:46px;height:5px;border-radius:3px;background:var(--gold);opacity:.75;display:block}
+.vn-maniglia{background:var(--vn-head)}
+.vn-head{display:flex;align-items:center;gap:10px;padding:12px 14px;border-bottom:1px solid var(--vn-linea);flex-shrink:0;background:var(--vn-head)}
 .vn-faccia{width:44px;height:44px;flex-shrink:0;display:block}
 .vn-htxt{flex:1;min-width:0}
-.vn-nome{font-family:"Syne",sans-serif;font-weight:800;font-size:16px;line-height:1.2}
+.vn-nome{font-family:"Syne",sans-serif;font-weight:800;font-size:16px;line-height:1.2;color:var(--gold)}
+body.light .vn-nome{color:var(--gold-dark)}
 .vn-sub{font-size:11.5px;color:var(--text-dim);line-height:1.3}
 .vn-hbtn{width:36px;height:36px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text-muted);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .vn-hbtn:hover{color:var(--gold);border-color:rgba(201,169,110,0.5)}
 .vn-msgs{flex:1;overflow-y:auto;padding:14px 14px 6px;display:flex;flex-direction:column;gap:10px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .vn-m{max-width:88%;padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.5;white-space:pre-wrap;word-break:break-word;overflow-wrap:break-word}
-.vn-m.vin{align-self:flex-start;background:var(--bg3);border:1px solid var(--border2);border-bottom-left-radius:4px}
+.vn-m.vin{align-self:flex-start;background:var(--vn-bolla);border:1px solid var(--vn-linea);border-bottom-left-radius:4px}
 .vn-m.ute{align-self:flex-end;background:rgba(201,169,110,0.16);border:1px solid rgba(201,169,110,0.3);border-bottom-right-radius:4px}
 .vn-m.err{align-self:stretch;max-width:none;background:rgba(224,128,128,0.1);border:1px solid rgba(224,128,128,0.35);font-size:13px}
 .vn-m.info{align-self:stretch;max-width:none;background:transparent;border:1px dashed var(--border);color:var(--text-muted);font-size:12.5px;text-align:center}
-.vn-pensa{align-self:flex-start;display:flex;gap:5px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border2);border-radius:14px;border-bottom-left-radius:4px}
+.vn-pensa{align-self:flex-start;display:flex;gap:5px;padding:12px 14px;background:var(--vn-bolla);border:1px solid var(--vn-linea);border-radius:14px;border-bottom-left-radius:4px}
 .vn-pensa i{width:7px;height:7px;border-radius:50%;background:var(--gold);opacity:.35;animation:vnPunto 1.2s infinite}
 .vn-pensa i:nth-child(2){animation-delay:.2s}.vn-pensa i:nth-child(3){animation-delay:.4s}
 .vn-bozza{align-self:stretch;border:1.5px solid rgba(201,169,110,0.55);border-radius:14px;padding:14px;background:rgba(201,169,110,0.08)}
@@ -434,13 +442,13 @@ body.light .vn-bozza-t{color:var(--gold-dark)}
 body.light .vn-rapide button{color:var(--gold-dark);border-color:var(--gold-dark)}
 .vn-bozza button{width:100%;padding:12px;border:none;border-radius:9px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer}
 .vn-nota{font-size:11px;color:var(--text-dim);line-height:1.4;padding:0 14px 6px;flex-shrink:0}
-.vn-input{display:flex;gap:8px;align-items:flex-end;padding:8px 12px 12px;border-top:1px solid var(--border2);flex-shrink:0}
+.vn-input{display:flex;gap:8px;align-items:flex-end;padding:8px 12px 12px;border-top:1px solid var(--vn-linea);flex-shrink:0}
 .vn-input textarea{flex:1;min-width:0;resize:none;max-height:120px;min-height:44px;background:var(--inp-bg);border:1px solid var(--inp-border);border-radius:10px;padding:11px 12px;font-family:"DM Sans",sans-serif;font-size:16px;line-height:1.35;color:var(--text);outline:none}
 .vn-input textarea:focus{border-color:rgba(201,169,110,0.55)}
 .vn-input textarea::placeholder{color:var(--text-dim)}
 .vn-input button{height:44px;padding:0 16px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:"DM Sans",sans-serif;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0}
 .vn-input button:disabled,.vn-input textarea:disabled{opacity:.5;cursor:default}
-.vn-barretta{display:none;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;min-height:60px}
+.vn-barretta{display:none;align-items:center;gap:10px;padding:8px 12px;cursor:pointer;min-height:60px;background:var(--vn-head)}
 .vn-barretta img{width:40px;height:40px;flex-shrink:0}
 .vn-barretta span{flex:1;min-width:0;font-size:13px;line-height:1.35;color:var(--text-muted);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .vn-barretta b{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
@@ -467,13 +475,14 @@ body.vn-mini-on #evModalTitle,body.vn-mini-on #seModalTitle{display:inline-block
 
 /* Computer: pannello laterale a destra, il modulo resta visibile */
 @media (min-width:900px){
-  .vn{top:0;right:0;bottom:0;width:400px;border-left:1px solid var(--border)}
+  .vn{top:0;right:0;bottom:0;width:400px;border-left:2px solid var(--gold)}
   body.vn-on #ovCreate,body.vn-on #ovSettings{padding-right:420px}
   #vnAltezzaBtn{display:none}
 }
 /* Telefono e tablet stretto: tre altezze */
 @media (max-width:899px){
-  .vn{left:0;right:0;bottom:0;border-top:1px solid var(--border);border-radius:18px 18px 0 0;max-height:100vh;max-height:100dvh}
+  .vn{left:0;right:0;bottom:0;border-top:2px solid var(--gold);border-radius:18px 18px 0 0;overflow:hidden;max-height:100vh;max-height:100dvh;box-shadow:0 -12px 34px rgba(0,0,0,0.6)}
+  body.light .vn{box-shadow:0 -10px 30px rgba(60,40,10,0.22)}
   .vn-maniglia{display:flex}
   .vn.vn-intera{height:92vh;height:calc(100dvh - 40px)}
   .vn.vn-meta{height:52vh;height:52dvh}
@@ -4984,7 +4993,7 @@ function vinnyApri(modo) {
 /* Chiude il pannello. reset = true quando si chiude il modulo: la conversazione finisce */
 function vinnyChiudi(reset) {
   var p = vnEl('vinnyPanel');
-  if (p) { p.classList.remove('on'); p.style.bottom = ''; p.style.height = ''; }
+  if (p) { p.classList.remove('on'); p.style.bottom = ''; p.style.height = ''; p.style.left = ''; p.style.width = ''; p.style.right = ''; }
   ['vn-on', 'vn-h-intera', 'vn-h-meta', 'vn-h-barra', 'vn-h-nasc'].forEach(function(c) { document.body.classList.remove(c); });
   if (reset) {
     vnConv = null;
@@ -5408,7 +5417,13 @@ function vnAdattaViewport() {
   var p = vnEl('vinnyPanel');
   if (!p) return;
   var vv = window.visualViewport;
-  if (!vv || !vnMobile() || !vnPanelOn()) { p.style.bottom = ''; p.style.height = ''; return; }
+  if (!vv || !vnMobile() || !vnPanelOn()) { p.style.bottom = ''; p.style.height = ''; p.style.left = ''; p.style.width = ''; p.style.right = ''; return; }
+  /* Il pannello resta sempre dentro la parte di pagina che si vede, anche se la pagina e' piu' larga dello schermo o ingrandita */
+  if (window.innerWidth - vv.width > 2 || vv.offsetLeft > 1) {
+    p.style.left = Math.round(vv.offsetLeft) + 'px';
+    p.style.width = Math.round(vv.width) + 'px';
+    p.style.right = 'auto';
+  } else { p.style.left = ''; p.style.width = ''; p.style.right = ''; }
   var kb = window.innerHeight - vv.height - vv.offsetTop;
   if (kb > 80) {
     p.style.bottom = Math.round(kb) + 'px';
@@ -5653,6 +5668,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.1</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">prova Vinny v1.2</div>
 </body>
 </html>
