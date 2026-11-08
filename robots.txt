@@ -8,5 +8,6 @@ Disallow: /info-dashboard.html
 Disallow: /newsletter-agenzia.html
 Disallow: /statistiche-agenzia.html
 Disallow: /newsletter-demo.html
+Disallow: /vinny-prova.html
 
 Sitemap: https://eventsfun.com/sitemap.xml
