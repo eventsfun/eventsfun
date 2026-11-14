@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Base Dashboard | v7.2 07/11/2026: nota "Evento al completo" sotto lo stato quando i posti sono finiti (Base e Pro non hanno la lista d'attesa: la pagina pubblica ferma le iscrizioni). v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Base Dashboard | v7.3 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v7.2 07/11/2026: nota "Evento al completo" sotto lo stato quando i posti sono finiti (Base e Pro non hanno la lista d'attesa: la pagina pubblica ferma le iscrizioni). v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -283,6 +283,14 @@ body.light .sinfo p.nota-completo{color:var(--gold-dark)}
 /* 05/11/2026: menu a tendina disegnati dalla pagina, cosi' Safari (iPhone, iPad, Mac) non li mostra bianchi e illeggibili sui fondi scuri */
 select:not([multiple]):not([size]){-webkit-appearance:none!important;-moz-appearance:none!important;appearance:none!important;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23C9A96E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 12px center!important;background-size:12px 8px!important;padding-right:34px!important}
 select:not([multiple]):not([size])::-ms-expand{display:none}
+/* 14/11/2026: campi aggiuntivi leggibili su ogni dispositivo: la domanda occupa una riga intera, sotto tipo, Obbligatorio e X (sui telefoni il tipo ha una riga sua) */
+.cf-row{grid-template-columns:minmax(0,1fr) auto auto!important}
+.cf-row>[id^="cfl"]{grid-column:1/-1;width:100%}
+.cf-row>select{min-width:0;width:100%}
+.cf-row>.req-toggle{width:auto;height:auto;min-height:36px;padding:0 12px;white-space:nowrap;align-self:stretch;font-size:12px}
+.cf-row>.rm-btn{align-self:center}
+@media(max-width:600px){.cf-row{grid-template-columns:minmax(0,1fr) auto!important}.cf-row>select{grid-column:1/-1}.cf-row>.req-toggle{justify-self:start}}
+.cf-row .cf-err{border-color:#e05b5b!important;box-shadow:0 0 0 2px rgba(224,91,91,.25)}
 </style>
 </head>
 <body>
@@ -1644,6 +1652,7 @@ async function saveEvent() {
   var emailContatto = document.getElementById('ev_email_contatto').value.trim();
   if (!nome || !data || !ora || !luogo) { alert(otogState.online ? 'Compila Nome, Data, Ora e Piattaforma.' : 'Compila Nome, Data, Ora e Luogo.'); return; }
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
+  var cfErr = cfManca('ccfList'); if (cfErr) { alert(cfErr); return; }
   var img = document.getElementById('ev_img_preview');
   var evData = {
     activation_token: TOKEN,
@@ -1743,6 +1752,7 @@ async function saveSettings() {
   var emailContatto = document.getElementById('se_email_contatto').value.trim();
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   if (!document.getElementById('se_data').value) { alert('Inserisci la data dell\'evento.'); return; }
+  var cfErrS = cfManca('scfList'); if (cfErrS) { alert(cfErrS); return; }
   var si = document.getElementById('se_img_preview');
   var upd = {
     nome: nome,
@@ -2105,10 +2115,10 @@ function addCF(prefix, listId, data) {
     var opts = (data && data.options) ? data.options : [];
     optionsHtml = '<div class="cf-options-area">'
       + '<div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px">' + (type === 'dropdown' ? 'Opzioni scelta singola' : 'Opzioni scelta multipla') + '</div>'
-      + '<div class="cf-opt-list" id="cfopts' + id + '">' + opts.map(function(o) { return buildOptItem(id, o); }).join('') + '</div>'
+      + '<div class="cf-opt-list" id="cfopts' + id + '">' + (opts.length ? opts.map(function(o) { return buildOptItem(id, o); }).join('') : buildOptItem(id, '')) + '</div>'
       + '<button class="cf-add-opt" onclick="addOptItem(\'' + id + '\')">+ Aggiungi opzione</button></div>';
   }
-  d.innerHTML = '<input class="row-inp" placeholder="Nome campo (es. Azienda)" id="cfl' + id + '" value="' + (data && data.label ? escHtml(data.label) : '') + '">'
+  d.innerHTML = '<input class="row-inp" placeholder="Domanda (es. Taglia maglietta)" id="cfl' + id + '" value="' + (data && data.label ? escHtml(data.label) : '') + '">'
     + '<select class="row-inp" id="cft' + id + '" onchange="onCFTypeChange(\'' + id + '\',this.value)" style="padding:9px 8px">'
     + '<option value="text"' + (type==='text'?' selected':'') + '>Testo libero</option>'
     + '<option value="textarea"' + (type==='textarea'?' selected':'') + '>Testo lungo (note)</option>'
@@ -2116,7 +2126,7 @@ function addCF(prefix, listId, data) {
     + '<option value="checkbox"' + (type==='checkbox'?' selected':'') + '>Scelta multipla (caselle)</option>'
     + '<option value="numero"' + (type==='numero'?' selected':'') + '>Numero (tendina 0-50)</option>'
     + '</select>'
-    + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Obbligatorio?" onclick="this.classList.toggle(\'on\')">*</button>'
+    + '<button class="req-toggle ' + (req ? 'on' : '') + '" id="cfr_' + id + '" title="Tocca per rendere obbligatoria la risposta" onclick="this.classList.toggle(\'on\')">* Obbligatorio</button>'
     + '<button class="rm-btn" onclick="document.getElementById(\'cfr' + id + '\').remove()">✕</button>'
     + optionsHtml;
   document.getElementById(listId).appendChild(d);
@@ -2139,6 +2149,8 @@ function onCFTypeChange(cfId, type) {
       + '<div class="cf-opt-list" id="cfopts' + cfId + '"></div>'
       + '<button class="cf-add-opt" onclick="addOptItem(\'' + cfId + '\')">+ Aggiungi opzione</button>';
     row.appendChild(area);
+    addOptItem(cfId);
+    var primo = area.querySelector('.cf-opt-list input'); if (primo) { try { primo.focus(); } catch (e) {} }
   }
 }
 function collectSP(listId) {
@@ -2151,6 +2163,43 @@ function collectSP(listId) {
   });
   return sp;
 }
+function cfManca(listId) {
+  // 14/11/2026: controlla i campi aggiuntivi prima di salvare (prima venivano scartati o salvati vuoti senza avvisare)
+  var list = document.getElementById(listId); if (!list) return '';
+  var a = list.parentElement;
+  while (a && a !== document.body) {
+    if (!a.classList.contains('acc-body') && getComputedStyle(a).display === 'none') return '';
+    a = a.parentElement;
+  }
+  var msg = '', bad = null;
+  list.querySelectorAll('.cf-err').forEach(function(e){ e.classList.remove('cf-err'); });
+  var rows = list.querySelectorAll('.cf-row');
+  for (var i = 0; i < rows.length && !msg; i++) {
+    var row = rows[i];
+    var l = row.querySelector('[id^="cfl"]'), t = row.querySelector('[id^="cft"]');
+    var lbl = l ? l.value.trim() : '', type = t ? t.value : 'text';
+    var opts = [];
+    row.querySelectorAll('.cf-opt-list input').forEach(function(inp){ if (inp.value.trim()) opts.push(inp.value.trim()); });
+    var conOpzioni = (type === 'dropdown' || type === 'checkbox');
+    if (!lbl) {
+      if (type === 'text' && !opts.length) continue;
+      msg = 'Scrivi la domanda del campo aggiuntivo (per esempio "Taglia maglietta"), oppure toglilo con la X.'; bad = l;
+    } else if (conOpzioni && !opts.length) {
+      msg = 'Il campo "' + lbl + '" è ' + (type === 'dropdown' ? 'a scelta singola' : 'a scelta multipla') + ': scrivi almeno una opzione da far scegliere.';
+      bad = row.querySelector('.cf-opt-list input') || row.querySelector('.cf-add-opt');
+    }
+  }
+  if (bad) {
+    var p = bad.parentElement;
+    while (p && p !== document.body) { if (p.classList.contains('acc')) p.classList.add('open'); p = p.parentElement; }
+    bad.classList.add('cf-err');
+    bad.addEventListener('input', function(){ bad.classList.remove('cf-err'); }, { once: true });
+    try { bad.scrollIntoView({ block: 'center' }); } catch (e) {}
+    setTimeout(function(){ try { bad.focus(); } catch (e) {} }, 50);
+  }
+  return msg;
+}
+
 function collectCF(listId) {
   var cf = [];
   document.querySelectorAll('#' + listId + ' .cf-row').forEach(function(row) {
@@ -3312,6 +3361,6 @@ applyOpts = function(ev) {
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.2 base</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.3 base</div>
 </body>
 </html>
