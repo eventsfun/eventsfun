@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v2.0 05/11/2026: menu a tendina del modulo "Hai domande?" disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili). v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
+<!-- EventsFun | Sito vetrina | v2.1 16/11/2026: pulsanti "Prova la demo gratuita" e "Vedi i prezzi" nella prima schermata; "Demo gratuita" dorato nel menu (computer e telefono), "Contatti" come voce normale; nuove etichette "Perfetto per" (Comuni & Pro loco, Associazioni & Parrocchie, Feste & Sagre); Casi d'uso con Agenzie per prime e nuova casella "Comuni, pro loco e associazioni"; titolo prezzi "Quattro piani". v2.0 05/11/2026: menu a tendina del modulo "Hai domande?" disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili). v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -51,6 +51,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 40px;height:68px;d
 h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,80px);font-weight:800;line-height:1.05;letter-spacing:-2px;margin-bottom:24px;color:var(--text)}
 h1 em{font-style:normal;color:var(--gold)}
 .hero-sub{font-size:clamp(16px,2vw,20px);line-height:1.7;color:var(--text-muted);max-width:560px;margin:0 auto 44px;font-weight:300}
+.hero-ctas{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin:-12px auto 28px}
+@media(max-width:480px){.hero-ctas{flex-direction:column;align-items:stretch;max-width:320px}.hero-ctas a{text-align:center}}
 
 .btn-primary{padding:14px 32px;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;letter-spacing:.3px}
 .btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(201,169,110,0.3)}
@@ -382,8 +384,9 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     <a href="#prezzi">Prezzi</a>
     <a href="#faq">FAQ</a>
     <a href="guide/">Guide</a>
+    <a href="#contatti">Contatti</a>
     <a href="https://eventsfun.com/area-personale.html" style="padding:9px 20px;border-radius:8px;border:1px solid rgba(255,255,255,0.15);color:var(--text);font-size:13px;font-weight:500;text-decoration:none;transition:all .2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.35)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.15)'">Area personale</a>
-    <a href="#contatti" class="nav-cta">Contatti</a>
+    <a href="demo.html" class="nav-cta">Demo gratuita</a>
   </div>
   <button class="nav-burger" id="navBurger" aria-label="Menu" onclick="toggleMobileMenu()">
     <span></span><span></span><span></span>
@@ -396,9 +399,9 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
   <a href="#prezzi" onclick="closeMobileMenu()">Prezzi</a>
   <a href="#faq" onclick="closeMobileMenu()">FAQ</a>
   <a href="guide/" onclick="closeMobileMenu()">Guide</a>
-  <a href="demo.html" onclick="closeMobileMenu()">Demo gratuita</a>
+  <a href="#contatti" onclick="closeMobileMenu()">Contatti</a>
   <a href="https://eventsfun.com/area-personale.html" onclick="closeMobileMenu()">Area personale</a>
-  <a href="#contatti" class="nav-cta-m" onclick="closeMobileMenu()">Contatti</a>
+  <a href="demo.html" class="nav-cta-m" onclick="closeMobileMenu()">Demo gratuita</a>
 </div>
 
 <!-- HERO -->
@@ -411,7 +414,11 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <div class="hero-badge">Gestione eventi semplificata</div>
       <h1>Le iscrizioni al tuo evento,<br><em>senza complicazioni</em></h1>
       <p class="hero-sub">Crea la pagina del tuo evento in pochi minuti. Raggiungi i partecipanti come vuoi - QR code sulla locandina, link sui social, bottone sul sito, o direttamente nella tua newsletter.</p>
-      <p style="font-size:13px;color:var(--text-dim);margin:-24px auto 0;max-width:560px">I dati dei tuoi iscritti restano solo tuoi. Nessun marketplace, nessun intermediario. <a href="#tuoi-dati" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4);padding-bottom:1px">Scopri perché &darr;</a></p>
+      <div class="hero-ctas">
+        <a href="demo.html" class="btn-primary">Prova la demo gratuita →</a>
+        <a href="#prezzi" class="btn-secondary">Vedi i prezzi</a>
+      </div>
+      <p style="font-size:13px;color:var(--text-dim);margin:0 auto;max-width:560px">I dati dei tuoi iscritti restano solo tuoi. Nessun marketplace, nessun intermediario. <a href="#tuoi-dati" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4);padding-bottom:1px">Scopri perché &darr;</a></p>
 
     </div>
   </div>
@@ -613,6 +620,9 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <span class="proof-tag">🏃 Sport & Running</span>
       <span class="proof-tag">🍽️ Cene di gala</span>
       <span class="proof-tag">📧 Newsletter & Community</span>
+      <span class="proof-tag">&#127963;&#65039; Comuni & Pro loco</span>
+      <span class="proof-tag">&#129309; Associazioni & Parrocchie</span>
+      <span class="proof-tag">&#127881; Feste & Sagre</span>
     </div>
   </div>
 </div>
@@ -809,6 +819,11 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     </div>
     <div class="cases-grid fade-up" style="transition-delay:.1s">
       <div class="case">
+        <span class="case-emoji">🎭</span>
+        <h3>Agenzie di eventi</h3>
+        <p>Gestisci più eventi simultaneamente da un'unica dashboard. Un tool professionale che puoi presentare ai clienti come valore aggiunto.</p>
+      </div>
+      <div class="case">
         <span class="case-emoji">📧</span>
         <h3>Newsletter & community</h3>
         <p>Hai già un pubblico di iscritti? Inserisci il link dell'evento nella tua newsletter e i tuoi contatti si iscrivono in un click. Nessun tool aggiuntivo, nessuna piattaforma extra.</p>
@@ -819,11 +834,6 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
         <p>Aziende, formatori e organizzatori di eventi a distanza: raccogli le iscrizioni e invia il link di partecipazione agli iscritti in automatico, con promemoria prima dell'inizio.</p>
       </div>
       <div class="case">
-        <span class="case-emoji">🎭</span>
-        <h3>Agenzie di eventi</h3>
-        <p>Gestisci più eventi simultaneamente da un'unica dashboard. Un tool professionale che puoi presentare ai clienti come valore aggiunto.</p>
-      </div>
-      <div class="case">
         <span class="case-emoji">🎓</span>
         <h3>Conferenze & Workshop</h3>
         <p>Raccogli dati specifici per ogni partecipante - azienda, ruolo, settore - e organizza l'accoglienza in modo professionale.</p>
@@ -832,6 +842,11 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
         <span class="case-emoji">🏆</span>
         <h3>Sport & Running</h3>
         <p>Numero pettorali, categoria, t-shirt: campi personalizzati per ogni necessità. Gestisci centinaia di iscrizioni senza stress.</p>
+      </div>
+      <div class="case">
+        <span class="case-emoji">&#127963;&#65039;</span>
+        <h3>Comuni, pro loco & associazioni</h3>
+        <p>Sagre, feste di paese, corsi e raccolte solidali: raccogli le iscrizioni, ricevi le richieste di informazioni o prendi le prenotazioni dei prodotti da ritirare, con il QR sulla locandina.</p>
       </div>
     </div>
   </div>
@@ -1071,7 +1086,7 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
   <div class="pricing-inner" style="max-width:960px">
     <div class="pricing-header fade-up">
       <div class="section-label">Prezzi</div>
-      <h2 class="section-title" style="font-size:clamp(28px,4vw,48px)">Tre piani, zero sorprese</h2>
+      <h2 class="section-title" style="font-size:clamp(28px,4vw,48px)">Quattro piani, zero sorprese</h2>
       <p class="section-sub" style="margin:0 auto">Nessun costo per iscrizione, nessun rinnovo automatico sui piani evento. Paghi esattamente quello che usi.</p>
     </div>
 
@@ -1682,7 +1697,7 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.0</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.1</div>
 <script src="/misura.js" defer></script>
 </body>
 </html>
