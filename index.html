@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Sito vetrina | v2.1 16/11/2026: blocco centrale della prima schermata centrato anche su computer (prima spostato a sinistra fino a 100 px) e largo 900 px, così la parola "complicazioni" del titolo non sborda; pulsanti "Prova la demo gratuita" e "Vedi i prezzi" nella prima schermata; "Demo gratuita" dorato nel menu (computer e telefono), "Contatti" come voce normale; nuove etichette "Perfetto per" (Comuni & Pro loco, Associazioni & Parrocchie, Feste & Sagre); Casi d'uso con Agenzie per prime e nuova casella "Comuni, pro loco e associazioni"; titolo prezzi "Quattro piani". v2.0 05/11/2026: menu a tendina del modulo "Hai domande?" disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili). v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
+<!-- EventsFun | Sito vetrina | v2.2 16/11/2026: modulo "Hai domande?" semplificato (un campo "Nome e cognome", in vista solo nome, email e messaggio; telefono, piano e tipo di evento sotto "Aggiungi telefono e dettagli (facoltativo)"), richiede contatti-sito v7; titolo "Come funziona" sostituito da "Metti un QR sulla locandina. Le iscrizioni arrivano da sole." v2.1 16/11/2026: blocco centrale della prima schermata centrato anche su computer (prima spostato a sinistra fino a 100 px) e largo 900 px, così la parola "complicazioni" del titolo non sborda; pulsanti "Prova la demo gratuita" e "Vedi i prezzi" nella prima schermata; "Demo gratuita" dorato nel menu (computer e telefono), "Contatti" come voce normale; nuove etichette "Perfetto per" (Comuni & Pro loco, Associazioni & Parrocchie, Feste & Sagre); Casi d'uso con Agenzie per prime e nuova casella "Comuni, pro loco e associazioni"; titolo prezzi "Quattro piani". v2.0 05/11/2026: menu a tendina del modulo "Hai domande?" disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili). v1.9 03/11/2026: Punto Info con pagine anche senza data (casella "Una pagina con tutto", etichetta "Uffici e servizi", frase "Perfetto per") e nuova FAQ "Una pagina del Punto Info deve avere per forza una data?"; link alla nuova guida "Pagina informazioni con QR code" nel fondo pagina. v1.8 28/10/2026: nuova sezione "Prenotazioni da ritirare" dopo il Punto Info, FAQ e link alla guida dedicata. v1.7 04/10/2026: assistenza nelle card (Base, Pro, Punto Info: Assistenza via email; Agenzia: Supporto prioritario), FAQ "Come ottengo assistenza?", tolti i tempi di risposta promessi. v1.6 Punto Info e modulo contatti vero; v1.1 -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -211,6 +211,11 @@ h1 em{font-style:normal;color:var(--gold)}
 .form-field select option{background:#1a1a1a;color:var(--text)}
 .form-field textarea{resize:none;height:90px;margin-bottom:0}
 .form-full{margin-bottom:14px}
+.form-extra-btn{display:inline-flex;align-items:center;gap:8px;margin:0 0 14px;padding:8px 0;border:none;background:none;color:var(--gold);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;text-align:left}
+.form-extra-btn:hover{color:var(--gold-light)}
+.form-extra-btn .fx-ico{display:inline-block;flex-shrink:0;transition:transform .2s}
+.form-extra-btn[aria-expanded="true"] .fx-ico{transform:rotate(90deg)}
+.form-extra[hidden]{display:none}
 .form-submit{width:100%;margin-top:8px;padding:15px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:#0A0A0A;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;letter-spacing:.5px;cursor:pointer;transition:all .2s}
 .form-submit:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(201,169,110,0.25)}
 .form-success{display:none;text-align:center;padding:20px 0}
@@ -682,7 +687,7 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
   <div class="how-inner">
     <div class="how-header fade-up">
       <div class="section-label">Il processo</div>
-      <h2 class="section-title">Come funziona,<br>passo dopo passo</h2>
+      <h2 class="section-title">Metti un QR sulla locandina.<br>Le iscrizioni arrivano da sole.</h2>
       <p class="section-sub">Dal momento in cui crei l'evento a quando accogli i partecipanti - tutto automatico.</p>
     </div>
 
@@ -1428,57 +1433,56 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     <div class="demo-form fade-up" style="transition-delay:.1s" id="demoForm">
       <div class="form-row">
         <div class="form-field">
-          <label>Nome *</label>
-          <input id="f_nome" type="text" placeholder="Mario" maxlength="80" autocomplete="given-name">
+          <label for="f_nome">Nome e cognome *</label>
+          <input id="f_nome" type="text" placeholder="Mario Rossi" maxlength="80" autocomplete="name">
         </div>
         <div class="form-field">
-          <label>Cognome *</label>
-          <input id="f_cognome" type="text" placeholder="Rossi" maxlength="80" autocomplete="family-name">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Email *</label>
+          <label for="f_email">Email *</label>
           <input id="f_email" type="email" placeholder="mario@agenzia.it" maxlength="200" autocomplete="email">
-        </div>
-        <div class="form-field">
-          <label>Telefono</label>
-          <input id="f_tel" type="tel" placeholder="333 0000000" maxlength="40" autocomplete="tel">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-field">
-          <label>Piano di interesse</label>
-          <select id="f_piano">
-            <option value="">Seleziona...</option>
-            <option>Evento Base - €29</option>
-            <option>Evento Pro - €79</option>
-            <option>Agenzia - €69/mese</option>
-            <option>Agenzia - €588/anno (2 mesi gratis)</option>
-            <option>Punto Info - €9,90/mese</option>
-            <option>Punto Info - €79/anno</option>
-            <option>Non so ancora, voglio informazioni</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label>Tipo di evento</label>
-          <select id="f_tipo">
-            <option value="">Seleziona...</option>
-            <option>Agenzia di eventi</option>
-            <option>Comune / Pro loco / Associazione / Parrocchia</option>
-            <option>Conferenza / Workshop</option>
-            <option>Sport / Running</option>
-            <option>Fiera / Esposizione</option>
-            <option>Festa / Sagra</option>
-            <option>Cena di gala</option>
-            <option>Altro</option>
-          </select>
         </div>
       </div>
       <div class="form-full">
         <div class="form-field">
-          <label>Messaggio</label>
+          <label for="f_msg">Messaggio</label>
           <textarea id="f_msg" maxlength="5000" placeholder="Es. ho bisogno di una personalizzazione grafica, ho un evento particolare, voglio un preventivo per più eventi..."></textarea>
+        </div>
+      </div>
+      <button type="button" class="form-extra-btn" id="formExtraBtn" aria-expanded="false" aria-controls="formExtra" onclick="apriDettagliForm()"><svg class="fx-ico" width="8" height="12" viewBox="0 0 8 12" aria-hidden="true"><path d="M1.5 1.5l5 4.5-5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Aggiungi telefono e dettagli (facoltativo)</button>
+      <div class="form-extra" id="formExtra" hidden>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="f_tel">Telefono</label>
+            <input id="f_tel" type="tel" placeholder="333 0000000" maxlength="40" autocomplete="tel">
+          </div>
+          <div class="form-field">
+            <label for="f_piano">Piano di interesse</label>
+            <select id="f_piano">
+              <option value="">Seleziona...</option>
+              <option>Evento Base - €29</option>
+              <option>Evento Pro - €79</option>
+              <option>Agenzia - €69/mese</option>
+              <option>Agenzia - €588/anno (2 mesi gratis)</option>
+              <option>Punto Info - €9,90/mese</option>
+              <option>Punto Info - €79/anno</option>
+              <option>Non so ancora, voglio informazioni</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-full">
+          <div class="form-field">
+            <label for="f_tipo">Tipo di evento</label>
+            <select id="f_tipo">
+              <option value="">Seleziona...</option>
+              <option>Agenzia di eventi</option>
+              <option>Comune / Pro loco / Associazione / Parrocchia</option>
+              <option>Conferenza / Workshop</option>
+              <option>Sport / Running</option>
+              <option>Fiera / Esposizione</option>
+              <option>Festa / Sagra</option>
+              <option>Cena di gala</option>
+              <option>Altro</option>
+            </select>
+          </div>
         </div>
       </div>
       <div style="display:flex;align-items:flex-start;gap:10px;margin-top:6px;margin-bottom:6px;padding:13px 16px;background:rgba(201,169,110,0.04);border:1px solid rgba(201,169,110,0.15);border-radius:8px">
@@ -1615,20 +1619,27 @@ function ripristinaBtnForm(){
   btn.disabled = false;
   btn.textContent = 'Invia messaggio →';
 }
+function apriDettagliForm(){
+  var btn = document.getElementById('formExtraBtn');
+  var box = document.getElementById('formExtra');
+  var aperto = btn.getAttribute('aria-expanded') === 'true';
+  btn.setAttribute('aria-expanded', aperto ? 'false' : 'true');
+  box.hidden = aperto;
+  if(!aperto){ var t = document.getElementById('f_tel'); if(t) t.focus(); }
+}
 function submitDemo(){
   var btn = document.getElementById('formBtn');
   if(btn.disabled) return;
   document.getElementById('formMsg').style.display = 'none';
   var nome = valoreCampo('f_nome');
-  var cognome = valoreCampo('f_cognome');
   var email = valoreCampo('f_email');
   var gdpr = document.getElementById('gdpr_check');
-  if(!nome || !cognome || !email){ mostraMsgForm('Inserisci nome, cognome ed email.'); return; }
+  if(!nome || !email){ mostraMsgForm('Inserisci il tuo nome e la tua email.'); return; }
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){ mostraMsgForm("Controlla l'indirizzo email."); return; }
   if(!gdpr || !gdpr.checked){ mostraMsgForm('Per inviare il messaggio devi accettare la Privacy Policy.'); return; }
   var dati = {
     nome: nome,
-    cognome: cognome,
+    cognome: '',
     email: email,
     telefono: valoreCampo('f_tel'),
     piano: valoreCampo('f_piano'),
@@ -1655,7 +1666,7 @@ function submitDemo(){
     }
     ripristinaBtnForm();
     var codice = esito.d ? esito.d.errore : '';
-    if(codice === 'obbligatori') mostraMsgForm('Inserisci nome, cognome ed email.');
+    if(codice === 'obbligatori') mostraMsgForm('Inserisci il tuo nome e la tua email.');
     else if(codice === 'email') mostraMsgForm("Controlla l'indirizzo email.");
     else if(codice === 'privacy') mostraMsgForm('Per inviare il messaggio devi accettare la Privacy Policy.');
     else mostraMsgForm(ERR_INVIO);
@@ -1697,7 +1708,7 @@ document.addEventListener('click', function(e) {
 </script>
 
 <!-- VERSION BADGE -->
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.1</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v2.2</div>
 <script src="/misura.js" defer></script>
 </body>
 </html>
