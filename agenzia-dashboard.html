@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v9.0 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v8.9 10/11/2026: tolto il pulsante "Anteprima landing" dal modulo di creazione e dalle Impostazioni (nelle Impostazioni pubblicava le modifiche prima di premere Salva modifiche); sotto i pulsanti una frase rimanda al pulsante Anteprima nella dashboard e ricorda che la pagina non compare da nessuna parte finché non si condividono link o QR. v8.8 08/11/2026: con un nome evento lungo il menu "Evento" in cima non allarga piu' la pagina sul telefono (prima finestre e pannelli uscivano dallo schermo a destra); il nome si accorcia con i puntini. v8.7 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v8.6 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (con la scheda Attivi o Conclusi giusta). v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v9.1 21/11/2026: lista d'attesa sistemata. Un solo avviso quando elimini un iscritto e qualcuno entra al suo posto (prima "Eliminato" e "promosso automaticamente" si sovrapponevano). Testi neutri, uguali per uomini e donne ("ora e' tra gli iscritti", "Al suo posto entra ..."). La gestione automatica conta i posti davvero liberi: fa entrare chi e' in coda nell'ordine di arrivo finche' ci sta, e se il primo in coda non ci sta non fa entrare nessuno e lo dice all'organizzatore, che decide. Eliminando un accompagnatore quando i posti si contano per persona non entra piu' nessuno (non si libera un posto). Un gruppo entra sempre tutto insieme (capogruppo e accompagnatori), sia in automatico sia con Promuovi; Promuovi avvisa se si supera la capienza. Nel riquadro Lista d'attesa si vede quanti posti occupa ogni gruppo e chi accompagna chi. Gli avvisi non si coprono piu' a vicenda. v9.0 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v8.9 10/11/2026: tolto il pulsante "Anteprima landing" dal modulo di creazione e dalle Impostazioni (nelle Impostazioni pubblicava le modifiche prima di premere Salva modifiche); sotto i pulsanti una frase rimanda al pulsante Anteprima nella dashboard e ricorda che la pagina non compare da nessuna parte finché non si condividono link o QR. v8.8 08/11/2026: con un nome evento lungo il menu "Evento" in cima non allarga piu' la pagina sul telefono (prima finestre e pannelli uscivano dallo schermo a destra); il nome si accorcia con i puntini. v8.7 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v8.6 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (con la scheda Attivi o Conclusi giusta). v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1333,7 +1333,7 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <div>
         <div class="opt-lbl" style="display:flex;align-items:center;gap:6px">
           Gestione automatica lista d'attesa
-          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, quando elimini un iscritto confermato il primo in lista d'attesa viene automaticamente confermato e riceve l'email di conferma.</span></span>
+          <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Se attivo, quando elimini un iscritto confermato e si libera un posto, chi &egrave; in lista d'attesa entra in ordine di arrivo e riceve l'email di conferma. Un gruppo entra solo se ci sta tutto: se il primo in coda non ci sta, non entra nessuno e decidi tu.</span></span>
         </div>
         <div class="opt-sub">Elimini un confermato? Il primo in attesa avanza in automatico</div>
       </div>
@@ -3176,8 +3176,17 @@ function renderAttesa(ev, inAttesa, closed) {
   if (!tbody) return;
   tbody.innerHTML = inAttesa.map(function(r) {
     var puoPromuovere = !closed && postiLiberi > 0;
+    /* v9.1 -- gruppi: il capogruppo mostra quanti posti occupa il gruppo, l'accompagnatore chi accompagna */
+    var nota = '';
+    var capoAtt = r.capogruppo_id ? currentRegs.find(function(x) { return x.id === r.capogruppo_id && !!x.in_lista_attesa; }) : null;
+    if (capoAtt) {
+      nota = 'accompagna ' + capoAtt.nome + ' ' + capoAtt.cognome;
+    } else {
+      var uR = unitaAttesa(r), pR = postiUnita(ev, uR);
+      if (uR.length > 1 || pR > 1) nota = 'gruppo, ' + pR + ' posti';
+    }
     return '<tr>'
-      + '<td class="nm">' + escHtml(r.nome + ' ' + r.cognome) + '</td>'
+      + '<td class="nm">' + escHtml(r.nome + ' ' + r.cognome) + (nota ? '<div style="font-size:11px;font-weight:400;color:var(--text-muted);margin-top:2px">' + escHtml(nota) + '</div>' : '') + '</td>'
       + '<td>' + escHtml(r.email) + '</td>'
       + '<td>' + escHtml(r.telefono || '-') + '</td>'
       + '<td class="dt">' + (r.created_at ? new Date(r.created_at).toLocaleDateString('it-IT') : '-') + '</td>'
@@ -4411,52 +4420,139 @@ async function confirmDel() {
   /* Controlla se l'iscritto era confermato (non in lista attesa) */
   var regEliminata = currentRegs.find(function(r) { return r.id === delPending; });
   var eraConfermato = regEliminata && !regEliminata.in_lista_attesa;
+  var occPrima = ev ? calcPostiOccupati(ev, currentRegs) : 0;
   try {
     await sbDel('registrations', delPending);
     currentRegs = currentRegs.filter(function(r) { return r.id !== delPending; });
-    delPending = null; closeOv('ovDel'); showToast('Eliminato', 'r');
-    /* Promozione automatica: se l'evento ha promo_automatica attivo, era un confermato
-       e c'e qualcuno in lista attesa, promuovi il primo */
-    if (ev && ev.promo_automatica && eraConfermato) {
-      var inAttesa = currentRegs.filter(function(r) { return !!r.in_lista_attesa; });
-      if (inAttesa.length > 0) {
-        var primo = inAttesa[0];
-        try {
-          var updated = await sbPatch('registrations', primo.id, { in_lista_attesa: false });
-          var i = currentRegs.findIndex(function(x) { return x.id === primo.id; });
-          if (i >= 0) currentRegs[i] = updated;
-          showToast(primo.nome + ' ' + primo.cognome + ' promosso automaticamente!', 'g');
-          fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
-            method: 'POST',
-            headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-            body: JSON.stringify({ registration_id: primo.id, event_id: ev.id, nome: primo.nome, cognome: primo.cognome, email: primo.email, in_lista_attesa: false })
-          }).catch(function(e) { console.warn('Email promozione automatica non inviata:', e); });
-        } catch(e) { console.warn('Errore promozione automatica:', e); }
+    delPending = null; closeOv('ovDel');
+    /* posti davvero liberati (eliminando un accompagnatore, quando i posti si contano per persona, non se ne libera nessuno) */
+    var liberati = ev ? occPrima - calcPostiOccupati(ev, currentRegs) : 0;
+    /* v9.1 -- Promozione automatica: se l'evento ha promo_automatica attivo ed era un confermato,
+       entra chi e' in lista d'attesa in ordine di arrivo finche' ci sono posti liberi.
+       Un gruppo entra tutto insieme; se il primo in coda non ci sta non entra nessuno e decide l'organizzatore.
+       Un solo avviso (prima "Eliminato" e "promosso" si sovrapponevano). */
+    var entrati = [], avviso = '';
+    if (ev && ev.promo_automatica && eraConfermato && liberati > 0) {
+      try {
+        var liberi = postiLiberiOra(ev);
+        var coda = unitaInAttesa();
+        while (coda.length > 0 && liberi > 0) {
+          var u = coda[0];
+          var serve = postiUnita(ev, u);
+          if (serve > liberi) {
+            avviso = (liberi === 1 ? 'C\'\u00e8 1 posto libero' : 'Ci sono ' + liberi + ' posti liberi')
+              + ', ma chi \u00e8 primo in lista d\'attesa (' + u[0].nome + ' ' + u[0].cognome + ', ' + serve + ' posti) non ci sta: decidi tu dalla lista d\'attesa.';
+            break;
+          }
+          await promuoviUnita(ev, u);
+          entrati.push(u);
+          coda.shift();
+          if (!ev.capienza) break;          /* senza capienza entra solo il primo, come prima */
+          liberi -= serve;
+        }
+      } catch(e) {
+        console.warn('Errore promozione automatica:', e);
+        avviso = 'Nessuno \u00e8 entrato dalla lista d\'attesa per un errore: riprova dal riquadro Lista d\'attesa.';
       }
+    }
+    if (entrati.length > 0 || avviso) {
+      var nomeEl = regEliminata ? regEliminata.nome + ' ' + regEliminata.cognome : '';
+      var msg = nomeEl ? 'Iscrizione di ' + nomeEl + ' eliminata.' : 'Iscrizione eliminata.';
+      if (entrati.length > 0) {
+        var nomi = entrati.map(nomeConAccompagnatori);
+        msg += ' Al suo posto ' + (nomi.length === 1 ? 'entra ' + nomi[0] : 'entrano ' + nomi.slice(0, -1).join(', ') + ' e ' + nomi[nomi.length - 1]) + '.';
+      }
+      if (avviso) msg += ' ' + avviso;
+      showToast(msg, 'g', 7000);
+    } else {
+      showToast('Eliminato', 'r');
     }
     renderDash();
   } catch(e) { showToast('Errore', 'r'); }
 }
 
 /* ============================================================
+   LISTA D'ATTESA -- GRUPPI E POSTI (v9.1)
+   Un gruppo (capogruppo + accompagnatori) entra o resta in attesa tutto insieme.
+   I posti si contano come nel resto della dashboard (calcPostiOccupati) e nel database.
+   ============================================================ */
+/* il gruppo in attesa di cui fa parte r (solo le righe ancora in attesa, in ordine di arrivo) */
+function unitaAttesa(r) {
+  var capo = r.capogruppo_id ? currentRegs.find(function(x) { return x.id === r.capogruppo_id && !!x.in_lista_attesa; }) : null;
+  var testa = capo || r;
+  return currentRegs.filter(function(x) { return !!x.in_lista_attesa && (x.id === testa.id || x.capogruppo_id === testa.id); });
+}
+/* i gruppi in attesa, nell'ordine di arrivo */
+function unitaInAttesa() {
+  var visti = {}, out = [];
+  currentRegs.forEach(function(r) {
+    if (!r.in_lista_attesa || visti[r.id]) return;
+    var u = unitaAttesa(r);
+    u.forEach(function(x) { visti[x.id] = true; });
+    if (u.length > 0) out.push(u);
+  });
+  return out;
+}
+/* posti che il gruppo occuperebbe entrando */
+function postiUnita(ev, u) {
+  var ids = {};
+  u.forEach(function(x) { ids[x.id] = true; });
+  var dopo = currentRegs.map(function(x) { return ids[x.id] ? Object.assign({}, x, { in_lista_attesa: false }) : x; });
+  return calcPostiOccupati(ev, dopo) - calcPostiOccupati(ev, currentRegs);
+}
+/* posti liberi adesso (senza capienza: nessun limite) */
+function postiLiberiOra(ev) {
+  if (!ev || !ev.capienza) return Infinity;
+  return ev.capienza - calcPostiOccupati(ev, currentRegs);
+}
+function nomeConAccompagnatori(u) {
+  var n = u[0].nome + ' ' + u[0].cognome;
+  var a = u.length - 1;
+  return a <= 0 ? n : n + ' con ' + (a === 1 ? '1 accompagnatore' : a + ' accompagnatori');
+}
+/* conferma tutte le righe del gruppo e manda l'email di conferma a chi ha un'email */
+async function promuoviUnita(ev, u) {
+  for (var k = 0; k < u.length; k++) {
+    var x = u[k];
+    var updated = await sbPatch('registrations', x.id, { in_lista_attesa: false });
+    var i = currentRegs.findIndex(function(y) { return y.id === x.id; });
+    if (i >= 0) currentRegs[i] = updated || Object.assign({}, currentRegs[i], { in_lista_attesa: false });
+    if (x.email && x.email.indexOf('@') > -1) {
+      fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
+        method: 'POST',
+        headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ registration_id: x.id, event_id: ev.id, nome: x.nome, cognome: x.cognome, email: x.email, in_lista_attesa: false })
+      }).catch(function(e) { console.warn('Email di conferma non inviata:', e); });
+    }
+  }
+}
+
+/* ============================================================
    PROMOZIONE MANUALE LISTA ATTESA
    ============================================================ */
 async function promuoviAttesa(id) {
+  var ev = currentEv;
   var r = currentRegs.find(function(x) { return x.id === id; });
-  if (!r) return;
-  if (!confirm('Promuovi ' + r.nome + ' ' + r.cognome + ' dalla lista d\'attesa agli iscritti confermati?')) return;
+  if (!r || !ev) return;
+  /* v9.1 -- entra tutto il gruppo; testi neutri; avviso se si supera la capienza (decide l'organizzatore) */
+  var u = unitaAttesa(r);
+  if (u.length === 0) return;
+  var a = u.length - 1;
+  var chi = u[0].nome + ' ' + u[0].cognome + (a <= 0 ? '' : (a === 1 ? ' e il suo accompagnatore' : ' e i suoi ' + a + ' accompagnatori'));
+  var serve = postiUnita(ev, u), liberi = postiLiberiOra(ev);
+  var domanda = 'Spostare ' + chi + ' dalla lista d\'attesa agli iscritti? Partir\u00e0 l\'email di conferma.';
+  if (serve > liberi) {
+    var oltre = serve - Math.max(0, liberi);
+    domanda = (liberi <= 0 ? 'Non ci sono posti liberi' : (liberi === 1 ? 'Resta 1 posto libero' : 'Restano ' + liberi + ' posti liberi'))
+      + (serve === 1 ? ' e serve 1 posto' : ' e servono ' + serve + ' posti')
+      + ': superi la capienza di ' + oltre + (oltre === 1 ? ' posto.' : ' posti.') + '\n\n' + domanda;
+  }
+  if (!confirm(domanda)) return;
   try {
-    var updated = await sbPatch('registrations', id, { in_lista_attesa: false });
-    var i = currentRegs.findIndex(function(x) { return x.id === id; });
-    if (i >= 0) currentRegs[i] = updated;
-    showToast(r.nome + ' promosso agli iscritti!', 'g');
-    fetch(SB_URL + '/functions/v1/send-reg-confirmation', {
-      method: 'POST',
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ registration_id: id, event_id: currentEv.id, nome: r.nome, cognome: r.cognome, email: r.email, in_lista_attesa: false })
-    }).catch(function(e) { console.warn('Email promozione non inviata:', e); });
+    await promuoviUnita(ev, u);
+    showToast(chi + (a <= 0 ? ' ora \u00e8 tra gli iscritti' : ' ora sono tra gli iscritti'), 'g', 5000);
     renderDash();
-  } catch(e) { showToast(friendlyError(e), 'r'); }
+  } catch(e) { showToast(friendlyError(e), 'r'); renderDash(); }
 }
 async function sendParticipationLink() {
   var ev = currentEv; if (!ev) return;
@@ -4768,7 +4864,17 @@ function showView(n) {
 }
 function openOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'flex'; el.classList.add('on'); document.body.style.overflow = 'hidden'; }
 function closeOv(id) { var el = document.getElementById(id); if (!el) return; el.style.display = 'none'; el.classList.remove('on'); document.body.style.overflow = ''; }
-function showToast(msg, t) { var el = document.getElementById('toast' + t.toUpperCase()); el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg; el.style.display = 'block'; setTimeout(function() { el.style.display = 'none'; }, 3000); }
+/* v9.1 -- un avviso nuovo nasconde quello precedente (prima rosso e verde si sovrapponevano); durata facoltativa in ms */
+var toastTimer = null;
+function showToast(msg, t, ms) {
+  var el = document.getElementById('toast' + t.toUpperCase());
+  if (!el) return;
+  ['toastG', 'toastR'].forEach(function(id) { var o = document.getElementById(id); if (o && o !== el) o.style.display = 'none'; });
+  if (toastTimer) clearTimeout(toastTimer);
+  el.textContent = (t === 'g' ? '✓ ' : '✕ ') + msg;
+  el.style.display = 'block';
+  toastTimer = setTimeout(function() { el.style.display = 'none'; toastTimer = null; }, ms || 3000);
+}
 
 /* ============================================================
    QR SCANNER (check-in fotocamera)
@@ -5265,6 +5371,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v9.0 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v9.1 agenzia</div>
 </body>
 </html>
