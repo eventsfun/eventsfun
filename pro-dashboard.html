@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Pro Dashboard | v7.7 22/11/2026: nei giorni fra la chiusura delle prenotazioni e l'ultimo giorno di ritiro non compare piu' la nota "Con Cambia stato chiudi o riapri la pagina" (la pagina pubblica e' gia' chiusa dalla data). Stesso comportamento della dashboard Agenzia v9.5. v7.6 22/11/2026: eventi con ritiro ("Ritirato") con l'ultimo giorno di ritiro dopo la data dell'evento: dal giorno dopo la data (la pagina pubblica non accetta piu' prenotazioni) fino all'ultimo giorno di ritiro lo stato non dice piu' "Iscrizioni aperte" ma "Prenotazioni chiuse" (o Iscrizioni, Partecipazioni, Registrazioni, secondo la parola scelta), e in cima compare il riquadro "Prenotazioni chiuse: puoi segnare i ritiri fino al [giorno] con il pulsante Ritiri". Dopo l'ultimo giorno di ritiro: "Evento concluso" come prima. Nient'altro cambiato. v7.5 22/11/2026: link ai video tutorial della guida: finche' non c'e' nessun evento, sotto l'intestazione il pulsante "Guarda il video: crea il tuo primo evento" (sul telefono sotto "Crea evento"); nell'avviso "Hai bisogno di aiuto per iniziare?" il pulsante "Guarda i video". La guida si apre come con il pulsante Guida (scheda nuova sul computer). v7.4 22/11/2026: scanner QR: quando segna una persona presente, l'elenco Presenze si aggiorna subito (prima accanto al nome restava "Segna presente" anche dopo aver chiuso lo scanner, e toccarlo toglieva la presenza appena segnata); nel riquadro verde "1 adulto" e "1 bambino" al singolare. v7.3 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v7.2 07/11/2026: nota "Evento al completo" sotto lo stato quando i posti sono finiti (Base e Pro non hanno la lista d'attesa: la pagina pubblica ferma le iscrizioni). v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
+<!-- EventsFun | Pro Dashboard | v7.8 22/11/2026: prenotazioni di prodotti ("Ritirato"): la data dell'evento si chiama "Ultimo giorno per prenotare", l'ora non serve (si nasconde e non si salva), nella sezione "Presenza o ritiro" le due date stanno insieme ("Ultimo giorno per prenotare", lo stesso valore della data in cima al modulo, e "Ultimo giorno di ritiro"); in cima alla dashboard "Prenotazioni fino al [data]" al posto di data e ora. v7.7 22/11/2026: nei giorni fra la chiusura delle prenotazioni e l'ultimo giorno di ritiro non compare piu' la nota "Con Cambia stato chiudi o riapri la pagina" (la pagina pubblica e' gia' chiusa dalla data). Stesso comportamento della dashboard Agenzia v9.5. v7.6 22/11/2026: eventi con ritiro ("Ritirato") con l'ultimo giorno di ritiro dopo la data dell'evento: dal giorno dopo la data (la pagina pubblica non accetta piu' prenotazioni) fino all'ultimo giorno di ritiro lo stato non dice piu' "Iscrizioni aperte" ma "Prenotazioni chiuse" (o Iscrizioni, Partecipazioni, Registrazioni, secondo la parola scelta), e in cima compare il riquadro "Prenotazioni chiuse: puoi segnare i ritiri fino al [giorno] con il pulsante Ritiri". Dopo l'ultimo giorno di ritiro: "Evento concluso" come prima. Nient'altro cambiato. v7.5 22/11/2026: link ai video tutorial della guida: finche' non c'e' nessun evento, sotto l'intestazione il pulsante "Guarda il video: crea il tuo primo evento" (sul telefono sotto "Crea evento"); nell'avviso "Hai bisogno di aiuto per iniziare?" il pulsante "Guarda i video". La guida si apre come con il pulsante Guida (scheda nuova sul computer). v7.4 22/11/2026: scanner QR: quando segna una persona presente, l'elenco Presenze si aggiorna subito (prima accanto al nome restava "Segna presente" anche dopo aver chiuso lo scanner, e toccarlo toglieva la presenza appena segnata); nel riquadro verde "1 adulto" e "1 bambino" al singolare. v7.3 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v7.2 07/11/2026: nota "Evento al completo" sotto lo stato quando i posti sono finiti (Base e Pro non hanno la lista d'attesa: la pagina pubblica ferma le iscrizioni). v7.1 07/11/2026: posti rimasti e posti disponibili calcolati con la stessa regola della pagina pubblica (chi e' in lista d'attesa non conta; con "Capienza per persona" contano adulti e bambini; mai sotto zero). v7.0 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v6.9 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v6.8 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; nel modulo dell'evento e nelle impostazioni l'interruttore "Mostra data e ora nella pagina" e' visibile ma bloccato acceso, con la nota che le pagine senza data sono disponibili con Punto Info e Agenzia (link al sito); data obbligatoria anche nelle impostazioni; messaggio del database leggibile. v6.7 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v6.6 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v6.5 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con riga Totali in tabella e nel CSV; scelta per evento "Presente" o "Ritirato" con ultimo giorno di ritiro facoltativo e card "Ritirati". v6.3 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v6.2 04/10/2026: voce Assistenza accanto a Guida (apre il modulo della guida). Base: v6.0 Supabase, segnalino v6.1 -->
 <html lang="it">
 <head>
 <!-- EVENTSFUN-BUILD-205149-pro -->
@@ -481,8 +481,8 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <div class="tog on" role="switch" aria-checked="true" aria-disabled="true" title="Sempre attivo con il piano Pro" onclick="dataOraBloccata()" style="opacity:.45;cursor:not-allowed"><div class="tog-dot"></div></div>
     </div>
     <div class="fg2">
-      <div class="mf"><label>Data evento *</label><input id="ev_data" type="date"></div>
-      <div class="mf"><label>Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
+      <div class="mf"><label id="ev_data_lbl">Data evento *</label><input id="ev_data" type="date" oninput="ritiroCopiaData('ev', this)" onchange="ritiroCopiaData('ev', this)"></div>
+      <div class="mf"><label id="ev_ora_lbl">Ora *</label><input id="ev_ora" placeholder="Es. 19:30"></div>
     </div>
     <div class="mf">
       <label>Cosa raccoglie la pagina dell'evento
@@ -692,9 +692,15 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
             <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('ev','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
           </div>
         </div>
+        <div class="mf" id="ev_chiusura_wrap" style="display:none">
+          <label>Ultimo giorno per prenotare *
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Dopo questo giorno la pagina pubblica non accetta più prenotazioni. È la stessa data che trovi in cima al modulo: puoi cambiarla qui o lì.</span></span>
+          </label>
+          <input id="ev_data_chiusura" type="date" oninput="ritiroCopiaData('ev', this)" onchange="ritiroCopiaData('ev', this)">
+        </div>
         <div class="mf" id="ev_ritiro_data_wrap" style="display:none">
           <label>Ultimo giorno di ritiro (facoltativo)
-            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno puoi continuare a segnare i ritiri. Non cambia la pagina pubblica: date e orari del ritiro scrivili anche nella scheda Informazioni.</span></span>
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Fino a quel giorno l'evento resta tra quelli attivi e puoi continuare a segnare i ritiri. Compare nella pagina pubblica e nell'email di conferma ("Ritiro entro il"). Giorni e orari del ritiro scrivili nella descrizione o nella scheda Informazioni.</span></span>
           </label>
           <input id="ev_data_fine_ritiro" type="date">
         </div>
@@ -735,8 +741,8 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <div class="tog on" role="switch" aria-checked="true" aria-disabled="true" title="Sempre attivo con il piano Pro" onclick="dataOraBloccata()" style="opacity:.45;cursor:not-allowed"><div class="tog-dot"></div></div>
     </div>
     <div class="fg2">
-      <div class="mf"><label>Data evento *</label><input id="se_data" type="date"></div>
-      <div class="mf"><label>Ora</label><input id="se_ora"></div>
+      <div class="mf"><label id="se_data_lbl">Data evento *</label><input id="se_data" type="date" oninput="ritiroCopiaData('se', this)" onchange="ritiroCopiaData('se', this)"></div>
+      <div class="mf"><label id="se_ora_lbl">Ora</label><input id="se_ora"></div>
     </div>
     <div class="mf">
       <label>Cosa raccoglie la pagina dell'evento
@@ -944,9 +950,15 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
             <button type="button" class="mod-opt" data-pres="ritirato" onclick="setPresEt('se','ritirato')"><span class="mod-t">📦 Ritirato</span><span class="mod-s">Per prenotazioni di prodotti o materiali da ritirare a mano</span></button>
           </div>
         </div>
+        <div class="mf" id="se_chiusura_wrap" style="display:none">
+          <label>Ultimo giorno per prenotare *
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Dopo questo giorno la pagina pubblica non accetta più prenotazioni. È la stessa data che trovi in cima al modulo: puoi cambiarla qui o lì.</span></span>
+          </label>
+          <input id="se_data_chiusura" type="date" oninput="ritiroCopiaData('se', this)" onchange="ritiroCopiaData('se', this)">
+        </div>
         <div class="mf" id="se_ritiro_data_wrap" style="display:none">
           <label>Ultimo giorno di ritiro (facoltativo)
-            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Può cadere prima o dopo la data dell'evento. Fino a quel giorno puoi continuare a segnare i ritiri. Non cambia la pagina pubblica: date e orari del ritiro scrivili anche nella scheda Informazioni.</span></span>
+            <span class="tip"><span class="tip-icon" tabindex="0">?</span><span class="tip-box">Fino a quel giorno l'evento resta tra quelli attivi e puoi continuare a segnare i ritiri. Compare nella pagina pubblica e nell'email di conferma ("Ritiro entro il"). Giorni e orari del ritiro scrivili nella descrizione o nella scheda Informazioni.</span></span>
           </label>
           <input id="se_data_fine_ritiro" type="date">
         </div>
@@ -1401,7 +1413,7 @@ function renderDash() {
   /* Header */
   document.getElementById('dash-title').textContent = ev ? ev.nome : 'Dashboard Pro';
   document.getElementById('dash-sub').textContent = ev
-    ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
+    ? (dataEvTesto(ev) + (ev.luogo ? ' · ' + ev.luogo : '') + (ev.etichetta_presenza === 'ritirato' && ev.data_fine_ritiro ? ' · Ritiro entro il ' + isoToIt(ev.data_fine_ritiro) : ''))
     : 'Nessun evento creato -- clicca su "Crea evento" per iniziare';
 
   /* v7.5: video "crea il tuo primo evento" finche' non c'e' nessun evento */
@@ -1448,7 +1460,7 @@ function renderDash() {
 
   /* Status bar */
   document.getElementById('status-nome').textContent = ev ? ev.nome : 'Nessun evento';
-  document.getElementById('status-det').textContent = ev ? (isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '')) : 'Crea il tuo primo evento per iniziare';
+  document.getElementById('status-det').textContent = ev ? dataEvTesto(ev) : 'Crea il tuo primo evento per iniziare';
   var sp = document.getElementById('status-pill');
   if (!ev) sp.innerHTML = '<span class="pill pill-gray">-</span>';
   else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
@@ -1762,7 +1774,9 @@ async function saveEvent() {
   var ora = document.getElementById('ev_ora').value.trim();
   var luogo = document.getElementById('ev_luogo').value.trim();
   var emailContatto = document.getElementById('ev_email_contatto').value.trim();
-  if (!nome || !data || !ora || !luogo) { alert(otogState.online ? 'Compila Nome, Data, Ora e Piattaforma.' : 'Compila Nome, Data, Ora e Luogo.'); return; }
+  var ritOn = ritiroScelto('ev'); if (ritOn) ora = '';
+  if (ritOn && (!nome || !data || !luogo)) { alert(otogState.online ? 'Compila Nome, Ultimo giorno per prenotare e Piattaforma.' : 'Compila Nome, Ultimo giorno per prenotare e Luogo.'); return; }
+  if (!ritOn && (!nome || !data || !ora || !luogo)) { alert(otogState.online ? 'Compila Nome, Data, Ora e Piattaforma.' : 'Compila Nome, Data, Ora e Luogo.'); return; }
   if (!emailContatto) { alert('Inserisci l\'email di contatto per gli iscritti.'); return; }
   var cfErr = cfManca('ccfList'); if (cfErr) { alert(cfErr); return; }
   var img = document.getElementById('ev_img_preview');
@@ -1771,7 +1785,7 @@ async function saveEvent() {
     piano: PIANO,
     nome: nome,
     data_iso: data,
-    ora: ora,
+    ora: ora || null,
     luogo: luogo,
     email_contatto: emailContatto,
     telefono_contatto: normTelefono(getVal('ev_tel_contatto')),
@@ -1904,7 +1918,7 @@ async function saveSettings() {
     slug: ev.slug || makeSlug(nome),
     capienza: parseInt(document.getElementById('se_cap').value) || null,
     data_iso: document.getElementById('se_data').value,
-    ora: document.getElementById('se_ora').value.trim(),
+    ora: ritiroScelto('se') ? null : (document.getElementById('se_ora').value.trim() || null),
     luogo: document.getElementById('se_luogo').value.trim(),
     descrizione: document.getElementById('se_desc').value.trim(),
     immagine: (si && si.style.display !== 'none' && si.src && si.src !== window.location.href) ? si.src : null,
@@ -2427,6 +2441,42 @@ function applyOnlineUI(inpPfx, rowPfx, on) {
   setDisp(rowPfx + '_checkin_sect', (on || modState[inpPfx] === 'info') ? 'none' : '');
 }
 /* Scelta "Presente" / "Ritirato" nei due form (creazione e impostazioni) */
+/* v7.8: prenotazioni di prodotti ("Ritirato"). La data dell'evento e' l'ultimo giorno per prenotare: con "Ritirato" la sua etichetta
+   lo dice, l'ora non serve (si nasconde e non si salva) e nella sezione "Presenza o ritiro" le due date stanno insieme:
+   "Ultimo giorno per prenotare" (lo stesso valore della data in alto, si cambia da tutti e due i punti) e "Ultimo giorno di ritiro". */
+function ritiroScelto(p) {
+  if (presEtState[p] !== 'ritirato') return false;
+  var sec = document.getElementById(p === 'ev' ? 'o_ritiro_sect' : 's_ritiro_sect');
+  return !(sec && sec.style.display === 'none');
+}
+function ritiroDateSync(p) {
+  var rit = ritiroScelto(p);
+  var lbl = document.getElementById(p + '_data_lbl');
+  if (lbl) {
+    if (!lbl.hasAttribute('data-orig')) lbl.setAttribute('data-orig', lbl.textContent);
+    if (rit) lbl.textContent = 'Ultimo giorno per prenotare *';
+    else if (lbl.textContent === 'Ultimo giorno per prenotare *') lbl.textContent = lbl.getAttribute('data-orig');
+  }
+  var ol = document.getElementById(p + '_ora_lbl');
+  if (ol && ol.parentNode) ol.parentNode.style.display = rit ? 'none' : '';
+  var a = document.getElementById(p + '_data'), b = document.getElementById(p + '_data_chiusura');
+  if (a && b) b.value = a.value;
+  setDisp(p + '_chiusura_wrap', rit ? 'flex' : 'none');
+}
+function ritiroCopiaData(p, el) {
+  var a = document.getElementById(p + '_data'), b = document.getElementById(p + '_data_chiusura');
+  if (!a || !b) return;
+  if (el === b) a.value = b.value; else b.value = a.value;
+}
+/* parola al plurale scelta per l'evento (Prenotazioni, Iscrizioni, ...) */
+function parolaPl(ev) {
+  return ({ prenotazione: 'Prenotazioni', partecipazione: 'Partecipazioni', registrazione: 'Registrazioni' })[ev && ev.terminologia] || 'Iscrizioni';
+}
+/* testo della data in cima alla dashboard: con "Ritirato" e' l'ultimo giorno per prenotare */
+function dataEvTesto(ev) {
+  if (ev && ev.data_iso && ev.etichetta_presenza === 'ritirato') return parolaPl(ev) + ' fino al ' + isoToIt(ev.data_iso);
+  return (ev && ev.data_iso) ? isoToIt(ev.data_iso) + (ev.ora ? ' · ' + ev.ora : '') : '';
+}
 function setPresEt(p, v) {
   v = (v === 'ritirato') ? 'ritirato' : 'presente';
   presEtState[p] = v;
@@ -2436,6 +2486,7 @@ function setPresEt(p, v) {
     for (var i = 0; i < bs.length; i++) bs[i].classList.toggle('on', bs[i].getAttribute('data-pres') === v);
   }
   setDisp(p + '_ritiro_data_wrap', v === 'ritirato' ? 'flex' : 'none');
+  ritiroDateSync(p);
   if (typeof accSync === 'function') accSync(p);
 }
 function otog(k) {
@@ -3500,6 +3551,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.7 Pro</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v7.8 Pro</div>
 </body>
 </html>
