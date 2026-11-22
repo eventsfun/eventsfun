@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v2.3 22/11/2026: video tutorial "Primi passi": elenco in cima alla guida (sezione Video tutorial) e ogni video nella sua sezione (Creare il tuo primo evento, La pagina di iscrizione, Vedere chi si e' iscritto, La lista presenze); i file sono nella cartella video/ dello stesso sito; si apre da solo il formato verticale sui telefoni e orizzontale sui computer, con il pulsante Verticale / Orizzontale per cambiarlo (la scelta resta su quel dispositivo); il video si scarica solo quando si preme play. v2.2 14/11/2026: campi aggiuntivi, passi aggiornati (la domanda nella prima casella, pulsante "* Obbligatorio", opzioni da scrivere, avviso al salvataggio se manca qualcosa). v2.1 10/11/2026: come vedere la pagina prima di condividerla (pulsante Anteprima nella dashboard, la pagina non compare da nessuna parte finché non si condividono link o QR) in "Creare il tuo primo evento", "Modificare l'evento" e nei primi passi del Punto Info. v2.0 05/11/2026: menu a tendina del modulo di assistenza disegnati dalla pagina, uguali su tutti i dispositivi (Safari compreso). v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v2.4 22/11/2026: il pulsante "Torna indietro" compare solo quando c'e' davvero una pagina a cui tornare in quella scheda: nella guida aperta in una scheda nuova (computer) sparisce alla prima pagina, dove prima restava visibile ma non faceva nulla; ricompare appena si apre un argomento dall'indice o dai video. Nella guida aperta nella stessa scheda della dashboard (telefono) resta e riporta alla dashboard. v2.3 22/11/2026: video tutorial "Primi passi": elenco in cima alla guida (sezione Video tutorial) e ogni video nella sua sezione (Creare il tuo primo evento, La pagina di iscrizione, Vedere chi si e' iscritto, La lista presenze); i file sono nella cartella video/ dello stesso sito; si apre da solo il formato verticale sui telefoni e orizzontale sui computer, con il pulsante Verticale / Orizzontale per cambiarlo (la scelta resta su quel dispositivo); il video si scarica solo quando si preme play. v2.2 14/11/2026: campi aggiuntivi, passi aggiornati (la domanda nella prima casella, pulsante "* Obbligatorio", opzioni da scrivere, avviso al salvataggio se manca qualcosa). v2.1 10/11/2026: come vedere la pagina prima di condividerla (pulsante Anteprima nella dashboard, la pagina non compare da nessuna parte finché non si condividono link o QR) in "Creare il tuo primo evento", "Modificare l'evento" e nei primi passi del Punto Info. v2.0 05/11/2026: menu a tendina del modulo di assistenza disegnati dalla pagina, uguali su tutti i dispositivi (Safari compreso). v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -1000,6 +1000,27 @@ function efBack(){
   if(history.length>1){history.back();return false;}
   return true;
 }
+// v2.4 -- il pulsante si vede solo se in questa scheda c'e' una pagina precedente: ogni passo dentro la guida
+// (argomento dall'indice, scheda di un video) viene numerato nella cronologia; al passo 0 il pulsante si vede solo
+// se prima della guida c'era gia' un'altra pagina nella stessa scheda (per esempio la dashboard sul telefono)
+(function(){
+  var b=document.getElementById('backBtn');
+  if(!b||!window.history||!history.replaceState)return;
+  function letto(){ var s=history.state; return (s&&typeof s.efPos==='number')?s:null; }
+  var st=letto();
+  if(!st){ st={efPos:0,efPrima:history.length>1}; try{ history.replaceState(st,''); }catch(e){} }
+  var cur=st.efPos, prima=!!st.efPrima;
+  function aggiorna(){
+    var s=letto();
+    if(!s){ s={efPos:cur+1,efPrima:prima}; try{ history.replaceState(s,''); }catch(e){} }
+    cur=s.efPos;
+    b.hidden=!(cur>0||prima);
+  }
+  window.addEventListener('popstate',aggiorna);
+  window.addEventListener('hashchange',aggiorna);
+  window.addEventListener('pageshow',aggiorna);
+  aggiorna();
+})();
 (function(){
   var b=document.getElementById('backBtn');
   if(!b)return;
