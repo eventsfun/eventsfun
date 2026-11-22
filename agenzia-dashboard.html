@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Agenzia Dashboard | v9.3 22/11/2026: link ai video tutorial della guida: finche' non c'e' nessun evento, sotto l'intestazione il pulsante "Guarda il video: crea il tuo primo evento" (sul telefono sotto "Crea evento"); nell'avviso "Hai bisogno di aiuto per iniziare?" il pulsante "Guarda i video". La guida si apre come con il pulsante Guida (scheda nuova sul computer). v9.2 22/11/2026: scanner QR: quando segna una persona presente, l'elenco Presenze si aggiorna subito (prima accanto al nome restava "Segna presente" anche dopo aver chiuso lo scanner, e toccarlo toglieva la presenza appena segnata); nel riquadro verde "1 adulto" e "1 bambino" al singolare. v9.1 21/11/2026: lista d'attesa sistemata. Un solo avviso quando elimini un iscritto e qualcuno entra al suo posto (prima "Eliminato" e "promosso automaticamente" si sovrapponevano). Testi neutri, uguali per uomini e donne ("ora e' tra gli iscritti", "Al suo posto entra ..."). La gestione automatica conta i posti davvero liberi: fa entrare chi e' in coda nell'ordine di arrivo finche' ci sta, e se il primo in coda non ci sta non fa entrare nessuno e lo dice all'organizzatore, che decide. Eliminando un accompagnatore quando i posti si contano per persona non entra piu' nessuno (non si libera un posto). Un gruppo entra sempre tutto insieme (capogruppo e accompagnatori), sia in automatico sia con Promuovi; Promuovi avvisa se si supera la capienza. Nel riquadro Lista d'attesa si vede quanti posti occupa ogni gruppo e chi accompagna chi. Gli avvisi non si coprono piu' a vicenda. v9.0 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v8.9 10/11/2026: tolto il pulsante "Anteprima landing" dal modulo di creazione e dalle Impostazioni (nelle Impostazioni pubblicava le modifiche prima di premere Salva modifiche); sotto i pulsanti una frase rimanda al pulsante Anteprima nella dashboard e ricorda che la pagina non compare da nessuna parte finché non si condividono link o QR. v8.8 08/11/2026: con un nome evento lungo il menu "Evento" in cima non allarga piu' la pagina sul telefono (prima finestre e pannelli uscivano dallo schermo a destra); il nome si accorcia con i puntini. v8.7 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v8.6 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (con la scheda Attivi o Conclusi giusta). v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
+<!-- EventsFun | Agenzia Dashboard | v9.5 22/11/2026: eventi con ritiro: nei giorni fra la chiusura delle prenotazioni e l'ultimo giorno di ritiro la dashboard Agenzia si comporta come Base e Pro: l'evento resta aperto in dashboard (si possono aggiungere, correggere ed eliminare prenotazioni, aggiornamento automatico attivo), il riquadro dice "Puoi segnare i ritiri fino al [giorno] con il pulsante Ritiri" senza "sola lettura"; dopo l'ultimo giorno di ritiro "Evento concluso". In quei giorni non compare piu' la nota "Con Cambia stato chiudi o riapri la pagina" (la pagina e' gia' chiusa dalla data). v9.4 22/11/2026: eventi con ritiro ("Ritirato") con l'ultimo giorno di ritiro dopo la data dell'evento: dal giorno dopo la data (la pagina pubblica non accetta piu' prenotazioni) fino all'ultimo giorno di ritiro la dashboard non dice piu' "Evento concluso! I dati sono in sola lettura" ma "Prenotazioni chiuse" (o Iscrizioni, Partecipazioni, Registrazioni, secondo la parola scelta) con "Puoi segnare i ritiri fino al [giorno] con il pulsante Ritiri. Il resto dei dati e' in sola lettura.", e lo stato e' "Prenotazioni chiuse" invece di "Concluso". Dopo l'ultimo giorno di ritiro torna "Evento concluso". Nient'altro cambiato. v9.3 22/11/2026: link ai video tutorial della guida: finche' non c'e' nessun evento, sotto l'intestazione il pulsante "Guarda il video: crea il tuo primo evento" (sul telefono sotto "Crea evento"); nell'avviso "Hai bisogno di aiuto per iniziare?" il pulsante "Guarda i video". La guida si apre come con il pulsante Guida (scheda nuova sul computer). v9.2 22/11/2026: scanner QR: quando segna una persona presente, l'elenco Presenze si aggiorna subito (prima accanto al nome restava "Segna presente" anche dopo aver chiuso lo scanner, e toccarlo toglieva la presenza appena segnata); nel riquadro verde "1 adulto" e "1 bambino" al singolare. v9.1 21/11/2026: lista d'attesa sistemata. Un solo avviso quando elimini un iscritto e qualcuno entra al suo posto (prima "Eliminato" e "promosso automaticamente" si sovrapponevano). Testi neutri, uguali per uomini e donne ("ora e' tra gli iscritti", "Al suo posto entra ..."). La gestione automatica conta i posti davvero liberi: fa entrare chi e' in coda nell'ordine di arrivo finche' ci sta, e se il primo in coda non ci sta non fa entrare nessuno e lo dice all'organizzatore, che decide. Eliminando un accompagnatore quando i posti si contano per persona non entra piu' nessuno (non si libera un posto). Un gruppo entra sempre tutto insieme (capogruppo e accompagnatori), sia in automatico sia con Promuovi; Promuovi avvisa se si supera la capienza. Nel riquadro Lista d'attesa si vede quanti posti occupa ogni gruppo e chi accompagna chi. Gli avvisi non si coprono piu' a vicenda. v9.0 14/11/2026: campi aggiuntivi utilizzabili su ogni dispositivo: la domanda occupa una riga intera (sui telefoni era schiacciata e non si poteva scrivere), pulsante "* Obbligatorio", con Scelta singola e Scelta multipla compare subito la casella della prima opzione, al salvataggio un messaggio chiaro se manca la domanda o le opzioni (prima il campo veniva scartato o salvato vuoto senza avvisare). v8.9 10/11/2026: tolto il pulsante "Anteprima landing" dal modulo di creazione e dalle Impostazioni (nelle Impostazioni pubblicava le modifiche prima di premere Salva modifiche); sotto i pulsanti una frase rimanda al pulsante Anteprima nella dashboard e ricorda che la pagina non compare da nessuna parte finché non si condividono link o QR. v8.8 08/11/2026: con un nome evento lungo il menu "Evento" in cima non allarga piu' la pagina sul telefono (prima finestre e pannelli uscivano dallo schermo a destra); il nome si accorcia con i puntini. v8.7 05/11/2026: menu a tendina disegnati dalla pagina (Safari, su iPhone, iPad e Mac, li mostrava bianchi e illeggibili sui fondi scuri); "Seleziona" senza doppio trattino; caselle vuote con "-" al posto di "--" o della lineetta lunga. v8.6 03/11/2026: la dashboard ricorda su ogni dispositivo l'ultimo evento scelto e, ricaricando o riaprendo, riparte da quello (con la scheda Attivi o Conclusi giusta). v8.5 03/11/2026: aggiornamento automatico ogni 20 secondi anche nella sezione "Richieste di contatto" (nuove richieste e modifiche da un altro dispositivo, riga "Aggiornamento automatico attivo"); in caso di errore "Caricamento non riuscito" invece di "--". v8.4 03/11/2026: avvisi in basso che vanno a capo sui telefoni invece di uscire dallo schermo; negli eventi "Informazioni" interruttore "Mostra data e ora nella pagina" (spento alla creazione; senza data la pagina resta aperta finche' non la si chiude; con la data, ora facoltativa); con Iscrizioni ed Entrambe data e ora restano obbligatorie; "Senza data" negli elenchi. v8.3 31/10/2026: messaggio di benvenuto con il testo "Benvenuto su EventsFun!" e solo la prima volta su ogni dispositivo (poi resta l'avviso per rivederlo); titolo della pagina senza doppio trattino. v8.2 31/10/2026: schermata "Account sospeso" per gli account messi in pausa o bloccati dal gestionale. v8.1 28/10/2026: scelta per evento "Presente" o "Ritirato" (prenotazioni di prodotti da ritirare di persona), ultimo giorno di ritiro facoltativo, card "Ritirati", riga Totali anche in CSV e PDF. v8.0 28/10/2026: card statistiche salvate sull'evento (uguali su ogni dispositivo), fino a 12, anche le prime tre sostituibili; riga Totali in tabella; evento iniziale coerente con il selettore. v7.9 28/10/2026: nuovo tipo di campo aggiuntivo "Numero" (tendina 0-50) con totale tra le statistiche. v7.7 14/10/2026: pulsante "Copia link" nella finestra del QR Code. v7.6 05/10/2026: avviso "Disdetta programmata" in dashboard (B29). v7.5 05/10/2026: "Lista attesa" fa scorrere la pagina fino al riquadro (B36). v7.4 04/10/2026: voce Assistenza accanto a Guida, nella barra e nel menu del telefono (apre il modulo della guida). v7.3 regola di fine abbonamento: banner di tolleranza con la regola, pagamento non riuscito senza blocco, schermata dedicata ad abbonamento scaduto (base: v7.0 clean rewrite, v7.2 controllo del piano) -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -509,8 +509,8 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
 
     <div class="closed-banner" id="closedBanner">
       <div>
-        <h3 style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3>
-        <p style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura.</p>
+        <h3 id="closedTitle" style="font-family:Syne,sans-serif;font-size:17px;font-weight:700;color:var(--gold);margin-bottom:4px">&#127881; Evento concluso!</h3>
+        <p id="closedText" style="font-size:13px;color:var(--text-muted)">I dati sono in sola lettura.</p>
       </div>
     </div>
 
@@ -2537,9 +2537,19 @@ function isClosedPres(ev) {
   return t >= d;
 }
 function isClosed(ev) {
-  if (!ev || !ev.data_iso) return false;
+  /* v9.5: come Base e Pro: concluso dopo la data dell'evento oppure, per i ritiri, dopo l'ultimo giorno di ritiro */
+  var f = dataFineAttivita(ev);
+  if (!f) return false;
   var t = new Date(); t.setHours(0,0,0,0);
-  var d = new Date(ev.data_iso); d.setHours(0,0,0,0); d.setDate(d.getDate() + 1);
+  var d = new Date(f); d.setHours(0,0,0,0); d.setDate(d.getDate() + 1);
+  return t >= d;
+}
+/* v9.5: eventi con ritiro, dal giorno dopo la data (le prenotazioni sono chiuse: la pagina pubblica non le accetta piu')
+   fino all'ultimo giorno di ritiro compreso. In quei giorni l'evento non e' concluso: si segnano i ritiri e si correggono le prenotazioni */
+function ritiroInCorso(ev) {
+  if (!ev || ev.etichetta_presenza !== 'ritirato' || !ev.data_iso || isClosed(ev)) return false;
+  var t = new Date(); t.setHours(0, 0, 0, 0);
+  var d = new Date(ev.data_iso); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + 1);
   return t >= d;
 }
 
@@ -2698,6 +2708,9 @@ function renderDash() {
   var ev = currentEv;
   var regs = currentRegs;
   var closed = ev ? isClosed(ev) : false;
+  /* v9.4: eventi con ritiro, tra la chiusura delle prenotazioni (giorno dopo la data) e l'ultimo giorno di ritiro: si segnano ancora i ritiri */
+  var ritiroAperto = ritiroInCorso(ev);
+  var parolaChiuse = ritiroAperto ? ((({ prenotazione: 'Prenotazioni', partecipazione: 'Partecipazioni', registrazione: 'Registrazioni' })[ev.terminologia] || 'Iscrizioni') + ' chiuse') : '';
   var hasEv = !!ev;
   var canEdit = hasEv && !closed;
 
@@ -2741,7 +2754,11 @@ function renderDash() {
   if (btnA) btnA.textContent = (attesaVisible ? '▲ ' : '⏳ ') + 'Lista attesa' + (inAttesa.length > 0 ? ' (' + inAttesa.length + ')' : '');
 
   /* Closed banner */
-  setDisp('closedBanner', closed ? 'flex' : 'none');
+  setDisp('closedBanner', (closed || ritiroAperto) ? 'flex' : 'none');
+  setText('closedTitle', ritiroAperto ? '\uD83D\uDCE6 ' + parolaChiuse : '\uD83C\uDF89 Evento concluso!');
+  setText('closedText', ritiroAperto
+    ? 'Puoi segnare i ritiri fino al ' + isoToIt(ev.data_fine_ritiro) + ' con il pulsante "Ritiri".'
+    : 'I dati sono in sola lettura.');
 
   /* Status bar */
   setText('status-nome', ev ? ev.nome : 'Nessun evento');
@@ -2750,6 +2767,7 @@ function renderDash() {
   if (sp) {
     if (!ev) sp.innerHTML = '<span class="pill pill-gray">-</span>';
     else if (closed) sp.innerHTML = '<span class="pill pill-gray">Concluso</span>';
+    else if (ritiroAperto) sp.innerHTML = '<span class="pill pill-gold">' + parolaChiuse + '</span>';
     else if (ev.attivo) sp.innerHTML = '<span class="pill pill-green">' + statoLabel(ev, true) + '</span>';
     else sp.innerHTML = '<span class="pill pill-red">' + statoLabel(ev, false) + '</span>';
   }
@@ -2797,8 +2815,8 @@ function applyModalitaDash(ev) {
   var nota = document.getElementById('statusNota');
   if (nota) {
     var testoNota = '';
-    if (ev && !isClosed(ev) && m === 'info') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 inviare richieste, ma quelle gi\u00e0 arrivate restano qui.';
-    if (ev && !isClosed(ev) && m === 'entrambe') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 iscriversi n\u00e9 inviare richieste, ma iscritti e richieste gi\u00e0 arrivati restano qui.';
+    if (ev && !isClosed(ev) && !ritiroInCorso(ev) && m === 'info') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 inviare richieste, ma quelle gi\u00e0 arrivate restano qui.';
+    if (ev && !isClosed(ev) && !ritiroInCorso(ev) && m === 'entrambe') testoNota = 'Con "Cambia stato" chiudi o riapri la pagina: quando \u00e8 chiusa nessuno pu\u00f2 pi\u00f9 iscriversi n\u00e9 inviare richieste, ma iscritti e richieste gi\u00e0 arrivati restano qui.';
     nota.textContent = testoNota;
     nota.style.display = testoNota ? 'block' : 'none';
   }
@@ -5373,6 +5391,6 @@ init();
 })();
 </script>
 
-<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v9.3 agenzia</div>
+<div style="position:fixed;bottom:6px;right:8px;font-size:9px;color:rgba(255,255,255,0.18);font-family:monospace;z-index:9999;pointer-events:none">v9.5 agenzia</div>
 </body>
 </html>
