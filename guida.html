@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- EventsFun | Guida in-app | v2.2 14/11/2026: campi aggiuntivi, passi aggiornati (la domanda nella prima casella, pulsante "* Obbligatorio", opzioni da scrivere, avviso al salvataggio se manca qualcosa). v2.1 10/11/2026: come vedere la pagina prima di condividerla (pulsante Anteprima nella dashboard, la pagina non compare da nessuna parte finché non si condividono link o QR) in "Creare il tuo primo evento", "Modificare l'evento" e nei primi passi del Punto Info. v2.0 05/11/2026: menu a tendina del modulo di assistenza disegnati dalla pagina, uguali su tutti i dispositivi (Safari compreso). v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
+<!-- EventsFun | Guida in-app | v2.3 22/11/2026: video tutorial "Primi passi": elenco in cima alla guida (sezione Video tutorial) e ogni video nella sua sezione (Creare il tuo primo evento, La pagina di iscrizione, Vedere chi si e' iscritto, La lista presenze); i file sono nella cartella video/ dello stesso sito; si apre da solo il formato verticale sui telefoni e orizzontale sui computer, con il pulsante Verticale / Orizzontale per cambiarlo (la scelta resta su quel dispositivo); il video si scarica solo quando si preme play. v2.2 14/11/2026: campi aggiuntivi, passi aggiornati (la domanda nella prima casella, pulsante "* Obbligatorio", opzioni da scrivere, avviso al salvataggio se manca qualcosa). v2.1 10/11/2026: come vedere la pagina prima di condividerla (pulsante Anteprima nella dashboard, la pagina non compare da nessuna parte finché non si condividono link o QR) in "Creare il tuo primo evento", "Modificare l'evento" e nei primi passi del Punto Info. v2.0 05/11/2026: menu a tendina del modulo di assistenza disegnati dalla pagina, uguali su tutti i dispositivi (Safari compreso). v1.9 03/11/2026: nuova parte "Pagine senza data" (interruttore "Mostra data e ora nella pagina" nel Punto Info e negli eventi "Informazioni" dell'Agenzia), aggiornati "Creare il tuo primo evento", la nota sulla chiusura delle richieste e i primi passi del Punto Info. v1.8 28/10/2026: nuove sezioni "Campi aggiuntivi" (con il tipo Numero e i Totali) e "Prenotazioni da ritirare di persona" (Presente o Ritirato, ultimo giorno di ritiro, riepilogo nell'email), con voci in email, presenze, export, statistiche, glossario e problemi comuni. v1.7 04/10/2026: sezione Assistenza con modulo (funzione assistenza-richiesta: cliente riconosciuto dal codice della dashboard oppure dall'email dell'acquisto, eventi facoltativi, dalla demo solo rimando al modulo contatti del sito), Problemi comuni rimanda all'Assistenza. v1.6 richiesta informazioni, Punto Info, disdetta e fine abbonamento, limite newsletter, indietro verso la dashboard Punto Info -->
 <html lang="it">
 <head>
 <meta charset="UTF-8">
@@ -114,8 +114,30 @@ a.term:hover{border-bottom-style:solid}
 .content .af-ok p{color:var(--text);margin-bottom:14px}
 .af-demo{margin-top:6px}
 
+/* VIDEO TUTORIAL (v2.3) */
+.vt-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 16px}
+.vt-card{display:flex;align-items:center;gap:14px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:10px;text-decoration:none;transition:border-color .2s}
+.vt-card:hover{border-color:rgba(201,169,110,0.5)}
+.vt-card img{width:112px;height:63px;object-fit:cover;border-radius:8px;flex-shrink:0;background:#000}
+.vt-card-t{font-size:14.5px;font-weight:500;color:var(--text);line-height:1.35}
+.vt-card-d{font-size:12.5px;color:var(--text-dim);margin-top:3px}
+.vt{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:14px;margin:4px 0 22px}
+.vt-bar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px}
+.vt-tit{font-size:14px;font-weight:500;color:var(--text)}
+.vt-tit span{color:var(--gold)}
+.vt-sw{display:inline-flex;border:1px solid var(--border);border-radius:9px;overflow:hidden}
+.vt-sw button{background:transparent;border:0;color:var(--text-muted);font-family:"DM Sans",sans-serif;font-size:13px;font-weight:500;padding:8px 14px;min-height:38px;cursor:pointer}
+.vt-sw button+button{border-left:1px solid var(--border)}
+.vt-sw button.on{background:rgba(201,169,110,0.16);color:var(--gold)}
+.vt-sw button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+.vt video{display:block;background:#000;border-radius:10px;max-width:100%}
+.vt.h video{width:100%;aspect-ratio:16/9}
+.vt.v video{aspect-ratio:9/16;width:min(100%, calc(72vh * 9 / 16));width:min(100%, calc(72dvh * 9 / 16));margin:0 auto}
+
 /* MOBILE */
 @media(max-width:860px){
+  .vt-list{grid-template-columns:1fr}
+  .vt{padding:12px}
   .af{padding:18px}
   .af-btn{width:100%}
   .wrap{grid-template-columns:1fr;gap:0;padding:76px 18px 70px}
@@ -155,6 +177,10 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     <div class="idx-wrap" id="idxWrap">
       <div class="idx-title">Indice</div>
       <nav class="idx" id="idx">
+        <div class="idx-group">
+          <div class="idx-group-name">Video</div>
+          <a href="#video-tutorial">Video tutorial</a>
+        </div>
         <div class="idx-group">
           <div class="idx-group-name">Per iniziare</div>
           <a href="#dashboard">Cos'è la dashboard</a>
@@ -232,6 +258,19 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
       <p style="margin:0;color:var(--text-muted)">Questa guida copre tutte le funzioni di EventsFun, di tutti i piani. Le voci con l'etichetta <strong>Pro e Agenzia</strong> o <strong>Solo Agenzia</strong> sono incluse solo in quei piani: se le vedi ma il tuo piano non le ha, è del tutto normale. Se hai il <strong>Punto Info</strong>, le parti che ti riguardano sono quelle sulla richiesta informazioni e la sezione dedicata al Punto Info. Quando ti servono, puoi passare a un piano superiore in qualsiasi momento dalla tua <a href="area-personale.html" style="color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(201,169,110,0.4)">area personale</a>.</p>
     </div>
 
+    <!-- VIDEO TUTORIAL (v2.3) -->
+    <section id="video-tutorial">
+      <h2>Video tutorial</h2>
+      <p>Se preferisci guardare invece di leggere, ci sono dei brevi video con la voce e le scritte che ti mostrano i primi passi, uno per ogni argomento. Sono girati con il piano Base e valgono anche per Pro e Agenzia.</p>
+      <div class="vt-list">
+        <a class="vt-card" href="#crea-evento"><img src="video/crea-evento-orizzontale.jpg" alt="" loading="lazy" width="112" height="63"><div><div class="vt-card-t">Creare il tuo primo evento</div><div class="vt-card-d">Video, 1:36</div></div></a>
+        <a class="vt-card" href="#pagina-iscrizione"><img src="video/condividere-link-qr-orizzontale.jpg" alt="" loading="lazy" width="112" height="63"><div><div class="vt-card-t">Condividere link e codice QR</div><div class="vt-card-d">Video, 1:08</div></div></a>
+        <a class="vt-card" href="#iscritti"><img src="video/chi-si-e-iscritto-orizzontale.jpg" alt="" loading="lazy" width="112" height="63"><div><div class="vt-card-t">Vedere chi si è iscritto</div><div class="vt-card-d">Video, 1:34</div></div></a>
+        <a class="vt-card" href="#presenze"><img src="video/giorno-evento-orizzontale.jpg" alt="" loading="lazy" width="112" height="63"><div><div class="vt-card-t">Il giorno dell'evento</div><div class="vt-card-d">Video, 1:13</div></div></a>
+      </div>
+      <p>Ogni video si trova nella sua sezione della guida. Sul telefono si apre in verticale e sul computer in orizzontale: puoi cambiare con il pulsante <strong>Verticale / Orizzontale</strong> sopra il video. Il video si scarica solo quando premi play.</p>
+    </section>
+
     <!-- PER INIZIARE -->
     <section id="dashboard">
       <h2>Cos'è la dashboard e come orientarti</h2>
@@ -242,6 +281,10 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
 
     <section id="crea-evento">
       <h2>Creare il tuo primo evento</h2>
+      <div class="vt h" data-video="crea-evento">
+        <div class="vt-bar"><div class="vt-tit"><span>&#9654;</span> Video: Creare il tuo primo evento <span>&middot;</span> 1:36</div><div class="vt-sw" role="group" aria-label="Formato del video"><button type="button" data-f="v">Verticale</button><button type="button" data-f="h" class="on">Orizzontale</button></div></div>
+        <video controls playsinline preload="none" src="video/crea-evento-orizzontale.mp4" poster="video/crea-evento-orizzontale.jpg" aria-label="Video tutorial: Creare il tuo primo evento"></video>
+      </div>
       <p>Creare un evento vuol dire preparare la sua <a href="#g-landing" class="term">pagina di iscrizione</a>, cioè la pagina pubblica dove le persone si iscrivono.</p>
       <ol class="steps">
         <li>Nella dashboard, premi il pulsante <strong>Crea evento</strong> (o <strong>Nuovo evento</strong>).</li>
@@ -270,6 +313,10 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
 
     <section id="pagina-iscrizione">
       <h2>La pagina di iscrizione e come condividerla</h2>
+      <div class="vt h" data-video="condividere-link-qr">
+        <div class="vt-bar"><div class="vt-tit"><span>&#9654;</span> Video: Condividere link e codice QR <span>&middot;</span> 1:08</div><div class="vt-sw" role="group" aria-label="Formato del video"><button type="button" data-f="v">Verticale</button><button type="button" data-f="h" class="on">Orizzontale</button></div></div>
+        <video controls playsinline preload="none" src="video/condividere-link-qr-orizzontale.mp4" poster="video/condividere-link-qr-orizzontale.jpg" aria-label="Video tutorial: Condividere link e codice QR"></video>
+      </div>
       <p>La pagina di iscrizione è dove le persone lasciano i loro dati per partecipare. Per portarci la gente hai due strade, e puoi usarle insieme.</p>
       <h3>Il link</h3>
       <p>Ogni evento ha un suo <a href="#g-link" class="term">link</a> (un indirizzo web). Lo copi dalla dashboard e lo incolli dove vuoi: messaggi, social, email, sito. Chi lo apre vede la pagina e si iscrive.</p>
@@ -318,6 +365,10 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     <!-- GESTIRE LE ISCRIZIONI -->
     <section id="iscritti">
       <h2>Vedere chi si è iscritto</h2>
+      <div class="vt h" data-video="chi-si-e-iscritto">
+        <div class="vt-bar"><div class="vt-tit"><span>&#9654;</span> Video: Vedere chi si è iscritto <span>&middot;</span> 1:34</div><div class="vt-sw" role="group" aria-label="Formato del video"><button type="button" data-f="v">Verticale</button><button type="button" data-f="h" class="on">Orizzontale</button></div></div>
+        <video controls playsinline preload="none" src="video/chi-si-e-iscritto-orizzontale.mp4" poster="video/chi-si-e-iscritto-orizzontale.jpg" aria-label="Video tutorial: Vedere chi si è iscritto"></video>
+      </div>
       <p>Ogni iscrizione che arriva compare nella sezione <strong>Iscritti</strong> dell'evento, in tempo reale. Per ciascuna persona vedi nome, email e gli altri dati che hai chiesto.</p>
       <ul class="dots">
         <li>Puoi <strong>cercare</strong> una persona scrivendo il suo nome o la sua email.</li>
@@ -371,6 +422,10 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
     <!-- IL GIORNO DELL'EVENTO -->
     <section id="presenze">
       <h2>La lista presenze e come segnare i presenti</h2>
+      <div class="vt h" data-video="giorno-evento">
+        <div class="vt-bar"><div class="vt-tit"><span>&#9654;</span> Video: Il giorno dell'evento <span>&middot;</span> 1:13</div><div class="vt-sw" role="group" aria-label="Formato del video"><button type="button" data-f="v">Verticale</button><button type="button" data-f="h" class="on">Orizzontale</button></div></div>
+        <video controls playsinline preload="none" src="video/giorno-evento-orizzontale.mp4" poster="video/giorno-evento-orizzontale.jpg" aria-label="Video tutorial: Il giorno dell'evento"></video>
+      </div>
       <p>Il giorno dell'evento usi la sezione <strong>Presenze</strong> per spuntare chi arriva. È pensata per essere usata comodamente anche dal telefono, all'ingresso.</p>
       <ol class="steps">
         <li>Apri la sezione <strong>Presenze</strong> dell'evento.</li>
@@ -382,6 +437,7 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
 
     <section id="qr-checkin">
       <h2>Il check-in con QR</h2>
+      <p>Lo scanner QR lo vedi in azione nel video <a href="#presenze" class="lnk">Il giorno dell'evento</a>.</p>
       <p>Il <a href="#g-checkin" class="term">check-in</a> con QR è un modo più veloce di segnare i presenti: invece di cercare il nome, inquadri il QR che l'iscritto ha ricevuto via email e il sistema lo segna presente da solo. È una funzione che attivi tu, evento per evento: se preferisci la spunta manuale, lasciala spenta.</p>
       <h3>Come attivarlo</h3>
       <p>Quando crei o modifichi l'evento, attiva l'opzione <strong>Check-in con QR</strong>. Da quel momento ogni iscritto riceve nella sua email di conferma un QR personale di ingresso.</p>
@@ -830,6 +886,56 @@ select:not([multiple]):not([size])::-ms-expand{display:none}
 </div>
 
 <script>
+// v2.3 -- Video tutorial: formato verticale (telefoni) o orizzontale (computer), scelta ricordata su questo dispositivo;
+// un solo video alla volta; cambiando formato il video riparte dallo stesso punto
+(function(){
+  var boxes=document.querySelectorAll('.vt[data-video]');
+  if(!boxes.length)return;
+  var KEY='ef_guida_video_formato';
+  function salvato(){ try{ var f=localStorage.getItem(KEY); return (f==='v'||f==='h')?f:null; }catch(e){ return null; } }
+  function automatico(){ return (window.matchMedia && window.matchMedia('(max-width: 860px)').matches) ? 'v' : 'h'; }
+  function imposta(box,f){
+    var v=box.querySelector('video'); if(!v)return;
+    var nome=box.getAttribute('data-video');
+    var file='video/'+nome+'-'+(f==='v'?'verticale':'orizzontale');
+    box.classList.remove('v','h'); box.classList.add(f);
+    var bs=box.querySelectorAll('.vt-sw button');
+    for(var i=0;i<bs.length;i++){ var on=bs[i].getAttribute('data-f')===f; bs[i].classList.toggle('on',on); bs[i].setAttribute('aria-pressed',on?'true':'false'); }
+    if(v.getAttribute('src')===file+'.mp4')return;
+    var t=v.currentTime||0, andava=!v.paused;
+    v.setAttribute('poster',file+'.jpg');
+    v.setAttribute('src',file+'.mp4');
+    if(t>0||andava){
+      v.preload='metadata';
+      v.addEventListener('loadedmetadata',function riprendi(){
+        v.removeEventListener('loadedmetadata',riprendi);
+        try{ v.currentTime=t; }catch(e){}
+        if(andava){ var pr=v.play(); if(pr&&pr.catch)pr.catch(function(){}); }
+      });
+      v.load();
+    }
+  }
+  var formato=salvato()||automatico();
+  for(var i=0;i<boxes.length;i++){
+    imposta(boxes[i],formato);
+    (function(box){
+      var bs=box.querySelectorAll('.vt-sw button');
+      for(var j=0;j<bs.length;j++){
+        bs[j].addEventListener('click',function(){
+          var f=this.getAttribute('data-f');
+          try{ localStorage.setItem(KEY,f); }catch(e){}
+          for(var k=0;k<boxes.length;k++){ imposta(boxes[k],f); }
+        });
+      }
+      var v=box.querySelector('video');
+      if(v)v.addEventListener('play',function(){
+        var tutti=document.querySelectorAll('.vt video');
+        for(var k=0;k<tutti.length;k++){ if(tutti[k]!==v&&!tutti[k].paused)tutti[k].pause(); }
+      });
+    })(boxes[i]);
+  }
+})();
+
 // Toggle indice su mobile
 function toggleIdx(){
   var w=document.getElementById('idxWrap');
